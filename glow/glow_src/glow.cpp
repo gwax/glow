@@ -544,10 +544,34 @@ void Glow::UnregisterTimer(
 ===============================================================================
 */
 
+// Temporary code that will report re-entry into event handlers
+class Glow_ReentryChecker_
+{
+	public:
+		inline Glow_ReentryChecker_()
+			throw()
+		{
+			++entryCounter_;
+			GLOW_WARNING(entryCounter_>1, "Event re-entry detected.");
+		}
+		inline ~Glow_ReentryChecker_()
+			throw()
+		{
+			--entryCounter_;
+		}
+	private:
+		static int entryCounter_;
+};
+int Glow_ReentryChecker_::entryCounter_ = 0;
+#define GLOW_INTERNAL_CHECKEVENTREENTRY() Glow_ReentryChecker_ glow_reentryChecker_
+// End temporary code
+
+
 void Glow::TimerFunc_(
 	int id)
 {
 	GLOW_DEBUGSCOPE("Glow::TimerFunc_");
+GLOW_INTERNAL_CHECKEVENTREENTRY();  // Temp
 	
 	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
@@ -570,6 +594,7 @@ void Glow::TimerFunc_(
 void Glow::DisplayFunc_()
 {
 	GLOW_DEBUGSCOPE("Glow::DisplayFunc_");
+GLOW_INTERNAL_CHECKEVENTREENTRY();  // Temp
 	
 	++clock_;
 	// Paint the window
@@ -600,6 +625,7 @@ void Glow::ReshapeFunc_(
 	int height)
 {
 	GLOW_DEBUGSCOPE("Glow::ReshapeFunc_");
+GLOW_INTERNAL_CHECKEVENTREENTRY();  // Temp
 	
 	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
@@ -623,6 +649,7 @@ void Glow::KeyboardFunc_(
 	int y)
 {
 	GLOW_DEBUGSCOPE("Glow::KeyboardFunc_");
+GLOW_INTERNAL_CHECKEVENTREENTRY();  // Temp
 	
 	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
@@ -661,6 +688,7 @@ void Glow::KeyboardUpFunc_(
 	int y)
 {
 	GLOW_DEBUGSCOPE("Glow::KeyboardUpFunc_");
+GLOW_INTERNAL_CHECKEVENTREENTRY();  // Temp
 	
 	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
@@ -698,6 +726,7 @@ void Glow::MouseFunc_(
 	int y)
 {
 	GLOW_DEBUGSCOPE("Glow::MouseFunc_");
+GLOW_INTERNAL_CHECKEVENTREENTRY();  // Temp
 	
 	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
@@ -741,6 +770,7 @@ void Glow::MotionFunc_(
 	int y)
 {
 	GLOW_DEBUGSCOPE("Glow::MotionFunc_");
+GLOW_INTERNAL_CHECKEVENTREENTRY();  // Temp
 	
 	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
@@ -761,6 +791,7 @@ void Glow::PassiveMotionFunc_(
 	int y)
 {
 	GLOW_DEBUGSCOPE("Glow::PassiveMotionFunc_");
+GLOW_INTERNAL_CHECKEVENTREENTRY();  // Temp
 	
 	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
@@ -780,6 +811,7 @@ void Glow::VisibilityFunc_(
 	int state)
 {
 	GLOW_DEBUGSCOPE("Glow::VisibilityFunc_");
+GLOW_INTERNAL_CHECKEVENTREENTRY();  // Temp
 	
 	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
@@ -806,6 +838,7 @@ void Glow::EntryFunc_(
 	int state)
 {
 	GLOW_DEBUGSCOPE("Glow::EntryFunc_");
+GLOW_INTERNAL_CHECKEVENTREENTRY();  // Temp
 	
 	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
@@ -834,6 +867,7 @@ void Glow::SpecialFunc_(
 	int y)
 {
 	GLOW_DEBUGSCOPE("Glow::SpecialFunc_");
+GLOW_INTERNAL_CHECKEVENTREENTRY();  // Temp
 	
 	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
@@ -869,6 +903,7 @@ void Glow::SpecialUpFunc_(
 	int y)
 {
 	GLOW_DEBUGSCOPE("Glow::SpecialUpFunc_");
+GLOW_INTERNAL_CHECKEVENTREENTRY();  // Temp
 	
 	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
@@ -905,6 +940,7 @@ void Glow::MenuStatusFunc_(
 	int y)
 {
 	GLOW_DEBUGSCOPE("Glow::MenuStatusFunc_");
+GLOW_INTERNAL_CHECKEVENTREENTRY();  // Temp
 	
 	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
@@ -944,6 +980,7 @@ void Glow::MenuFunc_(
 	int value)
 {
 	GLOW_DEBUGSCOPE("Glow::MenuFunc_");
+GLOW_INTERNAL_CHECKEVENTREENTRY();  // Temp
 	
 	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
@@ -962,6 +999,7 @@ void Glow::MenuFunc_(
 void Glow::IdleFunc_()
 {
 	GLOW_DEBUGSCOPE("Glow::IdleFunc_");
+GLOW_INTERNAL_CHECKEVENTREENTRY();  // Temp
 	
 	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
@@ -981,6 +1019,7 @@ void Glow::JoystickFunc_(
 	int z)
 {
 	GLOW_DEBUGSCOPE("Glow::JoystickFunc_");
+GLOW_INTERNAL_CHECKEVENTREENTRY();  // Temp
 	
 	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
@@ -1003,9 +1042,49 @@ void Glow::JoystickFunc_(
 ===============================================================================
 */
 
+// Internal class that prevents re-entry into ExecuteDeferred_ in an
+// exception-safe manner.
+// We may eventually want to promote something like this into glowDebug,
+// if we can design it to handle self-re-entrance (i.e. handle multiple
+// pending checks) well enough.
+class Glow_DetectReentry_
+{
+	public:
+	
+		inline Glow_DetectReentry_()
+			throw()
+		{
+			++entryCounter_;
+		}
+		inline ~Glow_DetectReentry_()
+			throw()
+		{
+			--entryCounter_;
+		}
+		inline bool isReentered()
+			throw()
+		{
+			return entryCounter_ > 1;
+		}
+	
+	private:
+	
+		static int entryCounter_;
+};
+
+int Glow_DetectReentry_::entryCounter_ = 0;
+
+
 void Glow::ExecuteDeferred_()
 {
 	GLOW_DEBUGSCOPE("Glow::ExecuteDeferred_");
+	
+	// Prevent re-entrance
+	Glow_DetectReentry_ reentryDetector;
+	if (reentryDetector.isReentered())
+	{
+		return;
+	}
 	
 	// Widget notifier
 	if (widgetNotifier_ != 0)
