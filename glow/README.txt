@@ -1,6 +1,6 @@
 
 The GLOW Toolkit
-version 0.9.8 (22 May 2000)
+version 0.9.8 (23 May 2000)
 Copyright (C) 1997-2000  Daniel Azuma
 All rights reserved worldwide
 
@@ -77,20 +77,23 @@ RELEASE NOTES
 
 
     The GLOW Toolkit
-    Version 0.9.8 (22 May 2000)
+    Version 0.9.8 (23 May 2000)
 
     These notes detail the differences between versions 0.9.7 and 0.9.8.
     A complete history of publicly released versions can be found on the
     GLOW web site.
 
-    This release of GLOW focused on bug fixes and completing lesson 8 in
-    the tutorial.
+    This release of GLOW focused on bug fixes.
 
 
     Features added
     --------------
 
       Added Glow::NumToplevelWindows().
+
+      Added Glow::SetAutoQuitting() and Glow::IsAutoQuitting(). You can
+      now set GLOW to automatically quit when the last toplevel window
+      has been closed.
 
       Added GlowComponent::Paint().
 
@@ -106,7 +109,11 @@ RELEASE NOTES
     Features changed
     ----------------
 
-      (none)
+      GlowCheckBoxWidget and GlowRadioButtonWidget's default heights are
+      one pixel less.
+
+      Rolled GlowStickyButtonWidget interface into GlowPushButtonWidget.
+      Removed GlowStickyButtonWidget.
 
 
     Bugs fixed
@@ -121,13 +128,20 @@ RELEASE NOTES
 
       Hiding or deactivating a widget caused a temporary inconsistency
       in the widget's state that could cause crashes if the widget was
-      deleted before the deferred event was raised. Fixed.
+      deleted before the deferred event was handled. Fixed.
 
       GlowWidget::OnGotKeyboardFocus() and OnLostKeyboardFocus() weren't
       being deferred. Fixed.
 
       GlowQuickPalette wasn't honoring widget visibility, resulting in
       holes in palettes with invisible widgets. Fixed.
+
+      GlowCheckBoxWidget's mark appeared off-kilter under Mesa3D, and
+      didn't scale well with widget size. Fixed.
+
+      glowUtilities.cpp didn't link in Codewarrior for Windows. I think
+      this may be a result of a Codewarrior bug, but I found and put in
+      a workaround anyway.
 
       Multiple bugs and broken links in the reference fixed.
 
