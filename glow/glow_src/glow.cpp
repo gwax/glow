@@ -321,7 +321,8 @@ void Glow::AddWindow_(
 	GlowSubwindow* window,
 	int windowNum)
 {
-	if (dynamic_cast<GlowWindow*>(window) != 0)
+	// Toplevel windows are the only components that have no parent
+	if (window->Parent() == 0)
 	{
 		++numToplevelWindows_;
 	}
@@ -338,7 +339,8 @@ void Glow::RemoveWindow_(
 	{
 		// Update numToplevelWindows
 		GlowSubwindow* wind = (*iter).second;
-		if (dynamic_cast<GlowWindow*>(wind) != 0)
+		// Toplevel windows are the only components that have no parent
+		if (wind->Parent() == 0)
 		{
 			--numToplevelWindows_;
 		}
@@ -368,6 +370,7 @@ void Glow::RemoveWindow_(
 		// Auto-quit
 		if (autoQuitting_ && windowRegistry_.empty())
 		{
+			GLOW_ASSERT(numToplevelWindows_ == 0);
 			GLOW_CSTD::exit(0);
 		}
 	}
