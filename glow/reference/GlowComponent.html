@@ -112,6 +112,32 @@ Requests a deferred deletion of the component. The component won't actually be d
 
 </blockquote>
 
+
+<p>
+<b>Initialization state</b>
+<br>
+You can determine whether a component has been initialized, or deferred-deleted using <tt>Close()</tt>.
+</p>
+
+<blockquote>
+
+<p>
+<tt>bool <b>IsInitialized</b>(void) const</tt>
+</p>
+<blockquote>
+Returns true if the component has been initialized. You may not perform any operations on an uninitialized component.
+</blockquote>
+
+<p>
+<tt>bool <b>IsClosed</b>(void) const</tt>
+</p>
+<blockquote>
+Returns true if the component has been deferred-deleted but hasn't actually been destructed yet. If this method returns true, you should expect the object to go away when GLOW regains control.
+</blockquote>
+
+</blockquote>
+
+
 <p>
 <b>Examining a component's ancestors</b>
 <br>

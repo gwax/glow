@@ -1,6 +1,6 @@
 
 The GLOW Toolkit
-version 1.1.2dev (?? August 2000)
+version 1.1.2dev (7 August 2000)
 Copyright (C) 1997-2000  Daniel Azuma
 
 
@@ -76,7 +76,7 @@ RELEASE NOTES
 
 
     The GLOW Toolkit
-    Version 1.1.2dev (?? August 2000)
+    Version 1.1.2dev (7 August 2000)
 
     These are the differences between versions 1.1.1dev and 1.1.2dev.
     A complete history of publicly released versions can be found on the
@@ -113,8 +113,6 @@ RELEASE NOTES
       Removed conversion from Vec3f and Quatf to const GLfloat* and 
       replaced with method Array().
 
-      GlowTextData contains rather than inherits from std::string.
-
       Renamed GlowImage, GlowPNMReader and GlowPNMWriter to
       TGlowImage, TGlowPNMReader and TGlowPNMWriter, respectively.
 
@@ -149,6 +147,8 @@ RELEASE NOTES
       When compiling under MSVC, now disables warning 4786 (long debug
       symbols) and locally disables warning 4355 (passing "this" to a
       member constructor). (also in 1.0.2)
+
+      GlowTextData contains rather than inherits from std::string.
 
       Fixed underscores (changed from leading to trailing) for private
       class members in the tutorial.
