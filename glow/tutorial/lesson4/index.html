@@ -242,7 +242,7 @@ This adds another panel to the window, but a special kind of panel called an arr
 </p>
 <blockquote>
 <pre>_quitButton = panel->AddPushButton("Quit", this);
-    _saveButton = panel->AddPushButton("Save Image", this);</pre>
+_saveButton = panel->AddPushButton("Save Image", this);</pre>
 </blockquote>
 <p>
 Now we're done adding all the widgets. To actually arrange them in the window and display the window, we call <tt>Pack()</tt>.
@@ -252,6 +252,9 @@ Now we're done adding all the widgets. To actually arrange them in the window an
 </blockquote>
 <p>
 <tt>Pack()</tt> arranges the entire hierarchy of widgets we created, including those inside panels. At this point, you may find it helpful to try running the program to see how the widgets actually got arranged. It should look something like the image at the beginning of this lesson. Notice how the panels enclose and separate off groups of widgets. Also, notice how the overall arrangement direction is vertical, except for the two buttons at the very bottom, which are within an arranging panel oriented horizontally.
+</p>
+<p>
+GLOW provides a number of other types of widgets. You can browse the APIs for GlowQuickPaletteWindow and GlowQuickPanelWidget to see what other widgets you can create.
 </p>
 
 
@@ -362,7 +365,10 @@ For our slider receiver, however, we connected three sliders to the same receive
 In each case, we update the setting controlled by the slider, and then call <tt>Refresh()</tt> to post an event to refresh the image in the view window.
 </p>
 <p>
-Notice also, in this case, there are two kinds of slider events. Slider events may be sent while the slider is being dragged, or after the slider is released. In our case, we want two of our sliders to be "live" sliders-- that is, the characteristics they control update dynamically while the slider is being dragged. Those two slider are the ones that control the multicolor cycling, because updating the image for those characteristics is very fast. However, the slider that controls the number of iterations should be non-"live"-- that is, the image should only update once the slider is released. This is because recomputing the mandelbrot data for the entire image is too slow to be done dynamically as the slider is being dragged. We detect the kind of slider event by checking the value of the <tt>released</tt> field in the message structure. This variable will be set to <tt>true</tt> if the slider has just been released, or <tt>false</tt> if it is still being dragged.
+Notice also, in this case, there are two kinds of slider events. Slider events may be sent while the slider is being dragged, or after the slider is released. This is useful for specifying whether a slider behaves in a "live" or "non-live" fashion. A "live" slider updates the characteristics it controls dynamically as it is being dragged, whereas a "non-live" slider causes an update only once it is released. To implement a live slider, you treat slider-dragged events and slider-released events in the same way. To implement a non-live slider, you ignore slider-dragged events, and only respond to slider-released events.
+</p>
+<p>
+In our case, we want the slider that controls the number of iterations to be "non-live." Because updating the image in this case is slow (i.e. it requires recomputing the mandelbrot function), we want to do it only once, when the slider is released. To detect what type of event we've received, we check the <tt>released</tt> field in the message structure. If it is set to <tt>true</tt>, the slider has been released and we should respond to the event by recomputing the image; if it is set to <tt>false</tt>, then the slider is being dragged, and we shouldn't cause a recomputation. The sliders that control multicolor cycling, however, should be "live" sliders, because updating the image for changes in the color scheme is very fast (i.e. it doesn't require recomputing the mandelbrot function). Therefore, when we handle those two sliders, we can ignore the <tt>released</tt> field because we're handling dragged and released events in the same way.
 </p>
 
 <p>
@@ -611,7 +617,7 @@ You may also find it useful to look through the reference pages on <tt>GlowWidge
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 27 March 2000
 </address>
 
 
