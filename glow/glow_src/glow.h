@@ -187,7 +187,9 @@ class Glow
 			stencilBuffer = GLUT_STENCIL,
 			depthBuffer = GLUT_DEPTH,
 			accumBuffer = GLUT_ACCUM,
-			doubleBuffer = GLUT_DOUBLE
+			doubleBuffer = GLUT_DOUBLE,
+			stereoBuffer = GLUT_STEREO,
+			multisampleBuffer = GLUT_MULTISAMPLE
 		};
 		
 		// Keyboard modifiers

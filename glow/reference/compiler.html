@@ -148,7 +148,7 @@ There are several compiler settings that you'll need to modify in order to get G
 <tt>GLOW_COMPAT_NOTEMPLATESPECIALIZATIONS</tt>
 </p>
 <blockquote>
-MSVC++ doesn't seem to completely understand template specializations, so define this symbol to work around that.
+MSVC++ doesn't seem to completely understand template specializations, so define this symbol to work around a template specialization defined in <tt>glowSenderReceiver</tt>.
 </blockquote>
 
 <p>
@@ -159,21 +159,28 @@ This works around the fact that MSVC++ doesn't put the C standard library into n
 </blockquote>
 
 <p>
-<tt>GLOW_COMPAT_NOSTDMINMAX</tt>
-</p>
-<blockquote>
-This works around the fact that the C++ standard libraries that come with MSVC++ don't include the min and max templates.
-</blockquote>
-
-<p>
-<tt><b>GLOW_COMPAT_BADFORSCOPING</b></tt>
+<tt>GLOW_COMPAT_BADFORSCOPING</tt>
 </p>
 <blockquote>
 This works around the fact that MSVC++ incorrectly scopes variables declared in the parens of a for loop.
 </blockquote>
 
 <p>
-Finally, if you're compiling in debug mode, you may want to change the debug information settings to something like "line numbers only". Otherwise, because GLOW uses STL pretty heavily, you may get several hundred warnings that such-and-such a symbol name is longer than 255 characters. You should also expect four warnings to be thrown out of glowViewTransform.inl.h concerning passing the "this" pointer into a member constructor. That warning should be harmless in this case.
+<tt>GLOW_COMPAT_NOSTDMINMAX</tt>
+</p>
+<blockquote>
+This works around the fact that the C++ standard libraries that come with MSVC++ don't include the <tt>min()</tt> and <tt>max()</tt> template functions.
+</blockquote>
+
+<p>
+<tt>NOMINMAX</tt>
+</p>
+<blockquote>
+This directs the Windows standard header "<tt>windef.h</tt>" not to define <tt>min</tt> and <tt>max</tt> as macros. You may need to do this to allow the C++ standard library template functions <tt>min()</tt> and <tt>max()</tt> to function properly if Windows headers are being #included.
+</blockquote>
+
+<p>
+Finally, if you're compiling in debug mode, you may want to change the debug information settings to something like "line numbers only". Otherwise, because GLOW uses STL pretty heavily, you may get several hundred warnings that such-and-such a symbol name is longer than 255 characters. You should also expect four warnings to be thrown out of glowViewTransform.inl.h concerning passing the "this" pointer into a member constructor. Those four warnings should be harmless in this case.
 </p>
 
 
@@ -201,7 +208,7 @@ Finally, if you're compiling in debug mode, you may want to change the debug inf
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 11 April 2000
+Last updated 17 April 2000
 </address>
 
 
