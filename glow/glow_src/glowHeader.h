@@ -120,7 +120,7 @@
 	inline T& operator&=(T& op1, T op2) {op1=T(int(op1)&int(op2)); return op1;}
 
 // For MSVC DLL compiling (not yet working)
-#ifdef _WIN32
+#ifdef _MSC_VER
 	#ifdef GLOW_OPTION_DLLEXPORTS
 		#define GLOW_EXTERN _declspec(dllexport)
 	#endif

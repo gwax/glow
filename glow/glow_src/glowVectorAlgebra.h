@@ -61,36 +61,14 @@
 	#include "glowHeader.h"
 #endif
 
-// This rocksmokery is necessary for GL/gl.h to compile under Windows
-// without having to include windows.h
-#ifdef _WIN32
-	#ifndef APIENTRY
-		#define GLOW_INTERNAL_APIENTRYDEFINED
-		#if (_MSC_VER >= 800) || defined(_STDCALL_SUPPORTED)
-			#define APIENTRY __stdcall
-		#else
-			#define APIENTRY
-		#endif
-	#endif
-	#ifndef WINGDIAPI
-		#define GLOW_INTERNAL_WINGDIAPIDEFINED
-		#define WINGDIAPI __declspec(dllimport)
-	#endif
+// Microsoft cluelessness: the win32 gl.h depends on windows.h but
+// doesn't include it.
+#if defined(_WIN32) || defined(WIN32)
+	#define WIN32_LEAN_AND_MEAN
+	#include "windows.h"
 #endif
 
 #include <GL/gl.h>
-
-// Clean up rocksmokery...
-#ifdef _WIN32
-	#ifdef GLOW_INTERNAL_APIENTRYDEFINED
-		#undef GLOW_INTERNAL_APIENTRYDEFINED
-		#undef APIENTRY
-	#endif
-	#ifdef GLOW_INTERNAL_WINGDIAPIDEFINED
-		#undef GLOW_INTERNAL_WINGDIAPIDEFINED
-		#undef WINGDIAPI
-	#endif
-#endif
 
 #include <cstddef>
 #ifndef GLOW_OPTION_NOIOSTREAMS

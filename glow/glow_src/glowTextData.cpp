@@ -58,6 +58,14 @@
 #endif
 
 #include <algorithm>
+
+// Microsoft cluelessness: the win32 gl.h depends on windows.h but
+// doesn't include it.
+#if defined(_WIN32) || defined(WIN32)
+	#define WIN32_LEAN_AND_MEAN
+	#include "windows.h"
+#endif
+
 #include <GL/glut.h>
 
 #ifndef GLOW_TEXTDATA__H

@@ -98,7 +98,15 @@ RELEASE NOTES
     Bugs fixed
     ----------
 
-      (none)
+      Several files didn't compile using mingw32, due to some MSVC-
+      specific hacks in glowVectorAlgebra.h. Fixed. (I now explicitly
+      #include windows.h, with WIN32_LEAN_AND_MEAN set. Recent versions
+      of glut.h seem to want to require the external program to include
+      windows.h, which I think is a mistake for code intended to allow
+      cross-platform development. GLOW works around this issue by
+      prefixing all its internal includes of glut.h with an include of
+      windows.h if WIN32 or _WIN32 is set. All this because Microsoft
+      refuses to support OpenGL correctly... aargh!)  Also in 1.0.3.
 
 
     Internal changes
