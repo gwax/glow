@@ -31,8 +31,8 @@ INTRODUCTION
     It provides an object-oriented API for creating windows, menus and
     other user interface elements, and an inheritance-based event
     handling model. GLOW also includes a full-featured and extensible
-    library of cross-platform widgets for building high-powered user
-    interfaces. And, of course, full integration with OpenGL as the
+    library of cross-platform widgets for building powerful graphical
+    user interfaces. And, of course, full integration with OpenGL as the
     imaging API.
 
     The GLOW Toolkit is a free software library, distributed under the
@@ -89,7 +89,8 @@ RELEASE NOTES
       Quatf can now be cast to GLfloat*. Why anyone would want to do
       this I'm not sure, but the feature is now there.
 
-      Added GLOW_APIVERSION symbol and Glow::APIVersion().
+      Added GLOW_APIVERSION symbol and Glow::APIVersion(). A value of 1
+      is returned for version 1.0.0 of The GLOW Toolkit.
 
 
     Features changed
@@ -134,8 +135,7 @@ RELEASE NOTES
       Because of the continuing incomplete state of GLUT in the Mac OS
       OpenGL SDK, many features of GLOW are still unusable on the Mac.
       I do have it on good authority that it is being worked on, so I'm
-      hopeful that this will be resolved soon, perhaps with the next
-      release of Apple's OpenGL SDK.
+      hopeful that this will be resolved soon.
 
       Because of GLOW's heavy ANSI dependence, there are some issues
       with various compilers, especially older ones. If you've worked
@@ -150,9 +150,9 @@ RELEASE NOTES
 INSTALLING GLOW
 
 
-    The files comprising GLOW are located in the directory "glow".
+    The files comprising GLOW are located in the directory "glow_src".
     You should install this directory in a reasonable place such as in
-    /usr/lib. I prefer to keep it with the rest of my source code in a
+    /usr/src. I prefer to keep it with the rest of my source code in a
     data directory. If you are running SGI IRIX and using the SGI
     MISPPro compiler version 7.3, you should also install the directory
     "Compat-SGI". This directory contains header files using the new
@@ -166,10 +166,11 @@ INSTALLING GLOW
     you a reasonable idea of how to use GLOW as a source code library.
 
     You may also want to build a library archive or shared library of
-    GLOW. I leave it up to the reader to figure out how to do this,
-    since I just use it in its source code form myself. Future releases
-    of GLOW will include a Makefile and configure script for building
-    static and shared libraries.
+    GLOW. I leave it up to the reader to figure out the details of how
+    to do this, since I just use it in its source code form myself. But
+    basically, you just need to compile all the *.cpp files and link
+    into a library file. A future release will include a Makefile and
+    configure script for building static and shared libraries.
 
 
 ==============================================================================
