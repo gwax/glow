@@ -35,11 +35,11 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit tutorial -- version 0.9.7  (27 April 2000)
+		The GLOW Toolkit tutorial -- version 0.9.7  (1 May 2000)
 	
 	CHANGE HISTORY:
 	
-		27 April 2000 -- DA -- Initial CVS checkin
+		1 May 2000 -- DA -- Initial CVS checkin
 
 ===============================================================================
 */
@@ -185,7 +185,18 @@ void CalcUIReceiver::OnMessage(
 {
 	GLOW_DEBUGSCOPE("CalcUIReceiver::OnMessage(GlowPushButtonMessage)");
 	
-	if (message.widget->GetRefCon() == -1)
+	if (message.widget->GetRefCon() >= 0)
+	{
+		// Calculator buttons: pass the reference constant to the engine
+		_engine->Button(message.widget->GetRefCon());
+		UpdateDisplay();
+	}
+	else if (message.widget->GetRefCon() == -1)
+	{
+		// Quit button
+		exit(0);
+	}
+	else if (message.widget->GetRefCon() == -2)
 	{
 		// Inverse button
 		if (_panel1->IsVisible())
@@ -202,11 +213,6 @@ void CalcUIReceiver::OnMessage(
 			_panel1->Show();
 			_inverseButton->SetBoxColor(GlowPushButtonParams::defaults.boxColor);
 		}
-	}
-	else if (message.widget->GetRefCon() == -2)
-	{
-		// Quit button
-		exit(0);
 	}
 	else if (message.widget->GetRefCon() == -3)
 	{
@@ -232,12 +238,6 @@ void CalcUIReceiver::OnMessage(
 		Glow::PushModalWindow(messageWind);
 		// When the window is destroyed, the state will automatically go back
 		// to non-modal.
-	}
-	else
-	{
-		// Other buttons: pass the reference constant to the engine
-		_engine->Button(message.widget->GetRefCon());
-		UpdateDisplay();
 	}
 }
 
@@ -548,7 +548,7 @@ CalcUI::CalcUI(
 	bparams.x = 0;
 	// We treat this button specially. Note that the receiver detects this
 	// refcon explicitly and handles the inverse button
-	bparams.refcon = -1;
+	bparams.refcon = -2;
 	_receiver->_inverseButton = new GlowPushButtonWidget(
 		_receiver->_mainPanel, bparams);
 	
@@ -595,6 +595,8 @@ CalcUI::CalcUI(
 	bparams.x = 0;
 	bparams.refcon = CalcEngine::enterButton;
 	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
+	
+	// SPECIAL FUNCTIONS
 	
 	// We have twelve more keys left. We only want six to be visible
 	// at a time, however, depending on the state of the "inverse" key.
@@ -784,7 +786,7 @@ CalcUI::CalcUI(
 	bparams.y = 250;
 	bparams.text = "Quit";
 	// We'll detect this refcon and handle this button specially
-	bparams.refcon = -2;
+	bparams.refcon = -1;
 	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
 	
 	bparams.x = 100;

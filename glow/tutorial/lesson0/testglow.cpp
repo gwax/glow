@@ -35,12 +35,13 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit tutorial -- version 0.9.6  (10 April 2000)
+		The GLOW Toolkit tutorial -- version 0.9.7  (1 May 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
 		10 April 2000 -- DA -- Version 0.9.6 update
+		1 May 2000 -- DA -- Version 0.9.7 update
 
 ===============================================================================
 */
@@ -61,7 +62,6 @@ using namespace std;
 #include "glowLabelWidget.h"
 #include "glowPushButtonWidget.h"
 #include "glowViewTransform.h"
-
 
 GLOW_NAMESPACE_USING
 

@@ -258,7 +258,7 @@ These methods may be used to alter packing parameters.
 <blockquote>
 
 <p>
-<tt>GlowQuickPalette::Arrangement <b>GetArrangement</b>() const</tt>
+<tt>GlowQuickPalette::Arrangement <b>GetArrangement</b>(void) const</tt>
 </p>
 <blockquote>
 Returns the current arrangement setting (<tt>vertical</tt> or <tt>horizontal</tt>).
@@ -272,7 +272,7 @@ Sets the current arrangement setting (<tt>vertical</tt> or <tt>horizontal</tt>).
 </blockquote>
 
 <p>
-<tt>GlowQuickPalette::Alignment <b>GetAlignment</b>() const</tt>
+<tt>GlowQuickPalette::Alignment <b>GetAlignment</b>(void) const</tt>
 </p>
 <blockquote>
 Returns the current alignment setting.
@@ -286,7 +286,7 @@ Sets the current alignment setting.
 </blockquote>
 
 <p>
-<tt>int <b>GetSpacing</b>() const</tt>
+<tt>int <b>GetSpacing</b>(void) const</tt>
 </p>
 <blockquote>
 Returns the current element spacing setting in pixels.
@@ -300,14 +300,14 @@ Sets the current element spacing setting in pixels.
 </blockquote>
 
 <p>
-<tt>int <b>GetHMargin</b>() const</tt>
+<tt>int <b>GetHMargin</b>(void) const</tt>
 </p>
 <blockquote>
 Returns the current horizontal margin setting in pixels.
 </blockquote>
 
 <p>
-<tt>int <b>GetVMargin</b>() const</tt>
+<tt>int <b>GetVMargin</b>(void) const</tt>
 </p>
 <blockquote>
 Returns the current vertical margin setting in pixels.
@@ -325,6 +325,23 @@ Sets the current horizontal margin setting in pixels.
 </p>
 <blockquote>
 Sets the current vertical margin setting in pixels.
+</blockquote>
+
+</blockquote>
+
+<p>
+<b>Information</b>
+<br>
+These methods may be used to get information about the QuickPalette.
+</p>
+
+<blockquote>
+
+<p>
+<tt><a href="GlowQuickPanelWidget.html">GlowQuickPanelWidget</a>* <b>QuickPaletteRoot</b>(void) const</tt>
+</p>
+<blockquote>
+Returns a pointer to the <a href="GlowQuickPanelWidget.html">GlowQuickPanelWidget</a> being used as the root of this QuickPalette. If you want to add a widget directly to the QuickPalette without using one of the methods provided by the QuickPalette API, then add the widget as a child of this panel widget.
 </blockquote>
 
 </blockquote>
@@ -353,7 +370,7 @@ Sets the current vertical margin setting in pixels.
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 11 April 2000
+Last updated 1 May 2000
 </address>
 
 

@@ -1,6 +1,6 @@
 
 The GLOW Toolkit
-version 0.9.7 (27 April 2000)
+version 0.9.7 (1 May 2000)
 Copyright (C) 1997-2000  Daniel Azuma
 All rights reserved worldwide
 
@@ -77,7 +77,7 @@ RELEASE NOTES
 
 
     The GLOW Toolkit
-    Version 0.9.7 (27 April 2000)
+    Version 0.9.7 (1 May 2000)
 
     These notes detail the differences between versions 0.9.6 and 0.9.7.
     A complete history of publicly released versions can be found on the
@@ -90,7 +90,9 @@ RELEASE NOTES
     Features added
     --------------
 
-      (none)
+      Added Glow::RefreshGlutWindow().
+
+      Added GlowQuickPalette::QuickPaletteRoot().
 
 
     Features changed
@@ -107,6 +109,9 @@ RELEASE NOTES
 
       A bunch of reference fixes.
 
+      Apparently, some GL extension names are too long for the buffer
+      that Glow::IsExtensionSupported() allocates. Fixed.
+
 
     Internal changes
     ----------------
@@ -119,7 +124,9 @@ RELEASE NOTES
 
       Because of the continuing incomplete state of GLUT in the Mac OS
       OpenGL SDK, many features of GLOW are still unusable on the Mac.
-      Hopefully this will be resolved soon.
+      I do have it on good authority that it is being worked on, so I'm
+      hopeful that this will be resolved soon, perhaps with the next
+      release of Apple's OpenGL SDK.
 
       Because of GLOW's heavy ANSI dependence, there are some issues
       with various compilers, especially older ones. If you've worked
