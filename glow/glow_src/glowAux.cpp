@@ -273,6 +273,129 @@ int GlowFont::StringWidth(
 
 /*
 ===============================================================================
+	Common image types
+===============================================================================
+*/
+
+void GlowColorImage::ReadFromBuffer(
+	int x,
+	int y,
+	unsigned int width,
+	unsigned int height)
+{
+	ResizeRaw(width, height);
+	GLint save1, save2;
+	::glGetIntegerv(GL_PACK_ALIGNMENT, &save1);
+	::glGetIntegerv(GL_PACK_ROW_LENGTH, &save2);
+	::glPixelStorei(GL_PACK_ALIGNMENT, 4);
+	::glPixelStorei(GL_PACK_ROW_LENGTH, 0);
+	::glReadPixels(x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, RawArray());
+	::glPixelStorei(GL_PACK_ALIGNMENT, save1);
+	::glPixelStorei(GL_PACK_ROW_LENGTH, save2);
+}
+
+
+void GlowColorImage::DrawAtRasterPos() const
+{
+	GLint save1, save2;
+	::glGetIntegerv(GL_UNPACK_ALIGNMENT, &save1);
+	::glGetIntegerv(GL_UNPACK_ROW_LENGTH, &save2);
+	::glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+	::glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+	::glDrawPixels(Width(), Height(), GL_RGBA, GL_UNSIGNED_BYTE, RawArray());
+	::glPixelStorei(GL_UNPACK_ALIGNMENT, save1);
+	::glPixelStorei(GL_UNPACK_ROW_LENGTH, save2);
+}
+
+
+void GlowUcharImage::ReadFromBuffer(
+	int x,
+	int y,
+	unsigned int width,
+	unsigned int height,
+	GLenum which)
+{
+	GLOW_DEBUG(which != GL_COLOR_INDEX && which != GL_STENCIL_INDEX &&
+		which != GL_DEPTH_COMPONENT && which != GL_RED && which != GL_GREEN &&
+		which != GL_BLUE && which != GL_ALPHA && which != GL_LUMINANCE,
+		"Can't read multiple-component pixels into GlowUcharImage");
+	
+	ResizeRaw(width, height);
+	GLint save1, save2;
+	::glGetIntegerv(GL_PACK_ALIGNMENT, &save1);
+	::glGetIntegerv(GL_PACK_ROW_LENGTH, &save2);
+	::glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	::glPixelStorei(GL_PACK_ROW_LENGTH, 0);
+	::glReadPixels(x, y, width, height, which, GL_UNSIGNED_BYTE, RawArray());
+	::glPixelStorei(GL_PACK_ALIGNMENT, save1);
+	::glPixelStorei(GL_PACK_ROW_LENGTH, save2);
+}
+
+
+void GlowUcharImage::DrawAtRasterPos(
+	GLenum which) const
+{
+	GLOW_DEBUG(which != GL_COLOR_INDEX && which != GL_STENCIL_INDEX &&
+		which != GL_DEPTH_COMPONENT && which != GL_RED && which != GL_GREEN &&
+		which != GL_BLUE && which != GL_ALPHA && which != GL_LUMINANCE,
+		"Can't draw multiple-component pixels from GlowUcharImage");
+	
+	GLint save1, save2;
+	::glGetIntegerv(GL_UNPACK_ALIGNMENT, &save1);
+	::glGetIntegerv(GL_UNPACK_ROW_LENGTH, &save2);
+	::glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	::glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+	::glDrawPixels(Width(), Height(), which, GL_UNSIGNED_BYTE, RawArray());
+	::glPixelStorei(GL_UNPACK_ALIGNMENT, save1);
+	::glPixelStorei(GL_UNPACK_ROW_LENGTH, save2);
+}
+
+
+void GlowGLfloatImage::ReadFromBuffer(
+	int x,
+	int y,
+	unsigned int width,
+	unsigned int height,
+	GLenum which)
+{
+	GLOW_DEBUG(which != GL_COLOR_INDEX && which != GL_STENCIL_INDEX &&
+		which != GL_DEPTH_COMPONENT && which != GL_RED && which != GL_GREEN &&
+		which != GL_BLUE && which != GL_ALPHA && which != GL_LUMINANCE,
+		"Can't read multiple-component pixels into GlowGLfloatImage");
+	
+	ResizeRaw(width, height);
+	GLint save1, save2;
+	::glGetIntegerv(GL_PACK_ALIGNMENT, &save1);
+	::glGetIntegerv(GL_PACK_ROW_LENGTH, &save2);
+	::glPixelStorei(GL_PACK_ALIGNMENT, 4);
+	::glPixelStorei(GL_PACK_ROW_LENGTH, 0);
+	::glReadPixels(x, y, width, height, which, GL_FLOAT, RawArray());
+	::glPixelStorei(GL_PACK_ALIGNMENT, save1);
+	::glPixelStorei(GL_PACK_ROW_LENGTH, save2);
+}
+
+
+void GlowGLfloatImage::DrawAtRasterPos(
+	GLenum which) const
+{
+	GLOW_DEBUG(which != GL_COLOR_INDEX && which != GL_STENCIL_INDEX &&
+		which != GL_DEPTH_COMPONENT && which != GL_RED && which != GL_GREEN &&
+		which != GL_BLUE && which != GL_ALPHA && which != GL_LUMINANCE,
+		"Can't draw multiple-component pixels from GlowGLfloatImage");
+	
+	GLint save1, save2;
+	::glGetIntegerv(GL_UNPACK_ALIGNMENT, &save1);
+	::glGetIntegerv(GL_UNPACK_ROW_LENGTH, &save2);
+	::glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+	::glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+	::glDrawPixels(Width(), Height(), which, GL_FLOAT, RawArray());
+	::glPixelStorei(GL_UNPACK_ALIGNMENT, save1);
+	::glPixelStorei(GL_UNPACK_ROW_LENGTH, save2);
+}
+
+
+/*
+===============================================================================
 */
 
 GLOW_NAMESPACE_END

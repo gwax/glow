@@ -97,6 +97,9 @@ GlowSubwindowParams::GlowSubwindowParams(bool)
 	eventMask = Glow::noEvents;
 	inactiveEventMask = Glow::noEvents;
 	mode = Glow::rgbBuffer | Glow::doubleBuffer;
+#ifndef GLOW_OPTION_STRICTGLUT3
+	modeString = 0;
+#endif
 }
 
 
@@ -627,6 +630,9 @@ void Glow::KeyboardFunc_(
 		// Send the event through the global keyboard filters
 		GlowKeyboardData filterData;
 		filterData.subwindow = window;
+#ifndef GLOW_OPTION_STRICTGLUT3
+		filterData.type = GlowKeyboardData::keyDown;
+#endif
 		filterData.key = KeyCode(key);
 		filterData.x = x;
 		filterData.y = y;
@@ -641,6 +647,43 @@ void Glow::KeyboardFunc_(
 		ExecuteDeferred_();
 	}
 }
+
+
+#ifndef GLOW_OPTION_STRICTGLUT3
+void Glow::KeyboardUpFunc_(
+	unsigned char key,
+	int x,
+	int y)
+{
+	GLOW_DEBUGSCOPE("Glow::KeyboardUpFunc_");
+	
+	++clock_;
+#ifdef GLOW_OPTION_GLUTREDISPLAYFIX
+	RaiseDeferredRefresh_();
+#endif
+	// Find the window
+	GlowSubwindow* window = ResolveWindow(::glutGetWindow());
+	if (window != 0)
+	{
+		// Send the event through the global keyboard filters
+		GlowKeyboardData filterData;
+		filterData.subwindow = window;
+		filterData.type = GlowKeyboardData::keyUp;
+		filterData.key = KeyCode(key);
+		filterData.x = x;
+		filterData.y = y;
+		filterData.modifiers = Modifiers(::glutGetModifiers());
+		keyboardFilters_.Send(filterData);
+		// If the event wasn't consumed, send it to the event handler
+		if (filterData._continue)
+		{
+			filterData.subwindow->OnKeyboardUp(filterData.key,
+				filterData.x, filterData.y, filterData.modifiers);
+		}
+		ExecuteDeferred_();
+	}
+}
+#endif
 
 
 void Glow::MouseFunc_(
@@ -814,6 +857,43 @@ void Glow::SpecialFunc_(
 }
 
 
+#ifndef GLOW_OPTION_STRICTGLUT3
+void Glow::SpecialUpFunc_(
+	int key,
+	int x,
+	int y)
+{
+	GLOW_DEBUGSCOPE("Glow::SpecialUpFunc_");
+	
+	++clock_;
+#ifdef GLOW_OPTION_GLUTREDISPLAYFIX
+	RaiseDeferredRefresh_();
+#endif
+	// Find the window
+	GlowSubwindow* window = ResolveWindow(::glutGetWindow());
+	if (window != 0)
+	{
+		// Send the event through the global keyboard filters
+		GlowKeyboardData filterData;
+		filterData.subwindow = window;
+		filterData.type = GlowKeyboardData::keyUp;
+		filterData.key = KeyCode(key+Glow::specialKeyOffset);
+		filterData.x = x;
+		filterData.y = y;
+		filterData.modifiers = Modifiers(::glutGetModifiers());
+		keyboardFilters_.Send(filterData);
+		// If the event wasn't consumed, send it to the event handler
+		if (filterData._continue)
+		{
+			filterData.subwindow->OnKeyboardUp(filterData.key,
+				filterData.x, filterData.y, filterData.modifiers);
+		}
+		ExecuteDeferred_();
+	}
+}
+#endif
+
+
 void Glow::MenuStatusFunc_(
 	int status,
 	int x,
@@ -886,6 +966,30 @@ void Glow::IdleFunc_()
 	idleSender_.Send(GlowIdleMessage());
 	ExecuteDeferred_();
 }
+
+
+#ifndef GLOW_OPTION_STRICTGLUT3
+void Glow::JoystickFunc_(
+	unsigned int buttonMask,
+	int x,
+	int y,
+	int z)
+{
+	GLOW_DEBUGSCOPE("Glow::JoystickFunc_");
+	
+	++clock_;
+#ifdef GLOW_OPTION_GLUTREDISPLAYFIX
+	RaiseDeferredRefresh_();
+#endif
+	// Find the window
+	GlowSubwindow* window = ResolveWindow(::glutGetWindow());
+	if (window != 0)
+	{
+		window->OnJoystick(JoystickButtonMask(buttonMask), x, y, z);
+		ExecuteDeferred_();
+	}
+}
+#endif
 
 
 /*
@@ -1324,13 +1428,25 @@ void GlowComponent::Deactivate()
 
 GlowSubwindow* GlowComponent::WhichWindow()
 {
-	return parent_->WhichWindow();
+	GlowSubwindow* wind = 0;
+	GlowComponent* component = this;
+	while (wind == 0)
+	{
+		wind = dynamic_cast<GlowSubwindow*>(component);
+		component = component->parent_;
+	}
+	return wind;
 }
 
 
 GlowWindow* GlowComponent::ToplevelWindow()
 {
-	return (parent_ == 0) ? static_cast<GlowWindow*>(this) : parent_->ToplevelWindow();
+	GlowComponent* component = this;
+	while (component->parent_ != 0)
+	{
+		component = component->parent_;
+	}
+	return static_cast<GlowWindow*>(component);
 }
 
 
@@ -1421,7 +1537,21 @@ void GlowSubwindow::Init(
 		"Subwindow height too small");
 	
 	GlowComponent::Init(parent);
-	::glutInitDisplayMode(params.mode);
+#ifndef GLOW_OPTION_STRICTGLUT3
+	if (params.modeString != 0)
+	{
+		char* str = new char[GLOW_CSTD::strlen(params.modeString)+1];
+		GLOW_CSTD::strcpy(str, params.modeString);
+		::glutInitDisplayString(str);
+		delete[] str;
+	}
+	else
+	{
+#endif
+		::glutInitDisplayMode(params.mode);
+#ifndef GLOW_OPTION_STRICTGLUT3
+	}
+#endif
 	width_ = params.width;
 	if (width_ == parentWindowSize)
 	{
@@ -1441,7 +1571,7 @@ void GlowSubwindow::Init(
 	centerMenu_ = 0;
 	rightMenu_ = 0;
 	RegisterCallbacks_(eventMask_);
-	saveCursor_ = GLUT_CURSOR_INHERIT;
+	saveCursor_ = Glow::inheritCursor;
 	Glow::AddWindow_(this, windowNum_);
 	needSwapBuffers_ = ((params.mode & Glow::doubleBuffer) != 0);
 	refreshEnabled_ = true;
@@ -1449,6 +1579,9 @@ void GlowSubwindow::Init(
 	clock_ = Glow::clock_;
 	globalXPos_ = ::glutGet((GLenum)GLUT_WINDOW_X);
 	globalYPos_ = ::glutGet((GLenum)GLUT_WINDOW_Y);
+#ifndef GLOW_OPTION_STRICTGLUT3
+	joystickPollInterval_ = 0;
+#endif
 }
 
 
@@ -1463,41 +1596,43 @@ void GlowSubwindow::Init(
 {
 	GLOW_DEBUGSCOPE("GlowSubwindow::Init");
 	
-	GLOW_DEBUG(width != parentWindowSize && width <= 0,
-		"Subwindow width too small");
-	GLOW_DEBUG(height != parentWindowSize && height <= 0,
-		"Subwindow height too small");
-	
-	GlowComponent::Init(parent);
-	::glutInitDisplayMode(mode);
-	if (width == parentWindowSize)
-	{
-		width = parent->WhichWindow()->Width() - x;
-	}
-	if (height == parentWindowSize)
-	{
-		height = parent->WhichWindow()->Height() - y;
-	}
-	windowNum_ = ::glutCreateSubWindow(parent->WhichWindow()->windowNum_,
-		x, y, width, height);
-	width_ = width;
-	height_ = height;
-	eventMask_ = eventMask;
-	inactiveEventMask_ = GlowSubwindowParams::defaults.inactiveEventMask;
-	bufferType_ = mode;
-	leftMenu_ = 0;
-	centerMenu_ = 0;
-	rightMenu_ = 0;
-	RegisterCallbacks_(eventMask_);
-	saveCursor_ = GLUT_CURSOR_INHERIT;
-	Glow::AddWindow_(this, windowNum_);
-	needSwapBuffers_ = ((mode & Glow::doubleBuffer) != 0);
-	refreshEnabled_ = true;
-	autoSwapBuffers_ = true;
-	clock_ = Glow::clock_;
-	globalXPos_ = ::glutGet((GLenum)GLUT_WINDOW_X);
-	globalYPos_ = ::glutGet((GLenum)GLUT_WINDOW_Y);
+	GlowSubwindowParams params;
+	params.x = x;
+	params.y = y;
+	params.width = width;
+	params.height = height;
+	params.mode = mode;
+	params.modeString = 0;
+	params.eventMask = eventMask;
+	Init(parent, params);
 }
+
+
+#ifndef GLOW_OPTION_STRICTGLUT3
+void GlowSubwindow::Init(
+	GlowComponent* parent,
+	int x,
+	int y,
+	int width,
+	int height,
+	const char* modeString,
+	Glow::EventMask eventMask)
+{
+	GLOW_DEBUGSCOPE("GlowSubwindow::Init");
+	
+	GLOW_ASSERT(modeString != 0);
+	
+	GlowSubwindowParams params;
+	params.x = x;
+	params.y = y;
+	params.width = width;
+	params.height = height;
+	params.mode = Glow::noBuffer;
+	params.modeString = modeString;
+	params.eventMask = eventMask;
+	Init(parent, params);
+}
+#endif
 
 
 GlowSubwindow::~GlowSubwindow()
@@ -1526,6 +1661,26 @@ void GlowSubwindow::RegisterCallbacks_(
 		::glutKeyboardFunc(0);
 		::glutSpecialFunc(0);
 	}
+#ifndef GLOW_OPTION_STRICTGLUT3
+	if (eventMask & Glow::keyboardUpEvents)
+	{
+		::glutKeyboardUpFunc(Glow::KeyboardUpFunc_);
+		::glutSpecialUpFunc(Glow::SpecialUpFunc_);
+	}
+	else
+	{
+		::glutKeyboardUpFunc(0);
+		::glutSpecialUpFunc(0);
+	}
+	if (eventMask & Glow::joystickEvents)
+	{
+		::glutJoystickFunc(Glow::JoystickFunc_, joystickPollInterval_);
+	}
+	else
+	{
+		::glutJoystickFunc(0, 0);
+	}
+#endif
 	if (eventMask & Glow::mouseEvents)
 	{
 		::glutMouseFunc(Glow::MouseFunc_);
@@ -1607,10 +1762,23 @@ void GlowSubwindow::RegisterCallbacks_(
 }
 
 
-GlowSubwindow* GlowSubwindow::WhichWindow()
+#ifndef GLOW_OPTION_STRICTGLUT3
+void GlowSubwindow::ReadJoystick()
 {
-	return this;
+	GLOW_DEBUGSCOPE("GlowSubwindow::ReadJoystick");
+	
+	int saveWind = ::glutGetWindow();
+	if (saveWind != windowNum_)
+	{
+		::glutSetWindow(windowNum_);
+	}
+	::glutForceJoystickFunc();
+	if (saveWind != 0 && saveWind != windowNum_)
+	{
+		::glutSetWindow(saveWind);
+	}
 }
+#endif
 
 
 bool GlowSubwindow::OnBeginPaint()
@@ -1690,6 +1858,17 @@ void GlowSubwindow::OnKeyboard(
 	Glow::Modifiers modifiers)
 {
 }
+
+
+#ifndef GLOW_OPTION_STRICTGLUT3
+void GlowSubwindow::OnKeyboardUp(
+	Glow::KeyCode key,
+	int x,
+	int y,
+	Glow::Modifiers modifiers)
+{
+}
+#endif
 
 
 void GlowSubwindow::OnVisible()
@@ -1875,7 +2054,7 @@ void GlowSubwindow::Hide()
 
 
 void GlowSubwindow::SetCursor(
-	int cursor)
+	Glow::Cursor cursor)
 {
 	GLOW_DEBUGSCOPE("GlowSubwindow::SetCursor");
 	
@@ -2020,7 +2199,7 @@ void GlowWindow::Init(
 	leftMenu_ = 0;
 	centerMenu_ = 0;
 	rightMenu_ = 0;
-	saveCursor_ = GLUT_CURSOR_INHERIT;
+	saveCursor_ = Glow::inheritCursor;
 	width_ = params.width;
 	height_ = params.height;
 	title_ = new char[GLOW_CSTD::strlen(params.title)+1];
@@ -2037,7 +2216,21 @@ void GlowWindow::Init(
 	}
 	::glutInitWindowSize(params.width, params.height);
 	::glutInitWindowPosition(params.x, params.y);
-	::glutInitDisplayMode(params.mode);
+#ifndef GLOW_OPTION_STRICTGLUT3
+	if (params.modeString != 0)
+	{
+		char* str = new char[GLOW_CSTD::strlen(params.modeString)+1];
+		GLOW_CSTD::strcpy(str, params.modeString);
+		::glutInitDisplayString(str);
+		delete[] str;
+	}
+	else
+	{
+#endif
+		::glutInitDisplayMode(params.mode);
+#ifndef GLOW_OPTION_STRICTGLUT3
+	}
+#endif
 	windowNum_ = ::glutCreateWindow(title_);
 	::glutSetIconTitle(iconTitle_);
 	RegisterCallbacks_(params.eventMask);
@@ -2053,6 +2246,9 @@ void GlowWindow::Init(
 		activeState_ = 2;
 		Glow::TopModalWindow()->Raise();
 	}
+#ifndef GLOW_OPTION_STRICTGLUT3
+	joystickPollInterval_ = 0;
+#endif
 }
 
 
@@ -2067,42 +2263,45 @@ void GlowWindow::Init(
 {
 	GLOW_DEBUGSCOPE("GlowWindow::Init");
 	
-	GLOW_ASSERT(width > 0);
-	GLOW_ASSERT(height > 0);
-	
-	GlowComponent::Init(0);
-	eventMask_ = eventMask;
-	inactiveEventMask_ = GlowWindowParams::defaults.inactiveEventMask;
-	bufferType_ = mode;
-	leftMenu_ = 0;
-	centerMenu_ = 0;
-	rightMenu_ = 0;
-	saveCursor_ = GLUT_CURSOR_INHERIT;
-	width_ = width;
-	height_ = height;
-	int len = GLOW_CSTD::strlen(title)+1;
-	title_ = new char[len];
-	GLOW_CSTD::strcpy(title_, title);
-	iconTitle_ = new char[len];
-	GLOW_CSTD::strcpy(iconTitle_, title);
-	::glutInitWindowSize(width, height);
-	::glutInitWindowPosition(x, y);
-	::glutInitDisplayMode(mode);
-	windowNum_ = ::glutCreateWindow(title_);
-	RegisterCallbacks_(eventMask);
-	Glow::AddWindow_(this, windowNum_);
-	needSwapBuffers_ = ((mode & Glow::doubleBuffer) != 0);
-	refreshEnabled_ = true;
-	autoSwapBuffers_ = true;
-	clock_ = Glow::clock_;
-	globalXPos_ = ::glutGet((GLenum)GLUT_WINDOW_X);
-	globalYPos_ = ::glutGet((GLenum)GLUT_WINDOW_Y);
-	if (Glow::NumModalWindows() != 0)
-	{
-		activeState_ = 2;
-		Glow::TopModalWindow()->Raise();
-	}
+	GlowWindowParams params;
+	params.title = title;
+	params.x = x;
+	params.y = y;
+	params.width = width;
+	params.height = height;
+	params.mode = mode;
+	params.modeString = 0;
+	params.eventMask = eventMask;
+	Init(params);
 }
+
+
+#ifndef GLOW_OPTION_STRICTGLUT3
+void GlowWindow::Init(
+	const char* title,
+	int x,
+	int y,
+	int width,
+	int height,
+	const char* modeString,
+	Glow::EventMask eventMask)
+{
+	GLOW_DEBUGSCOPE("GlowWindow::Init");
+	
+	GLOW_ASSERT(modeString != 0);
+	
+	GlowWindowParams params;
+	params.title = title;
+	params.x = x;
+	params.y = y;
+	params.width = width;
+	params.height = height;
+	params.mode = Glow::noBuffer;
+	params.modeString = modeString;
+	params.eventMask = eventMask;
+	Init(params);
+}
+#endif
 
 
 void GlowWindow::Maximize()

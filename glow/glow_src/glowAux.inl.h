@@ -250,7 +250,7 @@ inline GlowColor::operator const GLubyte*() const
 
 
 inline GLubyte& GlowColor::operator[](
-	int i)
+	GLOW_CSTD::ptrdiff_t i)
 {
 	GLOW_ASSERT(i>=0 && i<4);
 	return rgba_[i];
@@ -258,7 +258,7 @@ inline GLubyte& GlowColor::operator[](
 
 
 inline const GLubyte& GlowColor::operator[](
-	int i) const
+	GLOW_CSTD::ptrdiff_t i) const
 {
 	GLOW_ASSERT(i>=0 && i<4);
 	return rgba_[i];
@@ -288,6 +288,186 @@ inline bool GlowColor::operator!=(
 inline void GlowColor::Apply() const
 {
 	::glColor4ubv(rgba_);
+}
+
+
+/*
+===============================================================================
+	Inline methods for GlowColor
+===============================================================================
+*/
+
+template <class T>
+inline GlowImage<T>::GlowImage()
+{
+	data_ = 0;
+	width_ = 0;
+	height_ = 0;
+}
+
+
+template <class T>
+inline T& GlowImage<T>::At(
+	unsigned int x,
+	unsigned int y)
+{
+	return data_[y*width_+x];
+}
+
+
+template <class T>
+inline const T& GlowImage<T>::At(
+	unsigned int x,
+	unsigned int y) const
+{
+	return data_[y*width_+x];
+}
+
+
+template <class T>
+inline T& GlowImage<T>::operator()(
+	unsigned int x,
+	unsigned int y)
+{
+	return data_[y*width_+x];
+}
+
+
+template <class T>
+inline const T& GlowImage<T>::operator()(
+	unsigned int x,
+	unsigned int y) const
+{
+	return data_[y*width_+x];
+}
+
+
+template <class T>
+inline T* GlowImage<T>::Array()
+{
+	return data_;
+}
+
+
+template <class T>
+inline const T* GlowImage<T>::Array() const
+{
+	return data_;
+}
+
+
+template <class T>
+inline void* GlowImage<T>::RawArray()
+{
+	return static_cast<void*>(data_);
+}
+
+
+template <class T>
+inline const void* GlowImage<T>::RawArray() const
+{
+	return static_cast<const void*>(data_);
+}
+
+
+template <class T>
+inline unsigned int GlowImage<T>::Width() const
+{
+	return width_;
+}
+
+
+template <class T>
+inline unsigned int GlowImage<T>::Height() const
+{
+	return height_;
+}
+
+
+template <class T>
+inline void GlowImage<T>::ResizeClear(
+	unsigned int width,
+	unsigned int height,
+	T defelem)
+{
+	ResizeRaw(width, height);
+	Clear(defelem);
+}
+
+
+/*
+===============================================================================
+	Common image types
+===============================================================================
+*/
+
+// TODO: This really should use traits classes, but MSVC doesn't seem to
+// like specializations right now.
+
+inline GlowColorImage::GlowColorImage()
+{
+}
+
+
+inline GlowColorImage::GlowColorImage(
+	const GlowColorImage& orig) :
+GlowImage<GlowColor>(orig)
+{
+}
+
+
+inline GlowColorImage::GlowColorImage(
+	unsigned int width,
+	unsigned int height,
+	GlowColor defelem) :
+GlowImage<GlowColor>(width, height, defelem)
+{
+}
+
+
+// GlowUcharImage
+
+inline GlowUcharImage::GlowUcharImage()
+{
+}
+
+
+inline GlowUcharImage::GlowUcharImage(
+	const GlowUcharImage& orig) :
+GlowImage<unsigned char>(orig)
+{
+}
+
+
+inline GlowUcharImage::GlowUcharImage(
+	unsigned int width,
+	unsigned int height,
+	unsigned char defelem) :
+GlowImage<unsigned char>(width, height, defelem)
+{
+}
+
+
+// GlowGLfloatImage
+
+inline GlowGLfloatImage::GlowGLfloatImage()
+{
+}
+
+
+inline GlowGLfloatImage::GlowGLfloatImage(
+	const GlowGLfloatImage& orig) :
+GlowImage<GLfloat>(orig)
+{
+}
+
+
+inline GlowGLfloatImage::GlowGLfloatImage(
+	unsigned int width,
+	unsigned int height,
+	GLfloat defelem) :
+GlowImage<GLfloat>(width, height, defelem)
+{
 }
 
 

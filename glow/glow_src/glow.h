@@ -165,6 +165,10 @@ class Glow
 			visibilityEvents = 0x0010,
 			focusEvents = 0x0020,
 			menuEvents = 0x0040,
+#ifndef GLOW_OPTION_STRICTGLUT3
+			keyboardUpEvents = 0x0080,
+			joystickEvents = 0x0100,
+#endif
 			allEvents = 0xffff
 		};
 		
@@ -174,6 +178,20 @@ class Glow
 			leftButton = GLUT_LEFT_BUTTON,
 			middleButton = GLUT_MIDDLE_BUTTON,
 			rightButton = GLUT_RIGHT_BUTTON
+		};
+		
+		// Joystick button specification
+		enum JoystickButtonMask
+		{
+			joystickButtonA = 0x1,
+			joystickButtonB = 0x2,
+			joystickButtonC = 0x4,
+			joystickButtonD = 0x8,
+			joystickButtonE = 0x10,
+			joystickButtonF = 0x20,
+			joystickButtonG = 0x40,
+			joystickButtonH = 0x80,
+			allJoystickButtons_ = 0x7fffffff
 		};
 		
 		// Frame buffer type
@@ -201,7 +219,6 @@ class Glow
 		};
 		
 		// Special key constants
-		//typedef int KeyCode;
 		enum KeyCode
 		{
 			backspaceKey = 8,
@@ -231,6 +248,34 @@ class Glow
 			homeKey = specialKeyOffset+GLUT_KEY_HOME,
 			endKey = specialKeyOffset+GLUT_KEY_END,
 			insertKey = specialKeyOffset+GLUT_KEY_INSERT
+		};
+		
+		// Cursors
+		enum Cursor
+		{
+			noCursor = GLUT_CURSOR_NONE,
+			inheritCursor = GLUT_CURSOR_INHERIT,
+			rightArrowCursor = GLUT_CURSOR_RIGHT_ARROW,
+			leftArrowCursor = GLUT_CURSOR_LEFT_ARROW,
+			infoCursor = GLUT_CURSOR_INFO,
+			destroyCursor = GLUT_CURSOR_DESTROY,
+			helpCursor = GLUT_CURSOR_HELP,
+			cycleCursor = GLUT_CURSOR_CYCLE,
+			sprayCursor = GLUT_CURSOR_SPRAY,
+			waitCursor = GLUT_CURSOR_WAIT,
+			textCursor = GLUT_CURSOR_TEXT,
+			crosshairCursor = GLUT_CURSOR_CROSSHAIR,
+			upDownCursor = GLUT_CURSOR_UP_DOWN,
+			leftRightCursor = GLUT_CURSOR_LEFT_RIGHT,
+			topSideCursor = GLUT_CURSOR_TOP_SIDE,
+			bottomSideCursor = GLUT_CURSOR_BOTTOM_SIDE,
+			leftSideCursor = GLUT_CURSOR_LEFT_SIDE,
+			rightSideCursor = GLUT_CURSOR_RIGHT_SIDE,
+			topLeftCornerCursor = GLUT_CURSOR_TOP_LEFT_CORNER,
+			topRightCornerCursor = GLUT_CURSOR_TOP_RIGHT_CORNER,
+			bottomLeftCornerCursor = GLUT_CURSOR_BOTTOM_LEFT_CORNER,
+			bottomRightCornerCursor = GLUT_CURSOR_BOTTOM_RIGHT_CORNER,
+			fullCrosshairCursor = GLUT_CURSOR_FULL_CROSSHAIR
 		};
 	
 	public:
@@ -300,6 +345,14 @@ class Glow
 			int x,
 			int y,
 			Modifiers modifiers);
+#ifndef GLOW_OPTION_STRICTGLUT3
+		inline static void DeliverKeyboardUpEvt(
+			GlowSubwindow* receiver,
+			Glow::KeyCode key,
+			int x,
+			int y,
+			Modifiers modifiers);
+#endif
 		inline static void DeliverMouseDownEvt(
 			GlowSubwindow* receiver,
 			Glow::MouseButton button,
@@ -344,6 +397,11 @@ class Glow
 		static bool IsBufferTypeSupported(
 			BufferType mode);
 		inline static int NumMouseButtons();
+#ifndef GLOW_OPTION_STRICTGLUT3
+		inline static bool HasJoystick();
+		inline static int NumJoystickButtons();
+		inline static int NumJoystickAxes();
+#endif
 		
 		// Toplevel window counter
 		inline static int NumToplevelWindows();
@@ -436,6 +494,12 @@ class Glow
 			unsigned char key,
 			int x,
 			int y);
+#ifndef GLOW_OPTION_STRICTGLUT3
+		static void KeyboardUpFunc_(
+			unsigned char key,
+			int x,
+			int y);
+#endif
 		static void MouseFunc_(
 			int button,
 			int state,
@@ -455,6 +519,12 @@ class Glow
 			int key,
 			int x,
 			int y);
+#ifndef GLOW_OPTION_STRICTGLUT3
+		static void SpecialUpFunc_(
+			int key,
+			int x,
+			int y);
+#endif
 		static void MenuStatusFunc_(
 			int status,
 			int x,
@@ -462,6 +532,13 @@ class Glow
 		static void MenuFunc_(
 			int value);
 		static void IdleFunc_();
+#ifndef GLOW_OPTION_STRICTGLUT3
+		static void JoystickFunc_(
+			unsigned int buttonMask,
+			int x,
+			int y,
+			int z);
+#endif
 		
 		// Deferred execution
 		static void ExecuteDeferred_();
@@ -473,6 +550,9 @@ class Glow
 GLOW_INTERNAL_SETUPENUMBITFIELD(Glow::EventMask)
 GLOW_INTERNAL_SETUPENUMBITFIELD(Glow::BufferType)
 GLOW_INTERNAL_SETUPENUMBITFIELD(Glow::Modifiers)
+#ifndef GLOW_OPTION_STRICTGLUT3
+GLOW_INTERNAL_SETUPENUMBITFIELD(Glow::JoystickButtonMask)
+#endif
 
 
 /*
@@ -488,7 +568,20 @@ class GlowKeyboardData
 	
 	public:
 	
+#ifndef GLOW_OPTION_STRICTGLUT3
+		enum EventType
+		{
+			keyDown = 1,
+			keyUp = 2
+		};
+#endif
+	
+	public:
+	
 		GlowSubwindow* subwindow;
+#ifndef GLOW_OPTION_STRICTGLUT3
+		EventType type;
+#endif
 		Glow::KeyCode key;
 		int x;
 		int y;
@@ -618,7 +711,7 @@ class GlowComponent
 		inline GlowComponent* Prev() const;
 		
 		inline GlowComponent* Parent() const;
-		virtual GlowSubwindow* WhichWindow();
+		GlowSubwindow* WhichWindow();
 		inline GlowSubwindow* ParentWindow() const;
 		GlowWindow* ToplevelWindow();
 		inline bool IsTopLevel() const;
@@ -746,6 +839,16 @@ class GlowSubwindow :
 			int height,
 			Glow::BufferType mode,
 			Glow::EventMask eventMask);
+#ifndef GLOW_OPTION_STRICTGLUT3
+		inline GlowSubwindow(
+			GlowComponent* parent,
+			int x,
+			int y,
+			int width,
+			int height,
+			const char* modeString,
+			Glow::EventMask eventMask);
+#endif
 		void Init(
 			GlowComponent* parent,
 			const GlowSubwindowParams& params);
@@ -757,6 +860,16 @@ class GlowSubwindow :
 			int height,
 			Glow::BufferType mode,
 			Glow::EventMask eventMask);
+#ifndef GLOW_OPTION_STRICTGLUT3
+		void Init(
+			GlowComponent* parent,
+			int x,
+			int y,
+			int width,
+			int height,
+			const char* modeString,
+			Glow::EventMask eventMask);
+#endif
 		
 		virtual ~GlowSubwindow();
 	
@@ -774,6 +887,16 @@ class GlowSubwindow :
 		inline bool IsAutoSwapBuffersEnabled() const;
 		inline void SetAutoSwapBuffersEnabled(
 			bool enable);
+		
+#ifndef GLOW_OPTION_STRICTGLUT3
+		inline bool IsKeyRepeatEnabled() const;
+		inline void SetKeyRepeatEnabled(
+			bool enable);
+		void ReadJoystick();
+		inline int GetJoystickPollInterval() const;
+		inline void SetJoystickPollInterval(
+			int interval);
+#endif
 		
 		void Move(
 			int x,
@@ -805,17 +928,23 @@ class GlowSubwindow :
 			int y,
 			GLfloat& xn,
 			GLfloat& yn) const;
-		virtual GlowSubwindow* WhichWindow();
 		
-		inline int GetCursor() const;
+		inline Glow::Cursor GetCursor() const;
 		void SetCursor(
-			int cursor = GLUT_CURSOR_INHERIT);
+			Glow::Cursor cursor = Glow::inheritCursor);
+#ifndef GLOW_OPTION_STRICTGLUT3
+		inline void WarpCursor(
+			int x,
+			int y) const;
+#endif
+		
 		inline Glow::EventMask GetEventMask() const;
 		void SetEventMask(
 			Glow::EventMask eventMask);
 		inline Glow::EventMask GetInactiveEventMask() const;
 		void SetInactiveEventMask(
 			Glow::EventMask eventMask);
+		
 		inline Glow::BufferType GetBufferType() const;
 	
 	
@@ -855,6 +984,18 @@ class GlowSubwindow :
 			int x,
 			int y,
 			Glow::Modifiers modifiers);
+#ifndef GLOW_OPTION_STRICTGLUT3
+		virtual void OnKeyboardUp(
+			Glow::KeyCode key,
+			int x,
+			int y,
+			Glow::Modifiers modifiers);
+		virtual void OnJoystick(
+			Glow::JoystickButtonMask buttonMask,
+			int x,
+			int y,
+			int z);
+#endif
 		virtual void OnVisible();
 		virtual void OnInvisible();
 		virtual void OnDirectMenuHit(
@@ -874,7 +1015,7 @@ class GlowSubwindow :
 		Glow::EventMask eventMask_;
 		Glow::EventMask inactiveEventMask_;
 		Glow::BufferType bufferType_;
-		int saveCursor_;
+		Glow::Cursor saveCursor_;
 		mutable unsigned long clock_;
 		mutable int globalXPos_;
 		mutable int globalYPos_;
@@ -884,6 +1025,9 @@ class GlowSubwindow :
 		bool needSwapBuffers_;
 		bool refreshEnabled_;
 		bool autoSwapBuffers_;
+#ifndef GLOW_OPTION_STRICTGLUT3
+		int joystickPollInterval_;
+#endif
 	
 	private:
 	
@@ -928,6 +1072,16 @@ class GlowWindow :
 			int height,
 			Glow::BufferType mode,
 			Glow::EventMask eventMask);
+#ifndef GLOW_OPTION_STRICTGLUT3
+		inline GlowWindow(
+			const char* title,
+			int x,
+			int y,
+			int width,
+			int height,
+			const char* modeString,
+			Glow::EventMask eventMask);
+#endif
 		inline GlowWindow();
 		void Init(
 			const GlowWindowParams& params);
@@ -939,6 +1093,16 @@ class GlowWindow :
 			int height,
 			Glow::BufferType mode,
 			Glow::EventMask eventMask);
+#ifndef GLOW_OPTION_STRICTGLUT3
+		void Init(
+			const char* title,
+			int x,
+			int y,
+			int width,
+			int height,
+			const char* modeString,
+			Glow::EventMask eventMask);
+#endif
 		
 		void Maximize();
 		void Iconify();
@@ -979,6 +1143,9 @@ class GlowSubwindowParams
 		Glow::EventMask eventMask;
 		Glow::EventMask inactiveEventMask;
 		Glow::BufferType mode;
+#ifndef GLOW_OPTION_STRICTGLUT3
+		const char* modeString;
+#endif
 		
 		static GlowSubwindowParams defaults;
 		

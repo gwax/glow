@@ -120,6 +120,26 @@ inline int Glow::NumMouseButtons()
 }
 
 
+#ifndef GLOW_OPTION_STRICTGLUT3
+inline bool Glow::HasJoystick()
+{
+	return ::glutDeviceGet(GLenum(GLUT_HAS_JOYSTICK)) != 0;
+}
+
+
+inline int Glow::NumJoystickButtons()
+{
+	return ::glutDeviceGet(GLenum(GLUT_JOYSTICK_BUTTONS));
+}
+
+
+inline int Glow::NumJoystickAxes()
+{
+	return ::glutDeviceGet(GLenum(GLUT_JOYSTICK_AXES));
+}
+#endif
+
+
 /*
 -------------------------------------------------------------------------------
 	Modal window methods
@@ -276,6 +296,19 @@ inline void Glow::DeliverKeyboardEvt(
 {
 	receiver->OnKeyboard(key, x, y, modifiers);
 }
+
+
+#ifndef GLOW_OPTION_STRICTGLUT3
+inline void Glow::DeliverKeyboardUpEvt(
+	GlowSubwindow* receiver,
+	Glow::KeyCode key,
+	int x,
+	int y,
+	Modifiers modifiers)
+{
+	receiver->OnKeyboardUp(key, x, y, modifiers);
+}
+#endif
 
 
 inline void Glow::DeliverMouseDownEvt(
@@ -512,6 +545,21 @@ inline GlowSubwindow::GlowSubwindow(
 }
 
 
+#ifndef GLOW_OPTION_STRICTGLUT3
+inline GlowSubwindow::GlowSubwindow(
+	GlowComponent* parent,
+	int x,
+	int y,
+	int width,
+	int height,
+	const char* modeString,
+	Glow::EventMask eventMask)
+{
+	Init(parent, x, y, width, height, modeString, eventMask);
+}
+#endif
+
+
 inline bool GlowSubwindow::IsRefreshEnabled() const
 {
 	return refreshEnabled_;
@@ -547,6 +595,34 @@ inline void GlowSubwindow::SetAutoSwapBuffersEnabled(
 {
 	autoSwapBuffers_ = enable;
 }
+
+
+#ifndef GLOW_OPTION_STRICTGLUT3
+inline bool GlowSubwindow::IsKeyRepeatEnabled() const
+{
+	return ::glutDeviceGet(GLenum(GLUT_DEVICE_IGNORE_KEY_REPEAT)) == 0;
+}
+
+
+inline void GlowSubwindow::SetKeyRepeatEnabled(
+	bool enable)
+{
+	::glutIgnoreKeyRepeat(enable ? 0 : 1);
+}
+
+
+inline int GlowSubwindow::GetJoystickPollInterval() const
+{
+	return joystickPollInterval_;
+}
+
+
+inline void GlowSubwindow::SetJoystickPollInterval(
+	int interval)
+{
+	joystickPollInterval_ = interval;
+}
+#endif
 
 
 inline void GlowSubwindow::MakeCurGlutWindow()
@@ -625,10 +701,20 @@ inline int GlowSubwindow::Height() const
 }
 
 
-inline int GlowSubwindow::GetCursor() const
+inline Glow::Cursor GlowSubwindow::GetCursor() const
 {
-	return GlutInfo((GLenum)GLUT_WINDOW_CURSOR);
+	return Glow::Cursor(GlutInfo((GLenum)GLUT_WINDOW_CURSOR));
 }
+
+
+#ifndef GLOW_OPTION_STRICTGLUT3
+inline void GlowSubwindow::WarpCursor(
+	int x,
+	int y) const
+{
+	::glutWarpPointer(x, y);
+}
+#endif
 
 
 inline GlowMenu* GlowSubwindow::GetMenu(
@@ -724,6 +810,21 @@ inline GlowWindow::GlowWindow(
 {
 	Init(title, x, y, width, height, mode, eventMask);
 }
+
+
+#ifndef GLOW_OPTION_STRICTGLUT3
+inline GlowWindow::GlowWindow(
+	const char* title,
+	int x,
+	int y,
+	int width,
+	int height,
+	const char* modeString,
+	Glow::EventMask eventMask)
+{
+	Init(title, x, y, width, height, modeString, eventMask);
+}
+#endif
 
 
 inline const char* GlowWindow::GetTitle() const

@@ -1,6 +1,6 @@
 
 The GLOW Toolkit
-version 1.1.0 (unknown, 2000)
+version 1.1.1pre0 (unknown, 2000)
 Copyright (C) 1997-2000  Daniel Azuma
 
 
@@ -13,7 +13,7 @@ CONTENTS
 
    (2) Terms and conditions
 
-   (3) Release notes 1.1.0
+   (3) Release notes
 
    (4) Installing GLOW
 
@@ -76,9 +76,9 @@ RELEASE NOTES
 
 
     The GLOW Toolkit
-    Version 1.1.0 (unknown 2000)
+    Version 1.1.1pre0 (unknown 2000)
 
-    These notes detail the differences between versions 1.0.0 and 1.1.0.
+    These are the differences between versions 1.0.0 and 1.1.1pre0.
     A complete history of publicly released versions can be found on the
     GLOW web site.
 
@@ -90,12 +90,43 @@ RELEASE NOTES
       GLOW. Also added support for linking with a GLOW library in the
       tutorial makefiles.
 
+      Added a bunch of features that depend on GLUT 4 APIs (currently,
+      GLUT 3.7 or later is sufficient). The features listed below that
+      are marked "GLUT4" can be disabled, and the dependency on GLUT 3.7
+      or later removed, by defining the symbol GLOW_OPTION_STRICTGLUT3.
+
+      Added GlowSubwindowParams::modeString to specify buffer features
+      using GLUT 4's new string interface. Also added constructors and
+      Init() methods to GlowSubwindow and GlowWindow that take mode
+      strings. (GLUT4)
+
+      Subwindows and windows can now receive keyboard-up events by
+      overriding the OnKeyboardUp() method. Also, GlowKeyboardData now
+      has a "type" field specifying the type of keyboard event (key down
+      or key up). Added Glow::keyboardUpEvents mask. (GLUT4)
+
+      Added IsKeyRepeatEnabled() and SetKeyRepeatEnabled() to subwindows
+      and windows for controlling key repeat. (GLUT4)
+
+      Added joystick support. Receive joystick events by overriding
+      OnJoystick(). Also added ReadJoystick(), SetJoystickPollInterval()
+      and GetJoystickPollInterval() and to subwindow and window classes.
+      Added Glow::joystickEvents mask. Added Glow static methods for
+      determining joystick capability. (GLUT4)
+
+      Added GlowSubwindow::WarpCursor(). (GLUT4)
+
+      Added GlowImage template. Added GlowColorImage, GlowUcharImage and
+      GlowGLfloatImage classes.
+
 
     Features changed
     ----------------
 
       Specifying the DEBUG file-option in the makefile now adds -g by
       default.
+
+      Cursors should now be specified by enumeration Glow::Cursor.
 
 
     Bugs fixed
@@ -118,19 +149,15 @@ RELEASE NOTES
       A bunch of template-related optimizations (e.g. preincrementing
       iterators, eliminating temporaries) done.
 
+      Removed some unnecessary recursion and virtual methods.
+
 
     To-do list
     ----------
 
       Support for autoconfig
 
-      Support for keyboard-up events (GameGLUT)
-
       Support for game mode (GameGLUT)
-
-      Support for joystick callback (GameGLUT)
-
-      Support for warping cursor (GLUT 3.3)
 
       GlowGeneralButtonWidget
 

@@ -61,6 +61,8 @@
 
 #include <GL/glut.h>
 
+#include <cstddef>
+
 
 GLOW_INTERNAL_USINGSTD
 GLOW_NAMESPACE_BEGIN
@@ -220,9 +222,9 @@ class GlowColor
 		inline operator GLubyte*();
 		inline operator const GLubyte*() const;
 		inline GLubyte& operator[](
-			int i);
+			GLOW_CSTD::ptrdiff_t i);
 		inline const GLubyte& operator[](
-			int i) const;
+			GLOW_CSTD::ptrdiff_t i) const;
 		
 		inline bool operator==(
 			const GlowColor& op2) const;
@@ -244,12 +246,203 @@ class GlowColor
 
 /*
 ===============================================================================
+	CLASS GlowImage
+
+	Image template class
+===============================================================================
+*/
+
+template <class T>
+class GlowImage
+{
+	//-------------------------------------------------------------------------
+	//	Public interface
+	//-------------------------------------------------------------------------
+	
+	public:
+	
+		typedef T ElementType;
+	
+	public:
+	
+		// Constructors
+		inline GlowImage();
+		GlowImage(
+			const GlowImage<T>& orig);
+		GlowImage(
+			unsigned int width,
+			unsigned int height,
+			T defelem = T(0));
+		
+		// Destructor
+		virtual ~GlowImage();
+		
+		// Set
+		GlowImage<T>& operator=(
+			const GlowImage<T>& orig);
+		
+		// Element access
+		inline T& At(
+			unsigned int x,
+			unsigned int y);
+		inline const T& At(
+			unsigned int x,
+			unsigned int y) const;
+		inline T& operator()(
+			unsigned int x,
+			unsigned int y);
+		inline const T& operator()(
+			unsigned int x,
+			unsigned int y) const;
+		
+		// Global mutator
+		void Clear(
+			T defelem = T(0));
+		
+		// Array access
+		inline T* Array();
+		inline const T* Array() const;
+		inline void* RawArray();
+		inline const void* RawArray() const;
+		
+		// Size access
+		inline unsigned int Width() const;
+		inline unsigned int Height() const;
+		
+		// Size mutators
+		void ResizeRaw(
+			unsigned int width,
+			unsigned int height);
+		inline void ResizeClear(
+			unsigned int width,
+			unsigned int height,
+			T defelem = T(0));
+		void ResizeCopy(
+			unsigned int width,
+			unsigned int height);
+		void ResizeClearCopy(
+			unsigned int width,
+			unsigned int height,
+			T defelem = T(0));
+	
+	public:
+	
+		// Subrect copy
+		static void CopyRect(
+			unsigned int width,
+			unsigned int height,
+			GlowImage<T>& to,
+			unsigned int xto,
+			unsigned int yto,
+			const GlowImage<T>& from,
+			unsigned int xfrom,
+			unsigned int yfrom);
+	
+	//-------------------------------------------------------------------------
+	//	Private implementation
+	//-------------------------------------------------------------------------
+	
+	private:
+	
+		T* data_;
+		unsigned int length_;
+		unsigned int width_;
+		unsigned int height_;
+};
+
+
+/*
+===============================================================================
+	Common image types
+===============================================================================
+*/
+
+class GlowColorImage :
+	public GlowImage<GlowColor>
+{
+	public:
+	
+		// Constructors
+		inline GlowColorImage();
+		inline GlowColorImage(
+			const GlowColorImage& orig);
+		inline GlowColorImage(
+			unsigned int width,
+			unsigned int height,
+			GlowColor defelem = GlowColor());
+		
+		// OpenGL integration
+		void ReadFromBuffer(
+			int x,
+			int y,
+			unsigned int width,
+			unsigned int height);
+		void DrawAtRasterPos() const;
+};
+
+
+class GlowUcharImage :
+	public GlowImage<unsigned char>
+{
+	public:
+	
+		// Constructors
+		inline GlowUcharImage();
+		inline GlowUcharImage(
+			const GlowUcharImage& orig);
+		inline GlowUcharImage(
+			unsigned int width,
+			unsigned int height,
+			unsigned char defelem = 0);
+		
+		// OpenGL integration
+		void ReadFromBuffer(
+			int x,
+			int y,
+			unsigned int width,
+			unsigned int height,
+			GLenum which);
+		void DrawAtRasterPos(
+			GLenum which) const;
+};
+
+
+class GlowGLfloatImage :
+	public GlowImage<GLfloat>
+{
+	public:
+	
+		// Constructors
+		inline GlowGLfloatImage();
+		inline GlowGLfloatImage(
+			const GlowGLfloatImage& orig);
+		inline GlowGLfloatImage(
+			unsigned int width,
+			unsigned int height,
+			GLfloat defelem = 0.0f);
+		
+		// OpenGL integration
+		void ReadFromBuffer(
+			int x,
+			int y,
+			unsigned int width,
+			unsigned int height,
+			GLenum which);
+		void DrawAtRasterPos(
+			GLenum which) const;
+};
+
+
+/*
+===============================================================================
 */
 
 GLOW_NAMESPACE_END
 
 
 #include "glowAux.inl.h"
+// TODO: compatibility with export
+#include "glowAux.tem.h"
 
 
 #endif
