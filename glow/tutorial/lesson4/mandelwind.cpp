@@ -35,13 +35,14 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit tutorial -- version 0.9.7  (1 May 2000)
+		The GLOW Toolkit tutorial -- version 0.9.8  (23 May 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
 		10 April 2000 -- DA -- Version 0.9.6 update
 		1 May 2000 -- DA -- Version 0.9.7 update
+		23 May 2000 -- DA -- Version 0.9.8 update
 
 ===============================================================================
 */
@@ -151,7 +152,7 @@ GlowWindow("Mandelglow", GlowWindow::autoPosition, GlowWindow::autoPosition,
 	// Add controls
 	// First, we'll put a little blurb at the top of the window
 	_controlWindow->AddLabel(
-		"Mandelglow (lesson 4)\nversion 0.9.6\nby Daniel Azuma");
+		"Mandelglow (lesson 4)\nversion 0.9.8\nby Daniel Azuma");
 	
 	// The next set of controls will be within a panel called "calculation"
 	GlowQuickPanelWidget* panel = _controlWindow->AddPanel(

@@ -35,13 +35,14 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.9.7  (1 May 2000)
+		The GLOW Toolkit -- version 0.9.8  (23 May 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
 		10 April 2000 -- DA -- Version 0.9.6 update
 		1 May 2000 -- DA -- Version 0.9.7 update
+		23 May 2000 -- DA -- Version 0.9.8 update
 
 ===============================================================================
 */
@@ -124,9 +125,9 @@ class GlowViewManipulatorParams
 		Vec3f initialTranslation;
 		Quatf initialRotation;
 		float initialScale;
-		float scaleThrottle;
 		float translationThrottle;
 		float rotationThrottle;
+		float scaleThrottle;
 		GLOW_STD::vector<Vec3f> axisConstraints;
 		bool axisConstraintsActive;
 		bool spinnable;
@@ -225,9 +226,9 @@ class GlowTransformData
 		inline GlowTransformData(
 			bool persistent = true);
 		inline GlowTransformData(
-			GLfloat scale,
-			const Quatf& rot,
 			const Vec3f& trans,
+			const Quatf& rot,
+			GLfloat scale,
 			bool persistent = true);
 		
 		virtual ~GlowTransformData();
@@ -235,27 +236,27 @@ class GlowTransformData
 	public:
 	
 		inline void Set(
-			GLfloat scale,
+			const Vec3f& trans,
 			const Quatf& rot,
-			const Vec3f& trans);
-		inline void SetScale(
 			GLfloat scale);
 		inline void SetTranslation(
 			const Vec3f& trans);
 		inline void SetRotation(
 			const Quatf& rot);
+		inline void SetScale(
+			GLfloat scale);
 		inline void SetIdentity();
 		
-		inline void AddScale(
-			GLfloat scale);
 		inline void AddTranslation(
 			const Vec3f& trans);
 		inline void AddRotation(
 			const Quatf& rot);
+		inline void AddScale(
+			GLfloat scale);
 		
-		inline GLfloat GetScale() const;
 		inline const Vec3f& GetTranslation() const;
 		inline const Quatf& GetRotation() const;
+		inline GLfloat GetScale() const;
 		
 		inline Vec3f Apply(
 			const Vec3f& vec) const;
@@ -288,9 +289,9 @@ class GlowTransformData
 	
 	private:
 	
-		GLfloat _scale;
-		Quatf _rotation;
 		Vec3f _translation;
+		Quatf _rotation;
+		GLfloat _scale;
 		Quatf _curSpin;
 		bool _spinning;
 		bool _persistent;
@@ -331,27 +332,27 @@ class GlowViewTransform :
 	public:
 	
 		inline void Set(
-			GLfloat scale,
+			const Vec3f& trans,
 			const Quatf& rot,
-			const Vec3f& trans);
-		inline void SetScale(
 			GLfloat scale);
 		inline void SetTranslation(
 			const Vec3f& trans);
 		inline void SetRotation(
 			const Quatf& rot);
+		inline void SetScale(
+			GLfloat scale);
 		inline void SetIdentity();
 		
-		inline void AddScale(
-			GLfloat scale);
 		inline void AddTranslation(
 			const Vec3f& trans);
 		inline void AddRotation(
 			const Quatf& rot);
+		inline void AddScale(
+			GLfloat scale);
 		
-		inline GLfloat GetScale() const;
 		inline const Vec3f& GetTranslation() const;
 		inline const Quatf& GetRotation() const;
+		inline GLfloat GetScale() const;
 		
 		inline Vec3f Apply(
 			const Vec3f& vec) const;
@@ -472,14 +473,14 @@ class GlowViewManipulator :
 		inline void SetDrawing(
 			bool draw);
 		
-		inline float GetScaleThrottle() const;
-		inline void SetScaleThrottle(
-			float throttle);
 		inline float GetTranslationThrottle() const;
 		inline void SetTranslationThrottle(
 			float throttle);
 		inline float GetRotationThrottle() const;
 		inline void SetRotationThrottle(
+			float throttle);
+		inline float GetScaleThrottle() const;
+		inline void SetScaleThrottle(
 			float throttle);
 		
 		inline GLOW_STD::vector<Vec3f>& AxisConstraints();
@@ -541,7 +542,8 @@ class GlowViewManipulator :
 };
 
 
-/*
+/*		23 May 2000 -- DA -- Version 0.9.8 update
+
 ===============================================================================
 */
 

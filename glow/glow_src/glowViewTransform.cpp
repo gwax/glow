@@ -35,14 +35,15 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.9.7  (1 May 2000)
+		The GLOW Toolkit -- version 0.9.8  (23 May 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
 		10 April 2000 -- DA -- Version 0.9.6 update
 		1 May 2000 -- DA -- Version 0.9.7 update
-	
+		23 May 2000 -- DA -- Version 0.9.8 update
+
 ===============================================================================
 */
 
@@ -113,9 +114,9 @@ color(0.5, 1.0, 1.0)
 	draw = false;
 	spinnable = false;
 	axisConstraintsActive = false;
-	scaleThrottle = 1.0;
 	translationThrottle = 1.0;
 	rotationThrottle = 1.0;
+	scaleThrottle = 1.0;
 	initialScale = 1.0;
 	spinDataLength = 100;
 }
@@ -226,7 +227,7 @@ GlowTransformData::~GlowTransformData()
 		iter != _clients.end(); ++iter)
 	{
 		(*iter)->_transform = new GlowTransformData(
-			_scale, _rotation, _translation, false);
+			_translation, _rotation, _scale, false);
 	}
 }
 
@@ -245,8 +246,8 @@ void GlowViewTransform::Init(
 	GlowComponent::Init(parent);
 	
 	_RawConnect((params.connectTo != 0) ? params.connectTo :
-		new GlowTransformData(params.initialScale,
-			params.initialRotation, params.initialTranslation, false));
+		new GlowTransformData(params.initialTranslation,
+			params.initialRotation, params.initialScale, false));
 }
 
 
@@ -302,8 +303,8 @@ void GlowViewTransform::Disconnect()
 {
 	GLOW_DEBUGSCOPE("GlowViewTransform::Disconnect");
 	GlowTransformData* newTransform = new GlowTransformData(
-		_transform->GetScale(), _transform->GetRotation(),
-		_transform->GetTranslation(), false);
+		_transform->GetTranslation(), _transform->GetRotation(),
+		_transform->GetScale(), false);
 	_RawDisconnect();
 	_RawConnect(newTransform);
 }
@@ -326,17 +327,17 @@ void GlowViewManipulator::Init(
 	_draw = params.draw;
 	_axisConstraintsActive = params.axisConstraintsActive;
 	_axisConstraints = params.axisConstraints;
-	_scaleThrottle = params.scaleThrottle * 0.5f;
 	_transThrottle = params.translationThrottle;
 	_rotThrottle = params.rotationThrottle * 0.5f;
+	_scaleThrottle = params.scaleThrottle * 0.5f;
 	_dragType = idleState;
 	_spinnable = params.spinnable;
 	_spinDataLength = params.spinDataLength;
 	_spinStart = false;
 	
 	_RawConnect((params.connectTo != 0) ? params.connectTo :
-		new GlowTransformData(params.initialScale,
-			params.initialRotation, params.initialTranslation, false));
+		new GlowTransformData(params.initialTranslation,
+			params.initialRotation, params.initialScale, false));
 }
 
 
@@ -458,9 +459,9 @@ void GlowViewManipulator::BeginScaleDrag(
 	_xCur = xn;
 	_yCur = yn;
 	_dragType = scalingState;
+	_oldTranslation = _transform->GetTranslation();
 	_oldRotation = _transform->GetRotation();
 	_oldScale = _transform->GetScale();
-	_oldTranslation = _transform->GetTranslation();
 }
 
 
@@ -476,8 +477,8 @@ void GlowViewManipulator::BeginTranslationDrag(
 	_xCur = xn;
 	_yCur = yn;
 	_dragType = translatingState;
-	_oldRotation = _transform->GetRotation();
 	_oldTranslation = _transform->GetTranslation();
+	_oldRotation = _transform->GetRotation();
 	_oldScale = _transform->GetScale();
 }
 
@@ -495,9 +496,9 @@ void GlowViewManipulator::BeginRotationDrag(
 	_yCur = yn;
 	_dragType = rotatingState;
 	_ballDown = _ballCur = _MouseToBall(_xStart, _yStart);
+	_oldTranslation = _transform->GetTranslation();
 	_oldRotation = _transform->GetRotation();
 	_oldScale = _transform->GetScale();
-	_oldTranslation = _transform->GetTranslation();
 	if (_spinnable)
 	{
 		Glow::RegisterIdle(&_receiver);
@@ -516,14 +517,14 @@ void GlowViewManipulator::InDrag(
 	if (_dragType == scalingState)
 	{
 		float curScale = GLOW_CSTD::pow(2.0f, (_yCur-_yStart)*_scaleThrottle);
-		_transform->Set(_oldScale * curScale, _oldRotation,
-			_oldTranslation * curScale);
+		_transform->Set(_oldTranslation * curScale, _oldRotation,
+			_oldScale * curScale);
 	}
 	else if (_dragType == translatingState)
 	{
 		Vec3f curTranslation((_xCur - _xStart) * _transThrottle,
 			(_yCur - _yStart) * _transThrottle, 0);
-		_transform->Set(_oldScale, _oldRotation, _oldTranslation + curTranslation);
+		_transform->Set(_oldTranslation + curTranslation, _oldRotation, _oldScale);
 	}
 	else if (_dragType == rotatingState)
 	{
@@ -554,8 +555,8 @@ void GlowViewManipulator::InDrag(
 			curRotation.Normalize();
 			curRotation.ScaleRotation(_rotThrottle);
 		}
-		_transform->Set(_oldScale, curRotation % _oldRotation,
-			curRotation * _oldTranslation);
+		_transform->Set(curRotation * _oldTranslation,
+			curRotation % _oldRotation, _oldScale);
 	}
 }
 
@@ -638,7 +639,8 @@ void GlowViewManipulator::_DrawArc(
 }
 
 
-/*
+/*		23 May 2000 -- DA -- Version 0.9.8 update
+
 ===============================================================================
 */
 

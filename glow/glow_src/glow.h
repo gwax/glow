@@ -35,13 +35,14 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.9.7  (1 May 2000)
+		The GLOW Toolkit -- version 0.9.8  (23 May 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
 		10 April 2000 -- DA -- Version 0.9.6 update
 		1 May 2000 -- DA -- Version 0.9.7 update
+		23 May 2000 -- DA -- Version 0.9.8 update
 
 ===============================================================================
 */
@@ -253,8 +254,6 @@ class Glow
 		inline static unsigned int NumRegisteredIdle();
 		inline static bool IsIdleRegistered(
 			GlowIdleReceiver* idle);
-		static void SetIdleFunc(
-			void (*func)());
 		
 		// Timer tasks
 		static int RegisterTimer(
@@ -333,17 +332,26 @@ class Glow
 		static void RefreshGlutWindow(
 			int id);
 		
-		// Miscellaneous
-		inline static bool IsMenuInUse();
+		// GLUT compatibility
+		static void SetIdleFunc(
+			void (*func)());
 		inline static void SetMenuStatusFunc(
 			void (*func)(int status, int x, int y));
+		
+		// Miscellaneous state
+		inline static bool IsMenuInUse();
 		inline static int GetMilliseconds();
 		static bool IsExtensionSupported(
 			const char* extensionName);
 		static bool IsBufferTypeSupported(
 			BufferType mode);
 		inline static int NumMouseButtons();
+		
+		// Toplevel window counter
 		inline static int NumToplevelWindows();
+		inline static bool IsAutoQuitting();
+		inline static void SetAutoQuitting(
+			bool autoQuit = true);
 	
 	
 	//-------------------------------------------------------------------------
@@ -393,16 +401,17 @@ class Glow
 		// Next timer id to assign
 		static int _nextTimerID;
 		
-		// Special idle receiver for callback-based idle
+		// GLUT compatibility callbacks
 		static Glow_IdleFuncReceiver* _idleFuncReceiver;
+		static void (*_userMenuStatusFunc)(int status, int x, int y);
 		
 		// Event filter senders
 		static TSender<GlowMouseData&> _mouseFilters;
 		static TSender<GlowKeyboardData&> _keyboardFilters;
 		
-		// Misc state
+		// Toplevel window counter
 		static int _numToplevelWindows;
-		static void (*_userMenuStatusFunc)(int status, int x, int y);
+		static bool _autoQuitting;
 	
 	private:
 	
@@ -1169,7 +1178,8 @@ class GlowMenu
 };
 
 
-/*
+/*		23 May 2000 -- DA -- Version 0.9.8 update
+
 ===============================================================================
 */
 

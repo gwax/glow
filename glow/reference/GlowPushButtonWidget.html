@@ -67,6 +67,34 @@ GLOW programs that make use of pushbutton widgets should use this class.
 <blockquote>
 
 <p>
+<b>Behaviors</b>
+</p>
+
+<blockquote>
+
+<p>
+<tt>enum GlowPushButtonWidget::Behavior <b>normalBehavior</b></tt>
+</p>
+<blockquote>
+Normal pushbutton behavior (state reverts to up after releasing the button.)
+</blockquote>
+<p>
+<tt>enum GlowPushButtonWidget::Behavior <b>toggleBehavior</b></tt>
+</p>
+<blockquote>
+Pressing the button toggles its state between up and down.
+</blockquote>
+<p>
+<tt>enum GlowPushButtonWidget::Behavior <b>stickDownBehavior</b></tt>
+</p>
+<blockquote>
+Pressing the button sets the state to down, regardless of the previous state.
+</blockquote>
+
+</blockquote>
+
+
+<p>
 <b>Inherited constants</b>
 <br>
 These constants are inherited from <tt><a href="GlowWidget.html">GlowWidget</a></tt>.
@@ -204,6 +232,41 @@ Returns the font for the button label.
 Sets the font for the button label.
 </blockquote>
 
+<p>
+<tt>bool <b>IsDown</b>(void) const</tt>
+</p>
+<blockquote>
+Returns the state of the button.
+</blockquote>
+
+<p>
+<tt>void <b>SetDown</b>(bool down)</tt>
+</p>
+<blockquote>
+Sets the state of the button.
+</blockquote>
+
+<p>
+<tt>void <b>ToggleState</b>(void)</tt>
+</p>
+<blockquote>
+Toggles the state of the button according to the current behavior.
+</blockquote>
+
+<p>
+<tt>GlowPushButtonWidget::Behavior <b>GetBehavior</b>(void) const</tt>
+</p>
+<blockquote>
+Returns the behavior of the button.
+</blockquote>
+
+<p>
+<tt>void <b>SetBehavior</b>(GlowPushButtonWidget::Behavior behavior)</tt>
+</p>
+<blockquote>
+Sets the behavior of the button.
+</blockquote>
+
 </blockquote>
 
 
@@ -214,19 +277,35 @@ Sets the font for the button label.
 <blockquote>
 
 <p>
-<tt><a href="GlowColor.html">GlowColor</a> <b>GetBoxColor</b>(void) const</tt>
+<tt><a href="GlowColor.html">GlowColor</a> <b>GetUpBoxColor</b>(void) const</tt>
 </p>
 
 <p>
-<tt>void <b>SetBoxColor</b>(<a href="GlowColor.html">GlowColor</a> c)</tt>
+<tt>void <b>SetUpBoxColor</b>(<a href="GlowColor.html">GlowColor</a> c)</tt>
 </p>
 
 <p>
-<tt><a href="GlowColor.html">GlowColor</a> <b>GetTextColor</b>(void) const</tt>
+<tt><a href="GlowColor.html">GlowColor</a> <b>GetUpTextColor</b>(void) const</tt>
 </p>
 
 <p>
-<tt>void <b>SetTextColor</b>(<a href="GlowColor.html">GlowColor</a> c)</tt>
+<tt>void <b>SetUpTextColor</b>(<a href="GlowColor.html">GlowColor</a> c)</tt>
+</p>
+
+<p>
+<tt><a href="GlowColor.html">GlowColor</a> <b>GetDownBoxColor</b>(void) const</tt>
+</p>
+
+<p>
+<tt>void <b>SetDownBoxColor</b>(<a href="GlowColor.html">GlowColor</a> c)</tt>
+</p>
+
+<p>
+<tt><a href="GlowColor.html">GlowColor</a> <b>GetDownTextColor</b>(void) const</tt>
+</p>
+
+<p>
+<tt>void <b>SetDownTextColor</b>(<a href="GlowColor.html">GlowColor</a> c)</tt>
 </p>
 
 <p>
@@ -246,11 +325,19 @@ Sets the font for the button label.
 </p>
 
 <p>
-<tt><a href="GlowColor.html">GlowColor</a> <b>GetDisableBoxColor</b>(void) const</tt>
+<tt><a href="GlowColor.html">GlowColor</a> <b>GetDisableUpBoxColor</b>(void) const</tt>
 </p>
 
 <p>
-<tt>void <b>SetDisableBoxColor</b>(<a href="GlowColor.html">GlowColor</a> c)</tt>
+<tt>void <b>SetDisableUpBoxColor</b>(<a href="GlowColor.html">GlowColor</a> c)</tt>
+</p>
+
+<p>
+<tt><a href="GlowColor.html">GlowColor</a> <b>GetDisableDownBoxColor</b>(void) const</tt>
+</p>
+
+<p>
+<tt>void <b>SetDisableDownBoxColor</b>(<a href="GlowColor.html">GlowColor</a> c)</tt>
 </p>
 
 <p>
@@ -521,6 +608,10 @@ These methods are inherited from <tt><a href="GlowComponent.html">GlowComponent<
 <tt>bool <b>IsActiveStandby</b>(void)</tt>
 </p>
 
+<p>
+<tt>void <b>Paint</b>(void)</tt>
+</p>
+
 </blockquote>
 
 </blockquote>
@@ -602,7 +693,7 @@ These methods are called as soon as a widget-level event occurs. The default met
 <tt>virtual void <b>OnHit</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 <blockquote>
-Called when a button has been pressed. <tt>mouseButton</tt> is the mouse button pressed (see constants in <a href="Glow.html>Glow</a>) and <tt>modifiers</tt> gives the keyboard modifiers that were down when the mouse button was pressed. The default method sends messages to the attached <a href="GlowPushButtonReceiver.html">GlowPushButtonReceiver</a>s.
+Called when a button has been pressed. <tt>mouseButton</tt> is the mouse button pressed (see constants in <a href="Glow.html>Glow</a>) and <tt>modifiers</tt> gives the keyboard modifiers that were down when the mouse button was pressed. The default method toggles the up/down state according to the current behavior, and sends messages to the attached <a href="GlowPushButtonReceiver.html">GlowPushButtonReceiver</a>s.
 </blockquote>
 
 </blockquote>
@@ -743,7 +834,7 @@ These methods are inherited from <tt><a href="GlowComponent.html">GlowComponent<
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 10 April 2000
+Last updated 23 May 2000
 </address>
 
 

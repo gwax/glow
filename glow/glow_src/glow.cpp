@@ -35,14 +35,15 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.9.7  (1 May 2000)
+		The GLOW Toolkit -- version 0.9.8  (23 May 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
 		10 April 2000 -- DA -- Version 0.9.6 update
 		1 May 2000 -- DA -- Version 0.9.7 update
-	
+		23 May 2000 -- DA -- Version 0.9.8 update
+
 ===============================================================================
 */
 
@@ -58,6 +59,7 @@
 #endif
 
 #include <cstring>
+#include <cstdlib>
 
 #ifndef GLOW__H
 	#include "glow.h"
@@ -213,12 +215,13 @@ GLOW_STD::map<int, TSender<const GlowTimerMessage&>*> Glow::_timerSenders;
 int Glow::_nextTimerID = 1;
 
 Glow_IdleFuncReceiver* Glow::_idleFuncReceiver = 0;
+void (*Glow::_userMenuStatusFunc)(int status, int x, int y) = 0;
 
 TSender<GlowMouseData&> Glow::_mouseFilters;
 TSender<GlowKeyboardData&> Glow::_keyboardFilters;
 
 int Glow::_numToplevelWindows = 0;
-void (*Glow::_userMenuStatusFunc)(int status, int x, int y) = 0;
+bool Glow::_autoQuitting = false;
 
 
 /*
@@ -302,6 +305,10 @@ void Glow::_RemoveWindow(
 			}
 		}
 		_windowRegistry.erase(iter);
+		if (_autoQuitting && _windowRegistry.empty())
+		{
+			GLOW_CSTD::exit(0);
+		}
 	}
 }
 
@@ -2345,7 +2352,8 @@ void GlowMenu::SetItemSubmenu(
 }
 
 
-/*
+/*		23 May 2000 -- DA -- Version 0.9.8 update
+
 ===============================================================================
 */
 

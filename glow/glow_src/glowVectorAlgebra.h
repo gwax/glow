@@ -35,14 +35,15 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.9.7  (1 May 2000)
+		The GLOW Toolkit -- version 0.9.8  (23 May 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
 		10 April 2000 -- DA -- Version 0.9.6 update
 		1 May 2000 -- DA -- Version 0.9.7 update
-	
+		23 May 2000 -- DA -- Version 0.9.8 update
+
 ===============================================================================
 */
 
@@ -78,7 +79,7 @@
 	#endif
 #endif
 
-#include "GL/gl.h"
+#include <GL/gl.h>
 
 // Clean up rocksmokery...
 #ifdef _WIN32
@@ -199,15 +200,15 @@ class Vec3f
 		// Indexed member access
 		
 		inline GLfloat GetVal(
-			ptrdiff_t i) const;
+			GLOW_CSTD::ptrdiff_t i) const;
 		inline void SetVal(
-			ptrdiff_t i,
+			GLOW_CSTD::ptrdiff_t i,
 			GLfloat val);
 		
 		inline GLfloat& operator[](
-			ptrdiff_t i);
+			GLOW_CSTD::ptrdiff_t i);
 		inline GLfloat operator[](
-			ptrdiff_t i) const;
+			GLOW_CSTD::ptrdiff_t i) const;
 		
 		// Copy and cast
 		
@@ -585,15 +586,15 @@ class Quatf
 		// Indexed member access
 		
 		inline GLfloat GetVal(
-			ptrdiff_t a) const;
+			GLOW_CSTD::ptrdiff_t a) const;
 		inline void SetVal(
-			ptrdiff_t a,
+			GLOW_CSTD::ptrdiff_t a,
 			GLfloat val);
 		
 		inline GLfloat& operator[](
-			ptrdiff_t i);
+			GLOW_CSTD::ptrdiff_t i);
 		inline GLfloat operator[](
-			ptrdiff_t i) const;
+			GLOW_CSTD::ptrdiff_t i) const;
 		
 		// Special values
 		
@@ -702,7 +703,8 @@ GLOW_STD::istream& operator>>(
 
 
 
-/*
+/*		23 May 2000 -- DA -- Version 0.9.8 update
+
 ===============================================================================
 */
 

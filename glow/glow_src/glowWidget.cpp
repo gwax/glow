@@ -35,14 +35,15 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.9.7  (1 May 2000)
+		The GLOW Toolkit -- version 0.9.8  (23 May 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
 		10 April 2000 -- DA -- Version 0.9.6 update
 		1 May 2000 -- DA -- Version 0.9.7 update
-	
+		23 May 2000 -- DA -- Version 0.9.8 update
+
 ===============================================================================
 */
 
@@ -541,6 +542,17 @@ void GlowWidget::_BroadcastMask(
 	{
 		_AddToNotifyList();
 		_visibility = 1;
+		if (IsActive())
+		{
+			if (_receivingMouse)
+			{
+				_root->_RegisterMouseWidget(this);
+			}
+			if (_receivingKeyboard)
+			{
+				_root->_RegisterKeyboardWidget(this);
+			}
+		}
 		for (GlowComponent* child = FirstChild(); child != 0; child = child->Next())
 		{
 			GlowWidget* childWidget = dynamic_cast<GlowWidget*>(child);
@@ -554,6 +566,17 @@ void GlowWidget::_BroadcastMask(
 	{
 		_AddToNotifyList();
 		_visibility = 2;
+		if (IsActive())
+		{
+			if (_receivingMouse)
+			{
+				_root->_UnregisterMouseWidget(this);
+			}
+			if (_receivingKeyboard)
+			{
+				_root->_UnregisterKeyboardWidget(this);
+			}
+		}
 		for (GlowComponent* child = FirstChild(); child != 0; child = child->Next())
 		{
 			GlowWidget* childWidget = dynamic_cast<GlowWidget*>(child);
@@ -1229,7 +1252,8 @@ void GlowSubwindowInWidget::OnKeyboard(
 }
 
 
-/*
+/*		23 May 2000 -- DA -- Version 0.9.8 update
+
 ===============================================================================
 */
 

@@ -133,6 +133,18 @@ Label string for the button. Initial default is "".
 Font for the button label. Initial default is <tt><a href="GlowFont.html">GlowFont</a>::helvetica12</tt>.
 </blockquote>
 <p>
+<tt>bool <b>down</b></tt>
+</p>
+<blockquote>
+Initial state for the button. Initial default is false.
+</blockquote>
+<p>
+<tt><a href="GlowPushButtonWidget.html">GlowPushButtonWidget</a>::Behavior <b>behavior</b></tt>
+</p>
+<blockquote>
+Behavior for the button. Initial default is <a href="GlowPushButtonWidget.html">GlowPushButtonWidget</a>::<tt>normalBehavior</tt>.
+</blockquote>
+<p>
 <tt><a href="GlowPushButtonReceiver.html">GlowPushButtonReceiver</a>* <b>receiver</b></tt>
 </p>
 <blockquote>
@@ -148,15 +160,21 @@ Receiver for button press events. Initial default is 0.
 
 <blockquote>
 
-<tt><a href="GlowColor.html">GlowColor</a> <b>boxColor</b></tt>
+<tt><a href="GlowColor.html">GlowColor</a> <b>upBoxColor</b></tt>
 <br>
-<tt><a href="GlowColor.html">GlowColor</a> <b>textColor</b></tt>
+<tt><a href="GlowColor.html">GlowColor</a> <b>upTextColor</b></tt>
+<br>
+<tt><a href="GlowColor.html">GlowColor</a> <b>downBoxColor</b></tt>
+<br>
+<tt><a href="GlowColor.html">GlowColor</a> <b>downTextColor</b></tt>
 <br>
 <tt><a href="GlowColor.html">GlowColor</a> <b>hiliteBoxColor</b></tt>
 <br>
 <tt><a href="GlowColor.html">GlowColor</a> <b>hiliteTextColor</b></tt>
 <br>
-<tt><a href="GlowColor.html">GlowColor</a> <b>disableBoxColor</b></tt>
+<tt><a href="GlowColor.html">GlowColor</a> <b>disableUpBoxColor</b></tt>
+<br>
+<tt><a href="GlowColor.html">GlowColor</a> <b>disableDownBoxColor</b></tt>
 <br>
 <tt><a href="GlowColor.html">GlowColor</a> <b>disableTextColor</b></tt>
 <br>
@@ -244,7 +262,7 @@ Constructs a new parameter block, copying <tt>defaults</tt>
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 10 April 2000
+Last updated 23 May 2000
 </address>
 
 

@@ -35,14 +35,15 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.9.7  (1 May 2000)
+		The GLOW Toolkit -- version 0.9.8  (23 May 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
 		10 April 2000 -- DA -- Version 0.9.6 update
 		1 May 2000 -- DA -- Version 0.9.7 update
-	
+		23 May 2000 -- DA -- Version 0.9.8 update
+
 ===============================================================================
 */
 
@@ -123,15 +124,59 @@ inline void GlowPushButtonWidget::SetFont(
 }
 
 
-inline GlowColor GlowPushButtonWidget::GetBoxColor() const
+inline GlowPushButtonWidget::Behavior GlowPushButtonWidget::GetBehavior() const
 {
-	return _boxColor;
+	return _behavior;
 }
 
 
-inline GlowColor GlowPushButtonWidget::GetTextColor() const
+inline void GlowPushButtonWidget::SetBehavior(
+	Behavior behavior)
 {
-	return _textColor;
+	_behavior = behavior;
+	if (_behavior == normalBehavior && _state)
+	{
+		_state = false;
+		Refresh();
+	}
+}
+
+
+inline bool GlowPushButtonWidget::IsDown() const
+{
+	return _state;
+}
+
+
+inline void GlowPushButtonWidget::SetDown(
+	bool down)
+{
+	_state = down;
+	Refresh();
+}
+
+
+inline GlowColor GlowPushButtonWidget::GetUpBoxColor() const
+{
+	return _upBoxColor;
+}
+
+
+inline GlowColor GlowPushButtonWidget::GetUpTextColor() const
+{
+	return _upTextColor;
+}
+
+
+inline GlowColor GlowPushButtonWidget::GetDownBoxColor() const
+{
+	return _downBoxColor;
+}
+
+
+inline GlowColor GlowPushButtonWidget::GetDownTextColor() const
+{
+	return _downTextColor;
 }
 
 
@@ -147,9 +192,15 @@ inline GlowColor GlowPushButtonWidget::GetHiliteTextColor() const
 }
 
 
-inline GlowColor GlowPushButtonWidget::GetDisableBoxColor() const
+inline GlowColor GlowPushButtonWidget::GetDisableUpBoxColor() const
 {
-	return _disableBoxColor;
+	return _disableUpBoxColor;
+}
+
+
+inline GlowColor GlowPushButtonWidget::GetDisableDownBoxColor() const
+{
+	return _disableDownBoxColor;
 }
 
 
@@ -177,18 +228,34 @@ inline GlowColor GlowPushButtonWidget::GetDarkBevelColor() const
 }
 
 
-inline void GlowPushButtonWidget::SetBoxColor(
+inline void GlowPushButtonWidget::SetUpBoxColor(
 	GlowColor c)
 {
-	_boxColor = c;
+	_upBoxColor = c;
 	Refresh();
 }
 
 
-inline void GlowPushButtonWidget::SetTextColor(
+inline void GlowPushButtonWidget::SetUpTextColor(
 	GlowColor c)
 {
-	_textColor = c;
+	_upTextColor = c;
+	Refresh();
+}
+
+
+inline void GlowPushButtonWidget::SetDownBoxColor(
+	GlowColor c)
+{
+	_downBoxColor = c;
+	Refresh();
+}
+
+
+inline void GlowPushButtonWidget::SetDownTextColor(
+	GlowColor c)
+{
+	_downTextColor = c;
 	Refresh();
 }
 
@@ -209,10 +276,18 @@ inline void GlowPushButtonWidget::SetHiliteTextColor(
 }
 
 
-inline void GlowPushButtonWidget::SetDisableBoxColor(
+inline void GlowPushButtonWidget::SetDisableUpBoxColor(
 	GlowColor c)
 {
-	_disableBoxColor = c;
+	_disableUpBoxColor = c;
+	Refresh();
+}
+
+
+inline void GlowPushButtonWidget::SetDisableDownBoxColor(
+	GlowColor c)
+{
+	_disableDownBoxColor = c;
 	Refresh();
 }
 
@@ -383,7 +458,8 @@ inline Glow::Modifiers GlowWidgetMapToPushButtonFilter::GetModifiers() const
 }
 
 
-/*
+/*		23 May 2000 -- DA -- Version 0.9.8 update
+
 ===============================================================================
 */
 

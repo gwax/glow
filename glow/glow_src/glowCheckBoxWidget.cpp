@@ -35,14 +35,15 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.9.7  (1 May 2000)
+		The GLOW Toolkit -- version 0.9.8  (23 May 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
 		10 April 2000 -- DA -- Version 0.9.6 update
 		1 May 2000 -- DA -- Version 0.9.7 update
-	
+		23 May 2000 -- DA -- Version 0.9.8 update
+
 ===============================================================================
 */
 
@@ -182,7 +183,7 @@ GlowWidget::AutoPackError GlowCheckBoxWidget::OnAutoPack(
 	GLOW_DEBUGSCOPE("GlowCheckBoxWidget::OnAutoPack");
 	
 	int vnew = Height();
-	int preferred = _font.Leading() + 2;
+	int preferred = _font.Leading() + 1;
 	if (vSize != unspecifiedSize && vSize < preferred)
 	{
 		return vAutoPackError;
@@ -322,22 +323,33 @@ void GlowCheckBoxWidget::OnWidgetPaint()
 		{
 			_disableCheckColor.Apply();
 		}
-		::glLineWidth(3);
-		::glBegin(GL_LINES);
+		
+		::glBegin(GL_QUADS);
+		float hscale = (boxRight+1.0f)/2.0f;
 		if (_state == on)
 		{
-			::glVertex2f(-1.0f+bevelWidth*2.0f, -1.0f+bevelHeight*2.0f);
-			::glVertex2f(boxRight-bevelWidth*2.0f, 1.0f-bevelHeight*2.0f);
-			::glVertex2f(-1.0f+bevelWidth*2.0f, 1.0f-bevelHeight*2.0f);
-			::glVertex2f(boxRight-bevelWidth*2.0f, -1.0f+bevelHeight*2.0f);
+			const float markOffset = 0.1f;
+			
+			::glVertex2f((0.5f-markOffset)*hscale-1.0f, -0.5f+markOffset);
+			::glVertex2f((0.5f+markOffset)*hscale-1.0f, -0.5f-markOffset);
+			::glVertex2f((1.5f+markOffset)*hscale-1.0f, 0.5f-markOffset);
+			::glVertex2f((1.5f-markOffset)*hscale-1.0f, 0.5f+markOffset);
+			
+			::glVertex2f((0.5f+markOffset)*hscale-1.0f, 0.5f+markOffset);
+			::glVertex2f((0.5f-markOffset)*hscale-1.0f, 0.5f-markOffset);
+			::glVertex2f((1.5f-markOffset)*hscale-1.0f, -0.5f-markOffset);
+			::glVertex2f((1.5f+markOffset)*hscale-1.0f, -0.5f+markOffset);
 		}
 		else //if (_state == half)
 		{
-			::glVertex2f(-1.0f+bevelWidth*2.0f, 0.0f);
-			::glVertex2f(boxRight-bevelWidth*2.0f, 0.0f);
+			const float markOffset = 0.2;
+			
+			::glVertex2f(0.5f*hscale-1.0f, markOffset);
+			::glVertex2f(0.5f*hscale-1.0f, -markOffset);
+			::glVertex2f(1.5f*hscale-1.0f, -markOffset);
+			::glVertex2f(1.5f*hscale-1.0f, markOffset);
 		}
 		::glEnd();
-		::glLineWidth(1);
 	}
 	
 	// Text label
@@ -450,7 +462,8 @@ void GlowCheckBoxWidget::OnHit(
 }
 
 
-/*
+/*		23 May 2000 -- DA -- Version 0.9.8 update
+
 ===============================================================================
 */
 

@@ -35,14 +35,15 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.9.7  (1 May 2000)
+		The GLOW Toolkit -- version 0.9.8  (23 May 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
 		10 April 2000 -- DA -- Version 0.9.6 update
 		1 May 2000 -- DA -- Version 0.9.7 update
-	
+		23 May 2000 -- DA -- Version 0.9.8 update
+
 ===============================================================================
 */
 
@@ -81,11 +82,14 @@ GlowPushButtonParams::GlowPushButtonParams()
 
 GlowPushButtonParams::GlowPushButtonParams(bool) :
 GlowWidgetParams(true),
-boxColor(0.7f, 0.7f, 0.7f),
-textColor(0.0f, 0.0f, 0.0f),
+upBoxColor(0.7f, 0.7f, 0.7f),
+upTextColor(0.0f, 0.0f, 0.0f),
+downBoxColor(0.5f, 0.5f, 0.5f),
+downTextColor(0.8f, 0.8f, 1.0f),
 hiliteBoxColor(0.5f, 0.5f, 0.5f),
 hiliteTextColor(1.0f, 0.7f, 0.7f),
-disableBoxColor(0.7f, 0.7f, 0.7f),
+disableUpBoxColor(0.7f, 0.7f, 0.7f),
+disableDownBoxColor(0.7f, 0.7f, 0.7f),
 disableTextColor(0.3f, 0.3f, 0.3f),
 disableOutlineColor(0.3f, 0.3f, 0.3f),
 lightBevelColor(1.0f, 1.0f, 1.0f),
@@ -96,6 +100,8 @@ darkBevelColor(0.2f, 0.2f, 0.2f)
 	text = "";
 	font = GLUT_BITMAP_HELVETICA_12;
 	receiver = 0;
+	down = false;
+	behavior = GlowPushButtonWidget::normalBehavior;
 }
 
 
@@ -113,11 +119,14 @@ void GlowPushButtonWidget::Init(
 	GLOW_DEBUGSCOPE("GlowPushButtonWidget::Init");
 	
 	GlowWidget::Init(root, parent, params);
-	_boxColor = params.boxColor;
-	_textColor = params.textColor;
+	_upBoxColor = params.upBoxColor;
+	_upTextColor = params.upTextColor;
+	_downBoxColor = params.downBoxColor;
+	_downTextColor = params.downTextColor;
 	_hiliteBoxColor = params.hiliteBoxColor;
 	_hiliteTextColor = params.hiliteTextColor;
-	_disableBoxColor = params.disableBoxColor;
+	_disableUpBoxColor = params.disableUpBoxColor;
+	_disableDownBoxColor = params.disableDownBoxColor;
 	_disableTextColor = params.disableTextColor;
 	_disableOutlineColor = params.disableOutlineColor;
 	_lightBevelColor = params.lightBevelColor;
@@ -128,6 +137,8 @@ void GlowPushButtonWidget::Init(
 	_labelWidth = _font.StringWidth(_label);
 	_down = false;
 	_inside = false;
+	_state = params.down;
+	_behavior = params.behavior;
 	if (params.receiver != 0)
 	{
 		_sender.Bind(params.receiver);
@@ -221,11 +232,25 @@ void GlowPushButtonWidget::OnWidgetPaint()
 	}
 	else if (!IsActive())
 	{
-		_disableBoxColor.Apply();
+		if (_state)
+		{
+			_disableDownBoxColor.Apply();
+		}
+		else
+		{
+			_disableUpBoxColor.Apply();
+		}
 	}
 	else
 	{
-		_boxColor.Apply();
+		if (_state)
+		{
+			_downBoxColor.Apply();
+		}
+		else
+		{
+			_upBoxColor.Apply();
+		}
 	}
 	::glRectf(-1.0f, -1.0f, 1.0f, 1.0f);
 	
@@ -283,9 +308,13 @@ void GlowPushButtonWidget::OnWidgetPaint()
 		{
 			_hiliteTextColor.Apply();
 		}
+		else if (_state)
+		{
+			_downTextColor.Apply();
+		}
 		else
 		{
-			_textColor.Apply();
+			_upTextColor.Apply();
 		}
 	}
 	else
@@ -353,12 +382,26 @@ void GlowPushButtonWidget::OnWidgetMouseDrag(
 }
 
 
+void GlowPushButtonWidget::ToggleState()
+{
+	if (_behavior == toggleBehavior)
+	{
+		_state = !_state;
+	}
+	else if (_behavior == stickDownBehavior)
+	{
+		_state = true;
+	}
+}
+
+
 void GlowPushButtonWidget::OnHit(
 	Glow::MouseButton mouseButton,
 	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("GlowPushButtonWidget::OnHit");
 	
+	ToggleState();
 	GlowPushButtonMessage msg;
 	msg.widget = this;
 	msg.mouseButton = mouseButton;
@@ -408,7 +451,8 @@ bool GlowWidgetMapToPushButtonFilter::OnFilter(
 }
 
 
-/*
+/*		23 May 2000 -- DA -- Version 0.9.8 update
+
 ===============================================================================
 */
 

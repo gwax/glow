@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit tutorial -- version 0.9.7  (1 May 2000)
+		The GLOW Toolkit tutorial -- version 0.9.8  (23 May 2000)
 	
 	CHANGE HISTORY:
 	
 		1 May 2000 -- DA -- Initial CVS checkin
+		23 May 2000 -- DA -- Version 0.9.8 update
 
 ===============================================================================
 */

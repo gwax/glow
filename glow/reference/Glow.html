@@ -419,13 +419,6 @@ Returns the number of registered idle receivers.
 Returns true if and only if the given idle receiver is registered.
 </blockquote>
 
-<p>
-<tt>static void <b>SetIdleFunc</b>(void (*func)())</tt>
-</p>
-<blockquote>
-Performs the same function as GLUT's function <tt>glutIdleFunc()</tt>. If you are integrating GLOW and GLUT code, or if you otherwise want to use a callback-based API for your idle function, you <i>must</i> use this function instead of <tt>glutIdleFunc()</tt>.
-</blockquote>
-
 </blockquote>
 
 
@@ -582,6 +575,38 @@ Returns the top of the modal window stack (i.e. the currently modal window), or 
 
 
 <p>
+<b>Toplevel window management</b>
+<br>
+GLOW provides the option of exiting the program automatically when the last toplevel window is deleted. The auto-quit feature is disabled by default, but may be enabled or manipulated using these routines.
+</p>
+
+<blockquote>
+
+<p>
+<tt>static int <b>NumToplevelWindows</b>(void)</tt>
+</p>
+<blockquote>
+Returns the number of toplevel GLOW window objects in existence. This includes windows that are hidden or iconified.
+</blockquote>
+
+<p>
+<tt>static bool <b>IsAutoQuitting</b>(void)</tt>
+</p>
+<blockquote>
+Returns true if auto-quitting is active.
+</blockquote>
+
+<p>
+<tt>static void <b>SetAutoQuitting</b>(bool autoQuitting = true)</tt>
+</p>
+<blockquote>
+Activates or deactivates the auto-quitting feature.
+</blockquote>
+
+</blockquote>
+
+
+<p>
 <b>Miscellaneous state</b>
 </p>
 
@@ -626,12 +651,33 @@ Returns the number of mouse buttons supported by the implementation. If two butt
 
 
 <p>
-<b>Resolving GLUT ids</b>
+<b>GLUT integration</b>
 <br>
-These advanced routines provide services to resolve GLUT window and menu IDs into <tt><a href="GlowSubwindow.html">GlowSubwindow</a>*</tt> or <tt><a href="GlowMenu.html">GlowMenu</a>*</tt> pointers, respectively. Normally, you shouldn't need to use them unless you are integrating GLOW and GLUT code.
+These routines provide services to assist you with using GLUT and GLOW in the same program. GLOW provides replacement functions for glutIdleFunc() and glutMenuStatusFunc(), and an implementation of glutPostWindowRedisplay() that functions under the GLUT 3 APIs. You can also resolve GLUT window and menu IDs into <tt><a href="GlowSubwindow.html">GlowSubwindow</a>*</tt> or <tt><a href="GlowMenu.html">GlowMenu</a>*</tt> pointers, respectively.
 </p>
 
 <blockquote>
+
+<p>
+<tt>static void <b>SetIdleFunc</b>(void (*func)())</tt>
+</p>
+<blockquote>
+Performs the same function as GLUT's function <tt>glutIdleFunc()</tt>. If you are integrating GLOW and GLUT code, or if you otherwise want to use a callback-based API for your idle function, you <i>must</i> use this function instead of <tt>glutIdleFunc()</tt>.
+</blockquote>
+
+<p>
+<tt>static void <b>SetMenuStatusFunc</b>(void (*func)(int status, int x, int y))</tt>
+</p>
+<blockquote>
+Performs the same function as GLUT's function <tt>glutMenuStatusFunc()</tt>. If you are integrating GLOW and GLUT code and want to register a menu status function, you <i>must</i> use this function instead of <tt>glutMenuStatusFunc()</tt>.
+</blockquote>
+
+<p>
+<tt>static void <b>RefreshGlutWindow</b>(int windowid)</tt>
+</p>
+<blockquote>
+Refreshes a GLUT window with the given ID. Equivalent to the GLUT 4 function <tt>::glutPostWindowRedisplay()</tt>, but also works under the GLUT 3 API.
+</blockquote>
 
 <p>
 <tt>static <a href="GlowSubwindow.html">GlowSubwindow</a>* <b>ResolveWindow</b>(int windowNum)</tt>
@@ -725,13 +771,6 @@ These advanced routines provide miscellaneous drawing services.
 Causes the front and back buffers for the current drawing context to be swapped. Equivalent to calling <tt>::glutSwapBuffers()</tt>. Normally, you do not need to call this, because GLOW will normally swap buffers automatically.
 </blockquote>
 
-<p>
-<tt>static void <b>RefreshGlutWindow</b>(int windowid)</tt>
-</p>
-<blockquote>
-Refreshes a GLUT window with the given ID. Equivalent to the GLUT 4 function <tt>::glutPostWindowRedisplay()</tt>, but also works under the GLUT 3 API.
-</blockquote>
-
 </blockquote>
 
 
@@ -759,7 +798,7 @@ Refreshes a GLUT window with the given ID. Equivalent to the GLUT 4 function <tt
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 25 April 2000
+Last updated 23 May 2000
 </address>
 
 

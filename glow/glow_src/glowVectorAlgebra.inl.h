@@ -35,14 +35,15 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.9.7  (1 May 2000)
+		The GLOW Toolkit -- version 0.9.8  (23 May 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
 		10 April 2000 -- DA -- Version 0.9.6 update
 		1 May 2000 -- DA -- Version 0.9.7 update
-	
+		23 May 2000 -- DA -- Version 0.9.8 update
+
 ===============================================================================
 */
 
@@ -234,14 +235,14 @@ inline const GLfloat& Vec3f::Z() const
 //-----------------------------------------------------------------------------
 
 inline GLfloat Vec3f::GetVal(
-	ptrdiff_t i) const
+	GLOW_CSTD::ptrdiff_t i) const
 {
 	GLOW_DEBUG(i < 0 || i >= 3, "index out of bounds in Vec3f::GetVal");
 	return _vals[i];
 }
 
 inline void Vec3f::SetVal(
-	ptrdiff_t i,
+	GLOW_CSTD::ptrdiff_t i,
 	GLfloat val)
 {
 	GLOW_DEBUG(i < 0 || i >= 3, "index out of bounds in Vec3f::SetVal");
@@ -254,14 +255,14 @@ inline void Vec3f::SetVal(
 //-----------------------------------------------------------------------------
 
 inline GLfloat& Vec3f::operator[](
-	ptrdiff_t i)
+	GLOW_CSTD::ptrdiff_t i)
 {
 	GLOW_DEBUG(i < 0 || i >= 3, "index out of bounds in Vec3f::operator[]");
 	return _vals[i];
 }
 
 inline GLfloat Vec3f::operator[](
-	ptrdiff_t i) const
+	GLOW_CSTD::ptrdiff_t i) const
 {
 	GLOW_DEBUG(i < 0 || i >= 3, "index out of bounds in Vec3f::operator[]");
 	return _vals[i];
@@ -1187,7 +1188,7 @@ inline const GLfloat& Quatf::Z() const
 //-----------------------------------------------------------------------------
 
 inline void Quatf::SetVal(
-	ptrdiff_t a,
+	GLOW_CSTD::ptrdiff_t a,
 	GLfloat val)
 {
 	GLOW_DEBUG(a < 0 || a >= 4, "index out of bounds in Quatf::SetVal");
@@ -1196,7 +1197,7 @@ inline void Quatf::SetVal(
 
 
 inline GLfloat Quatf::GetVal(
-	ptrdiff_t a) const
+	GLOW_CSTD::ptrdiff_t a) const
 {
 	GLOW_DEBUG(a < 0 || a >= 4, "index out of bounds in Quatf::GetVal");
 	return _vals[a];
@@ -1208,14 +1209,14 @@ inline GLfloat Quatf::GetVal(
 //-----------------------------------------------------------------------------
 
 inline GLfloat& Quatf::operator[](
-	ptrdiff_t i)
+	GLOW_CSTD::ptrdiff_t i)
 {
 	GLOW_DEBUG(i < 0 || i >= 4, "index out of bounds in Quatf::operator[]");
 	return _vals[i];
 }
 
 inline GLfloat Quatf::operator[](
-	ptrdiff_t i) const
+	GLOW_CSTD::ptrdiff_t i) const
 {
 	GLOW_DEBUG(i < 0 || i >= 4, "index out of bounds in Quatf::operator[]");
 	return _vals[i];
@@ -1487,7 +1488,8 @@ inline GLfloat Quatf::operator*(
 
 
 
-/*
+/*		23 May 2000 -- DA -- Version 0.9.8 update
+
 ===============================================================================
 */
 

@@ -35,14 +35,15 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.9.7  (1 May 2000)
+		The GLOW Toolkit -- version 0.9.8  (23 May 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
 		10 April 2000 -- DA -- Version 0.9.6 update
 		1 May 2000 -- DA -- Version 0.9.7 update
-	
+		23 May 2000 -- DA -- Version 0.9.8 update
+
 ===============================================================================
 */
 
@@ -100,28 +101,28 @@ _receiver(this)
 
 
 inline GlowTransformData::GlowTransformData(
-	GLfloat scale,
-	const Quatf& rot,
 	const Vec3f& trans,
+	const Quatf& rot,
+	GLfloat scale,
 	bool persistent) :
+_translation(trans),
+_rotation(rot),
 _receiver(this)
 {
 	_spinning = false;
 	_scale = scale;
-	_rotation = rot;
-	_translation = trans;
 	_persistent = persistent;
 }
 
 
 inline void GlowTransformData::Set(
-	GLfloat scale,
+	const Vec3f& trans,
 	const Quatf& rot,
-	const Vec3f& trans)
+	GLfloat scale)
 {
-	_scale = scale;
-	_rotation = rot;
 	_translation = trans;
+	_rotation = rot;
+	_scale = scale;
 	RefreshAll();
 }
 
@@ -285,11 +286,11 @@ inline GlowViewTransform::GlowViewTransform(
 
 
 inline void GlowViewTransform::Set(
-	GLfloat scale,
+	const Vec3f& trans,
 	const Quatf& rot,
-	const Vec3f& trans)
+	GLfloat scale)
 {
-	_transform->Set(scale, rot, trans);
+	_transform->Set(trans, rot, scale);
 }
 
 
@@ -586,7 +587,8 @@ inline void GlowViewManipulator::_SimDrag()
 
 
 
-/*
+/*		23 May 2000 -- DA -- Version 0.9.8 update
+
 ===============================================================================
 */
 

@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit tutorial -- version 0.9.7  (1 May 2000)
+		The GLOW Toolkit tutorial -- version 0.9.8  (23 May 2000)
 	
 	CHANGE HISTORY:
 	
 		1 May 2000 -- DA -- Initial CVS checkin
+		23 May 2000 -- DA -- Version 0.9.8 update
 
 ===============================================================================
 */
@@ -204,14 +205,14 @@ void CalcUIReceiver::OnMessage(
 			// Going to inverse: Hide normal keys and show inverse keys
 			_panel1->Hide();
 			_panel2->Show();
-			_inverseButton->SetBoxColor(GlowColor(0.9, 0.7, 0.7));
+			_inverseButton->SetUpBoxColor(GlowColor(0.9, 0.7, 0.7));
 		}
 		else
 		{
 			// Going to normal: Hide inverse keys and show normal keys
 			_panel2->Hide();
 			_panel1->Show();
-			_inverseButton->SetBoxColor(GlowPushButtonParams::defaults.boxColor);
+			_inverseButton->SetUpBoxColor(GlowPushButtonParams::defaults.upBoxColor);
 		}
 	}
 	else if (message.widget->GetRefCon() == -3)
@@ -225,12 +226,12 @@ void CalcUIReceiver::OnMessage(
 		// Let's put a little easter egg in here!
 		if (message.modifiers & Glow::ctrlModifier)
 		{
-			mparams.text = "GlowCalc (lesson 7) version 0.9.7\nby Daniel Azuma\n\n"
+			mparams.text = "GlowCalc version 0.9.8\nby Daniel Azuma\n\n"
 				"Down with monopolistic software corporations!";
 		}
 		else
 		{
-			mparams.text = "GlowCalc (lesson 7) version 0.9.7\nby Daniel Azuma";
+			mparams.text = "GlowCalc version 0.9.8\nby Daniel Azuma";
 		}
 		GlowMessageWindow* messageWind = new GlowMessageWindow(mparams);
 		
@@ -702,7 +703,7 @@ CalcUI::CalcUI(
 	GlowCheckBoxParams cparams;
 	cparams.x = 0;
 	cparams.y = 165;
-	cparams.height = 16;
+	cparams.height = 15;
 	cparams.width = 160;
 	cparams.text = "Display entire stack";
 	cparams.state = GlowCheckBoxWidget::on;
@@ -739,7 +740,7 @@ CalcUI::CalcUI(
 	// Add radio buttons to the radio group. Remember that x and y are given
 	// in local coordinates within the radio group panel.
 	GlowRadioButtonParams rparams;
-	rparams.height = 16;
+	rparams.height = 15;
 	rparams.width = 100;
 	rparams.x = 20;
 	rparams.y = 1;

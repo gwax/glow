@@ -213,7 +213,7 @@ Returns a pointer to the last child component, or NULL if this component has no 
 <tt>void <b>ReorderChild</b>(GlowComponent* child, GlowComponent* pos)</tt>
 </p>
 <blockquote>
-Reorders the children, moving the given child immediately before the given position in the child component list. Pass NULL for the position to move the child to the end of the list. Throws an assertion if either component is not a child of this component.
+Reorders the children, moving the given child immediately before the given position in the child component list. To move the child to the end of the list, pass NULL for the position. Throws an assertion if either component is not a child of this component.
 </blockquote>
 
 <p>
@@ -270,6 +270,23 @@ Returns true if and only if this component is in the activeStandby state.
 </blockquote>
 
 </blockquote>
+
+
+<p>
+<b>Drawing methods</b>
+</p>
+
+<blockquote>
+
+<p>
+<tt>void <b>Paint</b>(void)</tt>
+</p>
+<blockquote>
+This advanced routine draws this component and all its children by recursively calling the respective <tt>OnBeginPaint()</tt> and <tt>OnEndPaint()</tt> methods. Normally, you do not need to draw components explicitly in this mannner, because GLOW will call the appropriate <tt>Paint()</tt> methods when it handles a refresh event. However, if you ever need a component to draw itself without going through the refresh mechanism, you can use this routine.
+</blockquote>
+
+</blockquote>
+
 
 </blockquote>
 
@@ -355,7 +372,7 @@ Override this method to perform any task in response to a component being deacti
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 10 April 2000
+Last updated 23 May 2000
 </address>
 
 

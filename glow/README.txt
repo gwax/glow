@@ -115,6 +115,9 @@ RELEASE NOTES
       Rolled GlowStickyButtonWidget interface into GlowPushButtonWidget.
       Removed GlowStickyButtonWidget.
 
+      Reordered the parameters of Set() in GlowTransformData and related
+      classes to (translation, rotation, scale).
+
 
     Bugs fixed
     ----------

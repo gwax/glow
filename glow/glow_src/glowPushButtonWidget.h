@@ -35,14 +35,15 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.9.7  (1 May 2000)
+		The GLOW Toolkit -- version 0.9.8  (23 May 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
 		10 April 2000 -- DA -- Version 0.9.6 update
 		1 May 2000 -- DA -- Version 0.9.7 update
-	
+		23 May 2000 -- DA -- Version 0.9.8 update
+
 ===============================================================================
 */
 
@@ -93,6 +94,15 @@ class GlowPushButtonWidget :
 	
 	public:
 	
+		enum Behavior
+		{
+			normalBehavior = 0,
+			toggleBehavior = 1,
+			stickDownBehavior = 2
+		};
+	
+	public:
+	
 		inline GlowPushButtonWidget();
 		inline GlowPushButtonWidget(
 			GlowWidget* parent,
@@ -119,25 +129,42 @@ class GlowPushButtonWidget :
 		inline void SetFont(
 			GlowFont font);
 		
-		inline GlowColor GetBoxColor() const;
-		inline GlowColor GetTextColor() const;
+		inline Behavior GetBehavior() const;
+		inline void SetBehavior(
+			Behavior behavior);
+		
+		inline bool IsDown() const;
+		inline void SetDown(
+			bool down);
+		
+		inline GlowColor GetUpBoxColor() const;
+		inline GlowColor GetUpTextColor() const;
+		inline GlowColor GetDownBoxColor() const;
+		inline GlowColor GetDownTextColor() const;
 		inline GlowColor GetHiliteBoxColor() const;
 		inline GlowColor GetHiliteTextColor() const;
-		inline GlowColor GetDisableBoxColor() const;
+		inline GlowColor GetDisableUpBoxColor() const;
+		inline GlowColor GetDisableDownBoxColor() const;
 		inline GlowColor GetDisableTextColor() const;
 		inline GlowColor GetDisableOutlineColor() const;
 		inline GlowColor GetLightBevelColor() const;
 		inline GlowColor GetDarkBevelColor() const;
 		
-		inline void SetBoxColor(
+		inline void SetUpBoxColor(
 			GlowColor c);
-		inline void SetTextColor(
+		inline void SetUpTextColor(
+			GlowColor c);
+		inline void SetDownBoxColor(
+			GlowColor c);
+		inline void SetDownTextColor(
 			GlowColor c);
 		inline void SetHiliteBoxColor(
 			GlowColor c);
 		inline void SetHiliteTextColor(
 			GlowColor c);
-		inline void SetDisableBoxColor(
+		inline void SetDisableUpBoxColor(
+			GlowColor c);
+		inline void SetDisableDownBoxColor(
 			GlowColor c);
 		inline void SetDisableTextColor(
 			GlowColor c);
@@ -150,6 +177,7 @@ class GlowPushButtonWidget :
 		
 		inline TSender<const GlowPushButtonMessage&>& Notifier();
 		
+		void ToggleState();
 		inline void Hit(
 			Glow::MouseButton button = Glow::leftButton,
 			Glow::Modifiers modifiers = Glow::noModifier);
@@ -194,6 +222,8 @@ class GlowPushButtonWidget :
 	
 	private:
 	
+		bool _state;
+		Behavior _behavior;
 		char* _label;
 		GlowFont _font;
 		int _labelWidth;
@@ -203,11 +233,14 @@ class GlowPushButtonWidget :
 		Glow::Modifiers _modifiers;
 		TSender<const GlowPushButtonMessage&> _sender;
 		
-		GlowColor _boxColor;
-		GlowColor _textColor;
+		GlowColor _upBoxColor;
+		GlowColor _upTextColor;
+		GlowColor _downBoxColor;
+		GlowColor _downTextColor;
 		GlowColor _hiliteBoxColor;
 		GlowColor _hiliteTextColor;
-		GlowColor _disableBoxColor;
+		GlowColor _disableUpBoxColor;
+		GlowColor _disableDownBoxColor;
 		GlowColor _disableTextColor;
 		GlowColor _disableOutlineColor;
 		GlowColor _lightBevelColor;
@@ -330,12 +363,17 @@ class GlowPushButtonParams :
 	
 		const char* text;
 		GlowFont font;
+		bool down;
+		GlowPushButtonWidget::Behavior behavior;
 		GlowPushButtonReceiver* receiver;
-		GlowColor boxColor;
-		GlowColor textColor;
+		GlowColor upBoxColor;
+		GlowColor upTextColor;
+		GlowColor downBoxColor;
+		GlowColor downTextColor;
 		GlowColor hiliteBoxColor;
 		GlowColor hiliteTextColor;
-		GlowColor disableBoxColor;
+		GlowColor disableUpBoxColor;
+		GlowColor disableDownBoxColor;
 		GlowColor disableTextColor;
 		GlowColor disableOutlineColor;
 		GlowColor lightBevelColor;
@@ -399,7 +437,8 @@ class GlowWidgetMapToPushButtonFilter :
 };
 
 
-/*
+/*		23 May 2000 -- DA -- Version 0.9.8 update
+
 ===============================================================================
 */
 
