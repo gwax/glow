@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -69,69 +70,9 @@ GLOW_NAMESPACE_BEGIN
 
 
 class GlowStickyButtonWidget;
-
-
-/*
-===============================================================================
-	CLASS GlowStickyButtonMessage
-	
-	Action for stickybutton
-===============================================================================
-*/
-
-class GlowStickyButtonMessage
-{
-	public:
-	
-		GlowStickyButtonWidget* widget;
-		bool state;
-		int mouseButton;
-		int modifiers;
-};
-
-
+class GlowStickyButtonMessage;
+class GlowStickyButtonParams;
 typedef TReceiver<const GlowStickyButtonMessage&> GlowStickyButtonReceiver;
-
-
-/*
-===============================================================================
-	STRUCT GlowStickyButtonParams
-	
-	Stickybutton params
-===============================================================================
-*/
-
-class GlowStickyButtonParams :
-	public GlowWidgetParams
-{
-	public:
-	
-		const char* text;
-		GlowFont font;
-		bool state;
-		int behavior;
-		GlowStickyButtonReceiver* receiver;
-		GlowColor upBoxColor;
-		GlowColor upTextColor;
-		GlowColor downBoxColor;
-		GlowColor downTextColor;
-		GlowColor hiliteBoxColor;
-		GlowColor hiliteTextColor;
-		GlowColor disableUpBoxColor;
-		GlowColor disableDownBoxColor;
-		GlowColor disableTextColor;
-		GlowColor disableOutlineColor;
-		GlowColor lightBevelColor;
-		GlowColor darkBevelColor;
-		
-		static GlowStickyButtonParams defaults;
-		
-		GlowStickyButtonParams();
-	
-	protected:
-	
-		GlowStickyButtonParams(bool);
-};
 
 
 /*
@@ -151,7 +92,8 @@ class GlowStickyButtonWidget :
 	
 	public:
 	
-		enum {
+		enum Behavior
+		{
 			noBehavior = 0,
 			toggleBehavior = 1,
 			stickDownBehavior = 2
@@ -185,13 +127,18 @@ class GlowStickyButtonWidget :
 		inline void SetFont(
 			GlowFont font);
 		
-		inline int GetBehavior() const;
+		inline Behavior GetBehavior() const;
 		inline void SetBehavior(
-			int behavior);
+			Behavior behavior);
 		
 		inline bool GetState() const;
 		inline void SetState(
 			bool state);
+		void ToggleState();
+		
+		inline void Hit(
+			Glow::MouseButton mouseButton,
+			Glow::Modifiers modifiers);
 		
 		inline GlowColor GetUpBoxColor() const;
 		inline GlowColor GetUpTextColor() const;
@@ -240,19 +187,19 @@ class GlowStickyButtonWidget :
 	
 	protected:
 	
-		virtual int OnAutoPack(
+		virtual AutoPackError OnAutoPack(
 			int hSize,
 			int vSize,
-			int hOption,
-			int vOption,
+			AutoPackOptions hOption,
+			AutoPackOptions vOption,
 			int& leftMargin,
 			int& rightMargin,
 			int& topMargin,
 			int& bottomMargin);
 		
-		virtual void OnPressed(
-			int mouseButton,
-			int modifiers);
+		virtual void OnHit(
+			Glow::MouseButton mouseButton,
+			Glow::Modifiers modifiers);
 	
 	
 	//-------------------------------------------------------------------------
@@ -274,14 +221,14 @@ class GlowStickyButtonWidget :
 	private:
 	
 		bool _state;
-		int _behavior;
+		Behavior _behavior;
 		char* _label;
 		GlowFont _font;
 		int _labelWidth;
 		bool _down;
 		bool _inside;
-		int _button;
-		int _modifiers;
+		Glow::MouseButton _button;
+		Glow::Modifiers _modifiers;
 		TSender<const GlowStickyButtonMessage&> _sender;
 		
 		GlowColor _upBoxColor;
@@ -302,18 +249,78 @@ class GlowStickyButtonWidget :
 		virtual void OnWidgetPaint();
 		
 		virtual void OnWidgetMouseDown(
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnWidgetMouseUp(
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnWidgetMouseDrag(
 			int x,
 			int y);
+};
+
+
+/*
+===============================================================================
+	CLASS GlowStickyButtonMessage
+	
+	Action for stickybutton
+===============================================================================
+*/
+
+class GlowStickyButtonMessage
+{
+	public:
+	
+		GlowStickyButtonWidget* widget;
+		bool state;
+		Glow::MouseButton mouseButton;
+		Glow::Modifiers modifiers;
+};
+
+
+/*
+===============================================================================
+	STRUCT GlowStickyButtonParams
+	
+	Stickybutton params
+===============================================================================
+*/
+
+class GlowStickyButtonParams :
+	public GlowWidgetParams
+{
+	public:
+	
+		const char* text;
+		GlowFont font;
+		bool state;
+		GlowStickyButtonWidget::Behavior behavior;
+		GlowStickyButtonReceiver* receiver;
+		GlowColor upBoxColor;
+		GlowColor upTextColor;
+		GlowColor downBoxColor;
+		GlowColor downTextColor;
+		GlowColor hiliteBoxColor;
+		GlowColor hiliteTextColor;
+		GlowColor disableUpBoxColor;
+		GlowColor disableDownBoxColor;
+		GlowColor disableTextColor;
+		GlowColor disableOutlineColor;
+		GlowColor lightBevelColor;
+		GlowColor darkBevelColor;
+		
+		static GlowStickyButtonParams defaults;
+		
+		GlowStickyButtonParams();
+	
+	protected:
+	
+		GlowStickyButtonParams(bool);
 };
 
 

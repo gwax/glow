@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -74,21 +75,21 @@ GlowQuickPaletteWindow::GlowQuickPaletteWindow(
 	const char* name,
 	int x,
 	int y,
-	int arrangement,
-	int alignment,
+	Arrangement arrangement,
+	Alignment alignment,
 	int spacing,
 	int hmargin,
 	int vmargin)
 {
 	GLOW_DEBUGSCOPE("GlowQuickPaletteWindow::GlowQuickPaletteWindow");
 	
-	GLOW_ASSERT(arrangement!=parentSetting);
-	GLOW_ASSERT(alignment!=parentSetting);
+	GLOW_ASSERT(arrangement!=parentArrangement);
+	GLOW_ASSERT(alignment!=parentAlignment);
 	GLOW_ASSERT(spacing!=parentSetting);
 	GLOW_ASSERT(hmargin!=parentSetting);
 	GLOW_ASSERT(vmargin!=parentSetting);
 	GlowFixedSizeWidgetWindow::Init(name, x, y, 100, 100);
-	_rootPanel = new GlowQuickPanelWidget(this, 0,
+	_panel = new GlowQuickPanelWidget(this, 0,
 		GlowQuickPanelWidget::plainStyle, 0, arrangement, alignment,
 		spacing, hmargin, vmargin);
 	Hide();
@@ -99,15 +100,15 @@ void GlowQuickPaletteWindow::Pack()
 {
 	GLOW_DEBUGSCOPE("GlowQuickPaletteWindow::Pack");
 	
-	_rootPanel->AutoReshape();
-	ForceReshape(_rootPanel->Width(), _rootPanel->Height());
+	_panel->AutoReshape();
+	ForceReshape(_panel->Width(), _panel->Height());
 	Show();
 }
 
 
 /*
 ===============================================================================
-	Methods of GlowQuickPaletteWindow
+	Methods of GlowQuickPaletteSubwindow
 ===============================================================================
 */
 
@@ -117,21 +118,21 @@ GlowQuickPaletteSubwindow::GlowQuickPaletteSubwindow(
 	int y,
 	int width,
 	int height,
-	int arrangement,
-	int alignment,
+	Arrangement arrangement,
+	Alignment alignment,
 	int spacing,
 	int hmargin,
 	int vmargin)
 {
 	GLOW_DEBUGSCOPE("GlowQuickPaletteSubwindow::GlowQuickPaletteSubwindow");
 	
-	GLOW_ASSERT(arrangement!=parentSetting);
-	GLOW_ASSERT(alignment!=parentSetting);
+	GLOW_ASSERT(arrangement!=parentArrangement);
+	GLOW_ASSERT(alignment!=parentAlignment);
 	GLOW_ASSERT(spacing!=parentSetting);
 	GLOW_ASSERT(hmargin!=parentSetting);
 	GLOW_ASSERT(vmargin!=parentSetting);
 	GlowWidgetSubwindow::Init(parent, x, y, width, height);
-	_rootPanel = new GlowQuickPanelWidget(this, 0,
+	_panel = new GlowQuickPanelWidget(this, 0,
 		GlowQuickPanelWidget::plainStyle, 0, arrangement, alignment,
 		spacing, hmargin, vmargin);
 	Hide();
@@ -143,10 +144,10 @@ void GlowQuickPaletteSubwindow::Pack(
 {
 	GLOW_DEBUGSCOPE("GlowQuickPaletteSubwindow::Pack");
 	
-	_rootPanel->AutoReshape();
+	_panel->AutoReshape();
 	if (resizeOnPack)
 	{
-		Reshape(_rootPanel->Width(), _rootPanel->Height());
+		Reshape(_panel->Width(), _panel->Height());
 	}
 	Show();
 }
@@ -161,7 +162,7 @@ void GlowQuickPaletteSubwindow::Pack(
 GlowQuickRadioGroupWidget::GlowQuickRadioGroupWidget(
 	GlowWidget* parent,
 	GlowRadioButtonReceiver* receiver,
-	int arrangement,
+	GlowQuickPalette::Arrangement arrangement,
 	int spacing)
 {
 	GlowRadioGroupParams params;
@@ -183,11 +184,11 @@ GlowRadioButtonWidget* GlowQuickRadioGroupWidget::AddRadioButton(
 }
 
 
-int GlowQuickRadioGroupWidget::OnAutoPack(
+GlowWidget::AutoPackError GlowQuickRadioGroupWidget::OnAutoPack(
 	int hSize,
 	int vSize,
-	int hOption,
-	int vOption,
+	AutoPackOptions hOption,
+	AutoPackOptions vOption,
 	int& leftMargin,
 	int& rightMargin,
 	int& topMargin,
@@ -204,7 +205,7 @@ int GlowQuickRadioGroupWidget::OnAutoPack(
 		GlowRadioButtonWidget* button = dynamic_cast<GlowRadioButtonWidget*>(*iter);
 		if (button != 0)
 		{
-			if (_arrangement == horizontal)
+			if (_arrangement == GlowQuickPalette::horizontal)
 			{
 				button->AutoPack(position, unspecifiedPos, 0, unspecifiedPos,
 					leftPos | preferredSize, topPos | preferredSize);
@@ -229,7 +230,7 @@ int GlowQuickRadioGroupWidget::OnAutoPack(
 	
 	// Preferred width and height
 	int pwidth = 0, pheight = 0;
-	if (_arrangement == horizontal)
+	if (_arrangement == GlowQuickPalette::horizontal)
 	{
 		pwidth = position-_spacing;
 		pheight = size;
@@ -280,26 +281,26 @@ int GlowQuickRadioGroupWidget::OnAutoPack(
 ===============================================================================
 */
 
-GlowQuickPanelWidget* GlowQuickPanelWidget::AddPanel(
-	int style,
+GlowQuickPanelWidget* GlowQuickPalette::AddPanel(
+	GlowPanelWidget::Style style,
 	const char* label,
-	int arrangement,
-	int alignment,
+	Arrangement arrangement,
+	Alignment alignment,
 	int spacing,
 	int hmargin,
 	int vmargin)
 {
 	GLOW_DEBUGSCOPE("GlowQuickPanelWidget::AddPanel");
 	
-	return new GlowQuickPanelWidget(Root(), this,
+	return new GlowQuickPanelWidget(_panel->Root(), _panel,
 		style, label, arrangement, alignment, spacing, hmargin, vmargin);
 }
 
 
-GlowPanelWidget* GlowQuickPanelWidget::AddFixedPanel(
+GlowPanelWidget* GlowQuickPalette::AddFixedPanel(
 	int width,
 	int height,
-	int style)
+	GlowPanelWidget::Style style)
 {
 	GLOW_DEBUGSCOPE("GlowQuickPanelWidget::AddFixedPanel");
 	
@@ -307,19 +308,19 @@ GlowPanelWidget* GlowQuickPanelWidget::AddFixedPanel(
 	params.width = width;
 	params.height = height;
 	params.style = style;
-	return new GlowPanelWidget(this, params);
+	return new GlowPanelWidget(_panel, params);
 }
 
 
-GlowSeparatorWidget* GlowQuickPanelWidget::AddSeparator(
-	int style)
+GlowSeparatorWidget* GlowQuickPalette::AddSeparator(
+	GlowSeparatorWidget::Style style)
 {
 	GLOW_DEBUGSCOPE("GlowQuickPanelWidget::AddSeparator");
 	
 	GlowSeparatorParams params;
 	params.x = params.y = 0;
 	params.style = style;
-	if (_arrangement == vertical)
+	if (_panel->_arrangement == GlowQuickPalette::vertical)
 	{
 		params.width = 10;
 		params.height = 4;
@@ -329,11 +330,11 @@ GlowSeparatorWidget* GlowQuickPanelWidget::AddSeparator(
 		params.height = 10;
 		params.width = 4;
 	}
-	return new GlowSeparatorWidget(this, params);
+	return new GlowSeparatorWidget(_panel, params);
 }
 
 
-GlowPushButtonWidget* GlowQuickPanelWidget::AddPushButton(
+GlowPushButtonWidget* GlowQuickPalette::AddPushButton(
 	const char* label,
 	GlowPushButtonReceiver* receiver)
 {
@@ -343,14 +344,14 @@ GlowPushButtonWidget* GlowQuickPanelWidget::AddPushButton(
 	params.x = params.y = 0;
 	params.text = label;
 	params.receiver = receiver;
-	return new GlowPushButtonWidget(this, params);
+	return new GlowPushButtonWidget(_panel, params);
 }
 
 
-GlowMenuButtonWidget* GlowQuickPanelWidget::AddMenuButton(
+GlowMenuButtonWidget* GlowQuickPalette::AddMenuButton(
 	const char* label,
 	GlowMenu* menu,
-	int iconType)
+	GlowMenuButtonWidget::IconType iconType)
 {
 	GLOW_DEBUGSCOPE("GlowQuickPanelWidget::AddMenuButton");
 	
@@ -359,11 +360,11 @@ GlowMenuButtonWidget* GlowQuickPanelWidget::AddMenuButton(
 	params.text = label;
 	params.menu = menu;
 	params.iconType = iconType;
-	return new GlowMenuButtonWidget(this, params);
+	return new GlowMenuButtonWidget(_panel, params);
 }
 
 
-GlowLabeledPopupMenuWidget* GlowQuickPanelWidget::AddPopupMenu(
+GlowLabeledPopupMenuWidget* GlowQuickPalette::AddPopupMenu(
 	const char* label,
 	GlowPopupMenuReceiver* receiver)
 {
@@ -373,13 +374,13 @@ GlowLabeledPopupMenuWidget* GlowQuickPanelWidget::AddPopupMenu(
 	params.x = params.y = 0;
 	params.receiver = receiver;
 	params.labelText = label;
-	return new GlowLabeledPopupMenuWidget(this, params);
+	return new GlowLabeledPopupMenuWidget(_panel, params);
 }
 
 
-GlowCheckBoxWidget* GlowQuickPanelWidget::AddCheckBox(
+GlowCheckBoxWidget* GlowQuickPalette::AddCheckBox(
 	const char* label,
-	int initialValue,
+	GlowCheckBoxWidget::State initialValue,
 	GlowCheckBoxReceiver* receiver)
 {
 	GLOW_DEBUGSCOPE("GlowQuickPanelWidget::AddCheckBox");
@@ -389,26 +390,26 @@ GlowCheckBoxWidget* GlowQuickPanelWidget::AddCheckBox(
 	params.text = label;
 	params.receiver = receiver;
 	params.state = initialValue;
-	return new GlowCheckBoxWidget(this, params);
+	return new GlowCheckBoxWidget(_panel, params);
 }
 
 
-GlowQuickRadioGroupWidget* GlowQuickPanelWidget::AddRadioGroup(
-	int arrangement,
+GlowQuickRadioGroupWidget* GlowQuickPalette::AddRadioGroup(
+	Arrangement arrangement,
 	int spacing,
 	GlowRadioButtonReceiver* receiver)
 {
 	GLOW_DEBUGSCOPE("GlowQuickPanelWidget::AddRadioGroup");
 	
-	return new GlowQuickRadioGroupWidget(this, receiver, arrangement, spacing);
+	return new GlowQuickRadioGroupWidget(_panel, receiver, arrangement, spacing);
 }
 
 
-GlowLabeledSliderWidget* GlowQuickPanelWidget::AddSlider(
+GlowLabeledSliderWidget* GlowQuickPalette::AddSlider(
 	float min,
 	float max,
 	float initial,
-	int options,
+	GlowSliderWidget::Options options,
 	int numTicks,
 	const char* valueLabel,
 	const char* label,
@@ -418,7 +419,7 @@ GlowLabeledSliderWidget* GlowQuickPanelWidget::AddSlider(
 	
 	GlowLabeledSliderParams params;
 	params.x = params.y = 0;
-	if (_arrangement == horizontal)
+	if (_panel->_arrangement == horizontal)
 	{
 		params.width = 30;
 		params.height = 130;
@@ -438,11 +439,11 @@ GlowLabeledSliderWidget* GlowQuickPanelWidget::AddSlider(
 	params.receiver = receiver;
 	params.labelTemplate = label;
 	params.minmaxTemplate = valueLabel;
-	return new GlowLabeledSliderWidget(this, params);
+	return new GlowLabeledSliderWidget(_panel, params);
 }
 
 
-GlowScrollBarWidget* GlowQuickPanelWidget::AddScrollBar(
+GlowScrollBarWidget* GlowQuickPalette::AddScrollBar(
 	long min,
 	long max,
 	long span,
@@ -453,7 +454,7 @@ GlowScrollBarWidget* GlowQuickPanelWidget::AddScrollBar(
 	
 	GlowScrollBarParams params;
 	params.x = params.y = 0;
-	if (_arrangement == horizontal)
+	if (_panel->_arrangement == horizontal)
 	{
 		params.width = 20;
 		params.height = 120;
@@ -468,11 +469,11 @@ GlowScrollBarWidget* GlowQuickPanelWidget::AddScrollBar(
 	params.span = span;
 	params.initialTop = initialTop;
 	params.receiver = receiver;
-	return new GlowScrollBarWidget(this, params);
+	return new GlowScrollBarWidget(_panel, params);
 }
 
 
-GlowLabeledTextFieldWidget* GlowQuickPanelWidget::AddTextField(
+GlowLabeledTextFieldWidget* GlowQuickPalette::AddTextField(
 	int width,
 	const char* text,
 	const char* label)
@@ -485,8 +486,8 @@ GlowLabeledTextFieldWidget* GlowQuickPanelWidget::AddTextField(
 	params.initialText = text;
 	params.labelText = label;
 	GlowLabeledTextFieldWidget* ret =
-		new GlowLabeledTextFieldWidget(this, params);
-	if (Root()->GetKeyboardFocus() == 0)
+		new GlowLabeledTextFieldWidget(_panel, params);
+	if (_panel->Root()->GetKeyboardFocus() == 0)
 	{
 		ret->GrabKeyboardFocus();
 	}
@@ -494,7 +495,7 @@ GlowLabeledTextFieldWidget* GlowQuickPanelWidget::AddTextField(
 }
 
 
-GlowLabeledHiddenTextFieldWidget* GlowQuickPanelWidget::AddHiddenTextField(
+GlowLabeledHiddenTextFieldWidget* GlowQuickPalette::AddHiddenTextField(
 	int width,
 	const char* text,
 	char hideCharacter,
@@ -508,8 +509,8 @@ GlowLabeledHiddenTextFieldWidget* GlowQuickPanelWidget::AddHiddenTextField(
 	params.initialText = text;
 	params.labelText = label;
 	GlowLabeledHiddenTextFieldWidget* ret =
-		new GlowLabeledHiddenTextFieldWidget(this, params, hideCharacter);
-	if (Root()->GetKeyboardFocus() == 0)
+		new GlowLabeledHiddenTextFieldWidget(_panel, params, hideCharacter);
+	if (_panel->Root()->GetKeyboardFocus() == 0)
 	{
 		ret->GrabKeyboardFocus();
 	}
@@ -517,7 +518,7 @@ GlowLabeledHiddenTextFieldWidget* GlowQuickPanelWidget::AddHiddenTextField(
 }
 
 
-GlowLabelWidget* GlowQuickPanelWidget::AddLabel(
+GlowLabelWidget* GlowQuickPalette::AddLabel(
 	const char* text)
 {
 	GLOW_DEBUGSCOPE("GlowQuickPanelWidget::AddLabel");
@@ -525,17 +526,17 @@ GlowLabelWidget* GlowQuickPanelWidget::AddLabel(
 	GlowLabelParams params;
 	params.x = params.y = 0;
 	params.text = text;
-	return new GlowLabelWidget(this, params);
+	return new GlowLabelWidget(_panel, params);
 }
 
 
 GlowQuickPanelWidget::GlowQuickPanelWidget(
 	GlowWidgetRoot* root,
 	GlowQuickPanelWidget* parent,
-	int style,
+	Style style,
 	const char* label,
-	int arrangement,
-	int alignment,
+	Arrangement arrangement,
+	Alignment alignment,
 	int spacing,
 	int hmargin,
 	int vmargin)
@@ -547,9 +548,11 @@ GlowQuickPanelWidget::GlowQuickPanelWidget(
 	params.clipping = false;
 	GlowPanelWidget::Init(root, parent, params);
 	
-	_arrangement = (arrangement == parentSetting ?
+	_panel = this;
+	
+	_arrangement = (arrangement == parentArrangement ?
 		parent->GetArrangement() : arrangement);
-	_alignment = (alignment == parentSetting ?
+	_alignment = (alignment == parentAlignment ?
 		parent->GetAlignment() : alignment);
 	_spacing = (spacing == parentSetting ?
 		parent->GetSpacing() : spacing);
@@ -571,11 +574,11 @@ GlowQuickPanelWidget::GlowQuickPanelWidget(
 }
 
 
-int GlowQuickPanelWidget::OnAutoPack(
+GlowWidget::AutoPackError GlowQuickPanelWidget::OnAutoPack(
 	int hSize,
 	int vSize,
-	int hOption,
-	int vOption,
+	AutoPackOptions hOption,
+	AutoPackOptions vOption,
 	int& leftMargin,
 	int& rightMargin,
 	int& topMargin,
@@ -591,16 +594,19 @@ int GlowQuickPanelWidget::OnAutoPack(
 	for (GlowComponent::ChildIterator iter = BeginChildren();
 		iter != EndChildren(); ++iter)
 	{
+		// Get next widget
 		GlowWidget* widget = dynamic_cast<GlowWidget*>(*iter);
 		if (widget == 0)
 		{
 			continue;
 		}
 		
+		// Handle the label of the panel (if any) differently.
 		if (widget == _label)
 		{
 			if (GetStyle() == GlowPanelWidget::etchedStyle)
 			{
+				// Etched style: label is half in and half out of the panel
 				widget->AutoPack(_hmargin, unspecifiedPos, 0, unspecifiedPos,
 					leftPos | preferredSize, centerPos | preferredSize);
 				topMargin = widget->Height()/2;
@@ -611,6 +617,7 @@ int GlowQuickPanelWidget::OnAutoPack(
 			}
 			else
 			{
+				// Other style: label is completely out of the panel
 				widget->AutoPack(_hmargin, unspecifiedPos, unspecifiedPos, 0,
 					leftPos | preferredSize, bottomPos | preferredSize);
 				topMargin = widget->Height();
@@ -670,7 +677,7 @@ int GlowQuickPanelWidget::OnAutoPack(
 	int vnew = Height();
 	if (vOption == forcedSize || vOption == expandPreferredSize)
 	{
-		vnew = vSize;
+		vnew = vSize-topMargin;  // because of label
 	}
 	else if (vOption == preferredSize)
 	{
@@ -705,7 +712,7 @@ int GlowQuickPanelWidget::OnAutoPack(
 		if (_arrangement == horizontal)
 		{
 			// Horizontal arrangement
-			int vOption = (_alignment & alignExpand) ?
+			AutoPackOptions vOption = (_alignment & alignExpand) ?
 				expandPreferredSize : preferredSize;
 			
 			if ((_alignment & 3) == alignBottom)
@@ -726,7 +733,7 @@ int GlowQuickPanelWidget::OnAutoPack(
 		else
 		{
 			// Vertical arrangement
-			int hOption = (_alignment & alignExpand) ?
+			AutoPackOptions hOption = (_alignment & alignExpand) ?
 				expandPreferredSize : preferredSize;
 			
 			if ((_alignment & 3) == alignLeft)

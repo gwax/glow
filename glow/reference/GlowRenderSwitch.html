@@ -52,9 +52,9 @@ module: <tt><a href="M_glowRenderSwitch.html">glowRenderSwitch</a></tt>
 <tt>GlowRenderSwitch</tt> is a simple component that can enable and disable rendering of its children. One common use of <tt>GlowRenderSwitch</tt> is in conjunction with <tt><a href="GlowViewManipulator.html">GlowViewManipulator</a></tt>. You may wish to render a simplified version of the scene while the user is interactively manipulating. One way to do this is to define two components under the manipulator, one for detailed (slow) rendering, and the other for simplified (faster) rendering, and then guard each component by a render switch. You can then turn these switches on and off depending on whether or not the user is interactively manipulating.
 </p>
 <p>
-<pre>                       |--> GlowRenderSwitch --> My_Fast_Component
+<pre>                      |--> GlowRenderSwitch --> My_Fast_Component
 GlowViewManipulator --|
-                       |--> GlowRenderSwitch --> My_Slow_Component</pre>
+                      |--> GlowRenderSwitch --> My_Slow_Component</pre>
 </p>
 <p>
 GLOW programs may use <tt>GlowRenderSwitch</tt> to manage rendering of component subtrees.
@@ -286,7 +286,7 @@ This method is overridden by <tt>GlowRenderSwitch</tt> to perform render enablin
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 

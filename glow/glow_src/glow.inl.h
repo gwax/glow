@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -80,31 +81,33 @@ inline GlowIdleMessage::GlowIdleMessage()
 
 /*
 ===============================================================================
-	Inline methods for Glow
+	Inline methods for event filter types
 ===============================================================================
 */
 
+inline GlowKeyboardData::GlowKeyboardData()
+{
+	_continue = true;
+}
+
+
+inline GlowMouseData::GlowMouseData()
+{
+	_continue = true;
+}
+
+
+/*
+===============================================================================
+	Inline methods for Glow
+===============================================================================
+*/
 
 /*
 -------------------------------------------------------------------------------
 	General methods
 -------------------------------------------------------------------------------
 */
-
-inline void Glow::Init(
-	int& argc,
-	char** argv)
-{
-	::glutInit(&argc, argv);
-	::glutMenuStatusFunc(Glow::_MenuStatusFunc);
-}
-
-
-inline void Glow::MainLoop()
-{
-	::glutMainLoop();
-}
-
 
 inline bool Glow::IsMenuInUse()
 {
@@ -114,48 +117,9 @@ inline bool Glow::IsMenuInUse()
 
 /*
 -------------------------------------------------------------------------------
-	Registry methods
+	Modal window methods
 -------------------------------------------------------------------------------
 */
-
-inline void Glow::_AddWindow(
-	GlowSubwindow* window,
-	int windowNum)
-{
-	_windowRegistry.insert(_WindowRegistryEntry(windowNum, window));
-}
-
-
-inline GlowSubwindow* Glow::ResolveWindow(
-	int windowNum)
-{
-	_WindowRegistryIterator iter = _windowRegistry.find(windowNum);
-	return (iter == _windowRegistry.end()) ? 0 : (*iter).second;
-}
-
-
-inline void Glow::_AddMenu(
-	GlowMenu *menu,
-	int menuNum)
-{
-	_menuRegistry.insert(_MenuRegistryEntry(menuNum, menu));
-}
-
-
-inline void Glow::_RemoveMenu(
-	int menuNum)
-{
-	_menuRegistry.erase(menuNum);
-}
-
-
-inline GlowMenu* Glow::ResolveMenu(
-	int menuNum)
-{
-	_MenuRegistryIterator iter = _menuRegistry.find(menuNum);
-	return (iter == _menuRegistry.end()) ? 0 : (*iter).second;
-}
-
 
 inline int Glow::NumModalWindows()
 {
@@ -210,27 +174,111 @@ inline bool Glow::IsTimerPending(
 
 /*
 -------------------------------------------------------------------------------
+	Filter methods
+-------------------------------------------------------------------------------
+*/
+
+inline void Glow::UnregisterAllMouseFilters()
+{
+	_mouseFilters.UnbindAll();
+}
+
+
+inline void Glow::UnregisterAllKeyboardFilters()
+{
+	_keyboardFilters.UnbindAll();
+}
+
+
+inline unsigned int Glow::NumRegisteredMouseFilters()
+{
+	return _mouseFilters.NumReceivers();
+}
+
+
+inline unsigned int Glow::NumRegisteredKeyboardFilters()
+{
+	return _keyboardFilters.NumReceivers();
+}
+
+
+inline bool Glow::IsFilterRegistered(
+	GlowMouseFilter* filter)
+{
+	return _mouseFilters.IsBoundTo(filter);
+}
+
+
+inline bool Glow::IsFilterRegistered(
+	GlowKeyboardFilter* filter)
+{
+	return _keyboardFilters.IsBoundTo(filter);
+}
+
+
+inline void Glow::RegisterFilter(
+	GlowMouseFilter* filter)
+{
+	if (!_mouseFilters.IsBoundTo(filter))
+	{
+		_mouseFilters.Bind(filter);
+	}
+}
+
+
+inline void Glow::RegisterFilter(
+	GlowKeyboardFilter* filter)
+{
+	if (!_keyboardFilters.IsBoundTo(filter))
+	{
+		_keyboardFilters.Bind(filter);
+	}
+}
+
+
+inline void Glow::UnregisterFilter(
+	GlowMouseFilter* filter)
+{
+	if (_mouseFilters.IsBoundTo(filter))
+	{
+		_mouseFilters.Unbind(filter);
+	}
+}
+
+
+inline void Glow::UnregisterFilter(
+	GlowKeyboardFilter* filter)
+{
+	if (_keyboardFilters.IsBoundTo(filter))
+	{
+		_keyboardFilters.Unbind(filter);
+	}
+}
+
+
+/*
+-------------------------------------------------------------------------------
 	Event simulation methods
 -------------------------------------------------------------------------------
 */
 
 inline void Glow::DeliverKeyboardEvt(
 	GlowSubwindow* receiver,
-	int key,
-	int modifiers,
+	Glow::KeyCode key,
 	int x,
-	int y)
+	int y,
+	Modifiers modifiers)
 {
-	receiver->OnKeyboard(key, modifiers, x, y);
+	receiver->OnKeyboard(key, x, y, modifiers);
 }
 
 
 inline void Glow::DeliverMouseDownEvt(
 	GlowSubwindow* receiver,
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Modifiers modifiers)
 {
 	receiver->OnMouseDown(button, x, y, modifiers);
 }
@@ -238,10 +286,10 @@ inline void Glow::DeliverMouseDownEvt(
 
 inline void Glow::DeliverMouseUpEvt(
 	GlowSubwindow* receiver,
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Modifiers modifiers)
 {
 	receiver->OnMouseUp(button, x, y, modifiers);
 }
@@ -433,8 +481,8 @@ inline GlowSubwindow::GlowSubwindow(
 	int y,
 	int width,
 	int height,
-	int mode,
-	int eventMask)
+	Glow::BufferType mode,
+	Glow::EventMask eventMask)
 {
 	Init(parent, x, y, width, height, mode, eventMask);
 }
@@ -549,10 +597,8 @@ inline int GlowSubwindow::GetCursor() const
 
 
 inline GlowMenu* GlowSubwindow::GetMenu(
-	int button) const
+	Glow::MouseButton button) const
 {
-	GLOW_DEBUG(button!=Glow::leftButton && button!=Glow::middleButton &&
-		Glow::rightButton, "Bad button value in GlowSubwindow::GetMenu");
 	if (button == Glow::leftButton)
 	{
 		return _leftMenu;
@@ -569,19 +615,19 @@ inline GlowMenu* GlowSubwindow::GetMenu(
 
 
 inline void GlowSubwindow::UnsetMenu(
-	int button)
+	Glow::MouseButton button)
 {
 	SetMenu(button, 0);
 }
 
 
-inline int GlowSubwindow::GetEventMask() const
+inline Glow::EventMask GlowSubwindow::GetEventMask() const
 {
 	return _eventMask;
 }
 
 
-inline int GlowSubwindow::GetInactiveEventMask() const
+inline Glow::EventMask GlowSubwindow::GetInactiveEventMask() const
 {
 	return _inactiveEventMask;
 }
@@ -632,8 +678,8 @@ inline GlowWindow::GlowWindow(
 	int y,
 	int width,
 	int height,
-	int mode,
-	int eventMask)
+	Glow::BufferType mode,
+	Glow::EventMask eventMask)
 {
 	Init(title, x, y, width, height, mode, eventMask);
 }
@@ -738,14 +784,13 @@ inline int GlowMenu::NumItems() const
 
 
 inline void GlowMenu::SetBindState(
-	int bindState)
+	GlowMenu::BindState bindState)
 {
-	GLOW_DEBUG(bindState<0 || bindState>2, "Illegal GlowMenu bind state");
 	_bindState = bindState;
 }
 
 
-inline int GlowMenu::GetBindState() const
+inline GlowMenu::BindState GlowMenu::GetBindState() const
 {
 	return _bindState;
 }

@@ -81,92 +81,116 @@ All GLOW programs that use widgets will need to deal with the <tt>GlowWidget</tt
 
 <blockquote>
 
-<dl>
-<dt>
-<tt>static const int <b>noAutoPackError</b></tt>
-<dd>
+<p>
+<tt>enum GlowWidget::AutoPackError <b>noAutoPackError</b></tt>
+</p>
+<blockquote>
 AutoPack completed successfully
-<dt>
-<tt>static const int <b>hAutoPackError</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>enum GlowWidget::AutoPackError <b>hAutoPackError</b></tt>
+</p>
+<blockquote>
 AutoPack encountered an error packing horizontally.
-<dt>
-<tt>static const int <b>vAutoPackError</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>enum GlowWidget::AutoPackError <b>vAutoPackError</b></tt>
+</p>
+<blockquote>
 AutoPack encountered an error packing vertically.
-</dl>
+</blockquote>
 
 </blockquote>
 
 
 <p>
-<b>AutoPack sizing options</b>
+<b>AutoPack sizing and positioning options</b>
 </p>
 
 <blockquote>
 
-<dl>
-<dt>
-<tt>static const int <b>unspecifiedSize</b></tt>
-<dd>
-Constant passed to <tt>OnAutoPack()</tt> to indicate that no size limit is imposed.
-<dt>
-<tt>static const int <b>noReshape</b></tt>
-<dd>
+<p>
+<tt>enum GlowWidget::AutoPackOptions <b>noReshape</b></tt>
+</p>
+<blockquote>
 Don't reshape the widget
-<dt>
-<tt>static const int <b>preferredSize</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>enum GlowWidget::AutoPackOptions <b>preferredSize</b></tt>
+</p>
+<blockquote>
 Use widget's preferred size.
-<dt>
-<tt>static const int <b>expandPreferredSize</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>enum GlowWidget::AutoPackOptions <b>expandPreferredSize</b></tt>
+</p>
+<blockquote>
 Use widget's preferred size, but request that it expand to fill the space.
-<dt>
-<tt>static const int <b>forcedSize</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>enum GlowWidget::AutoPackOptions <b>forcedSize</b></tt>
+</p>
+<blockquote>
 Attempt to force the widget to fill the space.
-</dl>
+</blockquote>
+<p>
+<tt>enum GlowWidget::AutoPackOptions <b>noMove</b></tt>
+</p>
+<blockquote>
+Don't move the widget
+</blockquote>
+<p>
+<tt>enum GlowWidget::AutoPackOptions <b>leftPos</b></tt>
+</p>
+<blockquote>
+Align the widget with the left limit.
+</blockquote>
+<p>
+<tt>enum GlowWidget::AutoPackOptions <b>rightPos</b></tt>
+</p>
+<blockquote>
+Align the widget with the right limit.
+</blockquote>
+<p>
+<tt>enum GlowWidget::AutoPackOptions <b>topPos</b></tt>
+</p>
+<blockquote>
+Align the widget with the top limit.
+</blockquote>
+<p>
+<tt>enum GlowWidget::AutoPackOptions <b>bottomPos</b></tt>
+</p>
+<blockquote>
+Align the widget with the bottom limit.
+</blockquote>
+<p>
+<tt>enum GlowWidget::AutoPackOptions <b>centerPos</b></tt>
+</p>
+<blockquote>
+Center the widget between or around the limits.
+</blockquote>
 
 </blockquote>
 
 
 <p>
-<b>AutoPack positioning options</b>
+<b>Special AutoPack positioning and sizing values</b>
 </p>
 
 <blockquote>
 
-<dl>
-<dt>
-<tt>static const int <b>unspecifiedPos</b></tt>
-<dd>
+<p>
+<tt>enum { <b>unspecifiedSize</b> }</tt>
+</p>
+<blockquote>
+Constant passed to <tt>OnAutoPack()</tt> to indicate that no size limit is imposed.
+</blockquote>
+<p>
+<tt>enum { <b>unspecifiedPos</b> }</tt>
+</p>
+<blockquote>
 Indicates that one of the limits given to <tt>AutoPack()</tt> is unspecified.
-<dt>
-<tt>static const int <b>noMove</b></tt>
-<dd>
-Don't move the widget
-<dt>
-<tt>static const int <b>leftPos</b></tt>
-<dd>
-Align the widget with the left limit.
-<dt>
-<tt>static const int <b>rightPos</b></tt>
-<dd>
-Align the widget with the right limit.
-<dt>
-<tt>static const int <b>topPos</b></tt>
-<dd>
-Align the widget with the top limit..
-<dt>
-<tt>static const int <b>bottomPos</b></tt>
-<dd>
-Align the widget with the bottom limit..
-<dt>
-<tt>static const int <b>centerPos</b></tt>
-<dd>
-Center the widget between or around the limits.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -330,18 +354,18 @@ Returns the height of the widget.
 <blockquote>
 
 <p>
-<tt>int <b>AutoPack</b>(int leftLimit, int rightLimit, int topLimit, int bottomLimit, int hOption, int vOption, int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
+<tt>GlowWidget::AutoPackError <b>AutoPack</b>(int leftLimit, int rightLimit, int topLimit, int bottomLimit, GlowWidget::AutoPackOptions hOption, GlowWidget::AutoPackOptions vOption, int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
 <br>
-<tt>int <b>AutoPack</b>(int leftLimit, int rightLimit, int topLimit, int bottomLimit, int hOption, int vOption)</tt>
+<tt>GlowWidget::AutoPackError <b>AutoPack</b>(int leftLimit, int rightLimit, int topLimit, int bottomLimit, GlowWidget::AutoPackOptions hOption, GlowWidget::AutoPackOptions vOption)</tt>
 </p>
 <blockquote>
 Causes a widget to attempt to move and resize itself to fit within the given limits. The exact behavior is defined by the widget's <tt>OnAutoPack()</tt> method. Some widgets may also resize and rearrange their children in the process. This is often useful for systems that automatically lay out widgets in a window, such as the <tt><a href="GlowQuickPalette.html">GlowQuickPalette</a></tt> API. <tt>hOption</tt> and <tt>vOption</tt> give the packing policy to use. There are two sets of constants from <tt><a href="GlowWidget.html">GlowWidget</a></tt> that should be or'ed together to form the policy. The following are the sizing constants. <tt>noReshape</tt> indicates do not reshape in the given direction. <tt>forcedSize</tt> indicates attempt to force the widget to fit snugly in the given limits. <tt>preferredSize</tt> indicates to allow the widget to choose a preferred size for itself, as long as it does not exceed the given limits. <tt>expandPreferredSize</tt> is the same as <tt>preferredSize</tt>, but also requests that the widget expand itself to fill the given limits. A widget may or may not choose to honor the request. The following are the positioning constants. <tt>noMove</tt> indicates do not move in the given direction. <tt>topPos</tt> indicates align the widget with the top of the given vertical limits. <tt>bottomPos</tt> indicates align the widget with the bottom of the given vertical limits. <tt>leftPos</tt> indicates align the widget with the left side of the given horizontal limits. <tt>rightPos</tt> indicates align the widget with the right side of the given horizontal limits. <tt>centerPos</tt> indicates center the widget within the given limits. In this last case, passing <tt>unspecifiedPos</tt> for the second limit (right or bottom) will cause the widget to be centered around the first limit. The method will return an error code, also defined in <tt>GlowWidget</tt>, indicating success or failure. The first version of the overloaded method also returns information about how much margin the widget chose to keep around itself while packing. Normally, these values are 0, but they may be nonzero in labeled widgets such as <tt><a href="GlowLabeledPopupMenuWidget.html">GlowLabeledPopupMenuWidget</a></tt>. You may pass <tt>unspecifiedPos</tt> in the limits fields, as long as there is enough information for <tt>AutoPack()</tt> to execute. For example, if you specify <tt>leftPos</tt> to align left but give <tt>unspecifiedPos</tt> for the left limit, <tt>AutoPack()</tt> will throw an assertion.
 </blockquote>
 
 <p>
-<tt>int <b>AutoReshape</b>(int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
+<tt>GlowWidget::AutoPackError <b>AutoReshape</b>(int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
 <br>
-<tt>int <b>AutoReshape</b>()</tt>
+<tt>GlowWidget::AutoPackError <b>AutoReshape</b>()</tt>
 </p>
 <blockquote>
 Causes a widget to attempt to resize itself to its preferred size. Does not move the widget. Equivalent to calling AutoPack with <tt>unspecifiedPos</tt> for all four limits, and <tt>preferredSize | noMove</tt> for both options.
@@ -695,14 +719,14 @@ Subclasses should override these methods to respond to user interface events suc
 <blockquote>
 
 <p>
-<tt>virtual void <b>OnWidgetMouseDown</b>(int button, int x, int y, int modifiers)</tt>
+<tt>virtual void <b>OnWidgetMouseDown</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 <blockquote>
 Override this method to respond to a mouse button press. When the method is called, <tt>button</tt> is set to the mouse button involved, <tt>x</tt> and <tt>y</tt> are set to the location of the click in the widget's pixel coordinates, and <tt>modifiers</tt> is set to the keyboard modifiers that are down at the time of the event. See the constants in <tt><a href="Glow.html">Glow</a></tt> for values for these parameters. The default method does nothing.
 </blockquote>
 
 <p>
-<tt>virtual void <b>OnWidgetMouseUp</b>(int button, int x, int y, int modifiers)</tt>
+<tt>virtual void <b>OnWidgetMouseUp</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 <blockquote>
 Override this method to respond to a mouse button release. When the method is called, <tt>button</tt> is set to the mouse button involved, <tt>x</tt> and <tt>y</tt> are set to the location of the release in the widget's pixel coordinates, and <tt>modifiers</tt> is set to the keyboard modifiers that are down at the time of the event. See the constants in <tt><a href="Glow.html">Glow</a></tt> for values for these parameters. The default method does nothing.
@@ -716,7 +740,7 @@ Override this method to respond to a mouse move while a button is depressed. Whe
 </blockquote>
 
 <p>
-<tt>virtual void <b>OnWidgetKeyboard</b>(int key, int modifiers, int x, int y)</tt>
+<tt>virtual void <b>OnWidgetKeyboard</b>(<a href="Glow.html">Glow</a>::KeyCode key, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 <blockquote>
 Override this method to respond to the a key being pressed. <tt>key</tt> contains the character hit, as a value between 0 and 255. If the value of <tt>key</tt> is greater than <tt><a href="Glow.html">Glow</a>::specialKeyOffset</tt>, then it will be one of the non-ascii keyboard codes defined in <tt><a href="Glow.html">Glow</a></tt>. <tt>modifiers</tt> specifies keyboard modifiers that were down during the event. See the constants in <tt><a href="Glow.html">Glow</a></tt> for modifier flags. <tt>x</tt> and <tt>y</tt> give the x and y coordinates of the pointer in widget pixel coordinates at the time of the event. The default method does nothing.
@@ -797,7 +821,7 @@ Override this method to respond to a widget losing the keyboard focus. The defau
 <blockquote>
 
 <p>
-<tt>virtual void <b>OnAutoPack</b>(int hSize, int vSize, int hOption, int vOption, int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
+<tt>virtual GlowWidget::AutoPackError <b>OnAutoPack</b>(int hSize, int vSize, GlowWidget::AutoPackOptions hOption, GlowWidget::AutoPackOptions vOption, int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
 </p>
 <blockquote>
 Override this method to provide a preferred behavior for the <tt>AutoPack()</tt> system. A subclass should override this method to allow widgets to be automatically sized and positioned. <tt>hOption</tt> and <tt>vOption</tt> give the sizing option to use. <tt><a href="GlowWidget.html">GlowWidget</a>::noReshape</tt> means leave the size alone. <tt><a href="GlowWidget.html">GlowWidget</a>::forcedSize</tt> means attempt to force the size to the given <tt>hSize</tt> or <tt>vSize</tt>. If the given size is unacceptable to the widget, the method should return an error. <tt><a href="GlowWidget.html">GlowWidget</a>::preferredSize</tt> means to use the widget's preferred size. In this case, <tt>hSize</tt>/<tt>vSize</tt> will give a maximum allowed size. If the given size is not <tt><a href="GlowWidget.html">GlowWidget</a>::unspecifiedSize</tt>, and it is too small for the preferred size to fit, the method should return an error. <tt><a href="GlowWidget.html">GlowWidget</a>::expandPreferredSize</tt> means to use the widget's preferred size, but issues a request to expand the size to fill the given maximum allowed size <tt>hSize</tt>/<tt>vSize</tt>. The widget may choose whether or not to honor the request. Again, if the given maximum size is too small, the method should return an error. Error codes to return are <tt><a href="GlowWidget.html">GlowWidget</a>::hAutoPackError</tt> for a problem with horizontal packing, <tt><a href="GlowWidget.html">GlowWidget</a>::vAutoPackError</tt> for a problem with vertical packing, or <tt><a href="GlowWidget.html">GlowWidget</a>::noAutoPackError</tt> for successful packing.
@@ -855,7 +879,7 @@ These methods are inherited from <tt><a href="GlowComponent.html">GlowComponent<
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 

@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -72,6 +73,9 @@ GLOW_NAMESPACE_BEGIN
 
 
 class GlowLabel;
+class GlowPushButtonWidget;
+class GlowMessageWindow;
+class GlowWidgetMapToPushButtonFilter;
 
 
 /*
@@ -82,14 +86,12 @@ class GlowLabel;
 ===============================================================================
 */
 
-class GlowMessageWindow;
-
 struct GlowMessageWindowMessage
 {
 	GlowMessageWindow* window;
 	int response;
-	int mouseButton;
-	int modifiers;
+	Glow::MouseButton mouseButton;
+	Glow::Modifiers modifiers;
 };
 
 
@@ -107,13 +109,15 @@ typedef TReceiver<const GlowMessageWindowMessage&> GlowMessageWindowReceiver;
 struct GlowMessageWindowParams
 {
 	const char* windowTitle;
+	int x;
+	int y;
 	const char* text;
 	GlowFont textFont;
 	GlowFont buttonFont;
 	const char* buttonLabels;
 	int windowSpacing;
-	int x;
-	int y;
+	int enterButton;
+	int escapeButton;
 	GlowMessageWindowReceiver* receiver;
 	GlowColor backColor;
 	GlowColor textColor;
@@ -163,6 +167,13 @@ class GlowMessageWindow :
 			const char* text,
 			const char* buttonLabels,
 			GlowMessageWindowReceiver* receiver);
+		
+		virtual ~GlowMessageWindow();
+		
+		inline void SetEnterButton(
+			int num);
+		inline void SetEscapeButton(
+			int num);
 	
 	public:
 	
@@ -177,8 +188,8 @@ class GlowMessageWindow :
 	
 		virtual void OnButtonPressed(
 			int response,
-			int mouseButton,
-			int modifiers);
+			Glow::MouseButton mouseButton,
+			Glow::Modifiers modifiers);
 	
 	
 	//-------------------------------------------------------------------------
@@ -188,6 +199,9 @@ class GlowMessageWindow :
 	private:
 	
 		TSender<const GlowMessageWindowMessage&> _sender;
+		GLOW_STD::vector<GlowPushButtonWidget*> _buttons;
+		GlowWidgetMapToPushButtonFilter* _enterFilter;
+		GlowWidgetMapToPushButtonFilter* _escapeFilter;
 };
 
 

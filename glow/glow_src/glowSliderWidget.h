@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -72,106 +73,10 @@ GLOW_NAMESPACE_BEGIN
 
 
 class GlowSliderWidget;
-
-
-/*
-===============================================================================
-	CLASS GlowSliderMessage
-	
-	Action for slider being dragged
-===============================================================================
-*/
-
-class GlowSliderMessage
-{
-	public:
-	
-		GlowSliderWidget* widget;
-		double value;
-		bool released;
-		int mouseButton;
-		int modifiers;
-};
-
-
+class GlowSliderParams;
+class GlowLabeledSliderParams;
+class GlowSliderMessage;
 typedef TReceiver<const GlowSliderMessage&> GlowSliderReceiver;
-
-
-/*
-===============================================================================
-	STRUCT GlowSliderParams
-	
-	Slider params
-===============================================================================
-*/
-
-class GlowSliderParams :
-	public GlowWidgetParams
-{
-	public:
-	
-		int options;
-		double min;
-		double max;
-		double initial;
-		int numTicks;
-		GlowSliderReceiver* receiver;
-		GlowColor stripColor;
-		GlowColor indicatorColor;
-		GlowColor tickMarkColor;
-		GlowColor hiliteIndicatorColor;
-		GlowColor disableStripColor;
-		GlowColor disableIndicatorColor;
-		GlowColor disableTickMarkColor;
-		GlowColor disableOutlineColor;
-		GlowColor lightBevelColor;
-		GlowColor darkBevelColor;
-		
-		static GlowSliderParams defaults;
-		
-		GlowSliderParams();
-	
-	protected:
-	
-		GlowSliderParams(bool);
-};
-
-
-/*
-===============================================================================
-	STRUCT GlowLabeledSliderParams
-	
-	Slider label params
-===============================================================================
-*/
-
-class GlowLabeledSliderParams :
-	public GlowSliderParams
-{
-	public:
-	
-		const char* labelTemplate;
-		GlowFont labelFont;
-		int labelPosition;
-		int labelWidth;
-		int labelHeight;
-		int labelSpacing;
-		GlowColor labelColor;
-		GlowColor disableLabelColor;
-		const char* minmaxTemplate;
-		GlowFont minmaxFont;
-		int minmaxSize;
-		GlowColor minmaxColor;
-		GlowColor disableMinmaxColor;
-		
-		static GlowLabeledSliderParams defaults;
-		
-		GlowLabeledSliderParams();
-	
-	protected:
-	
-		GlowLabeledSliderParams(bool);
-};
 
 
 /*
@@ -191,7 +96,8 @@ class GlowSliderWidget :
 	
 	public:
 	
-		enum {
+		enum Options
+		{
 			defaultOptions = 0,
 			ticksOnBottom = 0,
 			ticksOnRight = 0,
@@ -235,9 +141,9 @@ class GlowSliderWidget :
 		inline void SetNumTickMarks(
 			int numTicks);
 		
-		inline int GetOptions() const;
+		inline Options GetOptions() const;
 		inline void SetOptions(
-			int options);
+			Options options);
 		
 		inline TSender<const GlowSliderMessage&>& Notifier();
 		
@@ -292,22 +198,22 @@ class GlowSliderWidget :
 	
 	protected:
 	
-		virtual int OnAutoPack(
+		virtual AutoPackError OnAutoPack(
 			int hSize,
 			int vSize,
-			int hOption,
-			int vOption,
+			AutoPackOptions hOption,
+			AutoPackOptions vOption,
 			int& leftMargin,
 			int& rightMargin,
 			int& topMargin,
 			int& bottomMargin);
 		
 		virtual void OnDragged(
-			int mouseButton,
-			int modifiers);
+			Glow::MouseButton mouseButton,
+			Glow::Modifiers modifiers);
 		virtual void OnReleased(
-			int mouseButton,
-			int modifiers);
+			Glow::MouseButton mouseButton,
+			Glow::Modifiers modifiers);
 	
 	
 	//-------------------------------------------------------------------------
@@ -317,15 +223,15 @@ class GlowSliderWidget :
 	private:
 	
 		TSender<const GlowSliderMessage&> _sender;
-		int _type;
+		Options _type;
 		int _xoffset;
 		int _yoffset;
 		double _min;
 		double _max;
 		double _value;
 		int _numTicks;
-		int _button;
-		int _modifiers;
+		Glow::MouseButton _button;
+		Glow::Modifiers _modifiers;
 		bool _dragging;
 		
 		GlowColor _stripColor;
@@ -354,19 +260,21 @@ class GlowSliderWidget :
 		virtual void OnWidgetPaint();
 		
 		virtual void OnWidgetMouseDown(
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnWidgetMouseUp(
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnWidgetMouseDrag(
 			int x,
 			int y);
 };
+
+GLOW_INTERNAL_SETUPENUMBITFIELD(GlowSliderWidget::Options)
 
 
 /*
@@ -386,7 +294,8 @@ class GlowLabeledSliderWidget :
 	
 	public:
 	
-		enum {
+		enum LabelPosition
+		{
 			defaultLabelPosition = 0,
 			leftLabelPosition = 0,
 			rightLabelPosition = 1,
@@ -431,9 +340,9 @@ class GlowLabeledSliderWidget :
 		inline int GetLabelSpacing() const;
 		inline void SetLabelSpacing(
 			int spacing);
-		inline int GetLabelPosition() const;
+		inline LabelPosition GetLabelPosition() const;
 		inline void SetLabelPosition(
-			int position);
+			LabelPosition position);
 		inline int GetLabelWidth() const;
 		inline void SetLabelWidth(
 			int width);
@@ -472,11 +381,11 @@ class GlowLabeledSliderWidget :
 	
 	protected:
 	
-		virtual int OnAutoPack(
+		virtual AutoPackError OnAutoPack(
 			int hSize,
 			int vSize,
-			int hOption,
-			int vOption,
+			AutoPackOptions hOption,
+			AutoPackOptions vOption,
 			int& leftMargin,
 			int& rightMargin,
 			int& topMargin,
@@ -510,10 +419,10 @@ class GlowLabeledSliderWidget :
 		GlowWidgetLabelWidget* _label;
 		char* _labelTemplate;
 		float _labelValue;
-		int _labelSpacing;
-		int _labelPosition;
+		LabelPosition _labelPosition;
 		int _labelWidth;
 		int _labelHeight;
+		int _labelSpacing;
 		
 		GlowWidgetLabelWidget* _minLabel;
 		GlowWidgetLabelWidget* _maxLabel;
@@ -521,6 +430,103 @@ class GlowLabeledSliderWidget :
 		float _minLabelValue;
 		float _maxLabelValue;
 		int _minmaxSize;
+};
+
+
+/*
+===============================================================================
+	STRUCT GlowSliderParams
+	
+	Slider params
+===============================================================================
+*/
+
+class GlowSliderParams :
+	public GlowWidgetParams
+{
+	public:
+	
+		GlowSliderWidget::Options options;
+		double min;
+		double max;
+		double initial;
+		int numTicks;
+		GlowSliderReceiver* receiver;
+		GlowColor stripColor;
+		GlowColor indicatorColor;
+		GlowColor tickMarkColor;
+		GlowColor hiliteIndicatorColor;
+		GlowColor disableStripColor;
+		GlowColor disableIndicatorColor;
+		GlowColor disableTickMarkColor;
+		GlowColor disableOutlineColor;
+		GlowColor lightBevelColor;
+		GlowColor darkBevelColor;
+		
+		static GlowSliderParams defaults;
+		
+		GlowSliderParams();
+	
+	protected:
+	
+		GlowSliderParams(bool);
+};
+
+
+/*
+===============================================================================
+	STRUCT GlowLabeledSliderParams
+	
+	Slider label params
+===============================================================================
+*/
+
+class GlowLabeledSliderParams :
+	public GlowSliderParams
+{
+	public:
+	
+		const char* labelTemplate;
+		GlowFont labelFont;
+		GlowLabeledSliderWidget::LabelPosition labelPosition;
+		int labelWidth;
+		int labelHeight;
+		int labelSpacing;
+		GlowColor labelColor;
+		GlowColor disableLabelColor;
+		const char* minmaxTemplate;
+		GlowFont minmaxFont;
+		int minmaxSize;
+		GlowColor minmaxColor;
+		GlowColor disableMinmaxColor;
+		
+		static GlowLabeledSliderParams defaults;
+		
+		GlowLabeledSliderParams();
+	
+	protected:
+	
+		GlowLabeledSliderParams(bool);
+};
+
+
+/*
+===============================================================================
+	CLASS GlowSliderMessage
+	
+	Action for slider being dragged
+===============================================================================
+*/
+
+class GlowSliderMessage
+{
+	public:
+	
+		GlowSliderWidget* widget;
+		double value;
+		bool released;
+		Glow::MouseButton mouseButton;
+		Glow::Modifiers modifiers;
 };
 
 

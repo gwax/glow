@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 
 ===============================================================================
 */
@@ -413,7 +414,8 @@ class GlowViewManipulator :
 	
 	public:
 	
-		enum {
+		enum State
+		{
 			idleState = 0,
 			rotatingState = 1,
 			translatingState = 2,
@@ -432,7 +434,7 @@ class GlowViewManipulator :
 	
 	public:
 	
-		inline int State() const;
+		inline State GetState() const;
 		inline bool IsDragging() const;
 		
 		inline bool IsSpinnable() const;
@@ -498,7 +500,7 @@ class GlowViewManipulator :
 		GLOW_STD::vector<Vec3f> _axisConstraints;
 		bool _axisConstraintsActive;
 		
-		int _dragType;
+		State _dragType;
 		GLfloat _xStart;
 		GLfloat _yStart;
 		GLfloat _xCur;

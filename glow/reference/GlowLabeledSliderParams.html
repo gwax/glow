@@ -74,32 +74,42 @@ These fields are inherited from <tt><a href="GlowWidgetParams.html">GlowWidgetPa
 
 <blockquote>
 
-<dl>
-<dt>
+<p>
 <tt>int <b>width</b></tt>
-<dd>
+</p>
+<blockquote>
 Width of the widget. Initial default is 130.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>height</b></tt>
-<dd>
+</p>
+<blockquote>
 Height of the widget. Initial default is 30.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>x</b></tt>
-<dd>
+</p>
+<blockquote>
 X location of the upper left of the widget, in pixel coordinates of the parent widget. Initial default is 0.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>y</b></tt>
-<dd>
+</p>
+<blockquote>
 Y location of the upper left of the widget, in pixel coordinates of the parent widget. Initial default is 0.
-<dt>
+</blockquote>
+<p>
 <tt>long <b>refcon</b></tt>
-<dd>
+</p>
+<blockquote>
 Reference constant for this widget. Initial default 0.
-<dt>
+</blockquote>
+<p>
 <tt>bool <b>clipping</b></tt>
-<dd>
+</p>
+<blockquote>
 Should the widget clip to its rectangle when drawing children. Initial default is false.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -112,28 +122,42 @@ These fields are inherited from <tt><a href="GlowSliderParams.html">GlowSliderPa
 
 <blockquote>
 
-<dl>
-<dt>
+<p>
+<tt><a href="GlowSliderWidget.html">GlowSliderWidget</a>::Options <b>options</b></tt>
+</p>
+<blockquote>
+Options. Default is <a href="GlowSliderWidget.html">GlowSliderWidget</a>::defaultOptions
+</blockquote>
+<p>
 <tt>double <b>min</b></tt>
-<dd>
+</p>
+<blockquote>
 Initial minimum value. Default is 0.0.
-<dt>
+</blockquote>
+<p>
 <tt>double <b>max</b></tt>
-<dd>
+</p>
+<blockquote>
 Initial maximum value. Default is 1.0.
-<dt>
+</blockquote>
+<p>
 <tt>double <b>initial</b></tt>
-<dd>
+</p>
+<blockquote>
 Initial value. Default is 0.0.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>numTicks</b></tt>
-<dd>
+</p>
+<blockquote>
 Number of tick marks to draw. Initial default is 2.
-<dt>
+</blockquote>
+<p>
 <tt><a href="GlowSliderReceiver.html">GlowSliderReceiver</a>* <b>receiver</b></tt>
-<dd>
+</p>
+<blockquote>
 Receiver for slider events. Initial default is 0.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -174,60 +198,84 @@ These fields are inherited from <tt><a href="GlowSliderParams.html">GlowSliderPa
 
 <blockquote>
 
-<dl>
-<dt>
+<p>
 <tt>const char* <b>labelTemplate</b></tt>
-<dd>
+</p>
+<blockquote>
 Template text for the main label, or 0 for no label. Initial default is 0.
-<dt>
+</blockquote>
+<p>
 <tt><a href="GlowFont.html">GlowFont</a> <b>labelFont</b></tt>
-<dd>
+</p>
+<blockquote>
 Font for the main label. Initial default is <tt><a href="GlowFont.html">GlowFont</a>::helvetica12</tt>.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>labelPosition</b></tt>
-<dd>
+</p>
+<blockquote>
 Position code for the label. Use the constants given in <tt><a href="GlowLabeledSliderWidget.html">GlowLabeledSliderWidget</a></tt>.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>labelWidth</b></tt>
-<dd>
+</p>
+<blockquote>
 Width of the label in pixels.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>labelHeight</b></tt>
-<dd>
+</p>
+<blockquote>
 Height of the label in pixels.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>labelSpacing</b></tt>
-<dd>
+</p>
+<blockquote>
 Spacing between the label and the popup menu box in pixels.
-<dt>
+</blockquote>
+<p>
 <tt><a href="GlowColor.html">GlowColor</a> <b>labelColor</b></tt>
-<dd>
+</p>
+<blockquote>
 Color of the main label text.
-<dt>
+</blockquote>
+<p>
 <tt><a href="GlowColor.html">GlowColor</a> <b>disableLabelColor</b></tt>
-<dd>
+</p>
+<blockquote>
 Color of the main label text when the menu is disabled.
-<dt>
+</blockquote>
+<p>
 <tt>const char* <b>minmaxTemplate</b></tt>
-<dd>
+</p>
+<blockquote>
 Template text for minimum and maximum labels, or 0 for no labels. Initial default is 0.
-<dt>
+</blockquote>
+<p>
 <tt><a href="GlowFont.html">GlowFont</a> <b>minmaxFont</b></tt>
-<dd>
+</p>
+<blockquote>
 Font for the minimum and maximum labels. Initial default is <tt><a href="GlowFont.html">GlowFont</a>::helvetica12</tt>.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>minmaxSize</b></tt>
-<dd>
+</p>
+<blockquote>
 Maximum size allocated to minimum and maximum labels. Initial default is 15.
-<dt>
+</blockquote>
+<p>
 <tt><a href="GlowColor.html">GlowColor</a> <b>minmaxColor</b></tt>
-<dd>
+</p>
+<blockquote>
 Color of the minimum and maximum label text.
-<dt>
+</blockquote>
+<p>
 <tt><a href="GlowColor.html">GlowColor</a> <b>disableMinmaxColor</b></tt>
-<dd>
+</p>
+<blockquote>
 Color of the minimum and maximum label text when the menu is disabled.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -248,12 +296,12 @@ Color of the minimum and maximum label text when the menu is disabled.
 
 <blockquote>
 
-<dl>
-<dt>
+<p>
 <tt>static GlowLabeledSliderParams <b>defaults</b></tt>
-<dd>
+</p>
+<blockquote>
 Default parameters. These are copied every time a new <tt>GlowLabeledSliderParams</tt> is constructed.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -307,7 +355,7 @@ Constructs a new parameter block, copying <tt>defaults</tt>
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 

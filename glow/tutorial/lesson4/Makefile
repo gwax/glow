@@ -29,7 +29,6 @@ GLOWMODULES=\
 	glowScrollBarWidget \
 	glowSeparatorWidget \
 	glowSliderWidget \
-	glowStickyButtonWidget \
 	glowTextData \
 	glowTextFieldWidget \
 	glowTextFieldWindow \

@@ -74,36 +74,48 @@ This objects may be used to specify the available fonts.
 
 <blockquote>
 
-<dl>
-<dt>
-<tt>static const int <b>fixed8by13</b></tt>
-<dd>
+<p>
+<tt>static const GlowFont <b>fixed8by13</b></tt>
+</p>
+<blockquote>
 A fixed-width font fitting in an 8x13 rectangle. Corresponds to <tt>GLUT_BITMAP_8_BY_13</tt>.
-<dt>
-<tt>static const int <b>fixed9by15</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>static const GlowFont <b>fixed9by15</b></tt>
+</p>
+<blockquote>
 A fixed-width font fitting in an 9x15 rectangle. Corresponds to <tt>GLUT_BITMAP_9_BY_15</tt>.
-<dt>
-<tt>static const int <b>helvetica10</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>static const GlowFont <b>helvetica10</b></tt>
+</p>
+<blockquote>
 A sans serif proportionally spaced font at 10 point. Corresponds to <tt>GLUT_BITMAP_HELVETICA_10</tt>.
-<dt>
-<tt>static const int <b>helvetica12</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>static const GlowFont <b>helvetica12</b></tt>
+</p>
+<blockquote>
 A sans serif proportionally spaced font at 12 point. Corresponds to <tt>GLUT_BITMAP_HELVETICA_12</tt>.
-<dt>
-<tt>static const int <b>helvetica18</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>static const GlowFont <b>helvetica18</b></tt>
+</p>
+<blockquote>
 A sans serif proportionally spaced font at 18 point. Corresponds to <tt>GLUT_BITMAP_HELVETICA_18</tt>.
-<dt>
-<tt>static const int <b>timesRoman10</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>static const GlowFontv <b>timesRoman10</b></tt>
+</p>
+<blockquote>
 A serif proportionally spaced font at 10 point. Corresponds to <tt>GLUT_BITMAP_TIMES_ROMAN_10</tt>.
-<dt>
-<tt>static const int <b>timesRoman24</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>static const GlowFont <b>timesRoman24</b></tt>
+</p>
+<blockquote>
 A serif proportionally spaced font at 24 point. Corresponds to <tt>GLUT_BITMAP_TIMES_ROMAN_24</tt>.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -171,7 +183,7 @@ Determines if a GlowFont and a GLUT font refer to the same font.
 <p>
 <b>Getting font metrics</b>
 <br>
-GLOW provides some rough metrics information for GLUT fonts. Width values are gotten from GLUT. Leading and baseline values were gathered by inspection from the IRIX GLUT 3.7 implementation using the appropriate X fonts, and as such they may be slightly wrong on other platforms.
+GLOW provides some rough metrics information for GLUT fonts. Width values are gotten from GLUT. Leading and baseline values were gathered by inspection from the IRIX GLUT 3.7 implementation.
 </p>
 
 <blockquote>
@@ -220,7 +232,7 @@ Returns the width of the given character in pixels, if drawn using this font.
 <p>
 <b>Adjusting metrics</b>
 <br>
-These advanced routines allow you to set the metrics values for fonts. They are useful if you are compiling for a platform with different font metrics. Because the widget libraries use font metrics heavily, you may need to do some adjusting to get widgets to appear correctly. Width metrics go through GLUT and therefore do not require adjustment.
+These advanced routines allow you to set the metrics values for fonts. They may be useful if, for example, you want widgets to space text differently than they do by default. Width metrics go through GLUT and therefore cannot be adjusted.
 </p>
 
 <blockquote>
@@ -265,7 +277,7 @@ Sets the baseline position metric for the given font to the given value.
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 

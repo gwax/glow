@@ -71,44 +71,60 @@ Most GLOW programs that use windows will need to use <tt>GlowWindowParams</tt>.
 
 <blockquote>
 
-<dl>
-<dt>
+<p>
 <tt>int <b>width</b></tt>
-<dd>
+</p>
+<blockquote>
 Width of the window. Initial default is 100.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>height</b></tt>
-<dd>
+</p>
+<blockquote>
 Height of the window. Initial default is 100.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>x</b></tt>
-<dd>
+</p>
+<blockquote>
 X location of the upper left of the window, in pixel coordinates of the screen. Initial default is <tt><a href="GlowWindow.html">GlowWindow</a>::autoPosition</tt>.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>y</b></tt>
-<dd>
+</p>
+<blockquote>
 Y location of the upper left of the window, in pixel coordinates of the screen. Initial default is <tt><a href="GlowWindow.html">GlowWindow</a>::autoPosition</tt>.
-<dt>
-<tt>int <b>eventMask</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt><a href="Glow.html">Glow</a>::EventMask <b>eventMask</b></tt>
+</p>
+<blockquote>
 Active event mask for the window. Initial default is <tt><a href="Glow.html">Glow</a>::noEvents</tt>.
-<dt>
-<tt>int <b>inactiveEventMask</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt><a href="Glow.html">Glow</a>::EventMask <b>inactiveEventMask</b></tt>
+</p>
+<blockquote>
 Inactive event mask for the window. Initial default is <tt><a href="Glow.html">Glow</a>::noEvents</tt>.
-<dt>
-<tt>int <b>mode</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt><a href="Glow.html">Glow</a>::BufferType <b>mode</b></tt>
+</p>
+<blockquote>
 Buffer mode for the window. Initial default is <tt><a href="Glow.html">Glow</a>::rgbBuffer | <a href="Glow.html">Glow</a>::doubleBuffer</tt>.
-<dt>
+</blockquote>
+<p>
 <tt>const char* <b>title</b></tt>
-<dd>
+</p>
+<blockquote>
 Title of the window. Initial default is "".
-<dt>
+</blockquote>
+<p>
 <tt>const char* <b>iconTitle</b></tt>
-<dd>
+</p>
+<blockquote>
 Title for the window when iconified. If set to 0, the icon title will be set to the same as the window title. Initial default is 0.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -129,12 +145,12 @@ Title for the window when iconified. If set to 0, the icon title will be set to 
 
 <blockquote>
 
-<dl>
-<dt>
+<p>
 <tt>static GlowWindowParams <b>defaults</b></tt>
-<dd>
+</p>
+<blockquote>
 Default parameters. These are copied every time a new GlowWindowParams is constructed.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -186,7 +202,7 @@ Constructs a new parameter block, copying <tt>defaults</tt>
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 

@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -104,6 +105,60 @@ Sender_Base::~Sender_Base()
 	{
 		(*iter)->_RemoveSender(this);
 	}
+}
+
+
+/*
+===============================================================================
+	Methods of ReceiverTracker
+===============================================================================
+*/
+
+ReceiverTracker::~ReceiverTracker()
+{
+	UnbindAll();
+}
+
+
+void ReceiverTracker::DeleteAllReceivers()
+{
+	while (!_receivers.empty())
+	{
+		delete _receivers.front();
+	}
+}
+
+
+void ReceiverTracker::Unbind(
+	Receiver_Base* receiver)
+{
+	GLOW_STD::list<Receiver_Base*>::iterator iter =
+		GLOW_STD::find(_receivers.begin(), _receivers.end(), receiver);
+	GLOW_DEBUG(iter == _receivers.end(),
+		"ReceiverTracker not tracking TReceiver");
+	receiver->_RemoveTracker(this);
+	_receivers.erase(iter);
+	if ((receiver->NumTrackers() == 0 && _options == referenceCountDelete) ||
+		_options == alwaysDelete)
+	{
+		delete receiver;
+	}
+}
+
+
+void ReceiverTracker::UnbindAll()
+{
+	for (GLOW_STD::list<Receiver_Base*>::iterator iter = _receivers.begin();
+		iter != _receivers.end(); iter++)
+	{
+		(*iter)->_RemoveTracker(this);
+		if (((*iter)->NumTrackers() == 0 && _options == referenceCountDelete) ||
+			_options == alwaysDelete)
+		{
+			delete (*iter);
+		}
+	}
+	_receivers.erase(_receivers.begin(), _receivers.end());
 }
 
 

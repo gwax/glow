@@ -38,7 +38,7 @@ class TSender
 
 <p>
 <b>
-type: template &lt; typename T &gt;
+type: template &lt; typename T &gt; class
 <br>
 inherits: (none)
 <br>
@@ -69,12 +69,12 @@ Most GLOW programs will encounter <tt>TSender</tt>s when dealing with menus, idl
 
 <blockquote>
 
-<dl>
-<dt>
+<p>
 <tt>typename <b>MessageType</b></tt>
-<dd>
+</p>
+<blockquote>
 A synonym for the type of message.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -142,7 +142,7 @@ Returns true if and only if this sender is bound to the given receiver.
 </blockquote>
 
 <p>
-<tt>int <b>NumReceivers</b>(void)</tt>
+<tt>unsigned int <b>NumReceivers</b>(void)</tt>
 </p>
 <blockquote>
 Returns the number of receivers bound to this sender.
@@ -218,7 +218,7 @@ Sends the given message to the given receiver.
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 

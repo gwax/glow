@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 
 ===============================================================================
 */
@@ -84,52 +85,12 @@ class GlowComponent;
 class GlowSubwindow;
 class GlowWindow;
 class GlowMenu;
-
-
-/*
-===============================================================================
-	Params
-===============================================================================
-*/
-
-class GlowSubwindowParams
-{
-	public:
-	
-		int width;
-		int height;
-		int x;
-		int y;
-		int eventMask;
-		int inactiveEventMask;
-		int mode;
-		
-		static GlowSubwindowParams defaults;
-		
-		GlowSubwindowParams();
-	
-	protected:
-	
-		GlowSubwindowParams(bool);
-};
-
-
-class GlowWindowParams :
-	public GlowSubwindowParams
-{
-	public:
-	
-		const char* title;
-		const char* iconTitle;
-		
-		static GlowWindowParams defaults;
-		
-		GlowWindowParams();
-	
-	protected:
-	
-		GlowWindowParams(bool);
-};
+class GlowSubwindowParams;
+class GlowWindowParams;
+class GlowKeyboardData;
+class GlowMouseData;
+class GlowKeyboardFilter;
+class GlowMouseFilter;
 
 
 /*
@@ -196,7 +157,8 @@ class Glow
 	public:
 	
 		// Event masks
-		enum {
+		enum EventMask
+		{
 			noEvents = 0x0000,
 			keyboardEvents = 0x0001,
 			mouseEvents = 0x0002,
@@ -209,14 +171,17 @@ class Glow
 		};
 		
 		// Mouse button specification
-		enum {
+		enum MouseButton
+		{
 			leftButton = GLUT_LEFT_BUTTON,
 			middleButton = GLUT_MIDDLE_BUTTON,
 			rightButton = GLUT_RIGHT_BUTTON
 		};
 		
 		// Frame buffer type
-		enum {
+		enum BufferType
+		{
+			noBuffer = 0,
 			rgbBuffer = GLUT_RGB,
 			alphaBuffer = GLUT_ALPHA,
 			rgbaBuffer = GLUT_RGBA | GLUT_ALPHA,
@@ -227,14 +192,19 @@ class Glow
 		};
 		
 		// Keyboard modifiers
-		enum {
+		enum Modifiers
+		{
+			noModifier = 0,
 			shiftModifier = GLUT_ACTIVE_SHIFT,
 			ctrlModifier = GLUT_ACTIVE_CTRL,
 			altModifier = GLUT_ACTIVE_ALT
 		};
 		
 		// Special key constants
-		enum {
+		//typedef int KeyCode;
+		
+		enum KeyCode
+		{
 			specialKeyOffset = 256,
 			f1Key = specialKeyOffset+GLUT_KEY_F1,
 			f2Key = specialKeyOffset+GLUT_KEY_F2,
@@ -267,10 +237,10 @@ class Glow
 	public:
 	
 		// General
-		inline static void Init(
+		static void Init(
 			int& argc,
 			char** argv);
-		inline static void MainLoop();
+		static void MainLoop();
 		static double Version();
 		
 		// Idle tasks
@@ -292,10 +262,28 @@ class Glow
 		inline static bool IsTimerPending(
 			int id);
 		
+		// Filters
+		inline static void RegisterFilter(
+			GlowMouseFilter* filter);
+		inline static void RegisterFilter(
+			GlowKeyboardFilter* filter);
+		inline static void UnregisterFilter(
+			GlowMouseFilter* filter);
+		inline static void UnregisterFilter(
+			GlowKeyboardFilter* filter);
+		inline static void UnregisterAllMouseFilters();
+		inline static void UnregisterAllKeyboardFilters();
+		inline static unsigned int NumRegisteredMouseFilters();
+		inline static unsigned int NumRegisteredKeyboardFilters();
+		inline static bool IsFilterRegistered(
+			GlowMouseFilter* filter);
+		inline static bool IsFilterRegistered(
+			GlowKeyboardFilter* filter);
+		
 		// Resolution of window and menu ids
-		inline static GlowSubwindow* ResolveWindow(
+		static GlowSubwindow* ResolveWindow(
 			int windowNum);
-		inline static GlowMenu* ResolveMenu(
+		static GlowMenu* ResolveMenu(
 			int menuNum);
 		
 		// Menu state
@@ -311,22 +299,22 @@ class Glow
 		// Event simulation
 		inline static void DeliverKeyboardEvt(
 			GlowSubwindow* receiver,
-			int key,
-			int modifiers,
+			Glow::KeyCode key,
 			int x,
-			int y);
+			int y,
+			Modifiers modifiers);
 		inline static void DeliverMouseDownEvt(
 			GlowSubwindow* receiver,
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Modifiers modifiers);
 		inline static void DeliverMouseUpEvt(
 			GlowSubwindow* receiver,
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Modifiers modifiers);
 		inline static void DeliverMouseDragEvt(
 			GlowSubwindow* receiver,
 			int x,
@@ -362,6 +350,11 @@ class Glow
 	
 	private:
 	
+		// Prevent instantiation
+		inline Glow() {}
+	
+	private:
+	
 		// Map glut ids to window and menu pointers
 		static GLOW_STD::map<int, GlowSubwindow*> _windowRegistry;
 		static GLOW_STD::map<int, GlowMenu*> _menuRegistry;
@@ -393,20 +386,24 @@ class Glow
 		
 		// Special idle receiver for callback-based idle
 		static Glow_IdleFuncReceiver* _idleFuncReceiver;
+		
+		// Event filter senders
+		static TSender<GlowMouseData&> _mouseFilters;
+		static TSender<GlowKeyboardData&> _keyboardFilters;
 	
 	private:
 	
 		// Manage glut id mappings
-		inline static void _AddWindow(
+		static void _AddWindow(
 			GlowSubwindow* window,
 			int windowNum);
 		static void _RemoveWindow(
 			int windowNum);
 		
-		inline static void _AddMenu(
+		static void _AddMenu(
 			GlowMenu* menu,
 			int menuNum);
-		inline static void _RemoveMenu(
+		static void _RemoveMenu(
 			int menuNum);
 		
 		// Call backs
@@ -449,6 +446,119 @@ class Glow
 		
 		// Deferred execution
 		static void _ExecuteDeferred();
+};
+
+GLOW_INTERNAL_SETUPENUMBITFIELD(Glow::EventMask)
+GLOW_INTERNAL_SETUPENUMBITFIELD(Glow::BufferType)
+GLOW_INTERNAL_SETUPENUMBITFIELD(Glow::Modifiers)
+
+
+/*
+===============================================================================
+	Event filters
+===============================================================================
+*/
+
+class GlowKeyboardData
+{
+	friend class Glow;
+	friend class GlowKeyboardFilter;
+	
+	public:
+	
+		GlowSubwindow* subwindow;
+		Glow::KeyCode key;
+		int x;
+		int y;
+		Glow::Modifiers modifiers;
+	
+	private:
+	
+		inline GlowKeyboardData();
+	
+	private:
+	
+		bool _continue;
+};
+
+
+class GlowMouseData
+{
+	friend class Glow;
+	friend class GlowMouseFilter;
+	
+	public:
+	
+		enum EventType
+		{
+			mouseDown = 1,
+			mouseUp = 2
+		};
+	
+	public:
+	
+		GlowSubwindow* subwindow;
+		EventType type;
+		Glow::MouseButton button;
+		int x;
+		int y;
+		Glow::Modifiers modifiers;
+	
+	private:
+	
+		inline GlowMouseData();
+	
+	private:
+	
+		bool _continue;
+};
+
+
+class GlowKeyboardFilter :
+	public TReceiver<GlowKeyboardData&>
+{
+	//-------------------------------------------------------------------------
+	//	Overrideable implementation
+	//-------------------------------------------------------------------------
+	
+	protected:
+	
+		virtual bool OnFilter(
+			GlowKeyboardData& data) = 0;
+	
+	
+	//-------------------------------------------------------------------------
+	//	Private implementation
+	//-------------------------------------------------------------------------
+	
+	protected:
+	
+		virtual void OnMessage(
+			GlowKeyboardData& message);
+};
+
+
+class GlowMouseFilter :
+	public TReceiver<GlowMouseData&>
+{
+	//-------------------------------------------------------------------------
+	//	Overrideable implementation
+	//-------------------------------------------------------------------------
+	
+	protected:
+	
+		virtual bool OnFilter(
+			GlowMouseData& data) = 0;
+	
+	
+	//-------------------------------------------------------------------------
+	//	Private implementation
+	//-------------------------------------------------------------------------
+	
+	protected:
+	
+		virtual void OnMessage(
+			GlowMouseData& message);
 };
 
 
@@ -608,8 +718,8 @@ class GlowSubwindow :
 			int y,
 			int width,
 			int height,
-			int mode,
-			int eventMask);
+			Glow::BufferType mode,
+			Glow::EventMask eventMask);
 		void Init(
 			GlowComponent* parent,
 			const GlowSubwindowParams& params);
@@ -619,8 +729,8 @@ class GlowSubwindow :
 			int y,
 			int width,
 			int height,
-			int mode,
-			int eventMask);
+			Glow::BufferType mode,
+			Glow::EventMask eventMask);
 		
 		virtual ~GlowSubwindow();
 	
@@ -651,12 +761,12 @@ class GlowSubwindow :
 		void Hide();
 		
 		void SetMenu(
-			int button,
+			Glow::MouseButton button,
 			GlowMenu* menu = 0);
 		inline GlowMenu* GetMenu(
-			int button) const;
+			Glow::MouseButton button) const;
 		inline void UnsetMenu(
-			int button);
+			Glow::MouseButton button);
 		
 		inline int PositionX() const;
 		inline int PositionY() const;
@@ -674,12 +784,12 @@ class GlowSubwindow :
 		inline int GetCursor() const;
 		void SetCursor(
 			int cursor = GLUT_CURSOR_INHERIT);
-		inline int GetEventMask() const;
+		inline Glow::EventMask GetEventMask() const;
 		void SetEventMask(
-			int eventMask);
-		inline int GetInactiveEventMask() const;
+			Glow::EventMask eventMask);
+		inline Glow::EventMask GetInactiveEventMask() const;
 		void SetInactiveEventMask(
-			int eventMask);
+			Glow::EventMask eventMask);
 	
 	
 	//-------------------------------------------------------------------------
@@ -694,15 +804,15 @@ class GlowSubwindow :
 		virtual void OnMouseEnter();
 		virtual void OnMouseExit();
 		virtual void OnMouseDown(
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnMouseUp(
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnMenuDown(
 			int x,
 			int y);
@@ -714,10 +824,10 @@ class GlowSubwindow :
 			int x,
 			int y);
 		virtual void OnKeyboard(
-			int key,
-			int modifiers,
+			Glow::KeyCode key,
 			int x,
-			int y);
+			int y,
+			Glow::Modifiers modifiers);
 		virtual void OnVisible();
 		virtual void OnInvisible();
 		virtual void OnDirectMenuHit(
@@ -734,8 +844,8 @@ class GlowSubwindow :
 		int _width;
 		int _height;
 		int _windowNum;
-		int _eventMask;
-		int _inactiveEventMask;
+		Glow::EventMask _eventMask;
+		Glow::EventMask _inactiveEventMask;
 		int _saveCursor;
 		mutable unsigned long _clock;
 		mutable int _globalXPos;
@@ -750,7 +860,7 @@ class GlowSubwindow :
 	private:
 	
 		void _RegisterCallbacks(
-			int eventMask);
+			Glow::EventMask eventMask);
 		inline void _FinishRender() const;
 		void _EventsForActivation(
 			bool activating);
@@ -788,8 +898,8 @@ class GlowWindow :
 			int y,
 			int width,
 			int height,
-			int mode,
-			int eventMask);
+			Glow::BufferType mode,
+			Glow::EventMask eventMask);
 		inline GlowWindow();
 		void Init(
 			const GlowWindowParams& params);
@@ -799,8 +909,8 @@ class GlowWindow :
 			int y,
 			int width,
 			int height,
-			int mode,
-			int eventMask);
+			Glow::BufferType mode,
+			Glow::EventMask eventMask);
 		
 		void Maximize();
 		void Iconify();
@@ -821,6 +931,52 @@ class GlowWindow :
 	
 		char* _title;
 		char* _iconTitle;
+};
+
+
+/*
+===============================================================================
+	Params
+===============================================================================
+*/
+
+class GlowSubwindowParams
+{
+	public:
+	
+		int width;
+		int height;
+		int x;
+		int y;
+		Glow::EventMask eventMask;
+		Glow::EventMask inactiveEventMask;
+		Glow::BufferType mode;
+		
+		static GlowSubwindowParams defaults;
+		
+		GlowSubwindowParams();
+	
+	protected:
+	
+		GlowSubwindowParams(bool);
+};
+
+
+class GlowWindowParams :
+	public GlowSubwindowParams
+{
+	public:
+	
+		const char* title;
+		const char* iconTitle;
+		
+		static GlowWindowParams defaults;
+		
+		GlowWindowParams();
+	
+	protected:
+	
+		GlowWindowParams(bool);
 };
 
 
@@ -866,7 +1022,8 @@ class GlowMenu
 	
 	public:
 	
-		enum {
+		enum BindState
+		{
 			bindNone = 0,
 			bindNormal = 1,
 			bindSubwindow = 2
@@ -951,8 +1108,8 @@ class GlowMenu
 		
 		// Event reporting
 		inline void SetBindState(
-			int bindState);
-		inline int GetBindState() const;
+			BindState bindState);
+		inline BindState GetBindState() const;
 		inline TSender<const GlowMenuMessage&>& Notifier();
 	
 	
@@ -976,7 +1133,7 @@ class GlowMenu
 	private:
 	
 		int _menuNum;
-		int _bindState;
+		BindState _bindState;
 		GLOW_STD::vector<Glow_MenuItem> _itemData;
 		TSender<const GlowMenuMessage&> _sender;
 	

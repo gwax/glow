@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -89,13 +90,15 @@ GlowMessageWindowParams::GlowMessageWindowParams()
 GlowMessageWindowParams::GlowMessageWindowParams(bool)
 {
 	windowTitle = "Note";
+	x = -1;
+	y = -1;
 	text = "";
 	textFont = GLUT_BITMAP_HELVETICA_12;
 	buttonFont = GLUT_BITMAP_HELVETICA_12;
 	buttonLabels = "OK";
 	windowSpacing = 10;
-	x = -1;
-	y = -1;
+	enterButton = -1;
+	escapeButton = -1;
 	receiver = 0;
 	backColor.Set(0.8f, 0.8f, 0.8f);
 	textColor.Set(0.0f, 0.0f, 0.0f);
@@ -122,9 +125,9 @@ class Glow_MessageWindowButton :
 	
 	protected:
 	
-		virtual void OnPressed(
-			int mouseButton,
-			int modifiers);
+		virtual void OnHit(
+			Glow::MouseButton mouseButton,
+			Glow::Modifiers modifiers);
 	
 	private:
 	
@@ -144,9 +147,9 @@ GlowPushButtonWidget(wind, params)
 }
 
 
-void Glow_MessageWindowButton::OnPressed(
-	int mouseButton,
-	int modifiers)
+void Glow_MessageWindowButton::OnHit(
+	Glow::MouseButton mouseButton,
+	Glow::Modifiers modifiers)
 {
 	_wind->OnButtonPressed(_number, mouseButton, modifiers);
 }
@@ -173,6 +176,8 @@ void GlowMessageWindow::Init(
 	params.text = text;
 	params.buttonLabels = buttonLabels;
 	params.receiver = receiver;
+	params.enterButton = 0;
+	params.escapeButton = 1;
 	Init(params);
 }
 
@@ -192,20 +197,19 @@ void GlowMessageWindow::Init(
 	// Make buttons
 	char* tempbuf = new char[GLOW_CSTD::strlen(params.buttonLabels)+1];
 	GLOW_CSTD::strcpy(tempbuf, params.buttonLabels);
-	GLOW_STD::vector<Glow_MessageWindowButton*> buttons;
 	GlowPushButtonParams pbparams;
 	pbparams.font = params.buttonFont;
 	int buttonsWidth = -params.windowSpacing;
 	while (true)
 	{
-		pbparams.text = GLOW_CSTD::strtok(buttons.size()==0 ? tempbuf : 0, "\t");
+		pbparams.text = GLOW_CSTD::strtok(_buttons.size()==0 ? tempbuf : 0, "\t");
 		if (pbparams.text == 0) break;
-		buttons.push_back(new Glow_MessageWindowButton(this, pbparams, buttons.size()));
-		buttons.back()->AutoReshape();
-		buttonsWidth += buttons.back()->Width() + params.windowSpacing;
+		_buttons.push_back(new Glow_MessageWindowButton(this, pbparams, _buttons.size()));
+		_buttons.back()->AutoReshape();
+		buttonsWidth += _buttons.back()->Width() + params.windowSpacing;
 	}
-	int buttonHeight = buttons.front()->Height();
-	GLOW_DEBUG(buttons.size()==0, "No buttons specified in GlowMessageWindow");
+	int buttonHeight = _buttons.front()->Height();
+	GLOW_DEBUG(_buttons.size()==0, "No buttons specified in GlowMessageWindow");
 	GLOW_DEBUG(buttonsWidth>800, "Buttons too wide in GlowMessageWindow");
 	delete[] tempbuf;
 	
@@ -229,8 +233,8 @@ void GlowMessageWindow::Init(
 	
 	// Arrange buttons
 	int xbutton = (windowWidth - buttonsWidth)/2;
-	for (GLOW_STD::vector<Glow_MessageWindowButton*>::iterator iter = buttons.begin();
-		iter != buttons.end(); ++iter)
+	for (GLOW_STD::vector<GlowPushButtonWidget*>::iterator iter = _buttons.begin();
+		iter != _buttons.end(); ++iter)
 	{
 		(*iter)->Move(xbutton, label->Height()+params.windowSpacing*2+10);
 		xbutton += (*iter)->Width()+params.windowSpacing;
@@ -244,13 +248,32 @@ void GlowMessageWindow::Init(
 	{
 		_sender.Bind(params.receiver);
 	}
+	
+	// Enter and escape filters
+	_enterFilter = new GlowWidgetMapToPushButtonFilter(
+		(params.enterButton<0 || params.enterButton>=int(_buttons.size())) ?
+			0 : _buttons[params.enterButton],
+		Glow::enterKey, Glow::noModifier);
+	_escapeFilter = new GlowWidgetMapToPushButtonFilter(
+		(params.escapeButton<0 || params.escapeButton>=int(_buttons.size())) ?
+			0 : _buttons[params.escapeButton],
+		Glow::escapeKey, Glow::noModifier);
+	RegisterFilter(_enterFilter);
+	RegisterFilter(_escapeFilter);
+}
+
+
+GlowMessageWindow::~GlowMessageWindow()
+{
+	delete _enterFilter;
+	delete _escapeFilter;
 }
 
 
 void GlowMessageWindow::OnButtonPressed(
 	int response,
-	int mouseButton,
-	int modifiers)
+	Glow::MouseButton mouseButton,
+	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("GlowMessageWindow::OnButtonPressed");
 	
@@ -260,7 +283,7 @@ void GlowMessageWindow::OnButtonPressed(
 	message.mouseButton = mouseButton;
 	message.modifiers = modifiers;
 	_sender.Send(message);
-	delete this;
+	Close();
 }
 
 

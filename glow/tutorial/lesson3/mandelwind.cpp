@@ -367,10 +367,10 @@ void MandelWind::OnReshape(
 // Respond to mouse down events
 
 void MandelWind::OnMouseDown(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 	// Ignore mousedowns if we're already dragging
 	if (_dragType == NO_DRAG)
@@ -402,10 +402,10 @@ void MandelWind::OnMouseDown(
 // Respond to mouse up events
 
 void MandelWind::OnMouseUp(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 	if (_dragType == ZOOM_IN_DRAG)
 	{

@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -71,143 +72,12 @@ GLOW_INTERNAL_USINGSTD
 GLOW_NAMESPACE_BEGIN
 
 
-/*
-===============================================================================
-	CLASS GlowPopupMenuMessage
-	
-	Action for popup menu change
-===============================================================================
-*/
-
 class GlowPopupMenuWidget;
-
-class GlowPopupMenuMessage
-{
-	public:
-	
-		GlowPopupMenuWidget* widget;
-		int item;
-		int oldItem;
-};
-
-
+class GlowPopupMenuMessage;
+class GlowMenuButtonParams;
+class GlowPopupMenuParams;
+class GlowLabeledPopupMenuParams;
 typedef TReceiver<const GlowPopupMenuMessage&> GlowPopupMenuReceiver;
-
-
-/*
-===============================================================================
-	STRUCT GlowMenuButtonParams
-	
-	Menu button params
-===============================================================================
-*/
-
-class GlowMenuButtonParams :
-	public GlowWidgetParams
-{
-	public:
-	
-		GlowMenu* menu;
-		const char* text;
-		GlowFont font;
-		int iconType;
-		int spacing;
-		GlowColor boxColor;
-		GlowColor textColor;
-		GlowColor iconColor;
-		GlowColor hiliteBoxColor;
-		GlowColor hiliteTextColor;
-		GlowColor hiliteIconColor;
-		GlowColor disableBoxColor;
-		GlowColor disableTextColor;
-		GlowColor disableIconColor;
-		GlowColor disableOutlineColor;
-		GlowColor lightBevelColor;
-		GlowColor darkBevelColor;
-		
-		static GlowMenuButtonParams defaults;
-		
-		GlowMenuButtonParams();
-	
-	protected:
-	
-		GlowMenuButtonParams(bool);
-};
-
-
-/*
-===============================================================================
-	STRUCT GlowPopupMenuParams
-	
-	Popup menu params
-===============================================================================
-*/
-
-class GlowPopupMenuParams :
-	public GlowWidgetParams
-{
-	public:
-	
-		const char* items;
-		int initial;
-		const char* mark;
-		GlowFont font;
-		int spacing;
-		GlowPopupMenuReceiver* receiver;
-		GlowColor boxColor;
-		GlowColor textColor;
-		GlowColor iconColor;
-		GlowColor hiliteBoxColor;
-		GlowColor hiliteTextColor;
-		GlowColor hiliteIconColor;
-		GlowColor disableBoxColor;
-		GlowColor disableTextColor;
-		GlowColor disableIconColor;
-		GlowColor disableOutlineColor;
-		GlowColor lightBevelColor;
-		GlowColor darkBevelColor;
-		
-		static GlowPopupMenuParams defaults;
-		
-		GlowPopupMenuParams();
-	
-	protected:
-	
-		GlowPopupMenuParams(bool);
-};
-
-
-/*
-===============================================================================
-	STRUCT GlowLabeledPopupMenuParams
-	
-	Labeled popup menu params
-===============================================================================
-*/
-
-class GlowLabeledPopupMenuParams :
-	public GlowPopupMenuParams
-{
-	public:
-	
-		const char* labelText;
-		GlowFont labelFont;
-		int labelPosition;
-		int labelWidth;
-		int labelHeight;
-		int labelSpacing;
-		GlowColor labelColor;
-		GlowColor hiliteLabelColor;
-		GlowColor disableLabelColor;
-		
-		static GlowLabeledPopupMenuParams defaults;
-		
-		GlowLabeledPopupMenuParams();
-	
-	protected:
-	
-		GlowLabeledPopupMenuParams(bool);
-};
 
 
 class Glow_MenuButtonSubwindow;
@@ -232,7 +102,8 @@ class GlowMenuButtonWidget :
 	
 	public:
 	
-		enum {
+		enum IconType
+		{
 			noIcon = 0,
 			menuIcon = 1,
 			arrowIcon = 2
@@ -270,9 +141,9 @@ class GlowMenuButtonWidget :
 		inline void SetSpacing(
 			int spacing);
 		
-		inline int GetIconType() const;
+		inline IconType GetIconType() const;
 		inline void SetIconType(
-			int iconType);
+			IconType iconType);
 		
 		inline GlowMenu* GetMenu() const;
 		inline void SetMenu(
@@ -323,11 +194,11 @@ class GlowMenuButtonWidget :
 	
 	protected:
 	
-		virtual int OnAutoPack(
+		virtual AutoPackError OnAutoPack(
 			int hSize,
 			int vSize,
-			int hOption,
-			int vOption,
+			AutoPackOptions hOption,
+			AutoPackOptions vOption,
 			int& leftMargin,
 			int& rightMargin,
 			int& topMargin,
@@ -478,11 +349,11 @@ class GlowPopupMenuWidget :
 	
 	protected:
 	
-		virtual int OnAutoPack(
+		virtual AutoPackError OnAutoPack(
 			int hSize,
 			int vSize,
-			int hOption,
-			int vOption,
+			AutoPackOptions hOption,
+			AutoPackOptions vOption,
 			int& leftMargin,
 			int& rightMargin,
 			int& topMargin,
@@ -564,11 +435,11 @@ class GlowLabeledPopupMenuWidget :
 	
 	protected:
 	
-		virtual int OnAutoPack(
+		virtual AutoPackError OnAutoPack(
 			int hSize,
 			int vSize,
-			int hOption,
-			int vOption,
+			AutoPackOptions hOption,
+			AutoPackOptions vOption,
 			int& leftMargin,
 			int& rightMargin,
 			int& topMargin,
@@ -597,6 +468,141 @@ class GlowLabeledPopupMenuWidget :
 	
 		GlowColor _upLabelColor;
 		GlowColor _downLabelColor;
+};
+
+
+/*
+===============================================================================
+	CLASS GlowPopupMenuMessage
+	
+	Action for popup menu change
+===============================================================================
+*/
+
+
+class GlowPopupMenuMessage
+{
+	public:
+	
+		GlowPopupMenuWidget* widget;
+		int item;
+		int oldItem;
+};
+
+
+/*
+===============================================================================
+	STRUCT GlowMenuButtonParams
+	
+	Menu button params
+===============================================================================
+*/
+
+class GlowMenuButtonParams :
+	public GlowWidgetParams
+{
+	public:
+	
+		GlowMenu* menu;
+		const char* text;
+		GlowFont font;
+		GlowMenuButtonWidget::IconType iconType;
+		int spacing;
+		GlowColor boxColor;
+		GlowColor textColor;
+		GlowColor iconColor;
+		GlowColor hiliteBoxColor;
+		GlowColor hiliteTextColor;
+		GlowColor hiliteIconColor;
+		GlowColor disableBoxColor;
+		GlowColor disableTextColor;
+		GlowColor disableIconColor;
+		GlowColor disableOutlineColor;
+		GlowColor lightBevelColor;
+		GlowColor darkBevelColor;
+		
+		static GlowMenuButtonParams defaults;
+		
+		GlowMenuButtonParams();
+	
+	protected:
+	
+		GlowMenuButtonParams(bool);
+};
+
+
+/*
+===============================================================================
+	STRUCT GlowPopupMenuParams
+	
+	Popup menu params
+===============================================================================
+*/
+
+class GlowPopupMenuParams :
+	public GlowWidgetParams
+{
+	public:
+	
+		const char* items;
+		int initial;
+		const char* mark;
+		GlowFont font;
+		int spacing;
+		GlowPopupMenuReceiver* receiver;
+		GlowColor boxColor;
+		GlowColor textColor;
+		GlowColor iconColor;
+		GlowColor hiliteBoxColor;
+		GlowColor hiliteTextColor;
+		GlowColor hiliteIconColor;
+		GlowColor disableBoxColor;
+		GlowColor disableTextColor;
+		GlowColor disableIconColor;
+		GlowColor disableOutlineColor;
+		GlowColor lightBevelColor;
+		GlowColor darkBevelColor;
+		
+		static GlowPopupMenuParams defaults;
+		
+		GlowPopupMenuParams();
+	
+	protected:
+	
+		GlowPopupMenuParams(bool);
+};
+
+
+/*
+===============================================================================
+	STRUCT GlowLabeledPopupMenuParams
+	
+	Labeled popup menu params
+===============================================================================
+*/
+
+class GlowLabeledPopupMenuParams :
+	public GlowPopupMenuParams
+{
+	public:
+	
+		const char* labelText;
+		GlowFont labelFont;
+		GlowLabeledPopupMenuWidget::LabelPosition labelPosition;
+		int labelWidth;
+		int labelHeight;
+		int labelSpacing;
+		GlowColor labelColor;
+		GlowColor hiliteLabelColor;
+		GlowColor disableLabelColor;
+		
+		static GlowLabeledPopupMenuParams defaults;
+		
+		GlowLabeledPopupMenuParams();
+	
+	protected:
+	
+		GlowLabeledPopupMenuParams(bool);
 };
 
 

@@ -71,12 +71,12 @@ All GLOW programs must make use of toplevel windows.
 
 <blockquote>
 
-<dl>
-<dt>
-<tt>static const int <b>autoPosition</b></tt>
-<dd>
+<p>
+<tt>enum { <b>autoPosition</b> }</tt>
+</p>
+<blockquote>
 Allow the window manager to position the window as it chooses.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -105,7 +105,7 @@ Creates a new <tt>GlowWindow</tt> with options specified by the given params. Al
 </blockquote>
 
 <p>
-<tt><b>GlowWindow</b>(const char* title, int x, int y, int width, int height, int mode, int eventMask)</tt>
+<tt><b>GlowWindow</b>(const char* title, int x, int y, int width, int height, <a href="Glow.html">Glow</a>::BufferType mode, <a href="Glow.html">Glow</a>::EventMask eventMask)</tt>
 </p>
 <blockquote>
 Creates a new <tt>GlowWindow</tt> with options specified by the given params. Also creates the corresponding GLUT window. <tt>title</tt> denotes the title of the window. <tt>x</tt> and <tt>y</tt> denote the pixel location of the top left corner of the window, in screen pixel coordinates. The constant <tt>GlowWindow::autoPosition</tt> may be used instead. <tt>width</tt> and <tt>height</tt> specify the width and height in pixels. <tt>mode</tt> describes the type of frame buffer to use. <tt>eventMask</tt> specifies which events the window wishes to receive when active. Use the event constants described in <tt><a href="Glow.html">Glow</a></tt> for the event mask.
@@ -126,7 +126,7 @@ Initializes the <tt>GlowWindow</tt> with options specified by the given params. 
 </blockquote>
 
 <p>
-<tt>void <b>Init</b>(const char* title, int x, int y, int width, int height, int mode, int eventMask)</tt>
+<tt>void <b>Init</b>(const char* title, int x, int y, int width, int height, <a href="Glow.html">Glow</a>::BufferType mode, <a href="Glow.html">Glow</a>::EventMask eventMask)</tt>
 </p>
 <blockquote>
 Initializes the <tt>GlowWindow</tt> with options specified by the given params. Also creates the corresponding GLUT window. <tt>title</tt> denotes the title of the window. <tt>x</tt> and <tt>y</tt> denote the pixel location of the top left corner of the subwindow, in screen pixel coordinates. <tt>width</tt> and <tt>height</tt> specify the width and height in pixels. <tt>mode</tt> describes the type of frame buffer to use. <tt>eventMask</tt> specifies which events the window wishes to receive when active. Use the event constants described in <tt><a href="Glow.html">Glow</a></tt> for the event mask.
@@ -282,15 +282,15 @@ Note: for a toplevel window, this returns the same value as <tt>GlobalPositionY<
 </p>
 
 <p>
-<tt><a href="GlowMenu.html">GlowMenu</a>* <b>GetMenu</b>(int button) const</tt>
+<tt><a href="GlowMenu.html">GlowMenu</a>* <b>GetMenu</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton) const</tt>
 </p>
 
 <p>
-<tt>void <b>SetMenu</b>(int button, <a href="GlowMenu.html">GlowMenu</a>* menu = 0)</tt>
+<tt>void <b>SetMenu</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, <a href="GlowMenu.html">GlowMenu</a>* menu = 0)</tt>
 </p>
 
 <p>
-<tt>void <b>UnsetMenu</b>(int button)</tt>
+<tt>void <b>UnsetMenu</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton)</tt>
 </p>
 
 <p>
@@ -302,19 +302,19 @@ Note: for a toplevel window, this returns the same value as <tt>GlobalPositionY<
 </p>
 
 <p>
-<tt>int <b>GetEventMask</b>(void) const</tt>
+<tt><a href="Glow.html">Glow</a>::EventMask <b>GetEventMask</b>(void) const</tt>
 </p>
 
 <p>
-<tt>int <b>GetInactiveEventMask</b>(void) const</tt>
+<tt><a href="Glow.html">Glow</a>::EventMask <b>GetInactiveEventMask</b>(void) const</tt>
 </p>
 
 <p>
-<tt>void <b>SetEventMask</b>(int mask)</tt>
+<tt>void <b>SetEventMask</b>(<a href="Glow.html">Glow</a>::EventMask mask)</tt>
 </p>
 
 <p>
-<tt>void <b>SetInactiveEventMask</b>(int mask)</tt>
+<tt>void <b>SetInactiveEventMask</b>(<a href="Glow.html">Glow</a>::EventMask mask)</tt>
 </p>
 
 <p>
@@ -326,7 +326,7 @@ Note: for a toplevel window, this returns the same value as <tt>GlobalPositionY<
 </p>
 
 <p>
-<tt>int <b>GlutInfo</b>(int key) const</tt>
+<tt>int <b>GlutInfo</b>(int whichInfo) const</tt>
 </p>
 
 </blockquote>
@@ -445,11 +445,11 @@ These overrideable methods are inherited from <tt><a href="GlowSubwindow.html">G
 <blockquote>
 
 <p>
-<tt>virtual void <b>OnMouseDown</b>(int button, int x, int y, int modifiers)</tt>
+<tt>virtual void <b>OnMouseDown</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 
 <p>
-<tt>virtual void <b>OnMouseUp</b>(int button, int x, int y, int modifiers)</tt>
+<tt>virtual void <b>OnMouseUp</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 
 <p>
@@ -477,7 +477,7 @@ These overrideable methods are inherited from <tt><a href="GlowSubwindow.html">G
 </p>
 
 <p>
-<tt>virtual void <b>OnKeyboard</b>(int key, int modifiers, int x, int y)</tt>
+<tt>virtual void <b>OnKeyboard</b>(<a href="Glow.html">Glow</a>::KeyCode key, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 
 <p>
@@ -547,7 +547,7 @@ These overrideable methods are inherited from <tt><a href="GlowComponent.html">G
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 

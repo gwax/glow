@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -306,14 +307,14 @@ inline void GlowSliderWidget::SetNumTickMarks(
 }
 
 
-inline int GlowSliderWidget::GetOptions() const
+inline GlowSliderWidget::Options GlowSliderWidget::GetOptions() const
 {
 	return _type;
 }
 
 
 inline void GlowSliderWidget::SetOptions(
-	int options)
+	Options options)
 {
 	_type = options;
 	Refresh();
@@ -490,14 +491,14 @@ inline void GlowLabeledSliderWidget::SetLabelSpacing(
 }
 
 
-inline int GlowLabeledSliderWidget::GetLabelPosition() const
+inline GlowLabeledSliderWidget::LabelPosition GlowLabeledSliderWidget::GetLabelPosition() const
 {
 	return _labelPosition;
 }
 
 
 inline void GlowLabeledSliderWidget::SetLabelPosition(
-	int position)
+	LabelPosition position)
 {
 	if (position != _labelPosition)
 	{

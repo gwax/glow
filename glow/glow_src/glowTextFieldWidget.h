@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -76,83 +77,9 @@ GLOW_INTERNAL_USINGSTD
 GLOW_NAMESPACE_BEGIN
 
 
-/*
-===============================================================================
-	STRUCT GlowTextFieldParams
-	
-	Editable text field params
-===============================================================================
-*/
-
-class GlowTextFieldParams :
-	public GlowWidgetParams
-{
-	public:
-	
-		int style;
-		const char* initialText;
-		GlowFont font;
-		int selectionStart;
-		int selectionEnd;
-		int blinkInterval;
-		int autoScrollInterval;
-		int inset;
-		int caretInset;
-		GlowColor backColor;
-		GlowColor textColor;
-		GlowColor caretColor;
-		GlowColor focusBackColor;
-		GlowColor focusTextColor;
-		GlowColor focusCaretColor;
-		GlowColor hiliteBackColor;
-		GlowColor hiliteTextColor;
-		GlowColor disableBackColor;
-		GlowColor disableTextColor;
-		GlowColor disableCaretColor;
-		GlowColor disableOutlineColor;
-		GlowColor lightBevelColor;
-		GlowColor darkBevelColor;
-		
-		static GlowTextFieldParams defaults;
-		
-		GlowTextFieldParams();
-	
-	protected:
-	
-		GlowTextFieldParams(bool);
-};
-
-
-/*
-===============================================================================
-	STRUCT GlowLabeledTextFieldParams
-	
-	Labeled text field params
-===============================================================================
-*/
-
-class GlowLabeledTextFieldParams :
-	public GlowTextFieldParams
-{
-	public:
-	
-		const char* labelText;
-		GlowFont labelFont;
-		int labelPosition;
-		int labelWidth;
-		int labelHeight;
-		int labelSpacing;
-		GlowColor labelColor;
-		GlowColor disableLabelColor;
-		
-		static GlowLabeledTextFieldParams defaults;
-		
-		GlowLabeledTextFieldParams();
-	
-	protected:
-	
-		GlowLabeledTextFieldParams(bool);
-};
+class GlowTextFieldParams;
+class GlowLabeledTextFieldParams;
+class GlowTextFieldWidget;
 
 
 /*
@@ -161,7 +88,6 @@ class GlowLabeledTextFieldParams :
 ===============================================================================
 */
 
-class GlowTextFieldWidget;
 
 class Glow_TextField_BlinkTask :
 	public GlowDeferredTask
@@ -202,7 +128,8 @@ class GlowTextFieldWidget :
 	
 	public:
 	
-		enum {
+		enum Style
+		{
 			plainStyle = 1,
 			etchedStyle = 2,
 			raisedStyle = 3,
@@ -231,8 +158,8 @@ class GlowTextFieldWidget :
 	public:
 	
 		inline void SetStyle(
-			int style);
-		inline int GetStyle() const;
+			Style style);
+		inline Style GetStyle() const;
 		
 		inline void SetFont(
 			GlowFont font);
@@ -338,21 +265,21 @@ class GlowTextFieldWidget :
 	
 	protected:
 	
-		virtual int OnAutoPack(
+		virtual AutoPackError OnAutoPack(
 			int hSize,
 			int vSize,
-			int hOption,
-			int vOption,
+			AutoPackOptions hOption,
+			AutoPackOptions vOption,
 			int& leftMargin,
 			int& rightMargin,
 			int& topMargin,
 			int& bottomMargin);
 		
 		virtual void OnWidgetKeyboard(
-			int key,
-			int modifiers,
+			Glow::KeyCode key,
 			int x,
-			int y);
+			int y,
+			Glow::Modifiers modifiers);
 	
 	
 	//-------------------------------------------------------------------------
@@ -362,15 +289,15 @@ class GlowTextFieldWidget :
 	protected:
 	
 		virtual void OnWidgetMouseDown(
-			int which,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnWidgetMouseUp(
-			int which,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnWidgetMouseDrag(
 			int x,
 			int y);
@@ -388,7 +315,7 @@ class GlowTextFieldWidget :
 	
 		GlowFont _font;
 		int _hpos;
-		int _style;
+		Style _style;
 		int _blinkInterval;
 		int _autoScrollInterval;
 		int _inset;
@@ -489,10 +416,10 @@ class GlowHiddenTextFieldWidget :
 	protected:
 	
 		virtual void OnWidgetKeyboard(
-			int key,
-			int modifiers,
+			Glow::KeyCode key,
 			int x,
-			int y);
+			int y,
+			Glow::Modifiers modifiers);
 	
 	
 	//-------------------------------------------------------------------------
@@ -545,11 +472,11 @@ class GlowLabeledTextFieldWidget :
 	
 	protected:
 	
-		virtual int OnAutoPack(
+		virtual AutoPackError OnAutoPack(
 			int hSize,
 			int vSize,
-			int hOption,
-			int vOption,
+			AutoPackOptions hOption,
+			AutoPackOptions vOption,
 			int& leftMargin,
 			int& rightMargin,
 			int& topMargin,
@@ -612,11 +539,11 @@ class GlowLabeledHiddenTextFieldWidget :
 	
 	protected:
 	
-		virtual int OnAutoPack(
+		virtual AutoPackError OnAutoPack(
 			int hSize,
 			int vSize,
-			int hOption,
-			int vOption,
+			AutoPackOptions hOption,
+			AutoPackOptions vOption,
 			int& leftMargin,
 			int& rightMargin,
 			int& topMargin,
@@ -634,6 +561,85 @@ class GlowLabeledHiddenTextFieldWidget :
 			GlowWidget* parent,
 			const GlowLabeledTextFieldParams& params,
 			char hideCharacter);
+};
+
+
+/*
+===============================================================================
+	STRUCT GlowTextFieldParams
+	
+	Editable text field params
+===============================================================================
+*/
+
+class GlowTextFieldParams :
+	public GlowWidgetParams
+{
+	public:
+	
+		GlowTextFieldWidget::Style style;
+		const char* initialText;
+		GlowFont font;
+		int selectionStart;
+		int selectionEnd;
+		int blinkInterval;
+		int autoScrollInterval;
+		int inset;
+		int caretInset;
+		GlowColor backColor;
+		GlowColor textColor;
+		GlowColor caretColor;
+		GlowColor focusBackColor;
+		GlowColor focusTextColor;
+		GlowColor focusCaretColor;
+		GlowColor hiliteBackColor;
+		GlowColor hiliteTextColor;
+		GlowColor disableBackColor;
+		GlowColor disableTextColor;
+		GlowColor disableCaretColor;
+		GlowColor disableOutlineColor;
+		GlowColor lightBevelColor;
+		GlowColor darkBevelColor;
+		
+		static GlowTextFieldParams defaults;
+		
+		GlowTextFieldParams();
+	
+	protected:
+	
+		GlowTextFieldParams(bool);
+};
+
+
+/*
+===============================================================================
+	STRUCT GlowLabeledTextFieldParams
+	
+	Labeled text field params
+===============================================================================
+*/
+
+class GlowLabeledTextFieldParams :
+	public GlowTextFieldParams
+{
+	public:
+	
+		const char* labelText;
+		GlowFont labelFont;
+		GlowLabeledTextFieldWidget::LabelPosition labelPosition;
+		int labelWidth;
+		int labelHeight;
+		int labelSpacing;
+		GlowColor labelColor;
+		GlowColor disableLabelColor;
+		
+		static GlowLabeledTextFieldParams defaults;
+		
+		GlowLabeledTextFieldParams();
+	
+	protected:
+	
+		GlowLabeledTextFieldParams(bool);
 };
 
 

@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -111,11 +112,11 @@ void GlowPanelWidget::Init(
 }
 
 
-int GlowPanelWidget::OnAutoPack(
+GlowWidget::AutoPackError GlowPanelWidget::OnAutoPack(
 	int hSize,
 	int vSize,
-	int hOption,
-	int vOption,
+	AutoPackOptions hOption,
+	AutoPackOptions vOption,
 	int& leftMargin,
 	int& rightMargin,
 	int& topMargin,

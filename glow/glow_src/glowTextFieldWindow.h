@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -75,6 +76,9 @@ GLOW_NAMESPACE_BEGIN
 
 class GlowLabelWidget;
 class GlowTextFieldWidget;
+class GlowPushButtonWidget;
+class GlowTextFieldWindow;
+class GlowWidgetMapToPushButtonFilter;
 
 
 /*
@@ -85,15 +89,13 @@ class GlowTextFieldWidget;
 ===============================================================================
 */
 
-class GlowTextFieldWindow;
-
 struct GlowTextFieldWindowMessage
 {
 	GlowTextFieldWindow* window;
 	GLOW_STD::string text;
 	int response;
-	int mouseButton;
-	int modifiers;
+	Glow::MouseButton mouseButton;
+	Glow::Modifiers modifiers;
 };
 
 
@@ -122,6 +124,8 @@ struct GlowTextFieldWindowParams
 	GlowFont buttonFont;
 	const char* buttonLabels;
 	int windowSpacing;
+	int enterButton;
+	int escapeButton;
 	GlowTextFieldWindowReceiver* receiver;
 	GlowColor backColor;
 	GlowColor labelColor;
@@ -180,6 +184,13 @@ class GlowTextFieldWindow :
 			const char* fieldText,
 			const char* buttonLabels,
 			GlowTextFieldWindowReceiver* receiver);
+		
+		virtual ~GlowTextFieldWindow();
+		
+		inline void SetEnterButton(
+			int num);
+		inline void SetEscapeButton(
+			int num);
 	
 	public:
 	
@@ -195,8 +206,8 @@ class GlowTextFieldWindow :
 		virtual void OnButtonPressed(
 			int response,
 			const char* text,
-			int mouseButton,
-			int modifiers);
+			Glow::MouseButton mouseButton,
+			Glow::Modifiers modifiers);
 	
 	
 	//-------------------------------------------------------------------------
@@ -207,6 +218,9 @@ class GlowTextFieldWindow :
 	
 		TSender<const GlowTextFieldWindowMessage&> _sender;
 		GlowTextFieldWidget* _field;
+		GLOW_STD::vector<GlowPushButtonWidget*> _buttons;
+		GlowWidgetMapToPushButtonFilter* _enterFilter;
+		GlowWidgetMapToPushButtonFilter* _escapeFilter;
 };
 
 

@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -212,13 +213,13 @@ int GlowWidget::RootPositionY() const
 }
 
 
-int GlowWidget::AutoPack(
+GlowWidget::AutoPackError GlowWidget::AutoPack(
 	int leftLimit,
 	int rightLimit,
 	int topLimit,
 	int bottomLimit,
-	int hOption,
-	int vOption,
+	AutoPackOptions hOption,
+	AutoPackOptions vOption,
 	int& leftMargin,
 	int& rightMargin,
 	int& topMargin,
@@ -267,7 +268,7 @@ int GlowWidget::AutoPack(
 	rightMargin = 0;
 	topMargin = 0;
 	bottomMargin = 0;
-	int result = OnAutoPack(hSize, vSize,
+	AutoPackError result = OnAutoPack(hSize, vSize,
 		hOption & sizeOptionMask, vOption & sizeOptionMask,
 		leftMargin, rightMargin, topMargin, bottomMargin);
 	if (result != noAutoPackError)
@@ -337,11 +338,11 @@ int GlowWidget::AutoPack(
 }
 
 
-int GlowWidget::OnAutoPack(
+GlowWidget::AutoPackError GlowWidget::OnAutoPack(
 	int hSize,
 	int vSize,
-	int hOption,
-	int vOption,
+	AutoPackOptions hOption,
+	AutoPackOptions vOption,
 	int& leftMargin,
 	int& rightMargin,
 	int& topMargin,
@@ -622,19 +623,19 @@ void GlowWidget::OnWidgetPaint()
 
 
 void GlowWidget::OnWidgetMouseDown(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 }
 
 
 void GlowWidget::OnWidgetMouseUp(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 }
 
@@ -647,10 +648,10 @@ void GlowWidget::OnWidgetMouseDrag(
 
 
 void GlowWidget::OnWidgetKeyboard(
-	int key,
-	int modifiers,
+	Glow::KeyCode key,
 	int x,
-	int y)
+	int y,
+	Glow::Modifiers modifiers)
 {
 }
 
@@ -783,51 +784,61 @@ void GlowWidgetRoot::AdvanceKeyboardFocus()
 }
 
 
-void GlowWidgetRoot::WRMouseDown(
-	int button,
-	int x,
-	int y,
-	int modifiers)
+GlowWidget* GlowWidgetRoot::FindWidget(
+	int& x,
+	int& y)
 {
-	GLOW_DEBUGSCOPE("GlowWidgetRoot::WRMouseDown");
-	
 	for (GLOW_STD::list<GlowWidget*>::iterator iter = _mouseWidgets.begin();
 		iter != _mouseWidgets.end(); ++iter)
 	{
 		GlowWidget* widget = (*iter);
 		int xmin = widget->RootPositionX();
 		int ymin = widget->RootPositionY();
-		if (x>=xmin && y>=ymin)
+		if (x>=xmin && y>=ymin &&
+			x<=xmin+widget->Width() && y<=ymin+widget->Height())
 		{
-			int xmax = xmin + widget->Width();
-			int ymax = ymin + widget->Height();
-			if (x<=xmax && y<=ymax)
-			{
-				if (button == Glow::leftButton)
-				{
-					_leftButton = *iter;
-				}
-				else if (button == Glow::middleButton)
-				{
-					_middleButton = *iter;
-				}
-				else if (button == Glow::rightButton)
-				{
-					_rightButton = *iter;
-				}
-				widget->OnWidgetMouseDown(button, x-xmin, y-ymin, modifiers);
-				break;
-			}
+			x -= xmin;
+			y -= ymin;
+			return widget;
 		}
+	}
+	return 0;
+}
+
+
+void GlowWidgetRoot::WRMouseDown(
+	Glow::MouseButton button,
+	int x,
+	int y,
+	Glow::Modifiers modifiers)
+{
+	GLOW_DEBUGSCOPE("GlowWidgetRoot::WRMouseDown");
+	
+	GlowWidget* widget = FindWidget(x, y);
+	if (widget != 0)
+	{
+		if (button == Glow::leftButton)
+		{
+			_leftButton = widget;
+		}
+		else if (button == Glow::middleButton)
+		{
+			_middleButton = widget;
+		}
+		else //if (button == Glow::rightButton)
+		{
+			_rightButton = widget;
+		}
+		widget->OnWidgetMouseDown(button, x, y, modifiers);
 	}
 }
 
 
 void GlowWidgetRoot::WRMouseUp(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("GlowWidgetRoot::WRMouseUp");
 	
@@ -849,9 +860,8 @@ void GlowWidgetRoot::WRMouseUp(
 	}
 	if (widget != 0)
 	{
-		int xmin = widget->RootPositionX();
-		int ymin = widget->RootPositionY();
-		widget->OnWidgetMouseUp(button, x-xmin, y-ymin, modifiers);
+		widget->OnWidgetMouseUp(button, x-widget->RootPositionX(),
+			y-widget->RootPositionY(), modifiers);
 	}
 }
 
@@ -884,19 +894,27 @@ void GlowWidgetRoot::WRMouseDrag(
 
 
 void GlowWidgetRoot::WRKeyboard(
-	int key,
-	int modifiers,
+	Glow::KeyCode key,
 	int x,
-	int y)
+	int y,
+	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("GlowWidgetRoot::WRKeyboard");
 	
-	if (_curKeyboardFocus != _keyboardWidgets.end())
+	GlowWidgetKeyboardData filterData;
+	filterData.root = this;
+	filterData.key = key;
+	filterData.x = x;
+	filterData.y = y;
+	filterData.modifiers = modifiers;
+	_keyboardFilters.Send(filterData);
+	if (filterData._continue &&
+		filterData.root->_curKeyboardFocus != _keyboardWidgets.end())
 	{
-		GlowWidget* widget = (*_curKeyboardFocus);
-		int xmin = widget->RootPositionX();
-		int ymin = widget->RootPositionY();
-		widget->OnWidgetKeyboard(key, modifiers, x-xmin, y-ymin);
+		GlowWidget* widget = *(filterData.root->_curKeyboardFocus);
+		widget->OnWidgetKeyboard(filterData.key,
+			filterData.x-widget->RootPositionX(),
+			filterData.y-widget->RootPositionY(), filterData.modifiers);
 	}
 }
 
@@ -968,25 +986,58 @@ void GlowWidgetRoot::_UnregisterKeyboardWidget(
 
 /*
 ===============================================================================
+	Methods of GlowWidgetKeyboardFilter
+===============================================================================
+*/
+
+void GlowWidgetKeyboardFilter::OnMessage(
+	GlowWidgetKeyboardData& message)
+{
+	if (message._continue)
+	{
+		message._continue = OnFilter(message);
+	}
+}
+
+
+/*
+===============================================================================
+	Methods of GlowWidgetTabFilter
+===============================================================================
+*/
+
+bool GlowWidgetTabFilter::OnFilter(
+	GlowWidgetKeyboardData& data)
+{
+	if (data.key == Glow::tabKey)
+	{
+		data.root->AdvanceKeyboardFocus();
+	}
+	return data.key != Glow::tabKey;
+}
+
+
+/*
+===============================================================================
 	Methods of GlowWidgetSubwindow
 ===============================================================================
 */
 
 void GlowWidgetSubwindow::OnMouseDown(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 	WRMouseDown(button, x, y, modifiers);
 }
 
 
 void GlowWidgetSubwindow::OnMouseUp(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 	WRMouseUp(button, x, y, modifiers);
 }
@@ -1001,12 +1052,12 @@ void GlowWidgetSubwindow::OnMouseDrag(
 
 
 void GlowWidgetSubwindow::OnKeyboard(
-	int key,
-	int modifiers,
+	Glow::KeyCode key,
 	int x,
-	int y)
+	int y,
+	Glow::Modifiers modifiers)
 {
-	WRKeyboard(key, modifiers, x, y);
+	WRKeyboard(key, x, y, modifiers);
 }
 
 
@@ -1029,20 +1080,20 @@ void GlowWidgetSubwindow::OnEndPaint()
 */
 
 void GlowWidgetWindow::OnMouseDown(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 	WRMouseDown(button, x, y, modifiers);
 }
 
 
 void GlowWidgetWindow::OnMouseUp(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 	WRMouseUp(button, x, y, modifiers);
 }
@@ -1057,12 +1108,12 @@ void GlowWidgetWindow::OnMouseDrag(
 
 
 void GlowWidgetWindow::OnKeyboard(
-	int key,
-	int modifiers,
+	Glow::KeyCode key,
 	int x,
-	int y)
+	int y,
+	Glow::Modifiers modifiers)
 {
-	WRKeyboard(key, modifiers, x, y);
+	WRKeyboard(key, x, y, modifiers);
 }
 
 
@@ -1085,20 +1136,20 @@ void GlowWidgetWindow::OnEndPaint()
 */
 
 void GlowFixedSizeWidgetWindow::OnMouseDown(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 	WRMouseDown(button, x, y, modifiers);
 }
 
 
 void GlowFixedSizeWidgetWindow::OnMouseUp(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 	WRMouseUp(button, x, y, modifiers);
 }
@@ -1113,12 +1164,12 @@ void GlowFixedSizeWidgetWindow::OnMouseDrag(
 
 
 void GlowFixedSizeWidgetWindow::OnKeyboard(
-	int key,
-	int modifiers,
+	Glow::KeyCode key,
 	int x,
-	int y)
+	int y,
+	Glow::Modifiers modifiers)
 {
-	WRKeyboard(key, modifiers, x, y);
+	WRKeyboard(key, x, y, modifiers);
 }
 
 
@@ -1141,16 +1192,16 @@ void GlowFixedSizeWidgetWindow::OnEndPaint()
 */
 
 void GlowSubwindowInWidget::OnKeyboard(
-	int key,
-	int modifiers,
+	Glow::KeyCode key,
 	int x,
-	int y)
+	int y,
+	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("GlowSubwindowInWidget::OnKeyboard");
 	
 	Glow::DeliverKeyboardEvt(
 		static_cast<GlowWidget*>(Parent())->Root()->Subwindow(),
-		key, modifiers, x, y);
+		key, x, y, modifiers);
 }
 
 

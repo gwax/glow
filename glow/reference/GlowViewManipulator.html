@@ -72,24 +72,30 @@ GLOW programs that render 3D scenes may find <tt>GlowViewManipulator</tt> useful
 
 <blockquote>
 
-<dl>
-<dt>
-<tt>static const int <b>idleState</b></tt>
-<dd>
+<p>
+<tt>enum GlowViewManipulator::State <b>idleState</b></tt>
+</p>
+<blockquote>
 The manipulator is not being moved.
-<dt>
-<tt>static const int <b>rotatingState</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>enum GlowViewManipulator::State <b>rotatingState</b></tt>
+</p>
+<blockquote>
 The manipulator is being rotated.
-<dt>
-<tt>static const int <b>translatingState</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>enum GlowViewManipulator::State <b>translatingState</b></tt>
+</p>
+<blockquote>
 The manipulator is being translated.
-<dt>
-<tt>static const int <b>scalingState</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>enum GlowViewManipulator::State <b>scalingState</b></tt>
+</p>
+<blockquote>
 The manipulator is is being scaled.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -148,7 +154,7 @@ The destructor for <tt>GlowViewManipulator</tt> also recursively deletes the com
 <blockquote>
 
 <p>
-<tt>int <b>State</b>(void) const</tt>
+<tt>GlowViewManipulator::State <b>GetState</b>(void) const</tt>
 </p>
 <blockquote>
 Returns the current state of the manipulator.
@@ -520,7 +526,7 @@ This method is overridden by <tt>GlowViewTransform</tt> to perform the OpenGL tr
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 30 March 2000
+Last updated 10 April 2000
 </address>
 
 

@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -50,6 +51,10 @@
 	Headers and declarations
 ===============================================================================
 */
+
+#ifndef GLOW_PUSHBUTTONWIDGET__H
+	#include "glowPushButtonWidget.h"
+#endif
 
 GLOW_NAMESPACE_BEGIN
 
@@ -87,6 +92,22 @@ inline GlowMessageWindow::GlowMessageWindow(
 inline TSender<const GlowMessageWindowMessage&>& GlowMessageWindow::Notifier()
 {
 	return _sender;
+}
+
+
+inline void GlowMessageWindow::SetEnterButton(
+	int num)
+{
+	GLOW_DEBUG(num >= int(_buttons.size()), "enterButton ID is too high");
+	_enterFilter->SetPushButton((num < 0) ? 0 : _buttons[num]);
+}
+
+
+inline void GlowMessageWindow::SetEscapeButton(
+	int num)
+{
+	GLOW_DEBUG(num >= int(_buttons.size()), "escapeButton ID is too high");
+	_escapeFilter->SetPushButton((num < 0) ? 0 : _buttons[num]);
 }
 
 

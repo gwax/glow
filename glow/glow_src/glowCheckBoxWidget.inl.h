@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -135,30 +136,38 @@ inline void GlowCheckBoxWidget::SetSpacing(
 }
 
 
-inline int GlowCheckBoxWidget::GetBehavior() const
+inline GlowCheckBoxWidget::Behavior GlowCheckBoxWidget::GetBehavior() const
 {
 	return _behavior;
 }
 
 
 inline void GlowCheckBoxWidget::SetBehavior(
-	int behavior)
+	Behavior behavior)
 {
 	_behavior = behavior;
 }
 
 
-inline int GlowCheckBoxWidget::GetState() const
+inline GlowCheckBoxWidget::State GlowCheckBoxWidget::GetState() const
 {
 	return _state;
 }
 
 
 inline void GlowCheckBoxWidget::SetState(
-	int state)
+	GlowCheckBoxWidget::State state)
 {
 	_state = state;
 	Refresh();
+}
+
+
+inline void GlowCheckBoxWidget::Hit(
+	Glow::MouseButton button,
+	Glow::Modifiers modifiers)
+{
+	OnHit(button, modifiers);
 }
 
 

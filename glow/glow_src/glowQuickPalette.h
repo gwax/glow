@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -80,7 +81,7 @@
 #ifndef GLOW_RADIOBUTTONWIDGET__H
 	#include "glowRadioButtonWidget.h"
 #endif
-#ifndef GLOW_SSCROLLBARWIDGET__H
+#ifndef GLOW_SCROLLBARWIDGET__H
 	#include "glowScrollBarWidget.h"
 #endif
 #ifndef GLOW_SEPARATORWIDGET__H
@@ -98,25 +99,21 @@ GLOW_INTERNAL_USINGSTD
 GLOW_NAMESPACE_BEGIN
 
 
-class GlowQuickPaletteBase;
+class GlowQuickPalette;
 class GlowQuickPanelWidget;
 class GlowQuickRadioGroupWidget;
 
 
 /*
 ===============================================================================
-	CLASS GlowQuickRadioGroupWidget
+	CLASS GlowQuickPalette
 	
-	Quick radio button group
+	Defines constants and methods for QuickPalette
 ===============================================================================
 */
 
-class GlowQuickRadioGroupWidget :
-	public GlowRadioGroupWidget
+class GlowQuickPalette
 {
-	friend class GlowQuickPanelWidget;
-	
-	
 	//-------------------------------------------------------------------------
 	//	Public interface
 	//-------------------------------------------------------------------------
@@ -124,80 +121,19 @@ class GlowQuickRadioGroupWidget :
 	public:
 	
 		enum {
-			vertical = 0,
-			horizontal = 1
+			parentSetting = -1
 		};
-	
-	public:
-	
-		GlowRadioButtonWidget* AddRadioButton(
-			const char* label);
-	
-	
-	//-------------------------------------------------------------------------
-	//	Overrideable implementation
-	//-------------------------------------------------------------------------
-	
-	protected:
-	
-		virtual int OnAutoPack(
-			int hSize,
-			int vSize,
-			int hOption,
-			int vOption,
-			int& leftMargin,
-			int& rightMargin,
-			int& topMargin,
-			int& bottomMargin);
-	
-	
-	//-------------------------------------------------------------------------
-	//	Private implementation
-	//-------------------------------------------------------------------------
-	
-	private:
-	
-		GlowQuickRadioGroupWidget(
-			GlowWidget* parent,
-			GlowRadioButtonReceiver* receiver,
-			int arrangement,
-			int spacing);
-	
-	private:
-	
-		int _arrangement;
-		int _spacing;
-};
-
-
-/*
-===============================================================================
-	CLASS GlowQuickPanelWidget
-	
-	Quick panel
-===============================================================================
-*/
-
-class GlowQuickPanelWidget :
-	public GlowPanelWidget
-{
-	friend class GlowQuickPaletteBase;
-	friend class GlowQuickPaletteWindow;
-	friend class GlowQuickPaletteSubwindow;
-	
-	
-	//-------------------------------------------------------------------------
-	//	Public interface
-	//-------------------------------------------------------------------------
-	
-	public:
-	
-		enum {
+		
+		enum Arrangement
+		{
+			parentArrangement = parentSetting,
 			vertical = 0,
 			horizontal = 1
 		};
 		
-		enum {
+		enum Alignment
+		{
+			parentAlignment = parentSetting,
 			alignTop = 0,
 			alignLeft = 0,
 			alignCenter = 1,
@@ -205,55 +141,51 @@ class GlowQuickPanelWidget :
 			alignRight = 2,
 			alignExpand = 4
 		};
-		
-		enum {
-			parentSetting = -1
-		};
 	
 	public:
 	
 		GlowQuickPanelWidget* AddPanel(
-			int style = plainStyle,
+			GlowPanelWidget::Style style = GlowPanelWidget::plainStyle,
 			const char* label = 0,
-			int arrangement = parentSetting,
-			int alignment = parentSetting,
+			Arrangement arrangement = parentArrangement,
+			Alignment alignment = parentAlignment,
 			int spacing = parentSetting,
 			int hmargin = 10,
 			int vmargin = 10);
 		inline GlowQuickPanelWidget* AddArrangingPanel(
-			int arrangement = parentSetting,
-			int alignment = parentSetting,
+			Arrangement arrangement = parentArrangement,
+			Alignment alignment = parentAlignment,
 			int spacing = parentSetting,
 			int inset = 0);
 		GlowPanelWidget* AddFixedPanel(
 			int width,
 			int height,
-			int style = GlowPanelWidget::plainStyle);
+			GlowPanelWidget::Style style = GlowPanelWidget::plainStyle);
 		GlowSeparatorWidget* AddSeparator(
-			int style = GlowSeparatorWidget::valleyStyle);
+			GlowSeparatorWidget::Style style = GlowSeparatorWidget::valleyStyle);
 		GlowPushButtonWidget* AddPushButton(
 			const char* label,
 			GlowPushButtonReceiver* receiver = 0);
 		GlowMenuButtonWidget* AddMenuButton(
 			const char* label,
 			GlowMenu* menu,
-			int iconType = GlowMenuButtonWidget::menuIcon);
+			GlowMenuButtonWidget::IconType iconType = GlowMenuButtonWidget::menuIcon);
 		GlowLabeledPopupMenuWidget* AddPopupMenu(
 			const char* label,
 			GlowPopupMenuReceiver* receiver = 0);
 		GlowCheckBoxWidget* AddCheckBox(
 			const char* label,
-			int initialValue = GlowCheckBoxWidget::off,
+			GlowCheckBoxWidget::State initialValue = GlowCheckBoxWidget::off,
 			GlowCheckBoxReceiver* receiver = 0);
 		GlowQuickRadioGroupWidget* AddRadioGroup(
-			int arrangement = GlowQuickRadioGroupWidget::vertical,
+			Arrangement arrangement = vertical,
 			int spacing = 3,
 			GlowRadioButtonReceiver* receiver = 0);
 		GlowLabeledSliderWidget* AddSlider(
 			float min,
 			float max,
 			float initial,
-			int options = GlowSliderWidget::defaultOptions,
+			GlowSliderWidget::Options options = GlowSliderWidget::defaultOptions,
 			int numTicks = 2,
 			const char* valueLabel = 0,
 			const char* label = 0,
@@ -276,15 +208,15 @@ class GlowQuickPanelWidget :
 		GlowLabelWidget* AddLabel(
 			const char* text);
 		
-		inline int GetArrangement() const;
-		inline int GetAlignment() const;
+		inline Arrangement GetArrangement() const;
+		inline Alignment GetAlignment() const;
 		inline int GetSpacing() const;
 		inline int GetHMargin() const;
 		inline int GetVMargin() const;
 		inline void SetArrangement(
-			int value);
+			Arrangement value);
 		inline void SetAlignment(
-			int value);
+			Alignment value);
 		inline void SetSpacing(
 			int value);
 		inline void SetHMargin(
@@ -294,16 +226,49 @@ class GlowQuickPanelWidget :
 	
 	
 	//-------------------------------------------------------------------------
+	//	Private implementation
+	//-------------------------------------------------------------------------
+	
+	protected:
+	
+		GlowQuickPanelWidget* _panel;
+	
+	protected:
+	
+		inline GlowQuickPalette();
+};
+
+GLOW_INTERNAL_SETUPENUMBITFIELD(GlowQuickPalette::Alignment)
+
+
+/*
+===============================================================================
+	CLASS GlowQuickPanelWidget
+	
+	Quick panel
+===============================================================================
+*/
+
+class GlowQuickPanelWidget :
+	public GlowQuickPalette,
+	public GlowPanelWidget
+{
+	friend class GlowQuickPalette;
+	friend class GlowQuickPaletteWindow;
+	friend class GlowQuickPaletteSubwindow;
+	
+	
+	//-------------------------------------------------------------------------
 	//	Overrideable implementation
 	//-------------------------------------------------------------------------
 	
 	protected:
 	
-		virtual int OnAutoPack(
+		virtual AutoPackError OnAutoPack(
 			int hSize,
 			int vSize,
-			int hOption,
-			int vOption,
+			AutoPackOptions hOption,
+			AutoPackOptions vOption,
 			int& leftMargin,
 			int& rightMargin,
 			int& topMargin,
@@ -319,10 +284,10 @@ class GlowQuickPanelWidget :
 		GlowQuickPanelWidget(
 			GlowWidgetRoot* root,
 			GlowQuickPanelWidget* parent,
-			int style,
+			Style style,
 			const char* label,
-			int arrangement,
-			int alignment,
+			Arrangement arrangement,
+			Alignment alignment,
 			int spacing,
 			int hmargin,
 			int vmargin);
@@ -330,138 +295,11 @@ class GlowQuickPanelWidget :
 	private:
 	
 		GlowLabelWidget* _label;
-		int _arrangement;
-		int _alignment;
+		Arrangement _arrangement;
+		Alignment _alignment;
 		int _spacing;
 		int _hmargin;
 		int _vmargin;
-};
-
-
-/*
-===============================================================================
-	CLASS GlowQuickPaletteBase
-	
-	Quick palette base class
-===============================================================================
-*/
-
-class GlowQuickPaletteBase
-{
-	//-------------------------------------------------------------------------
-	//	Public interface
-	//-------------------------------------------------------------------------
-	
-	public:
-	
-		enum {
-			vertical = 0,
-			horizontal = 1
-		};
-		
-		enum {
-			alignTop = 0,
-			alignLeft = 0,
-			alignCenter = 1,
-			alignBottom = 2,
-			alignRight = 2,
-			alignExpand = 4
-		};
-		
-		enum {
-			parentSetting = -1
-		};
-	
-	public:
-	
-		inline GlowQuickPanelWidget* AddPanel(
-			int style = GlowQuickPanelWidget::plainStyle,
-			const char* label = 0,
-			int arrangement = parentSetting,
-			int alignment = parentSetting,
-			int spacing = parentSetting,
-			int hmargin = 10,
-			int vmargin = 10);
-		inline GlowQuickPanelWidget* AddArrangingPanel(
-			int arrangement = parentSetting,
-			int alignment = parentSetting,
-			int spacing = parentSetting,
-			int inset = 0);
-		inline GlowPanelWidget* AddFixedPanel(
-			int width,
-			int height,
-			int style = GlowPanelWidget::plainStyle);
-		inline GlowSeparatorWidget* AddSeparator(
-			int style = GlowSeparatorWidget::valleyStyle);
-		inline GlowPushButtonWidget* AddPushButton(
-			const char* label,
-			GlowPushButtonReceiver* receiver = 0);
-		inline GlowMenuButtonWidget* AddMenuButton(
-			const char* label,
-			GlowMenu* menu,
-			int iconType = GlowMenuButtonWidget::menuIcon);
-		inline GlowLabeledPopupMenuWidget* AddPopupMenu(
-			const char* label,
-			GlowPopupMenuReceiver* receiver = 0);
-		inline GlowCheckBoxWidget* AddCheckBox(
-			const char* label,
-			int initialValue = GlowCheckBoxWidget::off,
-			GlowCheckBoxReceiver* receiver = 0);
-		inline GlowQuickRadioGroupWidget* AddRadioGroup(
-			int arrangement = GlowQuickRadioGroupWidget::vertical,
-			int spacing = 3,
-			GlowRadioButtonReceiver* receiver = 0);
-		inline GlowLabeledSliderWidget* AddSlider(
-			float min,
-			float max,
-			float initial,
-			int options = GlowSliderWidget::defaultOptions,
-			int numTicks = 2,
-			const char* valueLabel = 0,
-			const char* label = 0,
-			GlowSliderReceiver* receiver = 0);
-		inline GlowScrollBarWidget* AddScrollBar(
-			long min,
-			long max,
-			long span,
-			long initialTop,
-			GlowScrollBarReceiver* receiver = 0);
-		inline GlowLabeledTextFieldWidget* AddTextField(
-			int width,
-			const char* text = "",
-			const char* label = 0);
-		inline GlowLabeledHiddenTextFieldWidget* AddHiddenTextField(
-			int width,
-			const char* text = "",
-			char hideCharacter = '#',
-			const char* label = 0);
-		inline GlowLabelWidget* AddLabel(
-			const char* text);
-		
-		inline int GetArrangement() const;
-		inline int GetAlignment() const;
-		inline int GetSpacing() const;
-		inline int GetHMargin() const;
-		inline int GetVMargin() const;
-		inline void SetArrangement(
-			int value);
-		inline void SetAlignment(
-			int value);
-		inline void SetSpacing(
-			int value);
-		inline void SetHMargin(
-			int value);
-		inline void SetVMargin(
-			int value);
-	
-	
-	//-------------------------------------------------------------------------
-	//	Subclass-visible implementation
-	//-------------------------------------------------------------------------
-	
-	protected:
-	
-		GlowQuickPanelWidget* _rootPanel;
 };
 
 
@@ -474,7 +312,7 @@ class GlowQuickPaletteBase
 */
 
 class GlowQuickPaletteWindow :
-	public GlowQuickPaletteBase,
+	public GlowQuickPalette,
 	public GlowFixedSizeWidgetWindow
 {
 	//-------------------------------------------------------------------------
@@ -487,8 +325,8 @@ class GlowQuickPaletteWindow :
 			const char* name,
 			int x = GlowWindow::autoPosition,
 			int y = GlowWindow::autoPosition,
-			int arrangement = vertical,
-			int alignment = alignLeft,
+			Arrangement arrangement = vertical,
+			Alignment alignment = alignLeft,
 			int spacing = 8,
 			int hmargin = 10,
 			int vmargin = 10);
@@ -508,7 +346,7 @@ class GlowQuickPaletteWindow :
 */
 
 class GlowQuickPaletteSubwindow :
-	public GlowQuickPaletteBase,
+	public GlowQuickPalette,
 	public GlowWidgetSubwindow
 {
 	//-------------------------------------------------------------------------
@@ -523,8 +361,8 @@ class GlowQuickPaletteSubwindow :
 			int y = 0,
 			int width = GlowSubwindow::parentWindowSize,
 			int height = GlowSubwindow::parentWindowSize,
-			int arrangement = vertical,
-			int alignment = alignLeft,
+			Arrangement arrangement = vertical,
+			Alignment alignment = alignLeft,
 			int spacing = 8,
 			int hmargin = 10,
 			int vmargin = 10);
@@ -533,6 +371,66 @@ class GlowQuickPaletteSubwindow :
 	
 		void Pack(
 			bool resizeOnPack = true);
+};
+
+
+/*
+===============================================================================
+	CLASS GlowQuickRadioGroupWidget
+	
+	Quick radio button group
+===============================================================================
+*/
+
+class GlowQuickRadioGroupWidget :
+	public GlowRadioGroupWidget
+{
+	friend class GlowQuickPalette;
+	
+	
+	//-------------------------------------------------------------------------
+	//	Public interface
+	//-------------------------------------------------------------------------
+	
+	public:
+	
+		GlowRadioButtonWidget* AddRadioButton(
+			const char* label);
+	
+	
+	//-------------------------------------------------------------------------
+	//	Overrideable implementation
+	//-------------------------------------------------------------------------
+	
+	protected:
+	
+		virtual AutoPackError OnAutoPack(
+			int hSize,
+			int vSize,
+			AutoPackOptions hOption,
+			AutoPackOptions vOption,
+			int& leftMargin,
+			int& rightMargin,
+			int& topMargin,
+			int& bottomMargin);
+	
+	
+	//-------------------------------------------------------------------------
+	//	Private implementation
+	//-------------------------------------------------------------------------
+	
+	private:
+	
+		GlowQuickRadioGroupWidget(
+			GlowWidget* parent,
+			GlowRadioButtonReceiver* receiver,
+			GlowQuickPalette::Arrangement arrangement,
+			int spacing);
+	
+	private:
+	
+		GlowQuickPalette::Arrangement _arrangement;
+		int _spacing;
 };
 
 

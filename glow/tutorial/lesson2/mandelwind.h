@@ -86,15 +86,15 @@ class MandelWind :
 			int height);
 		// These methods are called when mouse events happen in this window.
 		virtual void OnMouseDown(
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnMouseUp(
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnMouseDrag(
 			int x,
 			int y);

@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -57,291 +58,96 @@ GLOW_NAMESPACE_BEGIN
 
 /*
 ===============================================================================
-	Inline methods of GlowQuickPanelWidget
+	Inline methods of GlowQuickPalette
 ===============================================================================
 */
 
-inline GlowQuickPanelWidget* GlowQuickPanelWidget::AddArrangingPanel(
-	int arrangement,
-	int alignment,
-	int spacing,
-	int inset)
+inline GlowQuickPalette::GlowQuickPalette()
 {
-	return AddPanel(plainStyle, 0, arrangement, alignment, spacing,
-		(_arrangement == vertical) ? inset : 0,
-		(_arrangement == horizontal) ? inset : 0);
-}
-
-
-inline int GlowQuickPanelWidget::GetArrangement() const
-{
-	return _arrangement;
-}
-
-
-inline int GlowQuickPanelWidget::GetAlignment() const
-{
-	return _alignment;
-}
-
-
-inline int GlowQuickPanelWidget::GetSpacing() const
-{
-	return _spacing;
-}
-
-
-inline int GlowQuickPanelWidget::GetHMargin() const
-{
-	return _hmargin;
-}
-
-
-inline int GlowQuickPanelWidget::GetVMargin() const
-{
-	return _vmargin;
-}
-
-
-inline void GlowQuickPanelWidget::SetArrangement(
-	int value)
-{
-	_arrangement = value;
-}
-
-
-inline void GlowQuickPanelWidget::SetAlignment(
-	int value)
-{
-	_alignment = value;
-}
-
-
-inline void GlowQuickPanelWidget::SetSpacing(
-	int value)
-{
-	_spacing = value;
-}
-
-
-inline void GlowQuickPanelWidget::SetHMargin(
-	int value)
-{
-	_hmargin = value;
-}
-
-
-inline void GlowQuickPanelWidget::SetVMargin(
-	int value)
-{
-	_vmargin = value;
+	_panel = 0;
 }
 
 
 /*
 ===============================================================================
-	Inline methods of GlowQuickPaletteBase
+	Inline methods of GlowQuickPanelWidget
 ===============================================================================
 */
 
-inline GlowQuickPanelWidget* GlowQuickPaletteBase::AddPanel(
-	int style,
-	const char* label,
-	int arrangement,
-	int alignment,
-	int spacing,
-	int hmargin,
-	int vmargin)
-{
-	return _rootPanel->AddPanel(style, label, arrangement, alignment,
-		spacing, hmargin, vmargin);
-}
-
-
-inline GlowQuickPanelWidget* GlowQuickPaletteBase::AddArrangingPanel(
-	int arrangement,
-	int alignment,
+inline GlowQuickPanelWidget* GlowQuickPalette::AddArrangingPanel(
+	Arrangement arrangement,
+	Alignment alignment,
 	int spacing,
 	int inset)
 {
-	return _rootPanel->AddArrangingPanel(arrangement, alignment,
-		spacing, inset);
+	return AddPanel(GlowPanelWidget::plainStyle, 0, arrangement, alignment, spacing,
+		(_panel->_arrangement == vertical) ? inset : 0,
+		(_panel->_arrangement == horizontal) ? inset : 0);
 }
 
 
-inline GlowPanelWidget* GlowQuickPaletteBase::AddFixedPanel(
-	int width,
-	int height,
-	int style)
+inline GlowQuickPalette::Arrangement GlowQuickPalette::GetArrangement() const
 {
-	return _rootPanel->AddFixedPanel(width, height, style);
+	return _panel->_arrangement;
 }
 
 
-inline GlowSeparatorWidget* GlowQuickPaletteBase::AddSeparator(
-	int style)
+inline GlowQuickPalette::Alignment GlowQuickPalette::GetAlignment() const
 {
-	return _rootPanel->AddSeparator(style);
+	return _panel->_alignment;
 }
 
 
-inline GlowPushButtonWidget* GlowQuickPaletteBase::AddPushButton(
-	const char* label,
-	GlowPushButtonReceiver* receiver)
+inline int GlowQuickPalette::GetSpacing() const
 {
-	return _rootPanel->AddPushButton(label, receiver);
+	return _panel->_spacing;
 }
 
 
-inline GlowMenuButtonWidget* GlowQuickPaletteBase::AddMenuButton(
-	const char* label,
-	GlowMenu* menu,
-	int iconType)
+inline int GlowQuickPalette::GetHMargin() const
 {
-	return _rootPanel->AddMenuButton(label, menu, iconType);
+	return _panel->_hmargin;
 }
 
 
-inline GlowLabeledPopupMenuWidget* GlowQuickPaletteBase::AddPopupMenu(
-	const char* label,
-	GlowPopupMenuReceiver* receiver)
+inline int GlowQuickPalette::GetVMargin() const
 {
-	return _rootPanel->AddPopupMenu(label, receiver);
+	return _panel->_vmargin;
 }
 
 
-inline GlowCheckBoxWidget* GlowQuickPaletteBase::AddCheckBox(
-	const char* label,
-	int initialValue,
-	GlowCheckBoxReceiver* receiver)
+inline void GlowQuickPalette::SetArrangement(
+	Arrangement value)
 {
-	return _rootPanel->AddCheckBox(label, initialValue, receiver);
+	_panel->_arrangement = value;
 }
 
 
-inline GlowQuickRadioGroupWidget* GlowQuickPaletteBase::AddRadioGroup(
-	int arrangement,
-	int spacing,
-	GlowRadioButtonReceiver* receiver)
+inline void GlowQuickPalette::SetAlignment(
+	Alignment value)
 {
-	return _rootPanel->AddRadioGroup(arrangement, spacing, receiver);
+	_panel->_alignment = value;
 }
 
 
-inline GlowLabeledSliderWidget* GlowQuickPaletteBase::AddSlider(
-	float min,
-	float max,
-	float initial,
-	int options,
-	int numTicks,
-	const char* valueLabel,
-	const char* label,
-	GlowSliderReceiver* receiver)
-{
-	return _rootPanel->AddSlider(min, max, initial, options, numTicks,
-		valueLabel, label, receiver);
-}
-
-
-inline GlowScrollBarWidget* GlowQuickPaletteBase::AddScrollBar(
-	long min,
-	long max,
-	long span,
-	long initialTop,
-	GlowScrollBarReceiver* receiver)
-{
-	return _rootPanel->AddScrollBar(min, max, span, initialTop, receiver);
-}
-
-
-inline GlowLabeledTextFieldWidget* GlowQuickPaletteBase::AddTextField(
-	int width,
-	const char* text,
-	const char* label)
-{
-	return _rootPanel->AddTextField(width, text, label);
-}
-
-
-inline GlowLabeledHiddenTextFieldWidget* GlowQuickPaletteBase::AddHiddenTextField(
-	int width,
-	const char* text,
-	char hideCharacter,
-	const char* label)
-{
-	return _rootPanel->AddHiddenTextField(width, text, hideCharacter, label);
-}
-
-
-inline GlowLabelWidget* GlowQuickPaletteBase::AddLabel(
-	const char* text)
-{
-	return _rootPanel->AddLabel(text);
-}
-
-
-inline int GlowQuickPaletteBase::GetArrangement() const
-{
-	return _rootPanel->GetArrangement();
-}
-
-
-inline int GlowQuickPaletteBase::GetAlignment() const
-{
-	return _rootPanel->GetAlignment();
-}
-
-
-inline int GlowQuickPaletteBase::GetSpacing() const
-{
-	return _rootPanel->GetSpacing();
-}
-
-
-inline int GlowQuickPaletteBase::GetHMargin() const
-{
-	return _rootPanel->GetHMargin();
-}
-
-
-inline int GlowQuickPaletteBase::GetVMargin() const
-{
-	return _rootPanel->GetVMargin();
-}
-
-
-inline void GlowQuickPaletteBase::SetArrangement(
+inline void GlowQuickPalette::SetSpacing(
 	int value)
 {
-	_rootPanel->SetArrangement(value);
+	_panel->_spacing = value;
 }
 
 
-inline void GlowQuickPaletteBase::SetAlignment(
+inline void GlowQuickPalette::SetHMargin(
 	int value)
 {
-	_rootPanel->SetAlignment(value);
+	_panel->_hmargin = value;
 }
 
 
-inline void GlowQuickPaletteBase::SetSpacing(
+inline void GlowQuickPalette::SetVMargin(
 	int value)
 {
-	_rootPanel->SetSpacing(value);
-}
-
-
-inline void GlowQuickPaletteBase::SetHMargin(
-	int value)
-{
-	_rootPanel->SetHMargin(value);
-}
-
-
-inline void GlowQuickPaletteBase::SetVMargin(
-	int value)
-{
-	_rootPanel->SetVMargin(value);
+	_panel->_vmargin = value;
 }
 
 

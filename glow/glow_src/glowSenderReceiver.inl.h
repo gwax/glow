@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -70,18 +71,26 @@ GLOW_NAMESPACE_BEGIN
 
 inline Receiver_Base::Receiver_Base()
 {
+	_numActualSenders = 0;
 }
 
 
 inline unsigned int Receiver_Base::NumSenders() const
 {
-	return _senders.size();
+	return _numActualSenders;
+}
+
+
+inline unsigned int Receiver_Base::NumTrackers() const
+{
+	return _senders.size() - _numActualSenders;
 }
 
 
 inline void Receiver_Base::_AddSender(
 	Sender_Base* sender)
 {
+	++_numActualSenders;
 	_senders.push_back(sender);
 }
 
@@ -93,6 +102,25 @@ inline void Receiver_Base::_RemoveSender(
 		GLOW_STD::find(_senders.begin(), _senders.end(), sender);
 	GLOW_DEBUG(iter == _senders.end(),
 		"Sender not found in Receiver_Base::_RemoveSender");
+	--_numActualSenders;
+	_senders.erase(iter);
+}
+
+
+inline void Receiver_Base::_AddTracker(
+	Sender_Base* sender)
+{
+	_senders.push_back(sender);
+}
+
+
+inline void Receiver_Base::_RemoveTracker(
+	Sender_Base* sender)
+{
+	GLOW_STD::list<Sender_Base*>::iterator iter =
+		GLOW_STD::find(_senders.begin(), _senders.end(), sender);
+	GLOW_DEBUG(iter == _senders.end(),
+		"Tracker not found in Receiver_Base::_RemoveTracker");
 	_senders.erase(iter);
 }
 
@@ -129,6 +157,41 @@ inline void Sender_Base::_RemoveReceiver(
 	GLOW_DEBUG(iter == _receivers.end(),
 		"Receiver not found in Sender_Base::_RemoveReceiver");
 	_receivers.erase(iter);
+}
+
+
+/*
+===============================================================================
+	Inline methods of ReceiverTracker
+===============================================================================
+*/
+
+inline ReceiverTracker::ReceiverTracker()
+{
+	_options = neverDelete;
+}
+
+
+inline void ReceiverTracker::Bind(
+	Receiver_Base* receiver)
+{
+	GLOW_DEBUG(GLOW_STD::find(_receivers.begin(), _receivers.end(), receiver)!=_receivers.end(),
+		"ReceiverTracker already tracking TReceiver");
+	receiver->_AddTracker(this);
+	_receivers.push_back(receiver);
+}
+
+
+inline void ReceiverTracker::SetDeletingOptions(
+	DeletingOptions options)
+{
+	_options = options;
+}
+
+
+inline ReceiverTracker::DeletingOptions ReceiverTracker::GetDeletingOptions() const
+{
+	return _options;
 }
 
 

@@ -72,12 +72,12 @@ GLOW programs that use message windows may use <tt>GlowMessageWindowReceiver</tt
 
 <blockquote>
 
-<dl>
-<dt>
+<p>
 <tt>typedef const <a href="GlowMessageWindowMessage.html">GlowMessageWindowMessage</a>& <b>MessageType</b></tt>
-<dd>
+</p>
+<blockquote>
 A synonym for the type of message.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -116,10 +116,17 @@ A receiver can provide rudimentary information on which senders are bound to it.
 <blockquote>
 
 <p>
-<tt>int <b>NumSenders</b>(void)</tt>
+<tt>unsigned int <b>NumSenders</b>(void)</tt>
 </p>
 <blockquote>
 Returns the number of message windows bound to this receiver.
+</blockquote>
+
+<p>
+<tt>unsigned int <b>NumTrackers</b>(void)</tt>
+</p>
+<blockquote>
+Returns the number of trackers bound to this receiver.
 </blockquote>
 
 </blockquote>
@@ -174,7 +181,7 @@ This is a pure virtual method that must be overridden by a subclass. It is calle
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 

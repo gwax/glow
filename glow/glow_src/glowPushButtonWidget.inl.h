@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -253,6 +254,14 @@ inline TSender<const GlowPushButtonMessage&>& GlowPushButtonWidget::Notifier()
 }
 
 
+inline void GlowPushButtonWidget::Hit(
+	Glow::MouseButton button,
+	Glow::Modifiers modifiers)
+{
+	OnHit(button, modifiers);
+}
+
+
 /*
 ===============================================================================
 	Inline methods of GlowDismissPushButtonWidget
@@ -301,6 +310,62 @@ inline void GlowDismissPushButtonWidget::Init(
 {
 	GlowPushButtonWidget::Init(root, 0, params);
 	_todismiss = todismiss;
+}
+
+
+/*
+===============================================================================
+	Inline methods of GlowWidgetMapToPushButtonFilter
+===============================================================================
+*/
+
+inline GlowWidgetMapToPushButtonFilter::GlowWidgetMapToPushButtonFilter(
+	GlowPushButtonWidget* widget,
+	Glow::KeyCode key,
+	Glow::Modifiers modifiers)
+{
+	_widget = widget;
+	_keyCode = key;
+	_modifiers = modifiers;
+}
+
+
+inline void GlowWidgetMapToPushButtonFilter::SetPushButton(
+	GlowPushButtonWidget* widget)
+{
+	_widget = widget;
+}
+
+
+inline GlowPushButtonWidget* GlowWidgetMapToPushButtonFilter::GetPushButton() const
+{
+	return _widget;
+}
+
+
+inline void GlowWidgetMapToPushButtonFilter::SetKeyCode(
+	Glow::KeyCode key)
+{
+	_keyCode = key;
+}
+
+
+inline Glow::KeyCode GlowWidgetMapToPushButtonFilter::GetKeyCode() const
+{
+	return _keyCode;
+}
+
+
+inline void GlowWidgetMapToPushButtonFilter::SetModifiers(
+	Glow::Modifiers modifiers)
+{
+	_modifiers = modifiers;
+}
+
+
+inline Glow::Modifiers GlowWidgetMapToPushButtonFilter::GetModifiers() const
+{
+	return _modifiers;
 }
 
 

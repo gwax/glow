@@ -135,6 +135,59 @@ Returns the widget with the keyboard focus, or 0 if no widget has keyboard focus
 Advances keyboard focus to the next eligible widget.
 </blockquote>
 
+<p>
+<tt><a href="GlowWidget.html">GlowWidget</a>* <b>FindWidget</b>(int& x, int& y)</tt>
+</p>
+<blockquote>
+Determines which widget owns the given coordinates in the widget root-- e.g., if the mouse were clicked in that point, which widget would be hit. Returns a pointer to the widget, or null if no widget is hit. Also modifies the passed parameters to give the point in that widget's local coordinates.
+</blockquote>
+
+</blockquote>
+
+</blockquote>
+
+
+<p>
+<b>Managing event filters</b>
+<br>
+Event filters can be set up to pre-filter keyboard events before they are delivered. They can modify the parameters of the event, or even handle the event themselves and consume the event so it is not passed on to the receiving widget.
+</p>
+
+<blockquote>
+
+<p>
+<tt>static void <b>RegisterFilter</b>(<a href="GlowWidgetKeyboardFilter.html">GlowWidgetKeyboardFilter</a>* filter)</tt>
+</p>
+<blockquote>
+Adds the given keyboard event filter to the list of filters. Has no effect if the filter is already registered.
+</blockquote>
+
+<p>
+<tt>static void <b>UnregisterFilter</b>(<a href="GlowWidgetKeyboardFilter.html">GlowWidgetKeyboardFilter</a>* filter)</tt>
+</p>
+<blockquote>
+Removes the given keyboard event filter from the list of filters. Has no effect if the filter is not registered.
+</blockquote>
+
+<p>
+<tt>static void <b>UnregisterAllFilters</b>(void)</tt>
+</p>
+<blockquote>
+Unregisters all keyboard event filters.
+</blockquote>
+
+<p>
+<tt>static unsigned int <b>NumRegisteredFilters</b>(void)</tt>
+</p>
+<blockquote>
+Returns the number of registered keyboard event filters.
+</blockquote>
+
+<p>
+<tt>static bool <b>IsFilterRegistered</b>(<a href="GlowWidgetKeyboardFilter.html">GlowWidgetKeyboardFilter</a>* filter)</tt>
+</p>
+<blockquote>
+Reports whether the given keyboard event filter is registered.
 </blockquote>
 
 </blockquote>
@@ -180,11 +233,11 @@ These methods are analogous to the corresponding <tt><a href="GlowSubwindow.html
 <blockquote>
 
 <p>
-<tt>void <b>WRMouseDown</b>(int button, int x, int y, int modifiers)</tt>
+<tt>void <b>WRMouseDown</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 
 <p>
-<tt>void <b>WRMouseUp</b>(int button, int x, int y, int modifiers)</tt>
+<tt>void <b>WRMouseUp</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 
 <p>
@@ -192,7 +245,7 @@ These methods are analogous to the corresponding <tt><a href="GlowSubwindow.html
 </p>
 
 <p>
-<tt>void <b>WRKeyboard</b>(int key, int modifiers, int x, int y)</tt>
+<tt>void <b>WRKeyboard</b>(<a href="Glow.html">Glow</a>::KeyCode key, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 
 <p>
@@ -229,7 +282,7 @@ These methods are analogous to the corresponding <tt><a href="GlowSubwindow.html
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 

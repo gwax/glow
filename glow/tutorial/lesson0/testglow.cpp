@@ -161,18 +161,18 @@ class MySubwindow :
 		virtual bool OnBeginPaint();
 		
 		virtual void OnMouseDown(
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnMouseDrag(
 			int x,
 			int y);
 		virtual void OnMouseUp(
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 	
 	private:
 	
@@ -226,10 +226,10 @@ bool MySubwindow::OnBeginPaint()
 // Handle mouse down events by redirecting to the view manipulator
 
 void MySubwindow::OnMouseDown(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 	if (!_manip->IsDragging())
 	{
@@ -258,10 +258,10 @@ void MySubwindow::OnMouseDrag(
 // Handle mouse up events by redirecting to the view manipulator
 
 void MySubwindow::OnMouseUp(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 	if (_manip->IsDragging())
 	{

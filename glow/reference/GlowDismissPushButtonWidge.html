@@ -75,39 +75,39 @@ These constants are inherited from <tt><a href="GlowWidget.html">GlowWidget</a><
 <blockquote>
 
 <p>
-<tt>static const int <b>noAutoPackError</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>noAutoPackError</b></tt>
 <br>
-<tt>static const int <b>hAutoPackError</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>hAutoPackError</b></tt>
 <br>
-<tt>static const int <b>vAutoPackError</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>vAutoPackError</b></tt>
 </p>
 
 <p>
-<tt>static const int <b>unspecifiedSize</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>noReshape</b></tt>
 <br>
-<tt>static const int <b>noReshape</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>preferredSize</b></tt>
 <br>
-<tt>static const int <b>preferredSize</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>expandPreferredSize</b></tt>
 <br>
-<tt>static const int <b>expandPreferredSize</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>forcedSize</b></tt>
 <br>
-<tt>static const int <b>forcedSize</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>noMove</b></tt>
+<br>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>leftPos</b></tt>
+<br>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>rightPos</b></tt>
+<br>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>topPos</b></tt>
+<br>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>bottomPos</b></tt>
+<br>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>centerPos</b></tt>
 </p>
 
 <p>
-<tt>static const int <b>unspecifiedPos</b></tt>
+<tt>enum { <b>unspecifiedSize</b> }</tt>
 <br>
-<tt>static const int <b>noMove</b></tt>
-<br>
-<tt>static const int <b>leftPos</b></tt>
-<br>
-<tt>static const int <b>rightPos</b></tt>
-<br>
-<tt>static const int <b>topPos</b></tt>
-<br>
-<tt>static const int <b>bottomPos</b></tt>
-<br>
-<tt>static const int <b>centerPos</b></tt>
+<tt>enum { <b>unspecifiedPos</b> }</tt>
 </p>
 
 </blockquote>
@@ -271,6 +271,10 @@ These methods are inherited from <tt><a href="GlowPushButtonWidget.html">GlowPus
 <tt><a href="TSender.html">TSender</a>&lt;const <a href="GlowPushButtonMessage.html">GlowPushButtonMessage</a>&&gt;& <b>Notifier</b>(void)</tt>
 </p>
 
+<p>
+<tt>void <b>Hit</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
+</p>
+
 </blockquote>
 
 
@@ -323,15 +327,15 @@ These methods are inherited from <tt><a href="GlowWidget.html">GlowWidget</a></t
 </p>
 
 <p>
-<tt>int <b>AutoPack</b>(int leftLimit, int rightLimit, int topLimit, int bottomLimit, int hOption, int vOption, int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
+<tt><a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>AutoPack</b>(int leftLimit, int rightLimit, int topLimit, int bottomLimit, <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions hOption, <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions vOption, int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
 <br>
-<tt>int <b>AutoPack</b>(int leftLimit, int rightLimit, int topLimit, int bottomLimit, int hOption, int vOption)</tt>
+<tt><a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>AutoPack</b>(int leftLimit, int rightLimit, int topLimit, int bottomLimit, <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions hOption, <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions vOption)</tt>
 </p>
 
 <p>
-<tt>int <b>AutoReshape</b>(int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
+<tt><a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>AutoReshape</b>(int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
 <br>
-<tt>int <b>AutoReshape</b>()</tt>
+<tt><a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>AutoReshape</b>()</tt>
 </p>
 
 <p>
@@ -543,10 +547,10 @@ These methods are inherited from <tt><a href="GlowPushButtonWidget.html">GlowPus
 <blockquote>
 
 <p>
-<tt>virtual void <b>OnPressed</b>(int mouseButton, int modifiers)</tt>
+<tt>virtual void <b>OnHit</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 <blockquote>
-<tt>GlowDismissPushButtonWidget</tt> overrides this method to <tt>delete</tt> the specified component after the receivers have been notified of the button press.
+<tt>GlowDismissPushButtonWidget</tt> overrides this method to <tt>Close()</tt> the specified component after the receivers have been notified of the button press.
 </blockquote>
 
 </blockquote>
@@ -568,14 +572,14 @@ These methods are inherited from <tt><a href="GlowWidget.html">GlowWidget</a></t
 </blockquote>
 
 <p>
-<tt>virtual void <b>OnWidgetMouseDown</b>(int button, int x, int y, int modifiers)</tt>
+<tt>virtual void <b>OnWidgetMouseDown</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 <blockquote>
 <tt>GlowPushButton</tt> overrides this method to handle mouse events. You should not override it again unless a subclass needs to modify how events are handled.
 </blockquote>
 
 <p>
-<tt>virtual void <b>OnWidgetMouseUp</b>(int button, int x, int y, int modifiers)</tt>
+<tt>virtual void <b>OnWidgetMouseUp</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 <blockquote>
 <tt>GlowPushButton</tt> overrides this method to handle mouse events. You should not override it again unless a subclass needs to modify how events are handled.
@@ -589,7 +593,7 @@ These methods are inherited from <tt><a href="GlowWidget.html">GlowWidget</a></t
 </blockquote>
 
 <p>
-<tt>virtual void <b>OnWidgetKeyboard</b>(int key, int modifiers, int x, int y)</tt>
+<tt>virtual void <b>OnWidgetKeyboard</b>(<a href="Glow.html">Glow</a>::KeyCode key, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 <blockquote>
 The standard <tt>GlowPushButton</tt> does not handle keyboard events. Override this method if a subclass needs to receive keyboard events.
@@ -628,7 +632,7 @@ The standard <tt>GlowPushButton</tt> does not handle keyboard events. Override t
 </p>
 
 <p>
-<tt>virtual void <b>OnAutoPack</b>(int hSize, int vSize, int hOption, int vOption, int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
+<tt>virtual <a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>OnAutoPack</b>(int hSize, int vSize, <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions hOption, <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions vOption, int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
 </p>
 <blockquote>
 <tt>GlowPushButton</tt> implements this method to pack a button. Override it if a subclass requires different packing.
@@ -687,7 +691,7 @@ These methods are inherited from <tt><a href="GlowComponent.html">GlowComponent<
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 

@@ -80,7 +80,7 @@ Creates a new <tt>GlowFixedSizeWindow</tt> with options specified by the given p
 </blockquote>
 
 <p>
-<tt><b>GlowFixedSizeWindow</b>(const char* title, int x, int y, int width, int height, int mode, int eventMask)</tt>
+<tt><b>GlowFixedSizeWindow</b>(const char* title, int x, int y, int width, int height, <a href="Glow.html">Glow</a>::BufferType mode, int eventMask)</tt>
 </p>
 <blockquote>
 Creates a new <tt>GlowFixedSizeWindow</tt> with options specified by the given params. Essentially behaves like the corresponding constructor from <tt><a href="GlowWindow.html">GlowWindow</a></tt>, except <tt>width</tt> and <tt>height</tt> also set the fixed size.
@@ -101,7 +101,7 @@ Initializes the <tt>GlowFixedSizeWindow</tt> with options specified by the given
 </blockquote>
 
 <p>
-<tt>void <b>Init</b>(const char* title, int x, int y, int width, int height, int mode, int eventMask)</tt>
+<tt>void <b>Init</b>(const char* title, int x, int y, int width, int height, <a href="Glow.html">Glow</a>::BufferType mode, int eventMask)</tt>
 </p>
 <blockquote>
 Initializes the <tt>GlowFixedSizeWindow</tt> with options specified by the given params. Essentially behaves like the corresponding method from <tt><a href="GlowWindow.html">GlowWindow</a></tt>, except <tt>width</tt> and <tt>height</tt> also set the fixed size.
@@ -275,15 +275,15 @@ You should not normally try to reshape a fixed-size window. It will momentarily 
 </p>
 
 <p>
-<tt><a href="GlowMenu.html">GlowMenu</a>* <b>GetMenu</b>(int button) const</tt>
+<tt><a href="GlowMenu.html">GlowMenu</a>* <b>GetMenu</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton) const</tt>
 </p>
 
 <p>
-<tt>void <b>SetMenu</b>(int button, <a href="GlowMenu.html">GlowMenu</a>* menu = 0)</tt>
+<tt>void <b>SetMenu</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, <a href="GlowMenu.html">GlowMenu</a>* menu = 0)</tt>
 </p>
 
 <p>
-<tt>void <b>UnsetMenu</b>(int button)</tt>
+<tt>void <b>UnsetMenu</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton)</tt>
 </p>
 
 <p>
@@ -295,19 +295,19 @@ You should not normally try to reshape a fixed-size window. It will momentarily 
 </p>
 
 <p>
-<tt>int <b>GetEventMask</b>(void) const</tt>
+<tt><a href="Glow.html">Glow</a>::EventMask <b>GetEventMask</b>(void) const</tt>
 </p>
 
 <p>
-<tt>int <b>GetInactiveEventMask</b>(void) const</tt>
+<tt><a href="Glow.html">Glow</a>::EventMask <b>GetInactiveEventMask</b>(void) const</tt>
 </p>
 
 <p>
-<tt>void <b>SetEventMask</b>(int mask)</tt>
+<tt>void <b>SetEventMask</b>(<a href="Glow.html">Glow</a>::EventMask mask)</tt>
 </p>
 
 <p>
-<tt>void <b>SetInactiveEventMask</b>(int mask)</tt>
+<tt>void <b>SetInactiveEventMask</b>(<a href="Glow.html">Glow</a>::EventMask mask)</tt>
 </p>
 
 <p>
@@ -319,7 +319,7 @@ You should not normally try to reshape a fixed-size window. It will momentarily 
 </p>
 
 <p>
-<tt>int <b>GlutInfo</b>(int key) const</tt>
+<tt>int <b>GlutInfo</b>(int whichInfo) const</tt>
 </p>
 
 </blockquote>
@@ -438,11 +438,11 @@ These overrideable methods are inherited from <tt><a href="GlowSubwindow.html">G
 <blockquote>
 
 <p>
-<tt>virtual void <b>OnMouseDown</b>(int button, int x, int y, int modifiers)</tt>
+<tt>virtual void <b>OnMouseDown</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 
 <p>
-<tt>virtual void <b>OnMouseUp</b>(int button, int x, int y, int modifiers)</tt>
+<tt>virtual void <b>OnMouseUp</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 
 <p>
@@ -470,7 +470,7 @@ These overrideable methods are inherited from <tt><a href="GlowSubwindow.html">G
 </p>
 
 <p>
-<tt>virtual void <b>OnKeyboard</b>(int key, int modifiers, int x, int y)</tt>
+<tt>virtual void <b>OnKeyboard</b>(<a href="Glow.html">Glow</a>::KeyCode key, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 
 <p>
@@ -545,7 +545,7 @@ These overrideable methods are inherited from <tt><a href="GlowComponent.html">G
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 

@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -162,13 +163,13 @@ inline void GlowWidget::Reshape(
 }
 
 
-inline int GlowWidget::AutoPack(
+inline GlowWidget::AutoPackError GlowWidget::AutoPack(
 	int leftLimit,
 	int rightLimit,
 	int topLimit,
 	int bottomLimit,
-	int hOption,
-	int vOption)
+	AutoPackOptions hOption,
+	AutoPackOptions vOption)
 {
 	int leftMargin = 0;
 	int rightMargin = 0;
@@ -179,7 +180,7 @@ inline int GlowWidget::AutoPack(
 }
 
 
-inline int GlowWidget::AutoReshape()
+inline GlowWidget::AutoPackError GlowWidget::AutoReshape()
 {
 	int leftMargin = 0;
 	int rightMargin = 0;
@@ -191,7 +192,7 @@ inline int GlowWidget::AutoReshape()
 }
 
 
-inline int GlowWidget::AutoReshape(
+inline GlowWidget::AutoPackError GlowWidget::AutoReshape(
 	int& leftMargin,
 	int& rightMargin,
 	int& topMargin,
@@ -477,6 +478,68 @@ inline GlowSubwindow* GlowWidgetRoot::Subwindow() const
 
 
 /*
+-------------------------------------------------------------------------------
+	Filter methods
+-------------------------------------------------------------------------------
+*/
+
+inline void GlowWidgetRoot::UnregisterAllFilters()
+{
+	_keyboardFilters.UnbindAll();
+}
+
+
+inline unsigned int GlowWidgetRoot::NumRegisteredFilters() const
+{
+	return _keyboardFilters.NumReceivers();
+}
+
+
+inline bool GlowWidgetRoot::IsFilterRegistered(
+	GlowWidgetKeyboardFilter* filter) const
+{
+	return _keyboardFilters.IsBoundTo(filter);
+}
+
+
+inline void GlowWidgetRoot::RegisterFilter(
+	GlowWidgetKeyboardFilter* filter)
+{
+	if (!_keyboardFilters.IsBoundTo(filter))
+	{
+		_keyboardFilters.Bind(filter);
+	}
+}
+
+
+inline void GlowWidgetRoot::UnregisterFilter(
+	GlowWidgetKeyboardFilter* filter)
+{
+	if (_keyboardFilters.IsBoundTo(filter))
+	{
+		_keyboardFilters.Unbind(filter);
+	}
+}
+
+
+/*
+===============================================================================
+	Inline methods for event filter types
+===============================================================================
+*/
+
+inline GlowWidgetKeyboardData::GlowWidgetKeyboardData()
+{
+	_continue = true;
+}
+
+
+inline GlowWidgetTabFilter::GlowWidgetTabFilter()
+{
+}
+
+
+/*
 ===============================================================================
 	Inline methods of GlowWidgetSubwindow
 ===============================================================================
@@ -493,8 +556,8 @@ inline GlowWidgetSubwindow::GlowWidgetSubwindow(
 	int y,
 	int width,
 	int height,
-	int mode,
-	int eventMask,
+	Glow::BufferType mode,
+	Glow::EventMask eventMask,
 	GlowColor backColor)
 {
 	GlowSubwindow::Init(parent, x, y, width, height, mode, eventMask);
@@ -517,8 +580,8 @@ inline void GlowWidgetSubwindow::Init(
 	int y,
 	int width,
 	int height,
-	int mode,
-	int eventMask,
+	Glow::BufferType mode,
+	Glow::EventMask eventMask,
 	GlowColor backColor)
 {
 	GlowSubwindow::Init(parent, x, y, width, height, mode, eventMask);
@@ -552,8 +615,8 @@ inline GlowWidgetWindow::GlowWidgetWindow(
 	int y,
 	int width,
 	int height,
-	int mode,
-	int eventMask,
+	Glow::BufferType mode,
+	Glow::EventMask eventMask,
 	GlowColor backColor)
 {
 	GlowWindow::Init(title, x, y, width, height, mode, eventMask);
@@ -575,8 +638,8 @@ inline void GlowWidgetWindow::Init(
 	int y,
 	int width,
 	int height,
-	int mode,
-	int eventMask,
+	Glow::BufferType mode,
+	Glow::EventMask eventMask,
 	GlowColor backColor)
 {
 	GlowWindow::Init(title, x, y, width, height, mode, eventMask);
@@ -609,8 +672,8 @@ inline GlowFixedSizeWidgetWindow::GlowFixedSizeWidgetWindow(
 	int y,
 	int width,
 	int height,
-	int mode,
-	int eventMask,
+	Glow::BufferType mode,
+	Glow::EventMask eventMask,
 	GlowColor backColor)
 {
 	GlowFixedSizeWindow::Init(title, x, y, width, height, mode, eventMask);
@@ -632,8 +695,8 @@ inline void GlowFixedSizeWidgetWindow::Init(
 	int y,
 	int width,
 	int height,
-	int mode,
-	int eventMask,
+	Glow::BufferType mode,
+	Glow::EventMask eventMask,
 	GlowColor backColor)
 {
 	GlowFixedSizeWindow::Init(title, x, y, width, height, mode, eventMask);
@@ -677,8 +740,8 @@ inline GlowSubwindowInWidget::GlowSubwindowInWidget(
 	int y,
 	int width,
 	int height,
-	int mode,
-	int eventMask)
+	Glow::BufferType mode,
+	Glow::EventMask eventMask)
 {
 	GlowSubwindow::Init(parent,
 		x+parent->RootPositionX(), y+parent->RootPositionY(),
@@ -703,8 +766,8 @@ inline void GlowSubwindowInWidget::Init(
 	int y,
 	int width,
 	int height,
-	int mode,
-	int eventMask)
+	Glow::BufferType mode,
+	Glow::EventMask eventMask)
 {
 	GlowSubwindow::Init(parent,
 		x+parent->RootPositionX(), y+parent->RootPositionY(),

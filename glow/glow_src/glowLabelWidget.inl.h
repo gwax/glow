@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -306,14 +307,14 @@ inline void GlowWidgetLabelHelper::SetLabelSpacing(
 }
 
 
-inline int GlowWidgetLabelHelper::GetLabelPosition() const
+inline GlowWidgetLabelHelper::LabelPosition GlowWidgetLabelHelper::GetLabelPosition() const
 {
 	return _labelPosition;
 }
 
 
 inline void GlowWidgetLabelHelper::SetLabelPosition(
-	int position)
+	LabelPosition position)
 {
 	if (position != _labelPosition)
 	{

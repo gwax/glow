@@ -43,7 +43,7 @@ class GlowLabeledSliderWidget
 <b>
 type: class
 <br>
-inherits: <tt><a href="GlowSliderWidget.html">GlowSliderWidget</a></tt>, <tt><a href="GlowWidgetLabelHelper.html">GlowWidgetLabelHelper</a></tt>
+inherits: <tt><a href="GlowSliderWidget.html">GlowSliderWidget</a></tt>
 <br>
 module: <tt><a href="M_glowSliderWidget.html">glowSliderWidget</a></tt>
 </b>
@@ -69,21 +69,21 @@ GLOW programs that make use of labeled slider widgets should use this class.
 <p>
 <b>Positioning constants</b>
 <br>
-These constants are inherited from <tt><a href="GlowWidgetLabelHelper.html">GlowWidgetLabelHelper</a></tt>.
+These constants specify positioning of the main label.
 </p>
 
 <blockquote>
 
 <p>
-<tt>static const int <b>defaultLabelPosition</b></tt>
+<tt>enum GlowLabeledSliderWidget::LabelPosition <b>defaultLabelPosition</b></tt>
 <br>
-<tt>static const int <b>leftLabelPosition</b></tt>
+<tt>enum GlowLabeledSliderWidget::LabelPosition <b>leftLabelPosition</b></tt>
 <br>
-<tt>static const int <b>rightLabelPosition</b></tt>
+<tt>enum GlowLabeledSliderWidget::LabelPosition <b>rightLabelPosition</b></tt>
 <br>
-<tt>static const int <b>topLabelPosition</b></tt>
+<tt>enum GlowLabeledSliderWidget::LabelPosition <b>topLabelPosition</b></tt>
 <br>
-<tt>static const int <b>bottomLabelPosition</b></tt>
+<tt>enum GlowLabeledSliderWidget::LabelPosition <b>bottomLabelPosition</b></tt>
 </p>
 
 </blockquote>
@@ -98,23 +98,23 @@ These constants are inherited from <tt><a href="GlowSliderWidget.html">GlowSlide
 <blockquote>
 
 <p>
-<tt>static const int <b>defaultOptions</b></tt>
+<tt>enum <a href="GlowSliderWidget.html">GlowSliderWidget</a>::Options <b>defaultOptions</b></tt>
 <br>
-<tt>static const int <b>ticksOnBottom</b></tt>
+<tt>enum <a href="GlowSliderWidget.html">GlowSliderWidget</a>::Options <b>ticksOnBottom</b></tt>
 <br>
-<tt>static const int <b>ticksOnRight</b></tt>
+<tt>enum <a href="GlowSliderWidget.html">GlowSliderWidget</a>::Options <b>ticksOnRight</b></tt>
 <br>
-<tt>static const int <b>ticksOnTop</b></tt>
+<tt>enum <a href="GlowSliderWidget.html">GlowSliderWidget</a>::Options <b>ticksOnTop</b></tt>
 <br>
-<tt>static const int <b>ticksOnLeft</b></tt>
+<tt>enum <a href="GlowSliderWidget.html">GlowSliderWidget</a>::Options <b>ticksOnLeft</b></tt>
 <br>
-<tt>static const int <b>increasing</b></tt>
+<tt>enum <a href="GlowSliderWidget.html">GlowSliderWidget</a>::Options <b>increasing</b></tt>
 <br>
-<tt>static const int <b>decreasing</b></tt>
+<tt>enum <a href="GlowSliderWidget.html">GlowSliderWidget</a>::Options <b>decreasing</b></tt>
 <br>
-<tt>static const int <b>linear</b></tt>
+<tt>enum <a href="GlowSliderWidget.html">GlowSliderWidget</a>::Options <b>linear</b></tt>
 <br>
-<tt>static const int <b>logarithmic</b></tt>
+<tt>enum <a href="GlowSliderWidget.html">GlowSliderWidget</a>::Options <b>logarithmic</b></tt>
 </p>
 
 </blockquote>
@@ -129,39 +129,39 @@ These constants are inherited from <tt><a href="GlowWidget.html">GlowWidget</a><
 <blockquote>
 
 <p>
-<tt>static const int <b>noAutoPackError</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>noAutoPackError</b></tt>
 <br>
-<tt>static const int <b>hAutoPackError</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>hAutoPackError</b></tt>
 <br>
-<tt>static const int <b>vAutoPackError</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>vAutoPackError</b></tt>
 </p>
 
 <p>
-<tt>static const int <b>unspecifiedSize</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>noReshape</b></tt>
 <br>
-<tt>static const int <b>noReshape</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>preferredSize</b></tt>
 <br>
-<tt>static const int <b>preferredSize</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>expandPreferredSize</b></tt>
 <br>
-<tt>static const int <b>expandPreferredSize</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>forcedSize</b></tt>
 <br>
-<tt>static const int <b>forcedSize</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>noMove</b></tt>
+<br>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>leftPos</b></tt>
+<br>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>rightPos</b></tt>
+<br>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>topPos</b></tt>
+<br>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>bottomPos</b></tt>
+<br>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>centerPos</b></tt>
 </p>
 
 <p>
-<tt>static const int <b>unspecifiedPos</b></tt>
+<tt>enum { <b>unspecifiedSize</b> }</tt>
 <br>
-<tt>static const int <b>noMove</b></tt>
-<br>
-<tt>static const int <b>leftPos</b></tt>
-<br>
-<tt>static const int <b>rightPos</b></tt>
-<br>
-<tt>static const int <b>topPos</b></tt>
-<br>
-<tt>static const int <b>bottomPos</b></tt>
-<br>
-<tt>static const int <b>centerPos</b></tt>
+<tt>enum { <b>unspecifiedPos</b> }</tt>
 </p>
 
 </blockquote>
@@ -484,15 +484,15 @@ These methods are inherited from <tt><a href="GlowWidget.html">GlowWidget</a></t
 </p>
 
 <p>
-<tt>int <b>AutoPack</b>(int leftLimit, int rightLimit, int topLimit, int bottomLimit, int hOption, int vOption, int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
+<tt><a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>AutoPack</b>(int leftLimit, int rightLimit, int topLimit, int bottomLimit, <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions hOption, <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions vOption, int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
 <br>
-<tt>int <b>AutoPack</b>(int leftLimit, int rightLimit, int topLimit, int bottomLimit, int hOption, int vOption)</tt>
+<tt><a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>AutoPack</b>(int leftLimit, int rightLimit, int topLimit, int bottomLimit, <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions hOption, <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions vOption)</tt>
 </p>
 
 <p>
-<tt>int <b>AutoReshape</b>(int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
+<tt><a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>AutoReshape</b>(int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
 <br>
-<tt>int <b>AutoReshape</b>()</tt>
+<tt><a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>AutoReshape</b>()</tt>
 </p>
 
 <p>
@@ -719,11 +719,11 @@ These methods are inherited from <tt><a href="GlowSliderWidget.html">GlowSliderW
 <blockquote>
 
 <p>
-<tt>virtual void <b>OnDragged</b>(int mouseButton, int modifiers)</tt>
+<tt>virtual void <b>OnDragged</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 
 <p>
-<tt>virtual void <b>OnReleased</b>(int mouseButton, int modifiers)</tt>
+<tt>virtual void <b>OnReleased</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 
 </blockquote>
@@ -745,14 +745,14 @@ These methods are inherited from <tt><a href="GlowWidget.html">GlowWidget</a></t
 </blockquote>
 
 <p>
-<tt>virtual void <b>OnWidgetMouseDown</b>(int button, int x, int y, int modifiers)</tt>
+<tt>virtual void <b>OnWidgetMouseDown</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 <blockquote>
 <tt>GlowSliderWidget</tt> overrides this method to handle mouse events. You should not override it again unless a subclass needs to modify how events are handled.
 </blockquote>
 
 <p>
-<tt>virtual void <b>OnWidgetMouseUp</b>(int button, int x, int y, int modifiers)</tt>
+<tt>virtual void <b>OnWidgetMouseUp</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 <blockquote>
 <tt>GlowSliderWidget</tt> overrides this method to handle mouse events. You should not override it again unless a subclass needs to modify how events are handled.
@@ -766,7 +766,7 @@ These methods are inherited from <tt><a href="GlowWidget.html">GlowWidget</a></t
 </blockquote>
 
 <p>
-<tt>virtual void <b>OnWidgetKeyboard</b>(int key, int modifiers, int x, int y)</tt>
+<tt>virtual void <b>OnWidgetKeyboard</b>(<a href="Glow.html">Glow</a>::KeyCode key, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 <blockquote>
 The standard <tt>GlowLabeledSliderWidget</tt> does not handle keyboard events. Override this method if a subclass needs to receive keyboard events.
@@ -805,7 +805,7 @@ The standard <tt>GlowLabeledSliderWidget</tt> does not handle keyboard events. O
 </p>
 
 <p>
-<tt>virtual void <b>OnAutoPack</b>(int hSize, int vSize, int hOption, int vOption, int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
+<tt>virtual <a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>OnAutoPack</b>(int hSize, int vSize, <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions hOption, <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions vOption, int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
 </p>
 <blockquote>
 <tt>GlowLabeledSliderWidget</tt> implements this method to pack a labeled slider. Override it if a subclass requires different packing.
@@ -864,7 +864,7 @@ These methods are inherited from <tt><a href="GlowComponent.html">GlowComponent<
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 

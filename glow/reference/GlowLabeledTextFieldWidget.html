@@ -75,15 +75,15 @@ These constants are inherited from <tt><a href="GlowWidgetLabelHelper.html">Glow
 <blockquote>
 
 <p>
-<tt>static const int <b>defaultLabelPosition</b></tt>
+<tt>enum <a href="GlowWidgetLabelHelper.html">GlowWidgetLabelHelper</a>::LabelPosition <b>defaultLabelPosition</b></tt>
 <br>
-<tt>static const int <b>leftLabelPosition</b></tt>
+<tt>enum <a href="GlowWidgetLabelHelper.html">GlowWidgetLabelHelper</a>::LabelPosition <b>leftLabelPosition</b></tt>
 <br>
-<tt>static const int <b>rightLabelPosition</b></tt>
+<tt>enum <a href="GlowWidgetLabelHelper.html">GlowWidgetLabelHelper</a>::LabelPosition <b>rightLabelPosition</b></tt>
 <br>
-<tt>static const int <b>topLabelPosition</b></tt>
+<tt>enum <a href="GlowWidgetLabelHelper.html">GlowWidgetLabelHelper</a>::LabelPosition <b>topLabelPosition</b></tt>
 <br>
-<tt>static const int <b>bottomLabelPosition</b></tt>
+<tt>enum <a href="GlowWidgetLabelHelper.html">GlowWidgetLabelHelper</a>::LabelPosition <b>bottomLabelPosition</b></tt>
 </p>
 
 </blockquote>
@@ -97,24 +97,15 @@ These constants are inherited from <tt><a href="GlowTextFieldWidget.html">GlowTe
 
 <blockquote>
 
-<dl>
-<dt>
-<tt>static const int <b>plainStyle</b></tt>
-<dd>
-No borders
-<dt>
-<tt>static const int <b>etchedStyle</b></tt>
-<dd>
-Etched borders
-<dt>
-<tt>static const int <b>raisedStyle</b></tt>
-<dd>
-Box is raised above background.
-<dt>
-<tt>static const int <b>loweredStyle</b></tt>
-<dd>
-Box is lowered below background.
-</dl>
+<p>
+<tt>enum <a href="GlowTextFieldWidget.html">GlowTextFieldWidget</a>::Style <b>plainStyle</b></tt>
+<br>
+<tt>enum <a href="GlowTextFieldWidget.html">GlowTextFieldWidget</a>::Style <b>etchedStyle</b></tt>
+<br>
+<tt>enum <a href="GlowTextFieldWidget.html">GlowTextFieldWidget</a>::Style <b>raisedStyle</b></tt>
+<br>
+<tt>enum <a href="GlowTextFieldWidget.html">GlowTextFieldWidget</a>::Style <b>loweredStyle</b></tt>
+</p>
 
 </blockquote>
 
@@ -128,39 +119,39 @@ These constants are inherited from <tt><a href="GlowWidget.html">GlowWidget</a><
 <blockquote>
 
 <p>
-<tt>static const int <b>noAutoPackError</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>noAutoPackError</b></tt>
 <br>
-<tt>static const int <b>hAutoPackError</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>hAutoPackError</b></tt>
 <br>
-<tt>static const int <b>vAutoPackError</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>vAutoPackError</b></tt>
 </p>
 
 <p>
-<tt>static const int <b>unspecifiedSize</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>noReshape</b></tt>
 <br>
-<tt>static const int <b>noReshape</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>preferredSize</b></tt>
 <br>
-<tt>static const int <b>preferredSize</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>expandPreferredSize</b></tt>
 <br>
-<tt>static const int <b>expandPreferredSize</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>forcedSize</b></tt>
 <br>
-<tt>static const int <b>forcedSize</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>noMove</b></tt>
+<br>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>leftPos</b></tt>
+<br>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>rightPos</b></tt>
+<br>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>topPos</b></tt>
+<br>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>bottomPos</b></tt>
+<br>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>centerPos</b></tt>
 </p>
 
 <p>
-<tt>static const int <b>unspecifiedPos</b></tt>
+<tt>enum { <b>unspecifiedSize</b> }</tt>
 <br>
-<tt>static const int <b>noMove</b></tt>
-<br>
-<tt>static const int <b>leftPos</b></tt>
-<br>
-<tt>static const int <b>rightPos</b></tt>
-<br>
-<tt>static const int <b>topPos</b></tt>
-<br>
-<tt>static const int <b>bottomPos</b></tt>
-<br>
-<tt>static const int <b>centerPos</b></tt>
+<tt>enum { <b>unspecifiedPos</b> }</tt>
 </p>
 
 </blockquote>
@@ -551,15 +542,15 @@ These methods are inherited from <tt><a href="GlowWidget.html">GlowWidget</a></t
 </p>
 
 <p>
-<tt>int <b>AutoPack</b>(int leftLimit, int rightLimit, int topLimit, int bottomLimit, int hOption, int vOption, int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
+<tt><a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>AutoPack</b>(int leftLimit, int rightLimit, int topLimit, int bottomLimit, <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions hOption, <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions vOption, int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
 <br>
-<tt>int <b>AutoPack</b>(int leftLimit, int rightLimit, int topLimit, int bottomLimit, int hOption, int vOption)</tt>
+<tt><a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>AutoPack</b>(int leftLimit, int rightLimit, int topLimit, int bottomLimit, <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions hOption, <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions vOption)</tt>
 </p>
 
 <p>
-<tt>int <b>AutoReshape</b>(int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
+<tt><a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>AutoReshape</b>(int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
 <br>
-<tt>int <b>AutoReshape</b>()</tt>
+<tt><a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>AutoReshape</b>()</tt>
 </p>
 
 <p>
@@ -791,14 +782,14 @@ These methods are inherited from <tt><a href="GlowWidget.html">GlowWidget</a></t
 </blockquote>
 
 <p>
-<tt>virtual void <b>OnWidgetMouseDown</b>(int button, int x, int y, int modifiers)</tt>
+<tt>virtual void <b>OnWidgetMouseDown</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 <blockquote>
 <tt>GlowTextFieldWidget</tt> overrides this method to handle mouse events. You should not override it again unless a subclass needs to modify how events are handled.
 </blockquote>
 
 <p>
-<tt>virtual void <b>OnWidgetMouseUp</b>(int button, int x, int y, int modifiers)</tt>
+<tt>virtual void <b>OnWidgetMouseUp</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 <blockquote>
 <tt>GlowTextFieldWidget</tt> overrides this method to handle mouse events. You should not override it again unless a subclass needs to modify how events are handled.
@@ -812,7 +803,7 @@ These methods are inherited from <tt><a href="GlowWidget.html">GlowWidget</a></t
 </blockquote>
 
 <p>
-<tt>virtual void <b>OnWidgetKeyboard</b>(int key, int modifiers, int x, int y)</tt>
+<tt>virtual void <b>OnWidgetKeyboard</b>(<a href="Glow.html">Glow</a>::KeyCode key, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 <blockquote>
 <tt>GlowTextFieldWidget</tt> overrides this method to handle keyboard events. You should not override it again unless a subclass needs to modify how events are handled.
@@ -851,7 +842,7 @@ These methods are inherited from <tt><a href="GlowWidget.html">GlowWidget</a></t
 </p>
 
 <p>
-<tt>virtual void <b>OnAutoPack</b>(int hSize, int vSize, int hOption, int vOption, int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
+<tt>virtual <a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>OnAutoPack</b>(int hSize, int vSize, <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions hOption, <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions vOption, int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
 </p>
 <blockquote>
 <tt>GlowLabeledTextFieldWidget</tt> implements this method to pack a labeled text field. Override it if a subclass requires different packing.
@@ -910,7 +901,7 @@ These methods are inherited from <tt><a href="GlowComponent.html">GlowComponent<
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 

@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -179,7 +180,7 @@ Glow_MenuButtonSubwindow::Glow_MenuButtonSubwindow(
 	GlowWidget* parent,
 	const char* label,
 	GlowFont font,
-	int iconType,
+	GlowMenuButtonWidget::IconType iconType,
 	int leftSpacing)
 {
 	GLOW_DEBUGSCOPE("Glow_MenuButtonSubwindow::Glow_MenuButtonSubwindow");
@@ -343,7 +344,7 @@ void Glow_MenuButtonSubwindow::OnEndPaint()
 		{
 			_iconColor.Apply();
 		}
-		if (_iconType & GlowMenuButtonWidget::arrowIcon)
+		if (_iconType == GlowMenuButtonWidget::arrowIcon)
 		{
 			float icontop = 0.3f;
 			float iconbottom = -0.3f;
@@ -355,7 +356,7 @@ void Glow_MenuButtonSubwindow::OnEndPaint()
 			::glVertex2f((iconleft+iconright)*0.5f, iconbottom);
 			::glEnd();
 		}
-		else if (_iconType & GlowMenuButtonWidget::menuIcon)
+		else if (_iconType == GlowMenuButtonWidget::menuIcon)
 		{
 			float icontop = 0.65f;
 			float iconbottom = -0.5f;
@@ -482,11 +483,11 @@ void GlowMenuButtonWidget::Init(
 }
 
 
-int GlowMenuButtonWidget::OnAutoPack(
+GlowWidget::AutoPackError GlowMenuButtonWidget::OnAutoPack(
 	int hSize,
 	int vSize,
-	int hOption,
-	int vOption,
+	AutoPackOptions hOption,
+	AutoPackOptions vOption,
 	int& leftMargin,
 	int& rightMargin,
 	int& topMargin,
@@ -660,11 +661,11 @@ void GlowPopupMenuWidget::SetMark(
 }
 
 
-int GlowPopupMenuWidget::OnAutoPack(
+GlowWidget::AutoPackError GlowPopupMenuWidget::OnAutoPack(
 	int hSize,
 	int vSize,
-	int hOption,
-	int vOption,
+	AutoPackOptions hOption,
+	AutoPackOptions vOption,
 	int& leftMargin,
 	int& rightMargin,
 	int& topMargin,
@@ -868,8 +869,8 @@ void GlowLabeledPopupMenuWidget::Init(
 	GLOW_DEBUGSCOPE("GlowLabeledPopupMenuWidget::Init");
 	
 	GlowPopupMenuWidget::Init(root, parent, params);
-	InitLabel(this, params.labelSpacing, params.labelPosition,
-		params.labelWidth, params.labelHeight, params.labelText,
+	InitLabel(this, params.labelPosition, params.labelWidth,
+		params.labelHeight, params.labelSpacing, params.labelText,
 		params.labelFont, params.labelColor, params.disableLabelColor);
 	_upLabelColor = params.labelColor;
 	_downLabelColor = params.hiliteLabelColor;
@@ -893,11 +894,11 @@ void GlowLabeledPopupMenuWidget::OnWidgetPaint()
 }
 
 
-int GlowLabeledPopupMenuWidget::OnAutoPack(
+GlowWidget::AutoPackError GlowLabeledPopupMenuWidget::OnAutoPack(
 	int hSize,
 	int vSize,
-	int hOption,
-	int vOption,
+	AutoPackOptions hOption,
+	AutoPackOptions vOption,
 	int& leftMargin,
 	int& rightMargin,
 	int& topMargin,
@@ -906,7 +907,7 @@ int GlowLabeledPopupMenuWidget::OnAutoPack(
 	GLOW_DEBUGSCOPE("GlowLabeledPopupMenuWidget::OnAutoPack");
 	
 	// Use helper
-	int result = HelpAutoPack(hSize, vSize, leftMargin, rightMargin,
+	AutoPackError result = HelpAutoPack(hSize, vSize, leftMargin, rightMargin,
 		topMargin, bottomMargin);
 	if (result != noAutoPackError)
 	{

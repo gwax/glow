@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -85,7 +86,7 @@ class Glow_MenuButtonSubwindow :
 			GlowWidget* parent,
 			const char* label,
 			GlowFont font,
-			int iconType,
+			GlowMenuButtonWidget::IconType iconType,
 			int leftSpacing);
 		
 		virtual ~Glow_MenuButtonSubwindow();
@@ -117,7 +118,7 @@ class Glow_MenuButtonSubwindow :
 	
 		char* _label;
 		GlowFont _font;
-		int _iconType;
+		GlowMenuButtonWidget::IconType _iconType;
 		int _labelWidth;
 		int _leftSpacing;
 	
@@ -159,7 +160,7 @@ class Glow_PopupMenuSubwindow :
 			GlowPopupMenuWidget* parent,
 			const char* label,
 			GlowFont font,
-			int iconType,
+			GlowMenuButtonWidget::IconType iconType,
 			int leftSpacing);
 	
 	protected:
@@ -214,9 +215,9 @@ inline Glow_PopupMenuSubwindow::Glow_PopupMenuSubwindow(
 	GlowPopupMenuWidget* parent,
 	const char* label,
 	GlowFont font,
-	int options,
+	GlowMenuButtonWidget::IconType iconType,
 	int leftSpacing) :
-Glow_MenuButtonSubwindow(parent, label, font, options, leftSpacing)
+Glow_MenuButtonSubwindow(parent, label, font, iconType, leftSpacing)
 {
 	_widget = parent;
 }
@@ -312,14 +313,14 @@ inline void GlowMenuButtonWidget::SetSpacing(
 }
 
 
-inline int GlowMenuButtonWidget::GetIconType() const
+inline GlowMenuButtonWidget::IconType GlowMenuButtonWidget::GetIconType() const
 {
 	return _subwindow->_iconType;
 }
 
 
 inline void GlowMenuButtonWidget::SetIconType(
-	int iconType)
+	IconType iconType)
 {
 	_subwindow->_iconType = iconType;
 	_subwindow->Refresh();

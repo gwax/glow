@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -68,31 +69,7 @@ GLOW_INTERNAL_USINGSTD
 GLOW_NAMESPACE_BEGIN
 
 
-/*
-===============================================================================
-	STRUCT GlowSeparatorParams
-	
-	Separator params
-===============================================================================
-*/
-
-class GlowSeparatorParams :
-	public GlowWidgetParams
-{
-	public:
-	
-		int style;
-		GlowColor lightBevelColor;
-		GlowColor darkBevelColor;
-		
-		static GlowSeparatorParams defaults;
-		
-		GlowSeparatorParams();
-	
-	protected:
-	
-		GlowSeparatorParams(bool);
-};
+class GlowSeparatorParams;
 
 
 /*
@@ -112,7 +89,8 @@ class GlowSeparatorWidget :
 	
 	public:
 	
-		enum {
+		enum Style
+		{
 			transparentStyle = 0,
 			ridgeStyle = 1,
 			valleyStyle = 2
@@ -137,9 +115,9 @@ class GlowSeparatorWidget :
 	
 	public:
 	
-		inline int GetStyle() const;
+		inline Style GetStyle() const;
 		inline void SetStyle(
-			int style);
+			Style style);
 		
 		inline GlowColor GetLightBevelColor() const;
 		inline GlowColor GetDarkBevelColor() const;
@@ -156,11 +134,11 @@ class GlowSeparatorWidget :
 	
 	protected:
 	
-		virtual int OnAutoPack(
+		virtual AutoPackError OnAutoPack(
 			int hSize,
 			int vSize,
-			int hOption,
-			int vOption,
+			AutoPackOptions hOption,
+			AutoPackOptions vOption,
 			int& leftMargin,
 			int& rightMargin,
 			int& topMargin,
@@ -185,7 +163,7 @@ class GlowSeparatorWidget :
 	
 	private:
 	
-		int _style;
+		Style _style;
 		
 		GlowColor _lightBevelColor;
 		GlowColor _darkBevelColor;
@@ -193,6 +171,33 @@ class GlowSeparatorWidget :
 	protected:
 	
 		virtual void OnWidgetPaint();
+};
+
+
+/*
+===============================================================================
+	STRUCT GlowSeparatorParams
+	
+	Separator params
+===============================================================================
+*/
+
+class GlowSeparatorParams :
+	public GlowWidgetParams
+{
+	public:
+	
+		GlowSeparatorWidget::Style style;
+		GlowColor lightBevelColor;
+		GlowColor darkBevelColor;
+		
+		static GlowSeparatorParams defaults;
+		
+		GlowSeparatorParams();
+	
+	protected:
+	
+		GlowSeparatorParams(bool);
 };
 
 

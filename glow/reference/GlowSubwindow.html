@@ -78,12 +78,12 @@ All GLOW programs must make use of subwindows, or at least toplevel windows, whi
 
 <blockquote>
 
-<dl>
-<dt>
-<tt>static const int <b>parentWindowSize</b></tt>
-<dd>
+<p>
+<tt>enum { <b>parentWindowSize</b> }</tt>
+</p>
+<blockquote>
 Use the width or height of the parent window.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -112,7 +112,7 @@ Creates a new <tt>GlowSubwindow</tt> with options specified by the given params,
 </blockquote>
 
 <p>
-<tt><b>GlowSubwindow</b>(<a href="GlowComponent.html">GlowComponent</a>* parent, int x, int y, int width, int height, int mode, int eventMask)</tt>
+<tt><b>GlowSubwindow</b>(<a href="GlowComponent.html">GlowComponent</a>* parent, int x, int y, int width, int height, <a href="Glow.html">Glow</a>::BufferType mode, <a href="Glow.html">Glow</a>::EventMask eventMask)</tt>
 </p>
 <blockquote>
 Creates a new <tt>GlowSubwindow</tt> with options specified by the given params, and adds it to <tt>parent</tt>'s children. <tt>x</tt> and <tt>y</tt> denote the pixel location of the top left corner of the subwindow, in its parent window's coordinates. <tt>width</tt> and <tt>height</tt> specify the width and height in pixels. The constant <tt>GlowSubwindow::parentWindowSize</tt> may be used instead to specify the same size as the parent window. <tt>mode</tt> describes the type of frame buffer to use. <tt>eventMask</tt> specifies which events the subwindow wishes to receive when active. Use the event constants described in <tt><a href="Glow.html">Glow</a></tt> for the event mask.
@@ -133,7 +133,7 @@ Initializes the <tt>GlowSubwindow</tt> with options specified by the given param
 </blockquote>
 
 <p>
-<tt>void <b>Init</b>(<a href="GlowComponent.html">GlowComponent</a>* parent, int x, int y, int width, int height, int mode, int eventMask)</tt>
+<tt>void <b>Init</b>(<a href="GlowComponent.html">GlowComponent</a>* parent, int x, int y, int width, int height, <a href="Glow.html">Glow</a>::BufferType mode, <a href="Glow.html">Glow</a>::EventMask eventMask)</tt>
 </p>
 <blockquote>
 Initializes the <tt>GlowSubwindow</tt> with options specified by the given params, and adds it to <tt>parent</tt>'s children. <tt>x</tt> and <tt>y</tt> denote the pixel location of the top left corner of the subwindow, in its parent window's coordinates. <tt>width</tt> and <tt>height</tt> specify the width and height in pixels. The constant <tt>GlowSubwindow::parentWindowSize</tt> may be used instead to specify the same size as the parent window. <tt>mode</tt> describes the type of frame buffer to use. <tt>eventMask</tt> specifies which events the subwindow wishes to receive when active. Use the event constants described in <tt><a href="Glow.html">Glow</a></tt> for the event mask.
@@ -313,21 +313,21 @@ Translates pixel coordinates into normalized drawing coordinates, in which (0,0)
 <blockquote>
 
 <p>
-<tt><a href="GlowMenu.html">GlowMenu</a>* <b>GetMenu</b>(int button) const</tt>
+<tt><a href="GlowMenu.html">GlowMenu</a>* <b>GetMenu</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton) const</tt>
 </p>
 <blockquote>
 Returns a pointer to the menu attached to the specified mouse button. If no menu is attached to that button, returns 0. Use the button constants described in <tt><a href="Glow.html">Glow</a></tt> to specify the button.
 </blockquote>
 
 <p>
-<tt>void <b>SetMenu</b>(int button, <a href="GlowMenu.html">GlowMenu</a>* menu = 0)</tt>
+<tt>void <b>SetMenu</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, <a href="GlowMenu.html">GlowMenu</a>* menu = 0)</tt>
 </p>
 <blockquote>
 Attaches the given menu to the specified mouse button. Pressing that button will pop up the menu as a contextual menu. Pass 0 for the menu to return the button to normal behavior. Use the button constants described in <tt><a href="Glow.html">Glow</a></tt> to specify the button.
 </blockquote>
 
 <p>
-<tt>void <b>UnsetMenu</b>(int button)</tt>
+<tt>void <b>UnsetMenu</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton)</tt>
 </p>
 <blockquote>
 Returns the specified button to normal behavior (no menus). Identical to calling <tt>SetMenu()</tt> with <tt>menu</tt> set to 0. Use the button constants described in <tt><a href="Glow.html">Glow</a></tt> to specify the button.
@@ -359,28 +359,28 @@ The event masks denote which events the subwindow wants to receive. For best per
 <blockquote>
 
 <p>
-<tt>int <b>GetEventMask</b>(void) const</tt>
+<tt><a href="Glow.html">Glow</a>::EventMask <b>GetEventMask</b>(void) const</tt>
 </p>
 <blockquote>
 Returns the event mask used when the subwindow is active.
 </blockquote>
 
 <p>
-<tt>int <b>GetInactiveEventMask</b>(void) const</tt>
+<tt><a href="Glow.html">Glow</a>::EventMask <b>GetInactiveEventMask</b>(void) const</tt>
 </p>
 <blockquote>
 Returns the event mask used when the subwindow is inactive.
 </blockquote>
 
 <p>
-<tt>void <b>SetEventMask</b>(int mask)</tt>
+<tt>void <b>SetEventMask</b>(<a href="Glow.html">Glow</a>::EventMask mask)</tt>
 </p>
 <blockquote>
 Sets the event mask to be used when the subwindow is active.
 </blockquote>
 
 <p>
-<tt>void <b>SetInactiveEventMask</b>(int mask)</tt>
+<tt>void <b>SetInactiveEventMask</b>(<a href="Glow.html">Glow</a>::EventMask mask)</tt>
 </p>
 <blockquote>
 Sets the event mask to be used when the subwindow is inactive.
@@ -412,7 +412,7 @@ Makes this window the current GLUT window.
 </blockquote>
 
 <p>
-<tt>int <b>GlutInfo</b>(int key) const</tt>
+<tt>int <b>GlutInfo</b>(int whichInfo) const</tt>
 </p>
 <blockquote>
 Returns GLUT info about this window gotten using <tt>glutGet()</tt>.
@@ -522,14 +522,14 @@ Subclasses should override these methods to respond to user interface events suc
 <blockquote>
 
 <p>
-<tt>virtual void <b>OnMouseDown</b>(int button, int x, int y, int modifiers)</tt>
+<tt>virtual void <b>OnMouseDown</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 <blockquote>
 Override this method to respond to a mouse button press. When the method is called, <tt>button</tt> is set to the mouse button involved, <tt>x</tt> and <tt>y</tt> are set to the location of the click in the subwindow's pixel coordinates, and <tt>modifiers</tt> is set to the keyboard modifiers that are down at the time of the event. See the constants in <tt><a href="Glow.html">Glow</a></tt> for values for these parameters. The default method does nothing.
 </blockquote>
 
 <p>
-<tt>virtual void <b>OnMouseUp</b>(int button, int x, int y, int modifiers)</tt>
+<tt>virtual void <b>OnMouseUp</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 <blockquote>
 Override this method to respond to a mouse button release. When the method is called, <tt>button</tt> is set to the mouse button involved, <tt>x</tt> and <tt>y</tt> are set to the location of the release in the subwindow's pixel coordinates, and <tt>modifiers</tt> is set to the keyboard modifiers that are down at the time of the event. See the constants in <tt><a href="Glow.html">Glow</a></tt> for values for these parameters. The default method does nothing.
@@ -578,7 +578,7 @@ Override this method to respond to the pointer exiting the subwindow. Under some
 </blockquote>
 
 <p>
-<tt>virtual void <b>OnKeyboard</b>(int key, int modifiers, int x, int y)</tt>
+<tt>virtual void <b>OnKeyboard</b>(<a href="Glow.html">Glow</a>::KeyCode key, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 <blockquote>
 Override this method to respond to the a key being pressed. <tt>key</tt> contains the character hit, as a value between 0 and 255. If the value of <tt>key</tt> is greater than <tt><a href="Glow.html">Glow</a>::specialKeyOffset</tt>, then it will be one of the non-ascii keyboard codes defined in <tt><a href="Glow.html">Glow</a></tt>. <tt>modifiers</tt> specifies keyboard modifiers that were down during the event. See the constants in <tt><a href="Glow.html">Glow</a></tt> for modifier flags. <tt>x</tt> and <tt>y</tt> give the x and y coordinates of the pointer in subwindow pixel coordinates at the time of the event. The default method does nothing.
@@ -679,7 +679,7 @@ For a subwindow, the default method clears the subwindow to black.
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 

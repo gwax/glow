@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -58,6 +59,8 @@
 #ifndef GLOW_HEADER__H
 	#include "glowHeader.h"
 #endif
+
+#include <climits>
 
 #ifndef GLOW__H
 	#include "glow.h"
@@ -212,23 +215,22 @@ class GlowWidget :
 	public:
 	
 		// Packing error codes
-		enum {
+		enum AutoPackError
+		{
 			noAutoPackError = 0,
 			hAutoPackError = 1,
-			vAutoPackError = 2
+			vAutoPackError = 2,
+			_maximum = 255
 		};
 		
-		// Sizing options
-		enum {
+		// Sizing/justification options
+		enum AutoPackOptions
+		{
 			noReshape = 0,
 			preferredSize = 1,
 			expandPreferredSize = 2,
 			forcedSize = 3,
-			sizeOptionMask = 15
-		};
-		
-		// Justification options
-		enum {
+			sizeOptionMask = 15,
 			noMove = 0,
 			leftPos = 16,
 			topPos = 16,
@@ -239,7 +241,7 @@ class GlowWidget :
 		};
 		
 		// Unspecified size/position
-		enum{
+		enum {
 			unspecifiedSize = INT_MIN,
 			unspecifiedPos = INT_MIN
 		};
@@ -304,26 +306,26 @@ class GlowWidget :
 		inline void SetRefreshEnabled(
 			bool enable);
 		
-		inline int AutoPack(
+		inline AutoPackError AutoPack(
 			int leftLimit,
 			int rightLimit,
 			int topLimit,
 			int bottomLimit,
-			int hOptions,
-			int vOptions);
-		int AutoPack(
+			AutoPackOptions hOptions,
+			AutoPackOptions vOptions);
+		AutoPackError AutoPack(
 			int leftLimit,
 			int rightLimit,
 			int topLimit,
 			int bottomLimit,
-			int hOptions,
-			int vOptions,
+			AutoPackOptions hOptions,
+			AutoPackOptions vOptions,
 			int& leftMargin,
 			int& rightMargin,
 			int& topMargin,
 			int& bottomMargin);
-		inline int AutoReshape();
-		inline int AutoReshape(
+		inline AutoPackError AutoReshape();
+		inline AutoPackError AutoReshape(
 			int& leftMargin,
 			int& rightMargin,
 			int& topMargin,
@@ -336,11 +338,11 @@ class GlowWidget :
 	
 	protected:
 	
-		virtual int OnAutoPack(
+		virtual AutoPackError OnAutoPack(
 			int hSize,
 			int vSize,
-			int hOption,
-			int vOption,
+			AutoPackOptions hOption,
+			AutoPackOptions vOption,
 			int& leftMargin,
 			int& rightMargin,
 			int& topMargin,
@@ -353,15 +355,15 @@ class GlowWidget :
 	protected:
 	
 		virtual void OnWidgetMouseDown(
-			int which,
+			Glow::MouseButton which,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnWidgetMouseUp(
-			int which,
+			Glow::MouseButton which,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnWidgetMouseDrag(
 			int x,
 			int y);
@@ -369,10 +371,13 @@ class GlowWidget :
 	protected:
 	
 		virtual void OnWidgetKeyboard(
-			int key,
-			int modifiers,
+			Glow::KeyCode key,
 			int x,
-			int y);
+			int y,
+			Glow::Modifiers modifiers);
+	
+	protected:
+	
 		virtual void OnGotKeyboardFocus();
 		virtual void OnLostKeyboardFocus();
 	
@@ -461,6 +466,11 @@ class GlowWidget :
 		long _refcon;
 };
 
+GLOW_INTERNAL_SETUPENUMBITFIELD(GlowWidget::AutoPackOptions)
+
+
+class GlowWidgetKeyboardData;
+class GlowWidgetKeyboardFilter;
 
 /*
 ===============================================================================
@@ -494,7 +504,21 @@ class GlowWidgetRoot
 		inline GlowWidget* GetKeyboardFocus();
 		void AdvanceKeyboardFocus();
 		
+		GlowWidget* FindWidget(
+			int& x,
+			int& y);
+		
 		inline GlowSubwindow* Subwindow() const;
+		
+		// Filters
+		inline void RegisterFilter(
+			GlowWidgetKeyboardFilter* filter);
+		inline void UnregisterFilter(
+			GlowWidgetKeyboardFilter* filter);
+		inline void UnregisterAllFilters();
+		inline unsigned int NumRegisteredFilters() const;
+		inline bool IsFilterRegistered(
+			GlowWidgetKeyboardFilter* filter) const;
 	
 	
 	//-------------------------------------------------------------------------
@@ -511,23 +535,23 @@ class GlowWidgetRoot
 	protected:
 	
 		void WRMouseDown(
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		void WRMouseUp(
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		void WRMouseDrag(
 			int x,
 			int y);
 		void WRKeyboard(
-			int key,
-			int modifiers,
+			Glow::KeyCode key,
 			int x,
-			int y);
+			int y,
+			Glow::Modifiers modifiers);
 		bool WRBeginPaint();
 		void WREndPaint();
 	
@@ -559,6 +583,91 @@ class GlowWidgetRoot
 		GlowWidget* _rightButton;
 		
 		GlowSubwindow* _subwindow;
+		
+		// Event filter senders
+		TSender<GlowWidgetKeyboardData&> _keyboardFilters;
+};
+
+
+/*
+===============================================================================
+	Event filters
+===============================================================================
+*/
+
+class GlowWidgetKeyboardData
+{
+	friend class GlowWidgetRoot;
+	friend class GlowWidgetKeyboardFilter;
+	
+	public:
+	
+		GlowWidgetRoot* root;
+		Glow::KeyCode key;
+		int x;
+		int y;
+		Glow::Modifiers modifiers;
+	
+	private:
+	
+		inline GlowWidgetKeyboardData();
+	
+	private:
+	
+		bool _continue;
+};
+
+
+class GlowWidgetKeyboardFilter :
+	public TReceiver<GlowWidgetKeyboardData&>
+{
+	//-------------------------------------------------------------------------
+	//	Overrideable implementation
+	//-------------------------------------------------------------------------
+	
+	protected:
+	
+		virtual bool OnFilter(
+			GlowWidgetKeyboardData& data) = 0;
+	
+	
+	//-------------------------------------------------------------------------
+	//	Private implementation
+	//-------------------------------------------------------------------------
+	
+	protected:
+	
+		virtual void OnMessage(
+			GlowWidgetKeyboardData& message);
+};
+
+
+/*
+===============================================================================
+	Useful filters
+===============================================================================
+*/
+
+class GlowWidgetTabFilter :
+	public GlowWidgetKeyboardFilter
+{
+	//-------------------------------------------------------------------------
+	//	Public interface
+	//-------------------------------------------------------------------------
+	
+	public:
+	
+		inline GlowWidgetTabFilter();
+	
+	
+	//-------------------------------------------------------------------------
+	//	Private implementation
+	//-------------------------------------------------------------------------
+	
+	protected:
+	
+		virtual bool OnFilter(
+			GlowWidgetKeyboardData& data);
 };
 
 
@@ -590,8 +699,8 @@ class GlowWidgetSubwindow :
 			int y,
 			int width,
 			int height,
-			int mode = GlowWidgetSubwindowParams::defaults.mode,
-			int eventMask = GlowWidgetSubwindowParams::defaults.eventMask,
+			Glow::BufferType mode = GlowWidgetSubwindowParams::defaults.mode,
+			Glow::EventMask eventMask = GlowWidgetSubwindowParams::defaults.eventMask,
 			GlowColor backColor = GlowWidgetSubwindowParams::defaults.backColor);
 		inline void Init(
 			GlowComponent* parent,
@@ -602,8 +711,8 @@ class GlowWidgetSubwindow :
 			int y,
 			int width,
 			int height,
-			int mode = GlowWidgetSubwindowParams::defaults.mode,
-			int eventMask = GlowWidgetSubwindowParams::defaults.eventMask,
+			Glow::BufferType mode = GlowWidgetSubwindowParams::defaults.mode,
+			Glow::EventMask eventMask = GlowWidgetSubwindowParams::defaults.eventMask,
 			GlowColor backColor = GlowWidgetSubwindowParams::defaults.backColor);
 	
 	
@@ -614,23 +723,23 @@ class GlowWidgetSubwindow :
 	protected:
 	
 		virtual void OnMouseDown(
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnMouseUp(
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnMouseDrag(
 			int x,
 			int y);
 		virtual void OnKeyboard(
-			int key,
-			int modifiers,
+			Glow::KeyCode key,
 			int x,
-			int y);
+			int y,
+			Glow::Modifiers modifiers);
 		virtual bool OnBeginPaint();
 		virtual void OnEndPaint();
 };
@@ -663,8 +772,8 @@ class GlowWidgetWindow :
 			int y,
 			int width,
 			int height,
-			int mode = GlowWidgetWindowParams::defaults.mode,
-			int eventMask = GlowWidgetWindowParams::defaults.eventMask,
+			Glow::BufferType mode = GlowWidgetWindowParams::defaults.mode,
+			Glow::EventMask eventMask = GlowWidgetWindowParams::defaults.eventMask,
 			GlowColor backColor = GlowWidgetWindowParams::defaults.backColor);
 		inline void Init(
 			const GlowWidgetWindowParams& params);
@@ -674,8 +783,8 @@ class GlowWidgetWindow :
 			int y,
 			int width,
 			int height,
-			int mode = GlowWidgetWindowParams::defaults.mode,
-			int eventMask = GlowWidgetWindowParams::defaults.eventMask,
+			Glow::BufferType mode = GlowWidgetWindowParams::defaults.mode,
+			Glow::EventMask eventMask = GlowWidgetWindowParams::defaults.eventMask,
 			GlowColor backColor = GlowWidgetWindowParams::defaults.backColor);
 	
 	
@@ -686,23 +795,23 @@ class GlowWidgetWindow :
 	protected:
 	
 		virtual void OnMouseDown(
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnMouseUp(
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnMouseDrag(
 			int x,
 			int y);
 		virtual void OnKeyboard(
-			int key,
-			int modifiers,
+			Glow::KeyCode key,
 			int x,
-			int y);
+			int y,
+			Glow::Modifiers modifiers);
 		virtual bool OnBeginPaint();
 		virtual void OnEndPaint();
 };
@@ -735,8 +844,8 @@ class GlowFixedSizeWidgetWindow :
 			int y,
 			int width,
 			int height,
-			int mode = GlowWidgetWindowParams::defaults.mode,
-			int eventMask = GlowWidgetWindowParams::defaults.eventMask,
+			Glow::BufferType mode = GlowWidgetWindowParams::defaults.mode,
+			Glow::EventMask eventMask = GlowWidgetWindowParams::defaults.eventMask,
 			GlowColor backColor = GlowWidgetWindowParams::defaults.backColor);
 		inline void Init(
 			const GlowWidgetWindowParams& params);
@@ -746,8 +855,8 @@ class GlowFixedSizeWidgetWindow :
 			int y,
 			int width,
 			int height,
-			int mode = GlowWidgetWindowParams::defaults.mode,
-			int eventMask = GlowWidgetWindowParams::defaults.eventMask,
+			Glow::BufferType mode = GlowWidgetWindowParams::defaults.mode,
+			Glow::EventMask eventMask = GlowWidgetWindowParams::defaults.eventMask,
 			GlowColor backColor = GlowWidgetWindowParams::defaults.backColor);
 	
 	
@@ -758,23 +867,23 @@ class GlowFixedSizeWidgetWindow :
 	protected:
 	
 		virtual void OnMouseDown(
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnMouseUp(
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnMouseDrag(
 			int x,
 			int y);
 		virtual void OnKeyboard(
-			int key,
-			int modifiers,
+			Glow::KeyCode key,
 			int x,
-			int y);
+			int y,
+			Glow::Modifiers modifiers);
 		virtual bool OnBeginPaint();
 		virtual void OnEndPaint();
 };
@@ -807,8 +916,8 @@ class GlowSubwindowInWidget :
 			int y,
 			int width,
 			int height,
-			int mode,
-			int eventMask);
+			Glow::BufferType mode,
+			Glow::EventMask eventMask);
 		inline void Init(
 			GlowWidget* parent,
 			const GlowSubwindowParams& params);
@@ -818,8 +927,8 @@ class GlowSubwindowInWidget :
 			int y,
 			int width,
 			int height,
-			int mode,
-			int eventMask);
+			Glow::BufferType mode,
+			Glow::EventMask eventMask);
 		
 		inline GlowWidget* ParentWidget() const;
 		inline GlowWidgetRoot* Root() const;
@@ -834,10 +943,10 @@ class GlowSubwindowInWidget :
 	protected:
 	
 		virtual void OnKeyboard(
-			int key,
-			int modifiers,
+			Glow::KeyCode key,
 			int x,
-			int y);
+			int y,
+			Glow::Modifiers modifiers);
 };
 
 

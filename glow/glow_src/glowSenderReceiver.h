@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -83,6 +84,7 @@ template <class T> class TReceiver;
 class Receiver_Base
 {
 	friend class Sender_Base;
+	friend class ReceiverTracker;
 	
 	
 	//-------------------------------------------------------------------------
@@ -94,6 +96,7 @@ class Receiver_Base
 		virtual ~Receiver_Base();
 		
 		inline unsigned int NumSenders() const;
+		inline unsigned int NumTrackers() const;
 	
 	
 	//-------------------------------------------------------------------------
@@ -110,10 +113,15 @@ class Receiver_Base
 			Sender_Base* sender);
 		inline void _RemoveSender(
 			Sender_Base* sender);
+		inline void _AddTracker(
+			Sender_Base* sender);
+		inline void _RemoveTracker(
+			Sender_Base* sender);
 	
 	protected:
 	
 		GLOW_STD::list<Sender_Base*> _senders;
+		unsigned int _numActualSenders;
 };
 
 
@@ -161,6 +169,59 @@ class Sender_Base
 	protected:
 	
 		GLOW_STD::list<Receiver_Base*> _receivers;
+};
+
+
+/*
+===============================================================================
+	CLASS ReceiverTracker
+
+	Class that can track receivers
+===============================================================================
+*/
+
+class ReceiverTracker :
+	public Sender_Base
+{
+	//-------------------------------------------------------------------------
+	//	Public interface
+	//-------------------------------------------------------------------------
+	
+	public:
+	
+		enum DeletingOptions
+		{
+			neverDelete = 0,
+			alwaysDelete = 1,
+			referenceCountDelete = 2
+		};
+	
+	public:
+	
+		inline ReceiverTracker();
+		
+		virtual ~ReceiverTracker();
+		
+		inline void Bind(
+			Receiver_Base* receiver);
+		inline void Unbind(
+			Receiver_Base* receiver);
+		void UnbindAll();
+		
+		void DeleteAllReceivers();
+		
+		inline void SetDeletingOptions(
+			DeletingOptions options);
+		inline DeletingOptions GetDeletingOptions() const;
+	
+	
+	//-------------------------------------------------------------------------
+	//	Private implementation
+	//-------------------------------------------------------------------------
+	
+	private:
+	
+		DeletingOptions _options;
 };
 
 

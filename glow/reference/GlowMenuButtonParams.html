@@ -74,32 +74,42 @@ These fields are inherited from <tt><a href="GlowWidgetParams.html">GlowWidgetPa
 
 <blockquote>
 
-<dl>
-<dt>
+<p>
 <tt>int <b>width</b></tt>
-<dd>
+</p>
+<blockquote>
 Width of the widget. Initial default is 100.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>height</b></tt>
-<dd>
+</p>
+<blockquote>
 Height of the widget. Initial default is 25.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>x</b></tt>
-<dd>
+</p>
+<blockquote>
 X location of the upper left of the widget, in pixel coordinates of the parent widget. Initial default is 0.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>y</b></tt>
-<dd>
+</p>
+<blockquote>
 Y location of the upper left of the widget, in pixel coordinates of the parent widget. Initial default is 0.
-<dt>
+</blockquote>
+<p>
 <tt>long <b>refcon</b></tt>
-<dd>
+</p>
+<blockquote>
 Reference constant for this widget. Initial default 0.
-<dt>
+</blockquote>
+<p>
 <tt>bool <b>clipping</b></tt>
-<dd>
+</p>
+<blockquote>
 Should the widget clip to its rectangle when drawing children. Initial default is false.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -110,28 +120,36 @@ Should the widget clip to its rectangle when drawing children. Initial default i
 
 <blockquote>
 
-<dl>
-<dt>
+<p>
 <tt>const char* <b>text</b></tt>
-<dd>
+</p>
+<blockquote>
 Label string for the button. Initial default is "".
-<dt>
+</blockquote>
+<p>
 <tt><a href="GlowFont.html">GlowFont</a> <b>font</b></tt>
-<dd>
+</p>
+<blockquote>
 Font for the button label. Initial default is <tt><a href="GlowFont.html">GlowFont</a>::helvetica12</tt>.
-<dt>
+</blockquote>
+<p>
 <tt><a href="GlowMenu.html">GlowMenu</a>* <b>menu</b></tt>
-<dd>
+</p>
+<blockquote>
 Menu to attach to the button, or 0 for no menu. Default is 0.
-<dt>
-<tt>int <b>iconType</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt><a href="GlowMenuButtonWidget.html">GlowMenuButtonWidget</a>::IconType <b>iconType</b></tt>
+</p>
+<blockquote>
 Icon to draw in the menu. Default is <tt><a href="GlowMenuButtonWidget.html">GlowMenuButtonWidget</a>::menuIcon</tt>
-<dt>
+</blockquote>
+<p>
 <tt>int <b>spacing</b></tt>
-<dd>
+</p>
+<blockquote>
 Spacing between items in the menu button. Default is 8.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -185,12 +203,12 @@ Spacing between items in the menu button. Default is 8.
 
 <blockquote>
 
-<dl>
-<dt>
+<p>
 <tt>static GlowMenuButtonParams <b>defaults</b></tt>
-<dd>
+</p>
+<blockquote>
 Default parameters. These are copied every time a new <tt>GlowMenuButtonParams</tt> is constructed.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -244,7 +262,7 @@ Constructs a new parameter block, copying <tt>defaults</tt>
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 

@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -183,11 +184,11 @@ void GlowRadioButtonWidget::SetText(
 }
 
 
-int GlowRadioButtonWidget::OnAutoPack(
+GlowWidget::AutoPackError GlowRadioButtonWidget::OnAutoPack(
 	int hSize,
 	int vSize,
-	int hOption,
-	int vOption,
+	AutoPackOptions hOption,
+	AutoPackOptions vOption,
 	int& leftMargin,
 	int& rightMargin,
 	int& topMargin,
@@ -365,10 +366,10 @@ void GlowRadioButtonWidget::OnWidgetPaint()
 
 
 void GlowRadioButtonWidget::OnWidgetMouseDown(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("GlowRadioButtonWidget::OnWidgetMouseDown");
 	
@@ -381,10 +382,10 @@ void GlowRadioButtonWidget::OnWidgetMouseDown(
 
 
 void GlowRadioButtonWidget::OnWidgetMouseUp(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("GlowRadioButtonWidget::OnWidgetMouseUp");
 	
@@ -439,8 +440,8 @@ void GlowRadioGroupWidget::Init(
 
 void GlowRadioGroupWidget::OnHit(
 	GlowRadioButtonWidget* widget,
-	int mouseButton,
-	int modifiers)
+	Glow::MouseButton mouseButton,
+	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("GlowRadioGroupWidget::OnHit");
 	

@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -258,11 +259,11 @@ GlowScrollBarWidget::~GlowScrollBarWidget()
 }
 
 
-int GlowScrollBarWidget::OnAutoPack(
+GlowWidget::AutoPackError GlowScrollBarWidget::OnAutoPack(
 	int hSize,
 	int vSize,
-	int hOption,
-	int vOption,
+	AutoPackOptions hOption,
+	AutoPackOptions vOption,
 	int& leftMargin,
 	int& rightMargin,
 	int& topMargin,
@@ -326,7 +327,7 @@ int GlowScrollBarWidget::OnAutoPack(
 
 
 void GlowScrollBarWidget::_DrawArrowButton(
-	int part,
+	Part part,
 	float left,
 	float right,
 	float bevelWidth,
@@ -873,10 +874,10 @@ void GlowScrollBarWidget::OnWidgetPaint()
 
 
 void GlowScrollBarWidget::OnWidgetMouseDown(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("GlowScrollBarWidget::OnWidgetMouseDown");
 	
@@ -958,14 +959,14 @@ void GlowScrollBarWidget::OnWidgetMouseDown(
 
 
 void GlowScrollBarWidget::OnWidgetMouseUp(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("GlowScrollBarWidget::OnWidgetMouseUp");
 	
-	int savePart = _curPart;
+	Part savePart = _curPart;
 	if (_curPart != noPart)
 	{
 		if (_curPart == indicatorPart)
@@ -1014,8 +1015,8 @@ void GlowScrollBarWidget::OnWidgetMouseDrag(
 
 
 void GlowScrollBarWidget::OnDragged(
-	int mouseButton,
-	int modifiers)
+	Glow::MouseButton mouseButton,
+	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("GlowScrollBarWidget::OnDragged");
 	
@@ -1031,9 +1032,9 @@ void GlowScrollBarWidget::OnDragged(
 
 
 void GlowScrollBarWidget::OnPart(
-	int part,
-	int mouseButton,
-	int modifiers)
+	Part part,
+	Glow::MouseButton mouseButton,
+	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("GlowScrollBarWidget::OnPart");
 	
@@ -1068,6 +1069,9 @@ void GlowScrollBarWidget::OnPart(
 				MoveTopValue(_pageStep);
 			}
 			break;
+		
+		default:
+			return;
 	}
 	
 	GlowScrollBarMessage msg;
@@ -1082,9 +1086,9 @@ void GlowScrollBarWidget::OnPart(
 
 
 void GlowScrollBarWidget::OnReleased(
-	int part,
-	int mouseButton,
-	int modifiers)
+	Part part,
+	Glow::MouseButton mouseButton,
+	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("GlowScrollBarWidget::OnReleased");
 	

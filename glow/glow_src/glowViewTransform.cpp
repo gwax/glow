@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -111,7 +112,7 @@ color(0.5, 1.0, 1.0)
 	translationThrottle = 1.0;
 	rotationThrottle = 1.0;
 	initialScale = 1.0;
-	spinDataLength = 250;
+	spinDataLength = 100;
 }
 
 
@@ -325,7 +326,6 @@ void GlowViewManipulator::Init(
 	_spinnable = params.spinnable;
 	_spinDataLength = params.spinDataLength;
 	_spinStart = false;
-	_spinnable = false;
 	
 	_RawConnect((params.connectTo != 0) ? params.connectTo :
 		new GlowTransformData(params.initialScale,
@@ -397,7 +397,7 @@ void GlowViewManipulator::OnEndPaint()
 			int curTime = glutGet(GLenum(GLUT_ELAPSED_TIME));
 			_spinData.push_back(GLOW_STD::pair<Vec3f, int>(_ballCur, curTime));
 			while (_spinData.front().second < curTime-_spinDataLength &&
-				_spinData.size() > 2)
+				_spinData.size() > 3)
 			{
 				_spinData.pop_front();
 			}
@@ -407,7 +407,7 @@ void GlowViewManipulator::OnEndPaint()
 			_spinStart = false;
 			int curTime = glutGet(GLenum(GLUT_ELAPSED_TIME));
 			while (_spinData.front().second < curTime-_spinDataLength &&
-				_spinData.size() > 1)
+				_spinData.size() > 2)
 			{
 				_spinData.pop_front();
 			}
@@ -415,11 +415,22 @@ void GlowViewManipulator::OnEndPaint()
 			{
 				// Ready to begin spinning
 				Quatf curSpin;
-				curSpin.SetImaginary(_spinData.front().first % _ballCur);
-				curSpin.SetW(_spinData.front().first * _ballCur);
-				curSpin.Normalize();
-				curSpin.ScaleRotation(_rotThrottle/float(_spinData.size()));
-				_transform->StartSpinning(curSpin);
+				if (_spinData.size() < 2)
+				{
+					curSpin.SetImaginary(_spinData.front().first % _ballCur);
+					curSpin.SetW(_spinData.front().first * _ballCur);
+					curSpin.Normalize();
+					curSpin.ScaleRotation(_rotThrottle/float(_spinData.size()));
+					_transform->StartSpinning(curSpin);
+				}
+				else
+				{
+					curSpin.SetImaginary(_spinData.front().first % _spinData.back().first);
+					curSpin.SetW(_spinData.front().first * _spinData.back().first);
+					curSpin.Normalize();
+					curSpin.ScaleRotation(_rotThrottle/float(_spinData.size()-1));
+					_transform->StartSpinning(curSpin);
+				}
 			}
 			_spinData.clear();
 		}

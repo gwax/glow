@@ -80,7 +80,7 @@ Creates a new <tt>GlowSubwindowInWidget</tt> with options specified by the given
 </blockquote>
 
 <p>
-<tt><b>GlowSubwindowInWidget</b>(<a href="GlowWidget.html">GlowWidget</a>* parent, int x, int y, int width, int height, int mode, int eventMask)</tt>
+<tt><b>GlowSubwindowInWidget</b>(<a href="GlowWidget.html">GlowWidget</a>* parent, int x, int y, int width, int height, <a href="Glow.html">Glow</a>::BufferType mode, int eventMask)</tt>
 </p>
 <blockquote>
 Creates a new <tt>GlowSubwindowInWidget</tt> with options specified by the given params, and adds it to <tt>parent</tt>'s children. <tt>x</tt> and <tt>y</tt> denote the pixel location of the top left corner of the subwindow, in its parent window's coordinates. <tt>width</tt> and <tt>height</tt> specify the width and height in pixels. <tt>mode</tt> describes the type of frame buffer to use. <tt>eventMask</tt> specifies which events the subwindow wishes to receive when active. Use the event constants described in <tt><a href="Glow.html">Glow</a></tt> for the event mask.
@@ -101,7 +101,7 @@ Initializes the <tt>GlowSubwindowInWidget</tt> with options specified by the giv
 </blockquote>
 
 <p>
-<tt>void <b>Init</b>(<a href="GlowWidget.html">GlowWidget</a>* parent, int x, int y, int width, int height, int mode, int eventMask)</tt>
+<tt>void <b>Init</b>(<a href="GlowWidget.html">GlowWidget</a>* parent, int x, int y, int width, int height, <a href="Glow.html">Glow</a>::BufferType mode, int eventMask)</tt>
 </p>
 <blockquote>
 Initializes the <tt>GlowSubwindowInWidget</tt> with options specified by the given params, and adds it to <tt>parent</tt>'s children. <tt>x</tt> and <tt>y</tt> denote the pixel location of the top left corner of the subwindow, in its parent window's coordinates. <tt>width</tt> and <tt>height</tt> specify the width and height in pixels. <tt>mode</tt> describes the type of frame buffer to use. <tt>eventMask</tt> specifies which events the subwindow wishes to receive when active. Use the event constants described in <tt><a href="Glow.html">Glow</a></tt> for the event mask.
@@ -237,15 +237,15 @@ These methods are inherited from <tt><a href="GlowSubwindow.html">GlowSubwindow<
 </p>
 
 <p>
-<tt><a href="GlowMenu.html">GlowMenu</a>* <b>GetMenu</b>(int button) const</tt>
+<tt><a href="GlowMenu.html">GlowMenu</a>* <b>GetMenu</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton) const</tt>
 </p>
 
 <p>
-<tt>void <b>SetMenu</b>(int button, <a href="GlowMenu.html">GlowMenu</a>* menu = 0)</tt>
+<tt>void <b>SetMenu</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, <a href="GlowMenu.html">GlowMenu</a>* menu = 0)</tt>
 </p>
 
 <p>
-<tt>void <b>UnsetMenu</b>(int button)</tt>
+<tt>void <b>UnsetMenu</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton)</tt>
 </p>
 
 <p>
@@ -257,19 +257,19 @@ These methods are inherited from <tt><a href="GlowSubwindow.html">GlowSubwindow<
 </p>
 
 <p>
-<tt>int <b>GetEventMask</b>(void) const</tt>
+<tt><a href="Glow.html">Glow</a>::EventMask <b>GetEventMask</b>(void) const</tt>
 </p>
 
 <p>
-<tt>int <b>GetInactiveEventMask</b>(void) const</tt>
+<tt><a href="Glow.html">Glow</a>::EventMask <b>GetInactiveEventMask</b>(void) const</tt>
 </p>
 
 <p>
-<tt>void <b>SetEventMask</b>(int mask)</tt>
+<tt>void <b>SetEventMask</b>(<a href="Glow.html">Glow</a>::EventMask mask)</tt>
 </p>
 
 <p>
-<tt>void <b>SetInactiveEventMask</b>(int mask)</tt>
+<tt>void <b>SetInactiveEventMask</b>(<a href="Glow.html">Glow</a>::EventMask mask)</tt>
 </p>
 
 <p>
@@ -281,7 +281,7 @@ These methods are inherited from <tt><a href="GlowSubwindow.html">GlowSubwindow<
 </p>
 
 <p>
-<tt>int <b>GlutInfo</b>(int key) const</tt>
+<tt>int <b>GlutInfo</b>(int whichInfo) const</tt>
 </p>
 
 </blockquote>
@@ -388,11 +388,11 @@ These overrideable methods are inherited from <tt><a href="GlowSubwindow.html">G
 <blockquote>
 
 <p>
-<tt>virtual void <b>OnMouseDown</b>(int button, int x, int y, int modifiers)</tt>
+<tt>virtual void <b>OnMouseDown</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 
 <p>
-<tt>virtual void <b>OnMouseUp</b>(int button, int x, int y, int modifiers)</tt>
+<tt>virtual void <b>OnMouseUp</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 
 <p>
@@ -420,7 +420,7 @@ These overrideable methods are inherited from <tt><a href="GlowSubwindow.html">G
 </p>
 
 <p>
-<tt>virtual void <b>OnKeyboard</b>(int key, int modifiers, int x, int y)</tt>
+<tt>virtual void <b>OnKeyboard</b>(<a href="Glow.html">Glow</a>::KeyCode key, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 <blockquote>
 This method is used by <tt>GlowSubwindowInWidget</tt> to redirect the keyboard events to the widget root. Normally it should not be overridden unless the subwindow needs to intercept such events.
@@ -495,7 +495,7 @@ These overrideable methods are inherited from <tt><a href="GlowComponent.html">G
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 

@@ -149,7 +149,7 @@ GlowWindow("Mandelglow", GlowWindow::autoPosition, GlowWindow::autoPosition,
 	// Add controls
 	// First, we'll put a little blurb at the top of the window
 	_controlWindow->AddLabel(
-		"Mandelglow (lesson 4)\nversion 0.9.5\nby Daniel Azuma");
+		"Mandelglow (lesson 4)\nversion 0.9.6\nby Daniel Azuma");
 	
 	// The next set of controls will be within a panel called "calculation"
 	GlowQuickPanelWidget* panel = _controlWindow->AddPanel(
@@ -426,10 +426,10 @@ void MandelWind::OnReshape(
 // Respond to mouse down events
 
 void MandelWind::OnMouseDown(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 	// Ignore mousedowns if we're already dragging
 	if (_dragType == NO_DRAG)
@@ -461,10 +461,10 @@ void MandelWind::OnMouseDown(
 // Respond to mouse up events
 
 void MandelWind::OnMouseUp(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 	if (_dragType == ZOOM_IN_DRAG)
 	{

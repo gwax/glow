@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 
 ===============================================================================
 */
@@ -113,9 +114,16 @@
 #define GLOW_TOOLKIT 3
 
 // Fractional version number
-#define GLOW_VERSION 0.951
+#define GLOW_VERSION 0.952
 
+// Internal utility
+#define GLOW_INTERNAL_SETUPENUMBITFIELD(T) \
+	inline T operator|(T op1, T op2) {return T(int(op1)|int(op2));} \
+	inline T operator&(T op1, T op2) {return T(int(op1)&int(op2));} \
+	inline T& operator|=(T& op1, T op2) {op1=T(int(op1)|int(op2)); return op1;} \
+	inline T& operator&=(T& op1, T op2) {op1=T(int(op1)&int(op2)); return op1;}
 
+// Establish glow namespace so using directive doesn't barf
 GLOW_NAMESPACE_BEGIN
 GLOW_NAMESPACE_END
 

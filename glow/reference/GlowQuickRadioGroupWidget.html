@@ -74,9 +74,9 @@ These constants specify whether to arrange the radio group horizontally or verti
 
 <blockquote>
 
-<tt>static const int <b>vertical</b></tt>
+<tt>enum { <b>vertical</b> }</tt>
 <br>
-<tt>static const int <b>horizontal</b></tt>
+<tt>enum { <b>horizontal</b> }</tt>
 	
 </blockquote>
 
@@ -89,15 +89,15 @@ These constants are inherited from <tt><a href="GlowGroupBox.html">GlowGroupBox<
 
 <blockquote>
 
-<tt>static const int <b>transparentStyle</b></tt>
+<tt>enum <a href="GlowPanelWidget.html">GlowPanelWidget</a>::Style <b>transparentStyle</b></tt>
 <br>
-<tt>static const int <b>plainStyle</b></tt>
+<tt>enum <a href="GlowPanelWidget.html">GlowPanelWidget</a>::Style <b>plainStyle</b></tt>
 <br>
-<tt>static const int <b>etchedStyle</b></tt>
+<tt>enum <a href="GlowPanelWidget.html">GlowPanelWidget</a>::Style <b>etchedStyle</b></tt>
 <br>
-<tt>static const int <b>raisedStyle</b></tt>
+<tt>enum <a href="GlowPanelWidget.html">GlowPanelWidget</a>::Style <b>raisedStyle</b></tt>
 <br>
-<tt>static const int <b>loweredStyle</b></tt>
+<tt>enum <a href="GlowPanelWidget.html">GlowPanelWidget</a>::Style <b>loweredStyle</b></tt>
 	
 </blockquote>
 
@@ -111,39 +111,39 @@ These constants are inherited from <tt><a href="GlowWidget.html">GlowWidget</a><
 <blockquote>
 
 <p>
-<tt>static const int <b>noAutoPackError</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>noAutoPackError</b></tt>
 <br>
-<tt>static const int <b>hAutoPackError</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>hAutoPackError</b></tt>
 <br>
-<tt>static const int <b>vAutoPackError</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>vAutoPackError</b></tt>
 </p>
 
 <p>
-<tt>static const int <b>unspecifiedSize</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>noReshape</b></tt>
 <br>
-<tt>static const int <b>noReshape</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>preferredSize</b></tt>
 <br>
-<tt>static const int <b>preferredSize</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>expandPreferredSize</b></tt>
 <br>
-<tt>static const int <b>expandPreferredSize</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>forcedSize</b></tt>
 <br>
-<tt>static const int <b>forcedSize</b></tt>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>noMove</b></tt>
+<br>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>leftPos</b></tt>
+<br>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>rightPos</b></tt>
+<br>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>topPos</b></tt>
+<br>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>bottomPos</b></tt>
+<br>
+<tt>enum <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions <b>centerPos</b></tt>
 </p>
 
 <p>
-<tt>static const int <b>unspecifiedPos</b></tt>
+<tt>enum { <b>unspecifiedSize</b> }</tt>
 <br>
-<tt>static const int <b>noMove</b></tt>
-<br>
-<tt>static const int <b>leftPos</b></tt>
-<br>
-<tt>static const int <b>rightPos</b></tt>
-<br>
-<tt>static const int <b>topPos</b></tt>
-<br>
-<tt>static const int <b>bottomPos</b></tt>
-<br>
-<tt>static const int <b>centerPos</b></tt>
+<tt>enum { <b>unspecifiedPos</b> }</tt>
 </p>
 
 </blockquote>
@@ -290,15 +290,15 @@ These methods are inherited from <tt><a href="GlowWidget.html">GlowWidget</a></t
 </p>
 
 <p>
-<tt>int <b>AutoPack</b>(int leftLimit, int rightLimit, int topLimit, int bottomLimit, int hOption, int vOption, int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
+<tt><a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>AutoPack</b>(int leftLimit, int rightLimit, int topLimit, int bottomLimit, <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions hOption, <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions vOption, int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
 <br>
-<tt>int <b>AutoPack</b>(int leftLimit, int rightLimit, int topLimit, int bottomLimit, int hOption, int vOption)</tt>
+<tt><a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>AutoPack</b>(int leftLimit, int rightLimit, int topLimit, int bottomLimit, <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions hOption, <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions vOption)</tt>
 </p>
 
 <p>
-<tt>int <b>AutoReshape</b>(int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
+<tt><a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>AutoReshape</b>(int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
 <br>
-<tt>int <b>AutoReshape</b>()</tt>
+<tt><a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>AutoReshape</b>()</tt>
 </p>
 
 <p>
@@ -510,7 +510,7 @@ These methods are called as soon as a widget-level event occurs. The default met
 <blockquote>
 
 <p>
-<tt>virtual void <b>OnToggled</b>(<a href="GlowRadioButtonWidget.html">GlowRadioButtonWidget</a>* button, int modifiers)</tt>
+<tt>virtual void <b>OnToggled</b>(<a href="GlowRadioButtonWidget.html">GlowRadioButtonWidget</a>* button, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 <blockquote>
 Called when a radio button has been selected. <tt>button</tt> points to the new button, and <tt>modifiers</tt> gives the keyboard modifiers that were down when the mouse button was pressed. The default method toggles the state and sends messages to the attached <a href="GlowRadioButtonReceiver.html">GlowRadioButtonReceiver</a>s.
@@ -535,14 +535,14 @@ These methods are inherited from <tt><a href="GlowWidget.html">GlowWidget</a></t
 </blockquote>
 
 <p>
-<tt>virtual void <b>OnWidgetMouseDown</b>(int button, int x, int y, int modifiers)</tt>
+<tt>virtual void <b>OnWidgetMouseDown</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 <blockquote>
 <tt>GlowRadioGroupWidget</tt>s do not need to receive mouse events. Instead, the individual radio buttons will handle events. Override this method if your subclass needs to change this behavior.
 </blockquote>
 
 <p>
-<tt>virtual void <b>OnWidgetMouseUp</b>(int button, int x, int y, int modifiers)</tt>
+<tt>virtual void <b>OnWidgetMouseUp</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 <blockquote>
 <tt>GlowRadioGroupWidget</tt>s do not need to receive mouse events. Instead, the individual radio buttons will handle events. Override this method if your subclass needs to change this behavior.
@@ -556,7 +556,7 @@ These methods are inherited from <tt><a href="GlowWidget.html">GlowWidget</a></t
 </blockquote>
 
 <p>
-<tt>virtual void <b>OnWidgetKeyboard</b>(int key, int modifiers, int x, int y)</tt>
+<tt>virtual void <b>OnWidgetKeyboard</b>(<a href="Glow.html">Glow</a>::KeyCode key, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 <blockquote>
 The standard <tt>GlowRadioGroupWidget</tt> does not handle keyboard events. Override this method if a subclass needs to receive keyboard events.
@@ -595,7 +595,7 @@ The standard <tt>GlowRadioGroupWidget</tt> does not handle keyboard events. Over
 </p>
 
 <p>
-<tt>virtual void <b>OnAutoPack</b>(int hSize, int vSize, int hOption, int vOption, int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
+<tt>virtual <a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>OnAutoPack</b>(int hSize, int vSize, <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions hOption, <a href="GlowWidget.html">GlowWidget</a>::AutoPackOptions vOption, int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
 </p>
 <blockquote>
 <tt>GlowQuickRadioGroup</tt> implements this method to pack radio buttons into a radio group. Override it if a subclass requires different packing.
@@ -654,7 +654,7 @@ These methods are inherited from <tt><a href="GlowComponent.html">GlowComponent<
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 

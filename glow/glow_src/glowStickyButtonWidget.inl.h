@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -121,14 +122,14 @@ inline void GlowStickyButtonWidget::SetFont(
 }
 
 
-inline int GlowStickyButtonWidget::GetBehavior() const
+inline GlowStickyButtonWidget::Behavior GlowStickyButtonWidget::GetBehavior() const
 {
 	return _behavior;
 }
 
 
 inline void GlowStickyButtonWidget::SetBehavior(
-	int behavior)
+	Behavior behavior)
 {
 	_behavior = behavior;
 }
@@ -145,6 +146,14 @@ inline void GlowStickyButtonWidget::SetState(
 {
 	_state = state;
 	Refresh();
+}
+
+
+inline void GlowStickyButtonWidget::Hit(
+	Glow::MouseButton mouseButton,
+	Glow::Modifiers modifiers)
+{
+	OnHit(mouseButton, modifiers);
 }
 
 

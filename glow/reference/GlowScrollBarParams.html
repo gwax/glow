@@ -74,32 +74,42 @@ These fields are inherited from <tt><a href="GlowWidgetParams.html">GlowWidgetPa
 
 <blockquote>
 
-<dl>
-<dt>
+<p>
 <tt>int <b>width</b></tt>
-<dd>
+</p>
+<blockquote>
 Width of the widget. Initial default is 120.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>height</b></tt>
-<dd>
+</p>
+<blockquote>
 Height of the widget. Initial default is 20.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>x</b></tt>
-<dd>
+</p>
+<blockquote>
 X location of the upper left of the widget, in pixel coordinates of the parent widget. Initial default is 0.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>y</b></tt>
-<dd>
+</p>
+<blockquote>
 Y location of the upper left of the widget, in pixel coordinates of the parent widget. Initial default is 0.
-<dt>
+</blockquote>
+<p>
 <tt>long <b>refcon</b></tt>
-<dd>
+</p>
+<blockquote>
 Reference constant for this widget. Initial default 0.
-<dt>
+</blockquote>
+<p>
 <tt>bool <b>clipping</b></tt>
-<dd>
+</p>
+<blockquote>
 Should the widget clip to its rectangle when drawing children. Initial default is false.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -110,44 +120,60 @@ Should the widget clip to its rectangle when drawing children. Initial default i
 
 <blockquote>
 
-<dl>
-<dt>
+<p>
 <tt>long <b>min</b></tt>
-<dd>
+</p>
+<blockquote>
 Initial minimum value. Default is 0.
-<dt>
+</blockquote>
+<p>
 <tt>long <b>max</b></tt>
-<dd>
+</p>
+<blockquote>
 Initial maximum value. Default is 1.
-<dt>
+</blockquote>
+<p>
 <tt>long <b>span</b></tt>
-<dd>
+</p>
+<blockquote>
 Initial indicator span. Default is 1.
-<dt>
+</blockquote>
+<p>
 <tt>long <b>initialTop</b></tt>
-<dd>
+</p>
+<blockquote>
 Initial top value. Default is 0.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>firstDelay</b></tt>
-<dd>
+</p>
+<blockquote>
 Delay in milliseconds between the first and second "hit" on a button or part region. Default is 400.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>firstDelay</b></tt>
-<dd>
+</p>
+<blockquote>
 Delay in milliseconds between subsequent "hits" on a button or part region. Default is 50.
-<dt>
+</blockquote>
+<p>
 <tt>long <b>arrowStep</b></tt>
-<dd>
+</p>
+<blockquote>
 Amount to change value when button is depressed. Default is 1.
-<dt>
+</blockquote>
+<p>
 <tt>long <b>pageStep</b></tt>
-<dd>
+</p>
+<blockquote>
 Amount to change value when page region is depressed. Default is <tt><a href="GlowScrollBarWidget.html">GlowScrollBarWidget</a>::spanPageStep</tt>.
-<dt>
+</blockquote>
+<p>
 <tt><a href="GlowScrollBarReceiver.html">GlowScrollBarReceiver</a>* <b>receiver</b></tt>
-<dd>
+</p>
+<blockquote>
 Receiver for scroll bar events. Initial default is 0.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -209,12 +235,12 @@ Receiver for scroll bar events. Initial default is 0.
 
 <blockquote>
 
-<dl>
-<dt>
+<p>
 <tt>static GlowScrollBarParams <b>defaults</b></tt>
-<dd>
+</p>
+<blockquote>
 Default parameters. These are copied every time a new <tt>GlowScrollBarParams</tt> is constructed.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -268,7 +294,7 @@ Constructs a new parameter block, copying <tt>defaults</tt>
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 

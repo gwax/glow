@@ -71,44 +71,72 @@ GLOW programs that use message windows will need to use <tt>GlowMessageWindowPar
 
 <blockquote>
 
-<dl>
-<dt>
+<p>
 <tt>const char* <b>windowTitle</b></tt>
-<dd>
+</p>
+<blockquote>
 Title for the window. Initial default is "Note".
-<dt>
-<tt>const char* <b>text</b></tt>
-<dd>
-Text to display. Include newline characters to specify a multi-line message. Initial default is the empty string "".
-<dt>
-<tt><a href="GlowFont.html">GlowFont</a> <b>textFont</b></tt>
-<dd>
-Font for the text. Initial default is <tt><a href="GlowFont.html">GlowFont</a>::helvetica12</tt>.
-<dt>
-<tt><a href="GlowFont.html">GlowFont</a> <b>buttonFont</b></tt>
-<dd>
-Font for the buttons. Initial default is <tt><a href="GlowFont.html">GlowFont</a>::helvetica12</tt>.
-<dt>
-<tt>const char* <b>buttonLabels</b></tt>
-<dd>
-Labels for the buttons, tab-delimited. Initial default is "OK" (denoting a single button with that label).
-<dt>
-<tt>int <b>windowSpacing</b></tt>
-<dd>
-Spacing between elements in the window. Initial default is 20.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>x</b></tt>
-<dd>
+</p>
+<blockquote>
 X location of the upper left of the window, in pixel coordinates of the screen. Initial default is <tt><a href="GlowWindow.html">GlowWindow</a>::autoPosition</tt>.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>y</b></tt>
-<dd>
+</p>
+<blockquote>
 Y location of the upper left of the window, in pixel coordinates of the screen. Initial default is <tt><a href="GlowWindow.html">GlowWindow</a>::autoPosition</tt>.
-<dt>
+</blockquote>
+<p>
+<tt>const char* <b>text</b></tt>
+</p>
+<blockquote>
+Text to display. Include newline characters to specify a multi-line message. Initial default is the empty string "".
+</blockquote>
+<p>
+<tt><a href="GlowFont.html">GlowFont</a> <b>textFont</b></tt>
+</p>
+<blockquote>
+Font for the text. Initial default is <tt><a href="GlowFont.html">GlowFont</a>::helvetica12</tt>.
+</blockquote>
+<p>
+<tt><a href="GlowFont.html">GlowFont</a> <b>buttonFont</b></tt>
+</p>
+<blockquote>
+Font for the buttons. Initial default is <tt><a href="GlowFont.html">GlowFont</a>::helvetica12</tt>.
+</blockquote>
+<p>
+<tt>const char* <b>buttonLabels</b></tt>
+</p>
+<blockquote>
+Labels for the buttons, tab-delimited. Initial default is "OK" (denoting a single button with that label).
+</blockquote>
+<p>
+<tt>int <b>windowSpacing</b></tt>
+</p>
+<blockquote>
+Spacing between elements in the window. Initial default is 20.
+</blockquote>
+<p>
+<tt>int <b>enterButton</b></tt>
+</p>
+<blockquote>
+Button number to map the enter key to. Remember that buttons are numbered starting with 0. Use a negative number for no mapping. Initial default is -1.
+</blockquote>
+<p>
+<tt>int <b>escapeButton</b></tt>
+</p>
+<blockquote>
+Button number to map the escape key to. Remember that buttons are numbered starting with 0. Use a negative number for no mapping. Initial default is -1.
+</blockquote>
+<p>
 <tt><a href="GlowMessageWindowReceiver.html">GlowMessageWindowReceiver</a>* <b>receiver</b></tt>
-<dd>
+</p>
+<blockquote>
 Receiver to receive events for this window, or the null pointer for no event reporting. You can still add or remove receivers later. Initial default is null.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -143,12 +171,12 @@ Receiver to receive events for this window, or the null pointer for no event rep
 
 <blockquote>
 
-<dl>
-<dt>
+<p>
 <tt>static GlowMessageWindowParams <b>defaults</b></tt>
-<dd>
+</p>
+<blockquote>
 Default parameters. These are copied every time a new GlowMessageWindowParams is constructed.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -200,7 +228,7 @@ Constructs a new parameter block, copying <tt>defaults</tt>
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 

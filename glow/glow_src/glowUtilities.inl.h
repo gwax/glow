@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -166,8 +167,8 @@ inline GlowFixedSizeWindow::GlowFixedSizeWindow(
 	int y,
 	int width,
 	int height,
-	int mode,
-	int eventMask)
+	Glow::BufferType mode,
+	Glow::EventMask eventMask)
 {
 	_canonicalWidth = width;
 	_canonicalHeight = height;
@@ -190,8 +191,8 @@ inline void GlowFixedSizeWindow::Init(
 	int y,
 	int width,
 	int height,
-	int mode,
-	int eventMask)
+	Glow::BufferType mode,
+	Glow::EventMask eventMask)
 {
 	_canonicalWidth = width;
 	_canonicalHeight = height;
@@ -218,6 +219,33 @@ inline int GlowFixedSizeWindow::FixedWidth() const
 inline int GlowFixedSizeWindow::FixedHeight() const
 {
 	return _canonicalHeight;
+}
+
+
+/*
+===============================================================================
+	Inline methods of GlowReceiverTrackerComponent
+===============================================================================
+*/
+
+inline GlowReceiverTrackerComponent::GlowReceiverTrackerComponent(
+	GlowComponent* parent) :
+GlowComponent(parent)
+{
+	SetDeletingOptions(referenceCountDelete);
+}
+
+
+inline GlowReceiverTrackerComponent::GlowReceiverTrackerComponent()
+{
+	SetDeletingOptions(referenceCountDelete);
+}
+
+
+inline void GlowReceiverTrackerComponent::Init(
+	GlowComponent* parent)
+{
+	GlowComponent::Init(parent);
 }
 
 

@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -98,14 +99,14 @@ inline void GlowSeparatorWidget::Init(
 }
 
 
-inline int GlowSeparatorWidget::GetStyle() const
+inline GlowSeparatorWidget::Style GlowSeparatorWidget::GetStyle() const
 {
 	return _style;
 }
 
 
 inline void GlowSeparatorWidget::SetStyle(
-	int style)
+	Style style)
 {
 	_style = style;
 	Refresh();

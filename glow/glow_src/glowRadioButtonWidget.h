@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -73,93 +74,10 @@ GLOW_NAMESPACE_BEGIN
 
 class GlowRadioButtonWidget;
 class GlowRadioGroupWidget;
-
-
-/*
-===============================================================================
-	CLASS GlowRadioButtonMessage
-	
-	Action for radio button press
-===============================================================================
-*/
-
-class GlowRadioButtonMessage
-{
-	public:
-	
-		GlowRadioGroupWidget* groupWidget;
-		GlowRadioButtonWidget* buttonWidget;
-		GlowRadioButtonWidget* oldButtonWidget;
-		int mouseButton;
-		int modifiers;
-};
-
-
+class GlowRadioButtonMessage;
+class GlowRadioButtonParams;
+class GlowRadioGroupParams;
 typedef TReceiver<const GlowRadioButtonMessage&> GlowRadioButtonReceiver;
-
-
-/*
-===============================================================================
-	STRUCT GlowRadioButtonParams
-	
-	Radio button params
-===============================================================================
-*/
-
-class GlowRadioButtonParams :
-	public GlowWidgetParams
-{
-	public:
-	
-		const char* text;
-		GlowFont font;
-		int spacing;
-		GlowColor boxColor;
-		GlowColor textColor;
-		GlowColor spotColor;
-		GlowColor hiliteBoxColor;
-		GlowColor hiliteTextColor;
-		GlowColor hiliteSpotColor;
-		GlowColor disableBoxColor;
-		GlowColor disableTextColor;
-		GlowColor disableSpotColor;
-		GlowColor disableOutlineColor;
-		GlowColor lightBevelColor;
-		GlowColor darkBevelColor;
-		
-		static GlowRadioButtonParams defaults;
-		
-		GlowRadioButtonParams();
-	
-	protected:
-	
-		GlowRadioButtonParams(bool);
-};
-
-
-/*
-===============================================================================
-	STRUCT GlowRadioGroupParams
-	
-	Radio group params
-===============================================================================
-*/
-
-class GlowRadioGroupParams :
-	public GlowPanelParams
-{
-	public:
-	
-		GlowRadioButtonReceiver* receiver;
-		
-		static GlowRadioGroupParams defaults;
-		
-		GlowRadioGroupParams();
-	
-	protected:
-	
-		GlowRadioGroupParams(bool);
-};
 
 
 /*
@@ -256,11 +174,11 @@ class GlowRadioButtonWidget :
 	
 	protected:
 	
-		virtual int OnAutoPack(
+		virtual AutoPackError OnAutoPack(
 			int hSize,
 			int vSize,
-			int hOption,
-			int vOption,
+			AutoPackOptions hOption,
+			AutoPackOptions vOption,
 			int& leftMargin,
 			int& rightMargin,
 			int& topMargin,
@@ -279,8 +197,8 @@ class GlowRadioButtonWidget :
 		GlowFont _font;
 		bool _down;
 		bool _inside;
-		int _button;
-		int _modifiers;
+		Glow::MouseButton _button;
+		Glow::Modifiers _modifiers;
 		int _labelWidth;
 		int _spacing;
 		
@@ -307,15 +225,15 @@ class GlowRadioButtonWidget :
 		virtual void OnWidgetPaint();
 		
 		virtual void OnWidgetMouseDown(
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnWidgetMouseUp(
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnWidgetMouseDrag(
 			int x,
 			int y);
@@ -383,8 +301,8 @@ class GlowRadioGroupWidget :
 	
 		virtual void OnHit(
 			GlowRadioButtonWidget* buttonWidget,
-			int mouseButton,
-			int modifiers);
+			Glow::MouseButton mouseButton,
+			Glow::Modifiers modifiers);
 	
 	
 	//-------------------------------------------------------------------------
@@ -402,6 +320,90 @@ class GlowRadioGroupWidget :
 			GlowRadioButtonWidget* button);
 		void _UnRegister(
 			GlowRadioButtonWidget* button);
+};
+
+
+/*
+===============================================================================
+	CLASS GlowRadioButtonMessage
+	
+	Action for radio button press
+===============================================================================
+*/
+
+class GlowRadioButtonMessage
+{
+	public:
+	
+		GlowRadioGroupWidget* groupWidget;
+		GlowRadioButtonWidget* buttonWidget;
+		GlowRadioButtonWidget* oldButtonWidget;
+		Glow::MouseButton mouseButton;
+		Glow::Modifiers modifiers;
+};
+
+
+/*
+===============================================================================
+	STRUCT GlowRadioButtonParams
+	
+	Radio button params
+===============================================================================
+*/
+
+class GlowRadioButtonParams :
+	public GlowWidgetParams
+{
+	public:
+	
+		const char* text;
+		GlowFont font;
+		int spacing;
+		GlowColor boxColor;
+		GlowColor textColor;
+		GlowColor spotColor;
+		GlowColor hiliteBoxColor;
+		GlowColor hiliteTextColor;
+		GlowColor hiliteSpotColor;
+		GlowColor disableBoxColor;
+		GlowColor disableTextColor;
+		GlowColor disableSpotColor;
+		GlowColor disableOutlineColor;
+		GlowColor lightBevelColor;
+		GlowColor darkBevelColor;
+		
+		static GlowRadioButtonParams defaults;
+		
+		GlowRadioButtonParams();
+	
+	protected:
+	
+		GlowRadioButtonParams(bool);
+};
+
+
+/*
+===============================================================================
+	STRUCT GlowRadioGroupParams
+	
+	Radio group params
+===============================================================================
+*/
+
+class GlowRadioGroupParams :
+	public GlowPanelParams
+{
+	public:
+	
+		GlowRadioButtonReceiver* receiver;
+		
+		static GlowRadioGroupParams defaults;
+		
+		GlowRadioGroupParams();
+	
+	protected:
+	
+		GlowRadioGroupParams(bool);
 };
 
 

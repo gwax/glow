@@ -9,7 +9,7 @@
 	
 	CONTENTS:
 	
-		Pushbutton widget for VGLUI
+		Pushbutton widget for GLOW
 	
 	PROGRAMMERS:
 	
@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -69,63 +70,9 @@ GLOW_NAMESPACE_BEGIN
 
 
 class GlowPushButtonWidget;
-
-
-/*
-===============================================================================
-	CLASS GlowPushButtonMessage
-	
-	Action for pushbutton
-===============================================================================
-*/
-
-class GlowPushButtonMessage
-{
-	public:
-	
-		GlowPushButtonWidget* widget;
-		int mouseButton;
-		int modifiers;
-};
-
-
+class GlowPushButtonMessage;
+class GlowPushButtonParams;
 typedef TReceiver<const GlowPushButtonMessage&> GlowPushButtonReceiver;
-
-
-/*
-===============================================================================
-	STRUCT GlowPushButtonParams
-	
-	Pushbutton params
-===============================================================================
-*/
-
-class GlowPushButtonParams :
-	public GlowWidgetParams
-{
-	public:
-	
-		const char* text;
-		GlowFont font;
-		GlowPushButtonReceiver* receiver;
-		GlowColor boxColor;
-		GlowColor textColor;
-		GlowColor hiliteBoxColor;
-		GlowColor hiliteTextColor;
-		GlowColor disableBoxColor;
-		GlowColor disableTextColor;
-		GlowColor disableOutlineColor;
-		GlowColor lightBevelColor;
-		GlowColor darkBevelColor;
-		
-		static GlowPushButtonParams defaults;
-		
-		GlowPushButtonParams();
-	
-	protected:
-	
-		GlowPushButtonParams(bool);
-};
 
 
 /*
@@ -201,6 +148,10 @@ class GlowPushButtonWidget :
 			GlowColor c);
 		
 		inline TSender<const GlowPushButtonMessage&>& Notifier();
+		
+		inline void Hit(
+			Glow::MouseButton button = Glow::leftButton,
+			Glow::Modifiers modifiers = Glow::noModifier);
 	
 	
 	//-------------------------------------------------------------------------
@@ -209,19 +160,19 @@ class GlowPushButtonWidget :
 	
 	protected:
 	
-		virtual int OnAutoPack(
+		virtual AutoPackError OnAutoPack(
 			int hSize,
 			int vSize,
-			int hOption,
-			int vOption,
+			AutoPackOptions hOption,
+			AutoPackOptions vOption,
 			int& leftMargin,
 			int& rightMargin,
 			int& topMargin,
 			int& bottomMargin);
 		
-		virtual void OnPressed(
-			int button,
-			int modifiers);
+		virtual void OnHit(
+			Glow::MouseButton button,
+			Glow::Modifiers modifiers);
 	
 	
 	//-------------------------------------------------------------------------
@@ -247,8 +198,8 @@ class GlowPushButtonWidget :
 		int _labelWidth;
 		bool _down;
 		bool _inside;
-		int _button;
-		int _modifiers;
+		Glow::MouseButton _button;
+		Glow::Modifiers _modifiers;
 		TSender<const GlowPushButtonMessage&> _sender;
 		
 		GlowColor _boxColor;
@@ -266,15 +217,15 @@ class GlowPushButtonWidget :
 		virtual void OnWidgetPaint();
 		
 		virtual void OnWidgetMouseDown(
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnWidgetMouseUp(
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnWidgetMouseDrag(
 			int x,
 			int y);
@@ -326,9 +277,9 @@ class GlowDismissPushButtonWidget :
 	
 	protected:
 	
-		virtual void OnPressed(
-			int mouseButton,
-			int modifiers);
+		virtual void OnHit(
+			Glow::MouseButton mouseButton,
+			Glow::Modifiers modifiers);
 	
 	
 	//-------------------------------------------------------------------------
@@ -338,6 +289,108 @@ class GlowDismissPushButtonWidget :
 	private:
 	
 		GlowComponent* _todismiss;
+};
+
+
+/*
+===============================================================================
+	CLASS GlowPushButtonMessage
+	
+	Action for pushbutton
+===============================================================================
+*/
+
+class GlowPushButtonMessage
+{
+	public:
+	
+		GlowPushButtonWidget* widget;
+		Glow::MouseButton mouseButton;
+		Glow::Modifiers modifiers;
+};
+
+
+/*
+===============================================================================
+	STRUCT GlowPushButtonParams
+	
+	Pushbutton params
+===============================================================================
+*/
+
+class GlowPushButtonParams :
+	public GlowWidgetParams
+{
+	public:
+	
+		const char* text;
+		GlowFont font;
+		GlowPushButtonReceiver* receiver;
+		GlowColor boxColor;
+		GlowColor textColor;
+		GlowColor hiliteBoxColor;
+		GlowColor hiliteTextColor;
+		GlowColor disableBoxColor;
+		GlowColor disableTextColor;
+		GlowColor disableOutlineColor;
+		GlowColor lightBevelColor;
+		GlowColor darkBevelColor;
+		
+		static GlowPushButtonParams defaults;
+		
+		GlowPushButtonParams();
+	
+	protected:
+	
+		GlowPushButtonParams(bool);
+};
+
+
+/*
+===============================================================================
+	Useful widget keyboard filter
+===============================================================================
+*/
+
+class GlowWidgetMapToPushButtonFilter :
+	public GlowWidgetKeyboardFilter
+{
+	//-------------------------------------------------------------------------
+	//	Public interface
+	//-------------------------------------------------------------------------
+	
+	public:
+	
+		inline GlowWidgetMapToPushButtonFilter(
+			GlowPushButtonWidget* widget,
+			Glow::KeyCode key,
+			Glow::Modifiers modifiers = Glow::noModifier);
+		
+		inline void SetPushButton(
+			GlowPushButtonWidget* widget);
+		inline GlowPushButtonWidget* GetPushButton() const;
+		inline void SetKeyCode(
+			Glow::KeyCode key);
+		inline Glow::KeyCode GetKeyCode() const;
+		inline void SetModifiers(
+			Glow::Modifiers modifiers);
+		inline Glow::Modifiers GetModifiers() const;
+	
+	
+	//-------------------------------------------------------------------------
+	//	Private implementation
+	//-------------------------------------------------------------------------
+	
+	protected:
+	
+		virtual bool OnFilter(
+			GlowWidgetKeyboardData& data);
+	
+	private:
+	
+		GlowPushButtonWidget* _widget;
+		Glow::KeyCode _keyCode;
+		Glow::Modifiers _modifiers;
 };
 
 

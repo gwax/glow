@@ -72,25 +72,29 @@ GLOW programs that make use of menus will utilize the <tt>GlowMenu</tt> class.
 <p>
 <b>Binding settings</b>
 <br>
-These constants specify the type of notification desired when a menu item is chosen.
+These constants specify the type of notification desired when a menu item is chosen. Defined as an enumeration of type <tt>GlowMenu::BindState</tt>.
 </p>
 
 <blockquote>
 
-<dl>
-<dt>
-<tt>static const int <b>bindNone</b></tt>
-<dd>
+<p>
+<tt>enum GlowMenu::BindState <b>bindNone</b></tt>
+</p>
+<blockquote>
 Perform no explicit notification. However, a subclass of <tt>GlowMenu</tt> may still override the <tt>OnHit()</tt> method to gain notification of menu choices.
-<dt>
-<tt>static const int <b>bindNormal</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>enum GlowMenu::BindState <b>bindNormal</b></tt>
+</p>
+<blockquote>
 Notify by binding <tt>Notifier()</tt> to <tt><a href="GlowMenuReceiver.html">GlowMenuReceiver</a></tt>(s).
-<dt>
-<tt>static const int <b>bindSubwindow</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>enum GlowMenu::BindState <b>bindSubwindow</b></tt>
+</p>
+<blockquote>
 Notify by invoking the <tt>OnDirectMenuHit()</tt> method of the appropriate <tt><a href="GlowSubWindow.html">GlowSubWindow</a></tt>.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -328,14 +332,14 @@ Several different notification methods are available for <tt>GlowMenu</tt>s. The
 <blockquote>
 
 <p>
-<tt>void <b>SetBindState</b>(int state)</tt>
+<tt>void <b>SetBindState</b>(GlowMenu::BindState state)</tt>
 </p>
 <blockquote>
 Sets the bind state to the specified value. Use the constants provided in <tt>GlowMenu</tt>.
 </blockquote>
 
 <p>
-<tt>int <b>GetBindState</b>(void)</tt>
+<tt>GlowMenu::BindState <b>GetBindState</b>(void)</tt>
 </p>
 <blockquote>
 Returns the current bind behavior.
@@ -400,7 +404,7 @@ Override this method to customize the type of notification done on a menu choice
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 

@@ -74,32 +74,42 @@ These fields are inherited from <tt><a href="GlowWidgetParams.html">GlowWidgetPa
 
 <blockquote>
 
-<dl>
-<dt>
+<p>
 <tt>int <b>width</b></tt>
-<dd>
+</p>
+<blockquote>
 Width of the widget. Initial default is 100.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>height</b></tt>
-<dd>
+</p>
+<blockquote>
 Height of the widget. Initial default is 20.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>x</b></tt>
-<dd>
+</p>
+<blockquote>
 X location of the upper left of the widget, in pixel coordinates of the parent widget. Initial default is 0.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>y</b></tt>
-<dd>
+</p>
+<blockquote>
 Y location of the upper left of the widget, in pixel coordinates of the parent widget. Initial default is 0.
-<dt>
+</blockquote>
+<p>
 <tt>long <b>refcon</b></tt>
-<dd>
+</p>
+<blockquote>
 Reference constant for this widget. Initial default 0.
-<dt>
+</blockquote>
+<p>
 <tt>bool <b>clipping</b></tt>
-<dd>
+</p>
+<blockquote>
 Should the widget clip to its rectangle when drawing children. Initial default is false.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -110,44 +120,60 @@ Should the widget clip to its rectangle when drawing children. Initial default i
 
 <blockquote>
 
-<dl>
-<dt>
-<tt>int <b>style</b></tt>
-<dd>
+<p>
+<tt><a href="GlowTextFieldWidget.html">GlowTextFieldWidget</a>::Style <b>style</b></tt>
+</p>
+<blockquote>
 Drawing style for the box. Initial default is <tt><a href="GlowTextFieldWidget.html">GlowTextFieldWidget</a>::loweredStyle</tt>.
-<dt>
+</blockquote>
+<p>
 <tt>const char* <b>initialText</b></tt>
-<dd>
+</p>
+<blockquote>
 Text for the label. Initial default is "".
-<dt>
+</blockquote>
+<p>
 <tt><a href="GlowFont.html">GlowFont</a> <b>font</b></tt>
-<dd>
+</p>
+<blockquote>
 Font for the label. Initial default is <tt><a href="GlowFont.html">GlowFont</a>::helvetica12</tt>.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>selectionStart</b></tt>
-<dd>
+</p>
+<blockquote>
 Starting position of the selection. Initial default is 0.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>selectionEnd</b></tt>
-<dd>
+</p>
+<blockquote>
 Ending position of the selection. Initial default is 0.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>blinkInterval</b></tt>
-<dd>
+</p>
+<blockquote>
 Interval between caret blinks in milliseconds. Initial default is 500.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>autoScrollInterval</b></tt>
-<dd>
+</p>
+<blockquote>
 Interval between autoscroll moves in milliseconds. Initial default is 50.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>inset</b></tt>
-<dd>
+</p>
+<blockquote>
 Pixels to inset the text from the edge of the box. Initial defauilt is 5.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>caretInset</b></tt>
-<dd>
+</p>
+<blockquote>
 Pixels to inset the clip area for the caret from the edge of the box. Initial defauilt is 2.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -205,12 +231,12 @@ Pixels to inset the clip area for the caret from the edge of the box. Initial de
 
 <blockquote>
 
-<dl>
-<dt>
+<p>
 <tt>static GlowTextFieldParams <b>defaults</b></tt>
-<dd>
+</p>
+<blockquote>
 Default parameters. These are copied every time a new <tt>GlowTextFieldParams</tt> is constructed.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -264,7 +290,7 @@ Constructs a new parameter block, copying <tt>defaults</tt>
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 

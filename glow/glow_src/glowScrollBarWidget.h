@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -70,79 +71,9 @@ GLOW_NAMESPACE_BEGIN
 
 class GlowScrollBarWidget;
 class Glow_ScrollBarTimerFunc;
-
-
-/*
-===============================================================================
-	CLASS GlowScrollBarMessage
-	
-	Action for scroll bar
-===============================================================================
-*/
-
-class GlowScrollBarMessage
-{
-	public:
-	
-		GlowScrollBarWidget* widget;
-		int part;
-		long topValue;
-		bool released;
-		int mouseButton;
-		int modifiers;
-};
-
-
+class GlowScrollBarParams;
+class GlowScrollBarMessage;
 typedef TReceiver<const GlowScrollBarMessage&> GlowScrollBarReceiver;
-
-
-/*
-===============================================================================
-	STRUCT GlowScrollBarParams
-	
-	Scroll bar params
-===============================================================================
-*/
-
-class GlowScrollBarParams :
-	public GlowWidgetParams
-{
-	public:
-	
-		long min;
-		long max;
-		long span;
-		long initialTop;
-		int firstDelay;
-		int secondDelay;
-		long arrowStep;
-		long pageStep;
-		GlowScrollBarReceiver* receiver;
-		GlowColor stripColor;
-		GlowColor indicatorColor;
-		GlowColor shadowColor;
-		GlowColor buttonColor;
-		GlowColor buttonIconColor;
-		GlowColor hiliteStripColor;
-		GlowColor hiliteIndicatorColor;
-		GlowColor hiliteButtonColor;
-		GlowColor hiliteButtonIconColor;
-		GlowColor disableStripColor;
-		GlowColor disableIndicatorColor;
-		GlowColor disableButtonColor;
-		GlowColor disableButtonIconColor;
-		GlowColor disableOutlineColor;
-		GlowColor lightBevelColor;
-		GlowColor darkBevelColor;
-		
-		static GlowScrollBarParams defaults;
-		
-		GlowScrollBarParams();
-	
-	protected:
-	
-		GlowScrollBarParams(bool);
-};
 
 
 /*
@@ -165,7 +96,8 @@ class GlowScrollBarWidget :
 	
 	public:
 	
-		enum {
+		enum Part
+		{
 			noPart = 0,
 			upButtonPart = 1,
 			downButtonPart = 2,
@@ -300,27 +232,27 @@ class GlowScrollBarWidget :
 	
 	protected:
 	
-		virtual int OnAutoPack(
+		virtual AutoPackError OnAutoPack(
 			int hSize,
 			int vSize,
-			int hOption,
-			int vOption,
+			AutoPackOptions hOption,
+			AutoPackOptions vOption,
 			int& leftMargin,
 			int& rightMargin,
 			int& topMargin,
 			int& bottomMargin);
 		
 		virtual void OnDragged(
-			int mouseButton,
-			int modifiers);
+			Glow::MouseButton mouseButton,
+			Glow::Modifiers modifiers);
 		virtual void OnPart(
-			int part,
-			int mouseButton,
-			int modifiers);
+			Part part,
+			Glow::MouseButton mouseButton,
+			Glow::Modifiers modifiers);
 		virtual void OnReleased(
-			int part,
-			int mouseButton,
-			int modifiers);
+			Part part,
+			Glow::MouseButton mouseButton,
+			Glow::Modifiers modifiers);
 	
 	
 	//-------------------------------------------------------------------------
@@ -335,9 +267,9 @@ class GlowScrollBarWidget :
 		long _max;
 		long _topValue;
 		long _span;
-		int _button;
-		int _modifiers;
-		int _curPart;
+		Glow::MouseButton _button;
+		Glow::Modifiers _modifiers;
+		Part _curPart;
 		bool _innerButton;
 		bool _inside;
 		int _firstDelay;
@@ -367,7 +299,7 @@ class GlowScrollBarWidget :
 	private:
 	
 		void _DrawArrowButton(
-			int part,
+			Part part,
 			float left,
 			float right,
 			float bevelWidth,
@@ -400,18 +332,88 @@ class GlowScrollBarWidget :
 		virtual void OnWidgetPaint();
 		
 		virtual void OnWidgetMouseDown(
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnWidgetMouseUp(
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnWidgetMouseDrag(
 			int x,
 			int y);
+};
+
+
+/*
+===============================================================================
+	CLASS GlowScrollBarMessage
+	
+	Action for scroll bar
+===============================================================================
+*/
+
+class GlowScrollBarMessage
+{
+	public:
+	
+		GlowScrollBarWidget* widget;
+		GlowScrollBarWidget::Part part;
+		long topValue;
+		bool released;
+		Glow::MouseButton mouseButton;
+		Glow::Modifiers modifiers;
+};
+
+
+/*
+===============================================================================
+	STRUCT GlowScrollBarParams
+	
+	Scroll bar params
+===============================================================================
+*/
+
+class GlowScrollBarParams :
+	public GlowWidgetParams
+{
+	public:
+	
+		long min;
+		long max;
+		long span;
+		long initialTop;
+		int firstDelay;
+		int secondDelay;
+		long arrowStep;
+		long pageStep;
+		GlowScrollBarReceiver* receiver;
+		GlowColor stripColor;
+		GlowColor indicatorColor;
+		GlowColor shadowColor;
+		GlowColor buttonColor;
+		GlowColor buttonIconColor;
+		GlowColor hiliteStripColor;
+		GlowColor hiliteIndicatorColor;
+		GlowColor hiliteButtonColor;
+		GlowColor hiliteButtonIconColor;
+		GlowColor disableStripColor;
+		GlowColor disableIndicatorColor;
+		GlowColor disableButtonColor;
+		GlowColor disableButtonIconColor;
+		GlowColor disableOutlineColor;
+		GlowColor lightBevelColor;
+		GlowColor darkBevelColor;
+		
+		static GlowScrollBarParams defaults;
+		
+		GlowScrollBarParams();
+	
+	protected:
+	
+		GlowScrollBarParams(bool);
 };
 
 

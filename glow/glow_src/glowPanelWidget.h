@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -68,32 +69,7 @@ GLOW_INTERNAL_USINGSTD
 GLOW_NAMESPACE_BEGIN
 
 
-/*
-===============================================================================
-	STRUCT GlowPanelParams
-	
-	Panel widget params
-===============================================================================
-*/
-
-class GlowPanelParams :
-	public GlowWidgetParams
-{
-	public:
-	
-		int style;
-		GlowColor backColor;
-		GlowColor lightBevelColor;
-		GlowColor darkBevelColor;
-		
-		static GlowPanelParams defaults;
-		
-		GlowPanelParams();
-	
-	protected:
-	
-		GlowPanelParams(bool);
-};
+class GlowPanelParams;
 
 
 /*
@@ -113,7 +89,8 @@ class GlowPanelWidget :
 	
 	public:
 	
-		enum {
+		enum Style
+		{
 			transparentStyle = 0,
 			plainStyle = 1,
 			etchedStyle = 2,
@@ -140,9 +117,9 @@ class GlowPanelWidget :
 	
 	public:
 	
-		inline int GetStyle() const;
+		inline Style GetStyle() const;
 		inline void SetStyle(
-			int style);
+			Style style);
 		
 		inline GlowColor GetBackColor() const;
 		inline GlowColor GetLightBevelColor() const;
@@ -162,11 +139,11 @@ class GlowPanelWidget :
 	
 	protected:
 	
-		virtual int OnAutoPack(
+		virtual AutoPackError OnAutoPack(
 			int hSize,
 			int vSize,
-			int hOption,
-			int vOption,
+			AutoPackOptions hOption,
+			AutoPackOptions vOption,
 			int& leftMargin,
 			int& rightMargin,
 			int& topMargin,
@@ -191,7 +168,7 @@ class GlowPanelWidget :
 	
 	private:
 	
-		int _style;
+		Style _style;
 		
 		GlowColor _backColor;
 		GlowColor _lightBevelColor;
@@ -200,6 +177,34 @@ class GlowPanelWidget :
 	protected:
 	
 		virtual void OnWidgetPaint();
+};
+
+
+/*
+===============================================================================
+	STRUCT GlowPanelParams
+	
+	Panel widget params
+===============================================================================
+*/
+
+class GlowPanelParams :
+	public GlowWidgetParams
+{
+	public:
+	
+		GlowPanelWidget::Style style;
+		GlowColor backColor;
+		GlowColor lightBevelColor;
+		GlowColor darkBevelColor;
+		
+		static GlowPanelParams defaults;
+		
+		GlowPanelParams();
+	
+	protected:
+	
+		GlowPanelParams(bool);
 };
 
 

@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -180,8 +181,8 @@ class GlowFixedSizeWindow :
 			int y,
 			int width,
 			int height,
-			int mode,
-			int eventMask);
+			Glow::BufferType mode,
+			Glow::EventMask eventMask);
 		inline void Init(
 			const GlowWindowParams& params);
 		inline void Init(
@@ -190,8 +191,8 @@ class GlowFixedSizeWindow :
 			int y,
 			int width,
 			int height,
-			int mode,
-			int eventMask);
+			Glow::BufferType mode,
+			Glow::EventMask eventMask);
 	
 	public:
 	
@@ -216,6 +217,33 @@ class GlowFixedSizeWindow :
 		virtual void OnReshape(
 			int width,
 			int height);
+};
+
+
+/*
+===============================================================================
+	CLASS GlowReceiverTrackerComponent
+	
+	Component that tracks receivers and automatically deletes them when the
+	component goes away
+===============================================================================
+*/
+
+class GlowReceiverTrackerComponent :
+	public GlowComponent,
+	public ReceiverTracker
+{
+	//-------------------------------------------------------------------------
+	//	Public interface
+	//-------------------------------------------------------------------------
+	
+	public:
+	
+		inline GlowReceiverTrackerComponent(
+			GlowComponent* parent);
+		inline GlowReceiverTrackerComponent();
+		inline void Init(
+			GlowComponent* parent);
 };
 
 

@@ -35,12 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
-		7 March 2000 -- DA -- Fixed off-by-one bug in GlowMenu::RemoveItem()
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -162,6 +162,32 @@ void Glow_IdleFuncReceiver::OnMessage(
 
 /*
 ===============================================================================
+	Event filter receivers
+===============================================================================
+*/
+
+void GlowKeyboardFilter::OnMessage(
+	GlowKeyboardData& message)
+{
+	if (message._continue)
+	{
+		message._continue = OnFilter(message);
+	}
+}
+
+
+void GlowMouseFilter::OnMessage(
+	GlowMouseData& message)
+{
+	if (message._continue)
+	{
+		message._continue = OnFilter(message);
+	}
+}
+
+
+/*
+===============================================================================
 	Private globals for Glow
 ===============================================================================
 */
@@ -187,6 +213,9 @@ int Glow::_nextTimerID = 1;
 
 Glow_IdleFuncReceiver* Glow::_idleFuncReceiver = 0;
 
+TSender<GlowMouseData&> Glow::_mouseFilters;
+TSender<GlowKeyboardData&> Glow::_keyboardFilters;
+
 
 /*
 ===============================================================================
@@ -194,9 +223,38 @@ Glow_IdleFuncReceiver* Glow::_idleFuncReceiver = 0;
 ===============================================================================
 */
 
+void Glow::Init(
+	int& argc,
+	char** argv)
+{
+	::glutInit(&argc, argv);
+	::glutMenuStatusFunc(Glow::_MenuStatusFunc);
+}
+
+
+void Glow::MainLoop()
+{
+	::glutMainLoop();
+}
+
+
 double Glow::Version()
 {
 	return GLOW_VERSION;
+}
+
+
+/*
+===============================================================================
+	Registry functions
+===============================================================================
+*/
+
+void Glow::_AddWindow(
+	GlowSubwindow* window,
+	int windowNum)
+{
+	_windowRegistry.insert(_WindowRegistryEntry(windowNum, window));
 }
 
 
@@ -232,6 +290,37 @@ void Glow::_RemoveWindow(
 		}
 		_windowRegistry.erase(iter);
 	}
+}
+
+
+GlowSubwindow* Glow::ResolveWindow(
+	int windowNum)
+{
+	_WindowRegistryIterator iter = _windowRegistry.find(windowNum);
+	return (iter == _windowRegistry.end()) ? 0 : (*iter).second;
+}
+
+
+void Glow::_AddMenu(
+	GlowMenu *menu,
+	int menuNum)
+{
+	_menuRegistry.insert(_MenuRegistryEntry(menuNum, menu));
+}
+
+
+void Glow::_RemoveMenu(
+	int menuNum)
+{
+	_menuRegistry.erase(menuNum);
+}
+
+
+GlowMenu* Glow::ResolveMenu(
+	int menuNum)
+{
+	_MenuRegistryIterator iter = _menuRegistry.find(menuNum);
+	return (iter == _menuRegistry.end()) ? 0 : (*iter).second;
 }
 
 
@@ -410,9 +499,20 @@ void Glow::_KeyboardFunc(
 	GlowSubwindow* window = ResolveWindow(::glutGetWindow());
 	if (window != 0)
 	{
-		window->OnKeyboard(int(key), ::glutGetModifiers(), x, y);
+		GlowKeyboardData filterData;
+		filterData.subwindow = window;
+		filterData.key = KeyCode(key);
+		filterData.x = x;
+		filterData.y = y;
+		filterData.modifiers = Modifiers(::glutGetModifiers());
+		_keyboardFilters.Send(filterData);
+		if (filterData._continue)
+		{
+			filterData.subwindow->OnKeyboard(filterData.key,
+				filterData.x, filterData.y, filterData.modifiers);
+		}
+		_ExecuteDeferred();
 	}
-	_ExecuteDeferred();
 }
 
 
@@ -426,19 +526,32 @@ void Glow::_MouseFunc(
 	
 	++_clock;
 	GlowSubwindow* window = ResolveWindow(::glutGetWindow());
-	int modifiers = ::glutGetModifiers();
 	if (window != 0)
 	{
-		if (state == GLUT_DOWN)
+		GlowMouseData filterData;
+		filterData.subwindow = window;
+		filterData.type = (state == GLUT_DOWN) ?
+			GlowMouseData::mouseDown : GlowMouseData::mouseUp;
+		filterData.button = MouseButton(button);
+		filterData.x = x;
+		filterData.y = y;
+		filterData.modifiers = Modifiers(::glutGetModifiers());
+		_mouseFilters.Send(filterData);
+		if (filterData._continue)
 		{
-			window->OnMouseDown(button, x, y, modifiers);
+			if (filterData.type == GlowMouseData::mouseDown)
+			{
+				filterData.subwindow->OnMouseDown(filterData.button,
+					filterData.x, filterData.y, filterData.modifiers);
+			}
+			else if (filterData.type == GlowMouseData::mouseUp)
+			{
+				filterData.subwindow->OnMouseUp(filterData.button,
+					filterData.x, filterData.y, filterData.modifiers);
+			}
 		}
-		else if (state == GLUT_UP)
-		{
-			window->OnMouseUp(button, x, y, modifiers);
-		}
+		_ExecuteDeferred();
 	}
-	_ExecuteDeferred();
 }
 
 
@@ -453,8 +566,8 @@ void Glow::_MotionFunc(
 	if (window != 0)
 	{
 		window->OnMouseDrag(x, y);
+		_ExecuteDeferred();
 	}
-	_ExecuteDeferred();
 }
 
 
@@ -469,8 +582,8 @@ void Glow::_PassiveMotionFunc(
 	if (window != 0)
 	{
 		window->OnMouseMotion(x, y);
+		_ExecuteDeferred();
 	}
-	_ExecuteDeferred();
 }
 
 
@@ -491,8 +604,8 @@ void Glow::_VisibilityFunc(
 		{
 			window->OnInvisible();
 		}
+		_ExecuteDeferred();
 	}
-	_ExecuteDeferred();
 }
 
 
@@ -513,8 +626,8 @@ void Glow::_EntryFunc(
 		{
 			window->OnMouseExit();
 		}
+		_ExecuteDeferred();
 	}
-	_ExecuteDeferred();
 }
 
 
@@ -529,10 +642,20 @@ void Glow::_SpecialFunc(
 	GlowSubwindow* window = ResolveWindow(::glutGetWindow());
 	if (window != 0)
 	{
-		window->OnKeyboard(key+Glow::specialKeyOffset,
-			::glutGetModifiers(), x, y);
+		GlowKeyboardData filterData;
+		filterData.subwindow = window;
+		filterData.key = KeyCode(key+Glow::specialKeyOffset);
+		filterData.x = x;
+		filterData.y = y;
+		filterData.modifiers = Modifiers(::glutGetModifiers());
+		_keyboardFilters.Send(filterData);
+		if (filterData._continue)
+		{
+			filterData.subwindow->OnKeyboard(filterData.key,
+				filterData.x, filterData.y, filterData.modifiers);
+		}
+		_ExecuteDeferred();
 	}
-	_ExecuteDeferred();
 }
 
 
@@ -577,8 +700,8 @@ void Glow::_MenuFunc(
 	if (menu != 0)
 	{
 		menu->OnHit(value, _menuWindow, _menuXClick, _menuYClick);
+		_ExecuteDeferred();
 	}
-	_ExecuteDeferred();
 }
 
 
@@ -952,8 +1075,8 @@ void GlowSubwindow::Init(
 	int y,
 	int width,
 	int height,
-	int mode,
-	int eventMask)
+	Glow::BufferType mode,
+	Glow::EventMask eventMask)
 {
 	GLOW_DEBUGSCOPE("GlowSubwindow::Init");
 	
@@ -1004,7 +1127,7 @@ GlowSubwindow::~GlowSubwindow()
 
 
 void GlowSubwindow::_RegisterCallbacks(
-	int eventMask)
+	Glow::EventMask eventMask)
 {
 	::glutDisplayFunc(Glow::_DisplayFunc);
 	::glutReshapeFunc(Glow::_ReshapeFunc);
@@ -1133,19 +1256,19 @@ void GlowSubwindow::OnMouseExit()
 
 
 void GlowSubwindow::OnMouseDown(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 }
 
 
 void GlowSubwindow::OnMouseUp(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 }
 
@@ -1177,10 +1300,10 @@ void GlowSubwindow::OnMouseDrag(
 
 
 void GlowSubwindow::OnKeyboard(
-	int key,
-	int modifiers,
+	Glow::KeyCode key,
 	int x,
-	int y)
+	int y,
+	Glow::Modifiers modifiers)
 {
 }
 
@@ -1202,7 +1325,7 @@ void GlowSubwindow::OnDirectMenuHit(
 
 
 void GlowSubwindow::SetEventMask(
-	int eventMask)
+	Glow::EventMask eventMask)
 {
 	GLOW_DEBUGSCOPE("GlowSubwindow::SetEventMask");
 	
@@ -1221,7 +1344,7 @@ void GlowSubwindow::SetEventMask(
 
 
 void GlowSubwindow::SetInactiveEventMask(
-	int eventMask)
+	Glow::EventMask eventMask)
 {
 	GLOW_DEBUGSCOPE("GlowSubwindow::SetInactiveEventMask");
 	
@@ -1377,13 +1500,10 @@ void GlowSubwindow::SetCursor(
 
 
 void GlowSubwindow::SetMenu(
-	int button,
+	Glow::MouseButton button,
 	GlowMenu* menu)
 {
 	GLOW_DEBUGSCOPE("GlowSubwindow::SetMenu");
-	
-	GLOW_DEBUG(button!=Glow::leftButton && button!=Glow::middleButton &&
-		button!=Glow::rightButton, "Bad button value");
 	
 	if (button == Glow::leftButton)
 	{
@@ -1538,8 +1658,8 @@ void GlowWindow::Init(
 	int y,
 	int width,
 	int height,
-	int mode,
-	int eventMask)
+	Glow::BufferType mode,
+	Glow::EventMask eventMask)
 {
 	GLOW_DEBUGSCOPE("GlowWindow::Init");
 	

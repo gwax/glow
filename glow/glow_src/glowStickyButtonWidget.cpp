@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -165,11 +166,11 @@ void GlowStickyButtonWidget::SetText(
 }
 
 
-int GlowStickyButtonWidget::OnAutoPack(
+GlowWidget::AutoPackError GlowStickyButtonWidget::OnAutoPack(
 	int hSize,
 	int vSize,
-	int hOption,
-	int vOption,
+	AutoPackOptions hOption,
+	AutoPackOptions vOption,
 	int& leftMargin,
 	int& rightMargin,
 	int& topMargin,
@@ -329,10 +330,10 @@ void GlowStickyButtonWidget::OnWidgetPaint()
 
 
 void GlowStickyButtonWidget::OnWidgetMouseDown(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("GlowStickyButtonWidget::OnWidgetMouseDown");
 	
@@ -345,10 +346,10 @@ void GlowStickyButtonWidget::OnWidgetMouseDown(
 
 
 void GlowStickyButtonWidget::OnWidgetMouseUp(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("GlowStickyButtonWidget::OnWidgetMouseUp");
 	
@@ -358,7 +359,7 @@ void GlowStickyButtonWidget::OnWidgetMouseUp(
 		Refresh();
 		if (_inside)
 		{
-			OnPressed(_button, _modifiers);
+			OnHit(_button, _modifiers);
 		}
 	}
 }
@@ -379,12 +380,8 @@ void GlowStickyButtonWidget::OnWidgetMouseDrag(
 }
 
 
-void GlowStickyButtonWidget::OnPressed(
-	int mouseButton,
-	int modifiers)
+void GlowStickyButtonWidget::ToggleState()
 {
-	GLOW_DEBUGSCOPE("GlowStickyButtonWidget::OnPressed");
-	
 	if (_behavior == toggleBehavior)
 	{
 		_state = !_state;
@@ -393,6 +390,16 @@ void GlowStickyButtonWidget::OnPressed(
 	{
 		_state = true;
 	}
+}
+
+
+void GlowStickyButtonWidget::OnHit(
+	Glow::MouseButton mouseButton,
+	Glow::Modifiers modifiers)
+{
+	GLOW_DEBUGSCOPE("GlowStickyButtonWidget::OnHit");
+	
+	ToggleState();
 	GlowStickyButtonMessage msg;
 	msg.widget = this;
 	msg.state = _state;

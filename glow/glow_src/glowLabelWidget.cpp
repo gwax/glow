@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 
 ===============================================================================
 */
@@ -191,11 +192,11 @@ void GlowLabelWidget::_RecalcText()
 }
 
 
-int GlowLabelWidget::OnAutoPack(
+GlowWidget::AutoPackError GlowLabelWidget::OnAutoPack(
 	int hSize,
 	int vSize,
-	int hOption,
-	int vOption,
+	AutoPackOptions hOption,
+	AutoPackOptions vOption,
 	int& leftMargin,
 	int& rightMargin,
 	int& topMargin,
@@ -285,11 +286,11 @@ void GlowLabelWidget::OnWidgetPaint()
 ===============================================================================
 */
 
-int GlowWidgetLabelWidget::OnAutoPack(
+GlowWidget::AutoPackError GlowWidgetLabelWidget::OnAutoPack(
 	int hSize,
 	int vSize,
-	int hOption,
-	int vOption,
+	AutoPackOptions hOption,
+	AutoPackOptions vOption,
 	int& leftMargin,
 	int& rightMargin,
 	int& topMargin,
@@ -356,10 +357,10 @@ int GlowWidgetLabelWidget::OnAutoPack(
 
 void GlowWidgetLabelHelper::InitLabel(
 	GlowWidget* main,
-	int spacing,
-	int position,
+	LabelPosition position,
 	int width,
 	int height,
+	int spacing,
 	const char* text,
 	GlowFont font,
 	GlowColor textColor,
@@ -380,7 +381,7 @@ void GlowWidgetLabelHelper::InitLabel(
 }
 
 
-int GlowWidgetLabelHelper::HelpAutoPack(
+GlowWidget::AutoPackError GlowWidgetLabelHelper::HelpAutoPack(
 	int& hSize,
 	int& vSize,
 	int& leftMargin,

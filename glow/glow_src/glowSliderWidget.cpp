@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -180,11 +181,11 @@ void GlowSliderWidget::Init(
 }
 
 
-int GlowSliderWidget::OnAutoPack(
+GlowWidget::AutoPackError GlowSliderWidget::OnAutoPack(
 	int hSize,
 	int vSize,
-	int hOption,
-	int vOption,
+	AutoPackOptions hOption,
+	AutoPackOptions vOption,
 	int& leftMargin,
 	int& rightMargin,
 	int& topMargin,
@@ -620,10 +621,10 @@ void GlowSliderWidget::OnWidgetPaint()
 
 
 void GlowSliderWidget::OnWidgetMouseDown(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("GlowSliderWidget::OnWidgetMouseDown");
 	
@@ -671,10 +672,10 @@ void GlowSliderWidget::OnWidgetMouseDown(
 
 
 void GlowSliderWidget::OnWidgetMouseUp(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("GlowSliderWidget::OnWidgetMouseUp");
 	
@@ -704,8 +705,8 @@ void GlowSliderWidget::OnWidgetMouseDrag(
 
 
 void GlowSliderWidget::OnDragged(
-	int mouseButton,
-	int modifiers)
+	Glow::MouseButton mouseButton,
+	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("GlowSliderWidget::OnDragged");
 	
@@ -720,8 +721,8 @@ void GlowSliderWidget::OnDragged(
 
 
 void GlowSliderWidget::OnReleased(
-	int mouseButton,
-	int modifiers)
+	Glow::MouseButton mouseButton,
+	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("GlowSliderWidget::OnReleased");
 	
@@ -879,11 +880,11 @@ void GlowLabeledSliderWidget::RepositionLabel()
 }
 
 
-int GlowLabeledSliderWidget::OnAutoPack(
+GlowWidget::AutoPackError GlowLabeledSliderWidget::OnAutoPack(
 	int hSize,
 	int vSize,
-	int hOption,
-	int vOption,
+	AutoPackOptions hOption,
+	AutoPackOptions vOption,
 	int& leftMargin,
 	int& rightMargin,
 	int& topMargin,
@@ -993,7 +994,7 @@ int GlowLabeledSliderWidget::OnAutoPack(
 		}
 	}
 	
-	int result = GlowSliderWidget::OnAutoPack(hSize, vSize, hOption,
+	AutoPackError result = GlowSliderWidget::OnAutoPack(hSize, vSize, hOption,
 		vOption, leftMargin, rightMargin, topMargin, bottomMargin);
 	if (result != noAutoPackError)
 	{
@@ -1129,7 +1130,7 @@ void GlowLabeledSliderWidget::RepositionMinmax()
 	{
 		// Horizontal slider
 		int topLimit, bottomLimit;
-		int vOption;
+		AutoPackOptions vOption;
 		if (GetOptions() & ticksOnTop)
 		{
 			topLimit = -_minmaxSize;
@@ -1143,7 +1144,7 @@ void GlowLabeledSliderWidget::RepositionMinmax()
 			vOption = topPos;
 		}
 		int minLeftLimit, minRightLimit, maxLeftLimit, maxRightLimit;
-		int minHOption, maxHOption;
+		AutoPackOptions minHOption, maxHOption;
 		if (GetOptions() & GlowSliderWidget::decreasing)
 		{
 			minLeftLimit = Width()-Height();
@@ -1175,7 +1176,7 @@ void GlowLabeledSliderWidget::RepositionMinmax()
 	{
 		// Vertical slider
 		int leftLimit, rightLimit;
-		int hOption;
+		AutoPackOptions hOption;
 		if (GetOptions() & ticksOnLeft)
 		{
 			leftLimit = -_minmaxSize;
@@ -1189,7 +1190,7 @@ void GlowLabeledSliderWidget::RepositionMinmax()
 			hOption = leftPos;
 		}
 		int minTopLimit, minBottomLimit, maxTopLimit, maxBottomLimit;
-		int minVOption, maxVOption;
+		AutoPackOptions minVOption, maxVOption;
 		if (GetOptions() & GlowSliderWidget::decreasing)
 		{
 			minTopLimit = Height()-Width();

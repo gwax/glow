@@ -67,218 +67,258 @@ All GLOW programs use <tt>Glow::Init()</tt> and <tt>Glow::MainLoop()</tt> to ini
 <blockquote>
 
 <p>
-<b>Event categories</b>
+<b>Event masks</b>
 <br>
-Tells a window which event types to report. Used during creation of a window or subwindow. These constants should be or'ed together.
+Tells a window which event types to report. Used during creation of a window or subwindow. These constants are defined as an enumeration of type <tt>Glow::EventMask</tt> and should be or'ed together.
 </p>
 
 <blockquote>
 
-<dl>
-<dt>
-<tt>static const int <b>noEvents</b></tt>
-<dd>
+<p>
+<tt>enum Glow::EventMask <b>noEvents</b></tt>
+</p>
+<blockquote>
 Report no events
-<dt>
-<tt>static const int <b>keyboardEvents</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>enum Glow::EventMask <b>keyboardEvents</b></tt>
+</p>
+<blockquote>
 Report keypress events
-<dt>
-<tt>static const int <b>mouseEvents</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>enum Glow::EventMask <b>mouseEvents</b></tt>
+</p>
+<blockquote>
 Report mouse button events
-<dt>
-<tt>static const int <b>dragEvents</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>enum Glow::EventMask <b>dragEvents</b></tt>
+</p>
+<blockquote>
 Report mouse motion while dragging events
-<dt>
-<tt>static const int <b>motionEvents</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>enum Glow::EventMask <b>motionEvents</b></tt>
+</p>
+<blockquote>
 Report mouse motion while button is up events
-<dt>
-<tt>static const int <b>visibilityEvents</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>enum Glow::EventMask <b>visibilityEvents</b></tt>
+</p>
+<blockquote>
 Report visible and invisible events
-<dt>
-<tt>static const int <b>focusEvents</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>enum Glow::EventMask <b>focusEvents</b></tt>
+</p>
+<blockquote>
 Report got focus and lost focus events
-<dt>
-<tt>static const int <b>menuEvents</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>enum Glow::EventMask <b>menuEvents</b></tt>
+</p>
+<blockquote>
 Report menu up and menu down events
-<dt>
-<tt>static const int <b>allEvents</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>enum Glow::EventMask <b>allEvents</b></tt>
+</p>
+<blockquote>
 Report all events
-</dl>
+</blockquote>
 
 </blockquote>
+
 
 <p>
 <b>Button ID</b>
 <br>
-Specifies which mouse button is affected. Used for various things such as attaching menus. Also passed back during mouse event callbacks.
+Specifies which mouse button is affected. Used for various things such as attaching menus. Also passed back during mouse event callbacks. Defined as an enumeration of type <tt>Glow::MouseButton</tt>.
 </p>
 
 <blockquote>
 
-<dl>
-<dt>
-<tt>static const int <b>leftButton</b></tt>
-<dd>
-Left mouse button. Synonym of <tt>GLUT_LEFT_BUTTON</tt>.
-<dt>
-<tt>static const int <b>middleButton</b></tt>
-<dd>
-Middle mouse button. Synonym of <tt>GLUT_MIDDLE_BUTTON</tt>.
-<dt>
-<tt>static const int <b>rightButton</b></tt>
-<dd>
-Right mouse button. Synonym of <tt>GLUT_RIGHT_BUTTON</tt>.
-</dl>
+<p>
+<tt>enum Glow::MouseButton <b>leftButton</b></tt>
+</p>
+<blockquote>
+Left mouse button. Corresponds to <tt>GLUT_LEFT_BUTTON</tt>.
+</blockquote>
+<p>
+<tt>enum Glow::MouseButton <b>middleButton</b></tt>
+</p>
+<blockquote>
+Middle mouse button. Corresponds to <tt>GLUT_MIDDLE_BUTTON</tt>.
+</blockquote>
+<p>
+<tt>enum Glow::MouseButton <b>rightButton</b></tt>
+</p>
+<blockquote>
+Right mouse button. Corresponds to <tt>GLUT_RIGHT_BUTTON</tt>.
+</blockquote>
 
 </blockquote>
 
 <p>
 <b>Buffer type</b>
 <br>
-Specifies the type of frame buffer requested. Used in constructing a window or subwindow. These values should be or'ed together.
+Specifies the type of frame buffer requested. Used in constructing a window or subwindow. These values should be or'ed together. Defined as an enumeration of type <tt>Glow::BufferType</tt>.
 </p>
 
 <blockquote>
 
-<dl>
-<dt>
-<tt>static const int <b>rgbBuffer</b></tt>
-<dd>
-RGB color buffer. Synonym of <tt>GLUT_RGB</tt>.
-<dt>
-<tt>static const int <b>alphaBuffer</b></tt>
-<dd>
-Alpha buffer. Synonym of <tt>GLUT_ALPHA</tt>.
-<dt>
-<tt>static const int <b>rgbaBuffer</b></tt>
-<dd>
-RGBA color buffer. Same as <tt>rgbBuffer | alphaBuffer</tt>. Note that this is different from <tt>GLUT_RGBA</tt>, which is the same as <tt>GLUT_RGB</tt>.
-<dt>
-<tt>static const int <b>stencilBuffer</b></tt>
-<dd>
-Stencil buffer. Synonym of <tt>GLUT_STENCIL</tt>.
-<dt>
-<tt>static const int <b>depthBuffer</b></tt>
-<dd>
-Depth (Z) buffer. Synonym of <tt>GLUT_DEPTH</tt>.
-<dt>
-<tt>static const int <b>accumBuffer</b></tt>
-<dd>
-Accumulation buffer. Synonym of <tt>GLUT_ACCUM</tt>.
-<dt>
-<tt>static const int <b>doubleBuffer</b></tt>
-<dd>
-Double buffer. Synonym of <tt>GLUT_DOUBLE</tt>.
-</dl>
+<p>
+<tt>enum Glow::BufferType <b>noBuffer</b></tt>
+</p>
+<blockquote>
+No buffers.
+</blockquote>
+<p>
+<tt>enum Glow::BufferType <b>rgbBuffer</b></tt>
+</p>
+<blockquote>
+RGB color buffer. Corresponds to <tt>GLUT_RGB</tt>.
+</blockquote>
+<p>
+<tt>enum Glow::BufferType <b>alphaBuffer</b></tt>
+</p>
+<blockquote>
+Alpha buffer. Corresponds to <tt>GLUT_ALPHA</tt>.
+</blockquote>
+<p>
+<tt>enum Glow::BufferType <b>rgbaBuffer</b></tt>
+</p>
+<blockquote>
+RGBA color buffer. Corresponds to <tt>rgbBuffer | alphaBuffer</tt>. Note that this is different from <tt>GLUT_RGBA</tt>, which is the same as <tt>GLUT_RGB</tt>.
+</blockquote>
+<p>
+<tt>enum Glow::BufferType <b>stencilBuffer</b></tt>
+</p>
+<blockquote>
+Stencil buffer. Corresponds to <tt>GLUT_STENCIL</tt>.
+</blockquote>
+<p>
+<tt>enum Glow::BufferType <b>depthBuffer</b></tt>
+</p>
+<blockquote>
+Depth (Z) buffer. Corresponds to <tt>GLUT_DEPTH</tt>.
+</blockquote>
+<p>
+<tt>enum Glow::BufferType <b>accumBuffer</b></tt>
+</p>
+<blockquote>
+Accumulation buffer. Corresponds to <tt>GLUT_ACCUM</tt>.
+</blockquote>
+<p>
+<tt>enum Glow::BufferType <b>doubleBuffer</b></tt>
+</p>
+<blockquote>
+Double buffer. Corresponds to <tt>GLUT_DOUBLE</tt>.
+</blockquote>
 
 </blockquote>
 
 <p>
 <b>Keyboard modifiers</b>
 <br>
-Describes modifier keys associated with an event. Passed back during an event callback.
+Describes modifier keys associated with an event. Passed back during an event callback. Defined as an enumeration of type <tt>Glow::Modifiers</tt>.
 </p>
 
 <blockquote>
 
-<dl>
-<dt>
-<tt>static const int <b>shiftModifier</b></tt>
-<dd>
-Shift key down. Synonym of <tt>GLUT_ACTIVE_SHIFT</tt>.
-<dt>
-<tt>static const int <b>ctrlModifier</b></tt>
-<dd>
-Ctrl key down. Synonym of <tt>GLUT_ACTIVE_CTRL</tt>.
-<dt>
-<tt>static const int <b>altModifier</b></tt>
-<dd>
-Alt key down. Synonym of <tt>GLUT_ACTIVE_ALT</tt>.
-</dl>
+<p>
+<tt>enum Glow::Modifiers <b>noModifier</b></tt>
+</p>
+<blockquote>
+No modifiers down.
+</blockquote>
+<tt>enum Glow::Modifiers <b>shiftModifier</b></tt>
+</p>
+<blockquote>
+Shift key down. Corresponds to <tt>GLUT_ACTIVE_SHIFT</tt>.
+</blockquote>
+<p>
+<tt>enum Glow::Modifiers <b>ctrlModifier</b></tt>
+</p>
+<blockquote>
+Ctrl key down. Corresponds to <tt>GLUT_ACTIVE_CTRL</tt>.
+</blockquote>
+<p>
+<tt>enum Glow::Modifiers <b>altModifier</b></tt>
+</p>
+<blockquote>
+Alt key down. Corresponds to <tt>GLUT_ACTIVE_ALT</tt>.
+</blockquote>
 
 </blockquote>
 
 
 <p>
-<b>ASCII keyboard constants</b>
+<b>Keyboard constants</b>
 <br>
-Some common ASCII key constants.
+Specifies the key pressed in a keyboard event. Keys with associated ASCII codes are represented by their corresponding ASCII code. Constants for keys without an associated ASCII code, as well as a few common but not well-known ASCII key codes, are also provided below. Defined as an enumeration of type <tt>Glow::KeyCode</tt>. The special constant <tt>specialKeyOffset</tt> serves to offset the non-ASCII constants from their corresponding GLUT constant. e.g. <tt>f1key == GLUT_KEY_F1 + specialKeyConstant</tt>.
 </p>
 
 <blockquote>
-
-<tt>static const int <b>backspaceKey</b></tt>
-<br>
-<tt>static const int <b>tabKey</b></tt>
-<br>
-<tt>static const int <b>enterKey</b></tt>
-<br>
-<tt>static const int <b>escapeKey</b></tt>
-<br>
-<tt>static const int <b>deleteKey</b></tt>
-
-</blockquote>
-
 
 <p>
-<b>Special keyboard constants</b>
+<tt>enum KeyCode <b>backspaceKey</b></tt>
 <br>
-Special codes for keys that do not have an associated ASCII code. Each constant is equivalent to the corresponding GLUT constant, added to the constant <tt>specialKeyOffset</tt>.
+<tt>enum Glow::KeyCode <b>tabKey</b></tt>
+<br>
+<tt>enum Glow::KeyCode <b>enterKey</b></tt>
+<br>
+<tt>enum Glow::KeyCode <b>escapeKey</b></tt>
+<br>
+<tt>enum Glow::KeyCode <b>deleteKey</b></tt>
 </p>
-
-<blockquote>
-
-<tt>static const int <b>specialKeyOffset</b></tt>
+<p>
+<tt>enum Glow::KeyCode <b>specialKeyOffset</b></tt>
 <br>
-<tt>static const int <b>f1Key</b></tt>
+<tt>enum Glow::KeyCode <b>f1Key</b></tt>
 <br>
-<tt>static const int <b>f2Key</b></tt>
+<tt>enum Glow::KeyCode <b>f2Key</b></tt>
 <br>
-<tt>static const int <b>f3Key</b></tt>
+<tt>enum Glow::KeyCode <b>f3Key</b></tt>
 <br>
-<tt>static const int <b>f4Key</b></tt>
+<tt>enum Glow::KeyCode <b>f4Key</b></tt>
 <br>
-<tt>static const int <b>f5Key</b></tt>
+<tt>enum Glow::KeyCode <b>f5Key</b></tt>
 <br>
-<tt>static const int <b>f6Key</b></tt>
+<tt>enum Glow::KeyCode <b>f6Key</b></tt>
 <br>
-<tt>static const int <b>f7Key</b></tt>
+<tt>enum Glow::KeyCode <b>f7Key</b></tt>
 <br>
-<tt>static const int <b>f8Key</b></tt>
+<tt>enum Glow::KeyCode <b>f8Key</b></tt>
 <br>
-<tt>static const int <b>f9Key</b></tt>
+<tt>enum Glow::KeyCode <b>f9Key</b></tt>
 <br>
-<tt>static const int <b>f10Key</b></tt>
+<tt>enum Glow::KeyCode <b>f10Key</b></tt>
 <br>
-<tt>static const int <b>f11Key</b></tt>
+<tt>enum Glow::KeyCode <b>f11Key</b></tt>
 <br>
-<tt>static const int <b>f12Key</b></tt>
+<tt>enum Glow::KeyCode <b>f12Key</b></tt>
 <br>
-<tt>static const int <b>leftArrowKey</b></tt>
+<tt>enum Glow::KeyCode <b>leftArrowKey</b></tt>
 <br>
-<tt>static const int <b>upArrowKey</b></tt>
+<tt>enum Glow::KeyCode <b>upArrowKey</b></tt>
 <br>
-<tt>static const int <b>rightArrowKey</b></tt>
+<tt>enum Glow::KeyCode <b>rightArrowKey</b></tt>
 <br>
-<tt>static const int <b>downArrowKey</b></tt>
+<tt>enum Glow::KeyCode <b>downArrowKey</b></tt>
 <br>
-<tt>static const int <b>pageUpKey</b></tt>
+<tt>enum Glow::KeyCode <b>pageUpKey</b></tt>
 <br>
-<tt>static const int <b>pageDownKey</b></tt>
+<tt>enum Glow::KeyCode <b>pageDownKey</b></tt>
 <br>
-<tt>static const int <b>homeKey</b></tt>
+<tt>enum Glow::KeyCode <b>homeKey</b></tt>
 <br>
-<tt>static const int <b>endKey</b></tt>
+<tt>enum Glow::KeyCode <b>endKey</b></tt>
 <br>
-<tt>static const int <b>insertKey</b></tt>
+<tt>enum Glow::KeyCode <b>insertKey</b></tt>
+</p>
 
 </blockquote>
 
@@ -318,7 +358,7 @@ Starts the GLOW main loop. Should be called once after all program initializatio
 <tt>static double <b>Version</b>(void)</tt>
 </p>
 <blockquote>
-Returns the version of GLOW currently in use. Presently, this is 0.903.
+Returns the version of GLOW currently in use. This value is also defined by the constant GLOW_VERSION.
 </blockquote>
 
 </blockquote>
@@ -404,6 +444,87 @@ Unregisters the timer task specified by the given unique ID. If the task has not
 </p>
 <blockquote>
 Returns true if and only if the given id refers to a timer task that has been registered and has not yet been executed.
+</blockquote>
+
+</blockquote>
+
+
+<p>
+<b>Managing event filters</b>
+<br>
+Event filters can be set up to pre-filter events before they are delivered. They can modify the parameters of the event, or even handle the event themselves and consume the event so it is not passed on to the receiving object.
+</p>
+
+<blockquote>
+
+<p>
+<tt>static void <b>RegisterFilter</b>(<a href="GlowKeyboardFilter.html">GlowKeyboardFilter</a>* filter)</tt>
+</p>
+<blockquote>
+Adds the given keyboard event filter to the list of filters run for keyboard events. Has no effect if the filter is already registered.
+</blockquote>
+
+<p>
+<tt>static void <b>RegisterFilter</b>(<a href="GlowMouseFilter.html">GlowMouseFilter</a>* filter)</tt>
+</p>
+<blockquote>
+Adds the given mouse event filter to the list of filters run for mouse up and mouse down events. Has no effect if the filter is already registered.
+</blockquote>
+
+<p>
+<tt>static void <b>UnregisterFilter</b>(<a href="GlowKeyboardFilter.html">GlowKeyboardFilter</a>* filter)</tt>
+</p>
+<blockquote>
+Removes the given keyboard event filter from the list of filters run for keyboard events. Has no effect if the filter is not registered.
+</blockquote>
+
+<p>
+<tt>static void <b>UnregisterFilter</b>(<a href="GlowMouseFilter.html">GlowMouseFilter</a>* filter)</tt>
+</p>
+<blockquote>
+Removes the given mouse event filter from the list of filters run for mouse up and mouse down events. Has no effect if the filter is not registered.
+</blockquote>
+
+<p>
+<tt>static void <b>UnregisterAllKeyboardFilters</b>(void)</tt>
+</p>
+<blockquote>
+Unregisters all keyboard event filters, but doesn't modify the mouse event filter list.
+</blockquote>
+
+<p>
+<tt>static void <b>UnregisterAllMouseFilters</b>(void)</tt>
+</p>
+<blockquote>
+Unregisters all mouse event filters, but doesn't modify the keyboard event filter list.
+</blockquote>
+
+<p>
+<tt>static unsigned int <b>NumRegisteredKeyboardFilters</b>(void)</tt>
+</p>
+<blockquote>
+Returns the number of registered keyboard event filters.
+</blockquote>
+
+<p>
+<tt>static unsigned int <b>NumRegisteredMouseFilters</b>(void)</tt>
+</p>
+<blockquote>
+Returns the number of registered mouse event filters.
+</blockquote>
+
+<p>
+<tt>static bool <b>IsFilterRegistered</b>(<a href="GlowKeyboardFilter.html">GlowKeyboardFilter</a>* filter)</tt>
+</p>
+<blockquote>
+Reports whether the given keyboard event filter is registered.
+</blockquote>
+
+<p>
+<tt>static bool <b>IsFilterRegistered</b>(<a href="GlowMouseFilter.html">GlowMouseFilter</a>* filter)</tt>
+</p>
+<blockquote>
+Reports whether the given mouse event filter is registered.
 </blockquote>
 
 </blockquote>
@@ -505,21 +626,21 @@ These advanced routines allow you to simulate events in <tt><a href="GlowSubwind
 <blockquote>
 
 <p>
-<tt>static void <b>DeliverKeyboardEvt</b>(<a href="GlowSubwindow.html">GlowSubwindow</a>* receiver, int key, int modifiers, int x, int y)</tt>
+<tt>static void <b>DeliverKeyboardEvt</b>(<a href="GlowSubwindow.html">GlowSubwindow</a>* receiver, Glow::KeyCode key, int x, int y, Glow::Modifiers modifiers)</tt>
 </p>
 <blockquote>
 Delivers a keypress event to the specified subwindow.
 </blockquote>
 
 <p>
-<tt>static void <b>DeliverMouseDownEvt</b>(<a href="GlowSubwindow.html">GlowSubwindow</a>* receiver, int button, int x, int y, int modifiers)</tt>
+<tt>static void <b>DeliverMouseDownEvt</b>(<a href="GlowSubwindow.html">GlowSubwindow</a>* receiver, Glow::MouseButton button, int x, int y, Glow::Modifiers modifiers)</tt>
 </p>
 <blockquote>
 Delivers a mouse button down event to the specified subwindow.
 </blockquote>
 
 <p>
-<tt>static void <b>DeliverMouseUpEvt</b>(<a href="GlowSubwindow.html">GlowSubwindow</a>* receiver, int button, int x, int y, int modifiers)</tt>
+<tt>static void <b>DeliverMouseUpEvt</b>(<a href="GlowSubwindow.html">GlowSubwindow</a>* receiver, Glow::MouseButton button, int x, int y, Glow::Modifiers modifiers)</tt>
 </p>
 <blockquote>
 Delivers a mouse button up event to the specified subwindow.
@@ -598,7 +719,7 @@ Causes the front and back buffers for the current drawing context to be swapped.
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 

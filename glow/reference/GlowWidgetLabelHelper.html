@@ -74,28 +74,36 @@ These constants specify the positioning of the label.
 
 <blockquote>
 
-<dl>
-<dt>
-<tt>static const int <b>defaultLabelPosition</b></tt>
-<dd>
+<p>
+<tt>enum GlowWidgetLabelHelper::LabelPosition <b>defaultLabelPosition</b></tt>
+</p>
+<blockquote>
 Default position (equal to <tt>leftLabelPosition</tt>)
-<dt>
-<tt>static const int <b>leftLabelPosition</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>enum GlowWidgetLabelHelper::LabelPosition <b>leftLabelPosition</b></tt>
+</p>
+<blockquote>
 Position to the left of the widget.
-<dt>
-<tt>static const int <b>rightLabelPosition</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>enum GlowWidgetLabelHelper::LabelPosition <b>rightLabelPosition</b></tt>
+</p>
+<blockquote>
 Position to the right of the widget.
-<dt>
-<tt>static const int <b>topLabelPosition</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>enum GlowWidgetLabelHelper::LabelPosition <b>topLabelPosition</b></tt>
+</p>
+<blockquote>
 Position over the widget.
-<dt>
-<tt>static const int <b>bottomLabelPosition</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt>enum GlowWidgetLabelHelper::LabelPosition <b>bottomLabelPosition</b></tt>
+</p>
+<blockquote>
 Position under the widget.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -133,14 +141,14 @@ Sets the spacing between the label and the widget.
 </blockquote>
 
 <p>
-<tt>int <b>GetLabelPosition</b>(void) const</tt>
+<tt>GlowWidgetLabelHelper::LabelPosition <b>GetLabelPosition</b>(void) const</tt>
 </p>
 <blockquote>
 Returns the position code for the label.
 </blockquote>
 
 <p>
-<tt>void <b>SetLabelPosition</b>(int position)</tt>
+<tt>void <b>SetLabelPosition</b>(GlowWidgetLabelHelper::LabelPosition position)</tt>
 </p>
 <blockquote>
 Sets the position code for the label.
@@ -250,7 +258,7 @@ Sets the color of the label's text when disabled.
 <blockquote>
 
 <p>
-<tt>void <b>Init</b>(<a href="GlowWidget.html">GlowWidget</a>* main, int spacing, int position, int width, int height, const char* text, <a href="GlowFont.html">GlowFont</a> font = <a href="GlowFont.html">GlowFont</a>::helvetica12, <a href="GlowColor.html">GlowColor</a> textColor = <a href="GlowLabelParams.html">GlowLabelParams</a>::defaults.textColor, <a href="GlowColor.html">GlowColor</a> disableTextColor = <a href="GlowLabelParams.html">GlowLabelParams</a>::defaults.disableTextColor)</tt>
+<tt>void <b>InitLabel</b>(<a href="GlowWidget.html">GlowWidget</a>* main, GlowWidgetLabelHelper::LabelPosition position, int width, int height, int spacing, const char* text, <a href="GlowFont.html">GlowFont</a> font = <a href="GlowFont.html">GlowFont</a>::helvetica12, <a href="GlowColor.html">GlowColor</a> textColor = <a href="GlowLabelParams.html">GlowLabelParams</a>::defaults.textColor, <a href="GlowColor.html">GlowColor</a> disableTextColor = <a href="GlowLabelParams.html">GlowLabelParams</a>::defaults.disableTextColor)</tt>
 </p>
 <blockquote>
 Initializes a <tt>GlowWidgetLabelHelper</tt> with options specified by the given params. <tt>main</tt> specifies the main widget. <tt>spacing</tt> gives the space in pixels between the label and the widget. <tt>position</tt> gives the position of the label relative to the widget. <tt>width</tt> and <tt>height</tt> give a maximum size for the label. <tt>font</tt> gives the font to use for the label. <tt>textColor</tt> and <tt>disableTextColor</tt> give the colors for the label. This method must be called, normally from a widget's constructor or its <tt>Init()</tt> method, before the label may be accessed.
@@ -268,7 +276,7 @@ These methods are provided to assist widgets in managing their labels.
 <blockquote>
 
 <p>
-<tt>int <b>HelpAutoPack</b>(int& hSize, int& vSize, int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
+<tt><a href="GlowWidget.html">GlowWidget</a>::AutoPackError <b>HelpAutoPack</b>(int& hSize, int& vSize, int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
 </p>
 <blockquote>
 Modifies the given reference parameters to reflect the label. It reduces the sizes by the label's size and spacing, and sets the margins appropriately.
@@ -308,7 +316,7 @@ Returns a pointer to the actual widget implementing the label. A subclass normal
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 

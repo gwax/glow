@@ -72,60 +72,84 @@ GLOW programs that use view manipulators will need to use <tt>GlowViewManipulato
 
 <blockquote>
 
-<dl>
-<dt>
+<p>
 <tt><a href="GlowTransformData.html">GlowTransformData</a>* <b>connectTo</b></tt>
-<dd>
+</p>
+<blockquote>
 Specifies the transform data to use, or use 0 to create a new transform data object. Initial default is 0.
-<dt>
+</blockquote>
+<p>
 <tt>Vec3f <b>initialTranslation</b></tt>
-<dd>
+</p>
+<blockquote>
 Initial value for the translation component of the transform to create. Ignored if a connectTo is specified. Initial default is the identity transform.
-<dt>
+</blockquote>
+<p>
 <tt>Quatf <b>initialRotation</b></tt>
-<dd>
+</p>
+<blockquote>
 Initial value for the rotation component of the transform to create. Ignored if a connectTo is specified. Initial default is the identity transform.
-<dt>
+</blockquote>
+<p>
 <tt>GLfloat <b>initialScale</b></tt>
-<dd>
+</p>
+<blockquote>
 Initial value for the scale component of the transform to create. Ignored if a connectTo is specified. Initial default is the identity transform.
-<dt>
+</blockquote>
+<p>
 <tt>GLfloat <b>scaleThrottle</b></tt>
-<dd>
+</p>
+<blockquote>
 Sensitivity of scaling control. Initial default is 1.0.
-<dt>
+</blockquote>
+<p>
 <tt>GLfloat <b>translationThrottle</b></tt>
-<dd>
+</p>
+<blockquote>
 Sensitivity of translation control. Initial default is 1.0.
-<dt>
+</blockquote>
+<p>
 <tt>GLfloat <b>rotationThrottle</b></tt>
-<dd>
+</p>
+<blockquote>
 Sensitivity of rotation control. Initial default is 1.0.
-<dt>
+</blockquote>
+<p>
 <tt>std::vector&lt;Vec3f&gt; <b>axisConstraints</b></tt>
-<dd>
+</p>
+<blockquote>
 Axes to use when manipulating in constrained mode. Initial default is the empty vector.
-<dt>
+</blockquote>
+<p>
 <tt>bool <b>axisConstraintsActive</b></tt>
-<dd>
+</p>
+<blockquote>
 Running in constrained mode. Initial default is false.
-<dt>
+</blockquote>
+<p>
 <tt>bool <b>spinnable</b></tt>
-<dd>
+</p>
+<blockquote>
 Allowing spinning. Initial default is false.
-<dt>
+</blockquote>
+<p>
 <tt>bool <b>draw</b></tt>
-<dd>
+</p>
+<blockquote>
 Drawing arcs during manipulation. Initial default is false.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>spinDataLength</b></tt>
-<dd>
+</p>
+<blockquote>
 Amount of time to record movement for spinning, in milliseconds. Initial default is 250.
-<dt>
+</blockquote>
+<p>
 <tt><a href="GlowColor.html">GlowColor</a> <b>color</b></tt>
-<dd>
+</p>
+<blockquote>
 Color to use when drawing arcs.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -146,12 +170,12 @@ Color to use when drawing arcs.
 
 <blockquote>
 
-<dl>
-<dt>
+<p>
 <tt>static GlowViewManipulatorParams <b>defaults</b></tt>
-<dd>
+</p>
+<blockquote>
 Default parameters. These are copied every time a new GlowViewManipulatorParams is constructed.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -205,7 +229,7 @@ Constructs a new parameter block, copying <tt>defaults</tt>
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 

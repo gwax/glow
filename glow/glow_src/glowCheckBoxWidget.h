@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -69,70 +70,9 @@ GLOW_NAMESPACE_BEGIN
 
 
 class GlowCheckBoxWidget;
-
-
-/*
-===============================================================================
-	CLASS GlowCheckBoxMessage
-	
-	Action for checkbox toggle
-===============================================================================
-*/
-
-class GlowCheckBoxMessage
-{
-	public:
-	
-		GlowCheckBoxWidget* widget;
-		int state;
-		int mouseButton;
-		int modifiers;
-};
-
-
+class GlowCheckBoxMessage;
+class GlowCheckBoxParams;
 typedef TReceiver<const GlowCheckBoxMessage&> GlowCheckBoxReceiver;
-
-
-/*
-===============================================================================
-	STRUCT GlowCheckBoxParams
-	
-	Check box params
-===============================================================================
-*/
-
-class GlowCheckBoxParams :
-	public GlowWidgetParams
-{
-	public:
-	
-		const char* text;
-		GlowFont font;
-		int state;
-		int behavior;
-		int spacing;
-		GlowCheckBoxReceiver* receiver;
-		GlowColor boxColor;
-		GlowColor textColor;
-		GlowColor checkColor;
-		GlowColor hiliteBoxColor;
-		GlowColor hiliteTextColor;
-		GlowColor hiliteCheckColor;
-		GlowColor disableBoxColor;
-		GlowColor disableTextColor;
-		GlowColor disableCheckColor;
-		GlowColor disableOutlineColor;
-		GlowColor lightBevelColor;
-		GlowColor darkBevelColor;
-		
-		static GlowCheckBoxParams defaults;
-		
-		GlowCheckBoxParams();
-	
-	protected:
-	
-		GlowCheckBoxParams(bool);
-};
 
 
 /*
@@ -153,14 +93,16 @@ class GlowCheckBoxWidget :
 	public:
 	
 		// States
-		enum {
+		enum State
+		{
 			off = 0,
 			on = 1,
 			half = 2
 		};
 		
 		// Behaviors
-		enum {
+		enum Behavior
+		{
 			defaultBehavior = 0,
 			onFollowsOff = 0,
 			halfFollowsOff = 1,
@@ -202,13 +144,18 @@ class GlowCheckBoxWidget :
 		inline void SetSpacing(
 			int spacing);
 		
-		inline int GetBehavior() const;
+		inline Behavior GetBehavior() const;
 		inline void SetBehavior(
-			int behavior = defaultBehavior);
+			Behavior behavior = defaultBehavior);
 		
-		inline int GetState() const;
+		inline State GetState() const;
 		inline void SetState(
-			int state);
+			State state);
+		void ToggleState();
+		
+		inline void Hit(
+			Glow::MouseButton mouseButton = Glow::leftButton,
+			Glow::Modifiers modifiers = Glow::noModifier);
 		
 		void CropWidth();
 		
@@ -271,19 +218,19 @@ class GlowCheckBoxWidget :
 	
 	protected:
 	
-		virtual int OnAutoPack(
+		virtual AutoPackError OnAutoPack(
 			int hSize,
 			int vSize,
-			int hOption,
-			int vOption,
+			AutoPackOptions hOption,
+			AutoPackOptions vOption,
 			int& leftMargin,
 			int& rightMargin,
 			int& topMargin,
 			int& bottomMargin);
 		
-		virtual void OnToggled(
-			int mouseButton,
-			int modifiers);
+		virtual void OnHit(
+			Glow::MouseButton mouseButton,
+			Glow::Modifiers modifiers);
 	
 	
 	//-------------------------------------------------------------------------
@@ -292,14 +239,14 @@ class GlowCheckBoxWidget :
 	
 	private:
 	
-		int _state;
+		State _state;
 		char* _label;
 		GlowFont _font;
-		int _behavior;
+		Behavior _behavior;
 		bool _down;
 		bool _inside;
-		int _button;
-		int _modifiers;
+		Glow::MouseButton _button;
+		Glow::Modifiers _modifiers;
 		int _labelWidth;
 		int _spacing;
 		TSender<const GlowCheckBoxMessage&> _sender;
@@ -322,18 +269,83 @@ class GlowCheckBoxWidget :
 		virtual void OnWidgetPaint();
 		
 		virtual void OnWidgetMouseDown(
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnWidgetMouseUp(
-			int button,
+			Glow::MouseButton button,
 			int x,
 			int y,
-			int modifiers);
+			Glow::Modifiers modifiers);
 		virtual void OnWidgetMouseDrag(
 			int x,
 			int y);
+};
+
+GLOW_INTERNAL_SETUPENUMBITFIELD(GlowCheckBoxWidget::Behavior)
+
+
+/*
+===============================================================================
+	CLASS GlowCheckBoxMessage
+	
+	Action for checkbox toggle
+===============================================================================
+*/
+
+class GlowCheckBoxMessage
+{
+	public:
+	
+		GlowCheckBoxWidget* widget;
+		GlowCheckBoxWidget::State state;
+		Glow::MouseButton mouseButton;
+		Glow::Modifiers modifiers;
+};
+
+
+
+
+/*
+===============================================================================
+	STRUCT GlowCheckBoxParams
+	
+	Check box params
+===============================================================================
+*/
+
+class GlowCheckBoxParams :
+	public GlowWidgetParams
+{
+	public:
+	
+		const char* text;
+		GlowFont font;
+		GlowCheckBoxWidget::State state;
+		GlowCheckBoxWidget::Behavior behavior;
+		int spacing;
+		GlowCheckBoxReceiver* receiver;
+		GlowColor boxColor;
+		GlowColor textColor;
+		GlowColor checkColor;
+		GlowColor hiliteBoxColor;
+		GlowColor hiliteTextColor;
+		GlowColor hiliteCheckColor;
+		GlowColor disableBoxColor;
+		GlowColor disableTextColor;
+		GlowColor disableCheckColor;
+		GlowColor disableOutlineColor;
+		GlowColor lightBevelColor;
+		GlowColor darkBevelColor;
+		
+		static GlowCheckBoxParams defaults;
+		
+		GlowCheckBoxParams();
+	
+	protected:
+	
+		GlowCheckBoxParams(bool);
 };
 
 

@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -501,10 +502,10 @@ void GlowTextFieldWidget::OnLostKeyboardFocus()
 
 
 void GlowTextFieldWidget::OnWidgetMouseDown(
-	int which,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("GlowTextFieldWidget::OnWidgetMouseDown");
 	
@@ -530,10 +531,10 @@ void GlowTextFieldWidget::OnWidgetMouseDown(
 
 
 void GlowTextFieldWidget::OnWidgetMouseUp(
-	int which,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("GlowTextFieldWidget::OnWidgetMouseUp");
 	
@@ -560,10 +561,10 @@ void GlowTextFieldWidget::OnWidgetMouseDrag(
 
 
 void GlowTextFieldWidget::OnWidgetKeyboard(
-	int key,
-	int modifiers,
+	Glow::KeyCode key,
 	int x,
-	int y)
+	int y,
+	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("GlowTextFieldWidget::OnWidgetKeyboard");
 	
@@ -634,11 +635,11 @@ void GlowTextFieldWidget::OnWidgetKeyboard(
 }
 
 
-int GlowTextFieldWidget::OnAutoPack(
+GlowWidget::AutoPackError GlowTextFieldWidget::OnAutoPack(
 	int hSize,
 	int vSize,
-	int hOption,
-	int vOption,
+	AutoPackOptions hOption,
+	AutoPackOptions vOption,
 	int& leftMargin,
 	int& rightMargin,
 	int& topMargin,
@@ -731,10 +732,10 @@ void GlowHiddenTextFieldWidget::SetHideCharacter(
 
 
 void GlowHiddenTextFieldWidget::OnWidgetKeyboard(
-	int key,
-	int modifiers,
+	Glow::KeyCode key,
 	int x,
-	int y)
+	int y,
+	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("GlowHiddenTextFieldWidget::OnWidgetKeyboard");
 	
@@ -742,11 +743,11 @@ void GlowHiddenTextFieldWidget::OnWidgetKeyboard(
 	{
 		_hiddenData.replace(_data.SelectionStart(),
 			_data.SelectionEnd()-_data.SelectionStart(), 1, (unsigned char)key);
-		GlowTextFieldWidget::OnWidgetKeyboard(_hideCharacter, modifiers, x, y);
+		GlowTextFieldWidget::OnWidgetKeyboard(Glow::KeyCode(_hideCharacter), x, y, modifiers);
 	}
 	else
 	{
-		GlowTextFieldWidget::OnWidgetKeyboard(key, modifiers, x, y);
+		GlowTextFieldWidget::OnWidgetKeyboard(key, x, y, modifiers);
 	}
 }
 
@@ -765,17 +766,17 @@ void GlowLabeledTextFieldWidget::Init(
 	GLOW_DEBUGSCOPE("GlowLabeledTextFieldWidget::Init");
 	
 	GlowTextFieldWidget::Init(root, parent, params);
-	InitLabel(this, params.labelSpacing, params.labelPosition,
-		params.labelWidth, params.labelHeight, params.labelText,
+	InitLabel(this, params.labelPosition, params.labelWidth,
+		params.labelHeight, params.labelSpacing, params.labelText,
 		params.labelFont, params.labelColor, params.disableLabelColor);
 }
 
 
-int GlowLabeledTextFieldWidget::OnAutoPack(
+GlowWidget::AutoPackError GlowLabeledTextFieldWidget::OnAutoPack(
 	int hSize,
 	int vSize,
-	int hOption,
-	int vOption,
+	AutoPackOptions hOption,
+	AutoPackOptions vOption,
 	int& leftMargin,
 	int& rightMargin,
 	int& topMargin,
@@ -784,7 +785,7 @@ int GlowLabeledTextFieldWidget::OnAutoPack(
 	GLOW_DEBUGSCOPE("GlowLabeledTextFieldWidget::OnAutoPack");
 	
 	// Use helper
-	int result = HelpAutoPack(hSize, vSize, leftMargin, rightMargin,
+	AutoPackError result = HelpAutoPack(hSize, vSize, leftMargin, rightMargin,
 		topMargin, bottomMargin);
 	if (result != noAutoPackError)
 	{
@@ -818,17 +819,17 @@ void GlowLabeledHiddenTextFieldWidget::Init(
 	GLOW_DEBUGSCOPE("GlowLabeledHiddenTextFieldWidget::Init");
 	
 	GlowHiddenTextFieldWidget::Init(root, parent, params, hideCharacter);
-	InitLabel(this, params.labelSpacing, params.labelPosition,
-		params.labelWidth, params.labelHeight, params.labelText,
+	InitLabel(this, params.labelPosition, params.labelWidth,
+		params.labelHeight, params.labelSpacing, params.labelText,
 		params.labelFont, params.labelColor, params.disableLabelColor);
 }
 
 
-int GlowLabeledHiddenTextFieldWidget::OnAutoPack(
+GlowWidget::AutoPackError GlowLabeledHiddenTextFieldWidget::OnAutoPack(
 	int hSize,
 	int vSize,
-	int hOption,
-	int vOption,
+	AutoPackOptions hOption,
+	AutoPackOptions vOption,
 	int& leftMargin,
 	int& rightMargin,
 	int& topMargin,
@@ -837,7 +838,7 @@ int GlowLabeledHiddenTextFieldWidget::OnAutoPack(
 	GLOW_DEBUGSCOPE("GlowLabeledHiddenTextFieldWidget::OnAutoPack");
 	
 	// Use helper
-	int result = HelpAutoPack(hSize, vSize, leftMargin, rightMargin,
+	AutoPackError result = HelpAutoPack(hSize, vSize, leftMargin, rightMargin,
 		topMargin, bottomMargin);
 	if (result != noAutoPackError)
 	{

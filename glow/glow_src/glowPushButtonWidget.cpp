@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -155,11 +156,11 @@ void GlowPushButtonWidget::SetText(
 }
 
 
-int GlowPushButtonWidget::OnAutoPack(
+GlowWidget::AutoPackError GlowPushButtonWidget::OnAutoPack(
 	int hSize,
 	int vSize,
-	int hOption,
-	int vOption,
+	AutoPackOptions hOption,
+	AutoPackOptions vOption,
 	int& leftMargin,
 	int& rightMargin,
 	int& topMargin,
@@ -301,10 +302,10 @@ void GlowPushButtonWidget::OnWidgetPaint()
 
 
 void GlowPushButtonWidget::OnWidgetMouseDown(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("GlowPushButtonWidget::OnWidgetMouseDown");
 	
@@ -317,10 +318,10 @@ void GlowPushButtonWidget::OnWidgetMouseDown(
 
 
 void GlowPushButtonWidget::OnWidgetMouseUp(
-	int button,
+	Glow::MouseButton button,
 	int x,
 	int y,
-	int modifiers)
+	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("GlowPushButtonWidget::OnWidgetMouseUp");
 	
@@ -330,7 +331,7 @@ void GlowPushButtonWidget::OnWidgetMouseUp(
 		Refresh();
 		if (_inside)
 		{
-			OnPressed(_button, _modifiers);
+			OnHit(_button, _modifiers);
 		}
 	}
 }
@@ -351,11 +352,11 @@ void GlowPushButtonWidget::OnWidgetMouseDrag(
 }
 
 
-void GlowPushButtonWidget::OnPressed(
-	int mouseButton,
-	int modifiers)
+void GlowPushButtonWidget::OnHit(
+	Glow::MouseButton mouseButton,
+	Glow::Modifiers modifiers)
 {
-	GLOW_DEBUGSCOPE("GlowPushButtonWidget::OnPressed");
+	GLOW_DEBUGSCOPE("GlowPushButtonWidget::OnHit");
 	
 	GlowPushButtonMessage msg;
 	msg.widget = this;
@@ -371,14 +372,35 @@ void GlowPushButtonWidget::OnPressed(
 ===============================================================================
 */
 
-void GlowDismissPushButtonWidget::OnPressed(
-	int button,
-	int modifiers)
+void GlowDismissPushButtonWidget::OnHit(
+	Glow::MouseButton button,
+	Glow::Modifiers modifiers)
 {
-	GLOW_DEBUGSCOPE("GlowDismissPushButtonWidget::OnPressed");
+	GLOW_DEBUGSCOPE("GlowDismissPushButtonWidget::OnHit");
 	
-	GlowPushButtonWidget::OnPressed(button, modifiers);
-	delete _todismiss;
+	GlowPushButtonWidget::OnHit(button, modifiers);
+	_todismiss->Close();
+}
+
+
+/*
+===============================================================================
+	Methods of GlowWidgetMapToPushButtonFilter
+===============================================================================
+*/
+
+bool GlowWidgetMapToPushButtonFilter::OnFilter(
+	GlowWidgetKeyboardData& data)
+{
+	GLOW_DEBUGSCOPE("GlowWidgetMapToPushButtonFilter::OnFilter");
+	
+	if (_widget != 0 && _keyCode == data.key &&
+		(_modifiers & data.modifiers) == _modifiers)
+	{
+		_widget->Hit();
+		return false;
+	}
+	return true;
 }
 
 

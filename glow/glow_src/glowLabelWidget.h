@@ -35,11 +35,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.95  (27 March 2000)
+		The GLOW Toolkit -- version 0.9.6  (10 April 2000)
 	
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
+		10 April 2000 -- DA -- Version 0.9.6 update
 	
 ===============================================================================
 */
@@ -176,11 +177,11 @@ class GlowLabelWidget :
 	
 	protected:
 	
-		virtual int OnAutoPack(
+		virtual AutoPackError OnAutoPack(
 			int hSize,
 			int vSize,
-			int hOption,
-			int vOption,
+			AutoPackOptions hOption,
+			AutoPackOptions vOption,
 			int& leftMargin,
 			int& rightMargin,
 			int& topMargin,
@@ -255,11 +256,11 @@ class GlowWidgetLabelWidget :
 	
 	protected:
 	
-		virtual int OnAutoPack(
+		virtual AutoPackError OnAutoPack(
 			int hSize,
 			int vSize,
-			int hOption,
-			int vOption,
+			AutoPackOptions hOption,
+			AutoPackOptions vOption,
 			int& leftMargin,
 			int& rightMargin,
 			int& topMargin,
@@ -283,7 +284,8 @@ class GlowWidgetLabelHelper
 	
 	public:
 	
-		enum {
+		enum LabelPosition
+		{
 			defaultLabelPosition = 0,
 			leftLabelPosition = 0,
 			rightLabelPosition = 1,
@@ -310,9 +312,9 @@ class GlowWidgetLabelHelper
 		inline int GetLabelSpacing() const;
 		inline void SetLabelSpacing(
 			int spacing);
-		inline int GetLabelPosition() const;
+		inline LabelPosition GetLabelPosition() const;
 		inline void SetLabelPosition(
-			int position);
+			LabelPosition position);
 		inline int GetLabelWidth() const;
 		inline void SetLabelWidth(
 			int width);
@@ -331,16 +333,16 @@ class GlowWidgetLabelHelper
 	
 		void InitLabel(
 			GlowWidget* main,
-			int spacing,
-			int position,
+			LabelPosition position,
 			int width,
 			int height,
+			int spacing,
 			const char* text,
 			GlowFont font = GlowFont::helvetica12,
 			GlowColor textColor = GlowLabelParams::defaults.textColor,
 			GlowColor disableTextColor = GlowLabelParams::defaults.disableTextColor);
 		
-		int HelpAutoPack(
+		GlowWidget::AutoPackError HelpAutoPack(
 			int& hSize,
 			int& vSize,
 			int& leftMargin,
@@ -361,8 +363,8 @@ class GlowWidgetLabelHelper
 	
 		GlowWidget* _main;
 		GlowWidgetLabelWidget* _label;
+		LabelPosition _labelPosition;
 		int _labelSpacing;
-		int _labelPosition;
 		int _labelWidth;
 		int _labelHeight;
 };

@@ -73,44 +73,60 @@ These fields are inherited from <tt><a href="GlowWindowParams.html">GlowWindowPa
 
 <blockquote>
 
-<dl>
-<dt>
+<p>
 <tt>const char* <b>title</b></tt>
-<dd>
+</p>
+<blockquote>
 Title for the window. Initial default is "".
-<dt>
+</blockquote>
+<p>
 <tt>const char* <b>iconTitle</b></tt>
-<dd>
+</p>
+<blockquote>
 Title for the window when iconified. If set to 0, the icon title will be set to the same as the window title. Initial default is 0.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>width</b></tt>
-<dd>
+</p>
+<blockquote>
 Width of the window. Initial default is 100.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>height</b></tt>
-<dd>
+</p>
+<blockquote>
 Height of the window. Initial default is 100.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>x</b></tt>
-<dd>
+</p>
+<blockquote>
 X location of the upper left of the window, in pixel coordinates of the screen. Initial default is <tt><a href="GlowWindow.html">GlowWindow</a>::autoPosition</tt>.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>y</b></tt>
-<dd>
+</p>
+<blockquote>
 Y location of the upper left of the window, in pixel coordinates of the screen. Initial default is <tt><a href="GlowWindow.html">GlowWindow</a>::autoPosition</tt>.
-<dt>
-<tt>int <b>eventMask</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt><a href="Glow.html">Glow</a>::EventMask <b>eventMask</b></tt>
+</p>
+<blockquote>
 Active event mask for the window. Initial default is <tt><a href="Glow.html">Glow</a>::mouseEvents | <a href="Glow.html">Glow</a>::dragEvents | <a href="Glow.html">Glow</a>::keyboardEvents</tt>.
-<dt>
-<tt>int <b>inactiveEventMask</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt><a href="Glow.html">Glow</a>::EventMask <b>inactiveEventMask</b></tt>
+</p>
+<blockquote>
 Inactive event mask for the window. Initial default is <tt><a href="Glow.html">Glow</a>::noEvents</tt>.
-<dt>
-<tt>int <b>mode</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt><a href="Glow.html">Glow</a>::BufferType <b>mode</b></tt>
+</p>
+<blockquote>
 Buffer mode for the window. Initial default is <tt><a href="Glow.html">Glow</a>::rgbBuffer | <a href="Glow.html">Glow</a>::doubleBuffer</tt>.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -121,12 +137,12 @@ Buffer mode for the window. Initial default is <tt><a href="Glow.html">Glow</a>:
 
 <blockquote>
 
-<dl>
-<dt>
+<p>
 <tt><a href="GlowColor.html">GlowColor</a> <b>backColor</b></tt>
-<dd>
+</p>
+<blockquote>
 Background color for the widget root. Initial default is a light gray.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -147,12 +163,12 @@ Background color for the widget root. Initial default is a light gray.
 
 <blockquote>
 
-<dl>
-<dt>
+<p>
 <tt>static GlowWidgetWindowParams <b>defaults</b></tt>
-<dd>
+</p>
+<blockquote>
 Default parameters. These are copied every time a new <tt>GlowWidgetWindowParams</tt> is constructed.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -204,7 +220,7 @@ Constructs a new parameter block, copying <tt>defaults</tt>
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 

@@ -73,36 +73,48 @@ These fields are inherited from <tt><a href="GlowSubwindowParams.html">GlowSubwi
 
 <blockquote>
 
-<dl>
-<dt>
+<p>
 <tt>int <b>width</b></tt>
-<dd>
+</p>
+<blockquote>
 Width of the subwindow. Initial default is <tt><a href="GlowSubwindow.html">GlowSubwindow</a>::parentWindowSize</tt>.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>height</b></tt>
-<dd>
+</p>
+<blockquote>
 Height of the subwindow. Initial default is <tt><a href="GlowSubwindow.html">GlowSubwindow</a>::parentWindowSize</tt>.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>x</b></tt>
-<dd>
+</p>
+<blockquote>
 X location of the upper left of the subwindow, in pixel coordinates of the parent window. Initial default is 0.
-<dt>
+</blockquote>
+<p>
 <tt>int <b>y</b></tt>
-<dd>
+</p>
+<blockquote>
 Y location of the upper left of the subwindow, in pixel coordinates of the parent window. Initial default is 0.
-<dt>
-<tt>int <b>eventMask</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt><a href="Glow.html">Glow</a>::EventMask <b>eventMask</b></tt>
+</p>
+<blockquote>
 Active event mask for the subwindow. Initial default is <tt><a href="Glow.html">Glow</a>::mouseEvents | <a href="Glow.html">Glow</a>::dragEvents | <a href="Glow.html">Glow</a>::keyboardEvents</tt>.
-<dt>
-<tt>int <b>inactiveEventMask</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt><a href="Glow.html">Glow</a>::EventMask <b>inactiveEventMask</b></tt>
+</p>
+<blockquote>
 Inactive event mask for the subwindow. Initial default is <tt><a href="Glow.html">Glow</a>::noEvents</tt>.
-<dt>
-<tt>int <b>mode</b></tt>
-<dd>
+</blockquote>
+<p>
+<tt><a href="Glow.html">Glow</a>::BufferType <b>mode</b></tt>
+</p>
+<blockquote>
 Buffer mode for the subwindow. Initial default is <tt><a href="Glow.html">Glow</a>::rgbBuffer | <a href="Glow.html">Glow</a>::doubleBuffer</tt>.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -113,12 +125,12 @@ Buffer mode for the subwindow. Initial default is <tt><a href="Glow.html">Glow</
 
 <blockquote>
 
-<dl>
-<dt>
+<p>
 <tt><a href="GlowColor.html">GlowColor</a> <b>backColor</b></tt>
-<dd>
+</p>
+<blockquote>
 Background color for the widget root. Initial default is a light gray.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -139,12 +151,12 @@ Background color for the widget root. Initial default is a light gray.
 
 <blockquote>
 
-<dl>
-<dt>
+<p>
 <tt>static GlowWidgetSubwindowParams <b>defaults</b></tt>
-<dd>
+</p>
+<blockquote>
 Default parameters. These are copied every time a new <tt>GlowWidgetSubwindowParams</tt> is constructed.
-</dl>
+</blockquote>
 
 </blockquote>
 
@@ -198,7 +210,7 @@ Constructs a new parameter block, copying <tt>defaults</tt>
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 
