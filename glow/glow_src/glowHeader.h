@@ -114,10 +114,10 @@
 #endif
 
 // Integral release number (0.9.5 == 3)
-#define GLOW_TOOLKIT 6
+#define GLOW_TOOLKIT 7
 
 // Fractional version number
-#define GLOW_VERSION 0.98
+#define GLOW_VERSION 0.99
 
 // Internal utility
 #define GLOW_INTERNAL_SETUPENUMBITFIELD(T) \

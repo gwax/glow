@@ -1,6 +1,6 @@
 
 The GLOW Toolkit
-version 0.9.8 (25 May 2000)
+version 0.9.9 (12 June 2000)
 Copyright (C) 1997-2000  Daniel Azuma
 All rights reserved worldwide
 
@@ -14,7 +14,7 @@ CONTENTS
 
    (2) Terms and conditions
 
-   (3) Release notes 0.9.8
+   (3) Release notes 0.9.9
 
    (4) Installing GLOW
 
@@ -77,9 +77,9 @@ RELEASE NOTES
 
 
     The GLOW Toolkit
-    Version 0.9.8 (25 May 2000)
+    Version 0.9.9 (12 June 2000)
 
-    These notes detail the differences between versions 0.9.7 and 0.9.8.
+    These notes detail the differences between versions 0.9.8 and 0.9.9.
     A complete history of publicly released versions can be found on the
     GLOW web site.
 
@@ -89,70 +89,19 @@ RELEASE NOTES
     Features added
     --------------
 
-      Added Glow::NumToplevelWindows().
-
-      Added Glow::SetAutoQuitting() and Glow::IsAutoQuitting(). You can
-      now set GLOW to automatically quit when the last toplevel window
-      has been closed.
-
-      Added GlowComponent::Paint().
-
-      GlowSliderWidget can now handle maximum == minimum. In that case,
-      the indicator is not drawn and does not respond to mouse clicks.
-
-      Added IsSpinning(), StartSpinning(), StopSpinning and StepSpin()
-      to GlowViewTransform and GlowViewManipulator.
-
-      Added Glow::SetMenuStatusFunc(); updated lesson 6 to match.
+      (none)
 
 
     Features changed
     ----------------
 
-      GlowCheckBoxWidget and GlowRadioButtonWidget's default heights are
-      one pixel less.
-
-      Rolled GlowStickyButtonWidget interface into GlowPushButtonWidget.
-      Removed GlowStickyButtonWidget.
-
-      Reordered the parameters of Set() in GlowTransformData and related
-      classes to (translation, rotation, scale).
+      (none)
 
 
     Bugs fixed
     ----------
 
-      GlowLabelWidget's autopack wasn't honoring expandPreferredSize,
-      which caused labeled widgets (esp. sliders) to pack incorrectly
-      in certain cases. Fixed.
-
-      GlowWidget's destructor wasn't removing the widget from the widget
-      notification list, which sometimes led to a crash. Fixed.
-
-      Hiding or deactivating a widget caused a temporary inconsistency
-      in the widget's state that could cause crashes if the widget was
-      deleted before the deferred event was handled. Fixed.
-
-      GlowWidget::OnGotKeyboardFocus() and OnLostKeyboardFocus() weren't
-      being deferred. Fixed.
-
-      GlowQuickPalette wasn't honoring widget visibility, resulting in
-      holes in palettes with invisible widgets. Fixed.
-
-      GlowCheckBoxWidget's mark appeared off-kilter under Mesa3D, and
-      didn't scale well with widget size. Fixed.
-
-      glowUtilities.cpp didn't link in Codewarrior for Windows. I think
-      this may be a result of a Codewarrior bug, but I found and put in
-      a workaround anyway.
-
-      Multiple bugs and broken links in the reference fixed.
-
-      The reference didn't document the classes in glowVectorAlgebra.
-      Fixed.
-
-      Tutorial lesson 7 said the wrong thing about the return value for
-      event filters. Fixed.
+      (none)
 
 
     Internal changes
