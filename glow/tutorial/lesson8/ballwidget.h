@@ -86,7 +86,7 @@ class BallWidget :
 	
 		// The constructor. We could also create a more complex constructor
 		// using a parameter block, but we'll keep this simple for now
-		inline BallWidget(
+		BallWidget(
 			GlowWidget* parent,
 			int x = 0,
 			int y = 0,

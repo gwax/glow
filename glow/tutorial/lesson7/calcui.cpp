@@ -55,6 +55,8 @@
 
 #include <cstdlib>
 
+namespace std {} // For compilers that don't put C libraries in namespace std
+
 using namespace std;
 
 // If we were using QuickPalette, the header "glowQuickPalette.h"

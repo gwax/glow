@@ -65,6 +65,8 @@ lacks a user interface.
 #include <cmath>
 #include <cstdio>
 
+namespace std {} // For compilers that don't put C libraries in namespace std
+
 using namespace std;
 
 #include "glowDebug.h"
