@@ -30,8 +30,10 @@
 		GNU Lesser General Public License for more details.
 		
 		You should have received a copy of the GNU Lesser General Public
-		License along with this library; if not, write to the Free Software
-		Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+		License along with this library; if not, write to
+			Free Software Foundation, Inc.
+			59 Temple Place, Suite 330
+			Boston, MA 02111-1307 USA
 	
 	VERSION:
 	
@@ -65,7 +67,7 @@
 GLOW_INTERNAL_USINGSTD
 
 
-#ifdef GLOW_OPTION_DEBUG
+#ifndef GLOW_OPTION_NODEBUG
 	#define GLOW_DEBUG(a,b) if (a) GLOW_NAMESPACE::Glow_Debug_::Report((b),__FILE__,__LINE__)
 	#define GLOW_WARNING(a,b) if (a) GLOW_NAMESPACE::Glow_Debug_::Warning((b),__FILE__,__LINE__)
 	#define GLOW_ASSERT(a) if (!(a)) GLOW_NAMESPACE::Glow_Debug_::Assert( # a ,__FILE__,__LINE__)
@@ -83,7 +85,7 @@ GLOW_INTERNAL_USINGSTD
 
 
 
-#ifdef GLOW_OPTION_DEBUG
+#ifndef GLOW_OPTION_NODEBUG
 
 GLOW_NAMESPACE_BEGIN
 

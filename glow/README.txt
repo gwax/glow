@@ -100,9 +100,12 @@ RELEASE NOTES
     Features changed
     ----------------
 
-      Widget windows and subwindows used to request alpha, stencil and
-      depth, but now default to Glow::rgbBuffer | Glow::doubleBuffer.
-      (also in 1.0.2)
+      Widget windows and subwindows now default to requesting a mode of
+      Glow::rgbBuffer | Glow::doubleBuffer. (also in 1.0.2)
+
+      Debug mode is now the default. To disable debug code, you now
+      define GLOW_OPTION_NODEBUG. The older symbol GLOW_OPTION_DEBUG is
+      no longer used.
 
       Removed conversion from Vec3f and Quatf to const GLfloat* and 
       replaced with method Array().
@@ -136,6 +139,10 @@ RELEASE NOTES
 
     Internal changes
     ----------------
+
+      When compiling under MSVC, now disables warning 4786 (long debug
+      symbols) and locally disables warning 4355 (passing "this" to a
+      member constructor). (also in 1.0.2)
 
       Fixed underscores (changed from leading to trailing) for private
       class members in the tutorial.

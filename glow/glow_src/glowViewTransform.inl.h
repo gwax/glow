@@ -30,8 +30,10 @@
 		GNU Lesser General Public License for more details.
 		
 		You should have received a copy of the GNU Lesser General Public
-		License along with this library; if not, write to the Free Software
-		Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+		License along with this library; if not, write to
+			Free Software Foundation, Inc.
+			59 Temple Place, Suite 330
+			Boston, MA 02111-1307 USA
 	
 	VERSION:
 	
@@ -53,6 +55,12 @@
 
 GLOW_INTERNAL_USINGSTD
 GLOW_NAMESPACE_BEGIN
+
+
+#ifdef _MSC_VER
+	#pragma warning (push)
+	#pragma warning (disable : 4355)
+#endif
 
 
 /*
@@ -582,6 +590,10 @@ inline void GlowViewManipulator::SimDrag_()
 	InDrag(xCur_, yCur_);
 }
 
+
+#ifdef _MSC_VER
+	#pragma warning (pop)
+#endif
 
 
 /*

@@ -30,8 +30,10 @@
 		GNU Lesser General Public License for more details.
 		
 		You should have received a copy of the GNU Lesser General Public
-		License along with this library; if not, write to the Free Software
-		Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+		License along with this library; if not, write to
+			Free Software Foundation, Inc.
+			59 Temple Place, Suite 330
+			Boston, MA 02111-1307 USA
 	
 	VERSION:
 	
@@ -118,7 +120,7 @@
 	inline T& operator&=(T& op1, T op2) {op1=T(int(op1)&int(op2)); return op1;}
 
 // For MSVC DLL compiling (not yet working)
-#ifdef WIN32
+#ifdef _WIN32
 	#ifdef GLOW_OPTION_DLLEXPORTS
 		#define GLOW_EXTERN _declspec(dllexport)
 	#endif
@@ -130,13 +132,18 @@
 	#define GLOW_EXTERN
 #endif
 
+// Disable long-debug-symbol warning on MSVC
+#ifdef _MSC_VER
+	#pragma warning (disable : 4786)
+#endif
+
 // Release number (doesn't mean anything special)
-#define GLOW_TOOLKIT 12
+#define GLOW_TOOLKIT 14
 
 // Fractional version number
 // e.g. 1.3.11pre4 == 1.031104
 // e.g. 1.3.11     == 1.031199
-#define GLOW_VERSION 1.010103
+#define GLOW_VERSION 1.010201
 
 // API version number
 // 1  == GLOW release 1.0

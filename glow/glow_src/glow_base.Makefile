@@ -30,8 +30,10 @@
 #		GNU Lesser General Public License for more details.
 #		
 #		You should have received a copy of the GNU Lesser General Public
-#		License along with this library; if not, write to the Free Software
-#		Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+#		License along with this library; if not, write to
+#			Free Software Foundation, Inc.
+#			59 Temple Place, Suite 330
+#			Boston, MA 02111-1307 USA
 #	
 #	VERSION:
 #	
@@ -169,7 +171,7 @@ ifneq ($(origin DEBUGCFLAGS_$(_ARCH)),undefined)
 DEBUGCFLAGS:=$(DEBUGCFLAGS_$(_ARCH))
 endif
 ifndef DEBUGCFLAGS
-DEBUGCFLAGS:=-g -DGLOW_OPTION_DEBUG
+DEBUGCFLAGS:=-g
 endif
 DEBUGCFLAGS+=$(foreach _TEMP,$(_OTHERFILEOPTS),$(DEBUGCFLAGS_$(_TEMP)))
 
@@ -177,9 +179,10 @@ ifneq ($(origin NODEBUGCFLAGS_$(_ARCH)),undefined)
 NODEBUGCFLAGS:=$(NODEBUGCFLAGS_$(_ARCH))
 endif
 ifndef NODEBUGCFLAGS
-NODEBUGCFLAGS:=-DNODEBUG
+NODEBUGCFLAGS:=-O
 endif
 NODEBUGCFLAGS+=$(foreach _TEMP,$(_OTHERFILEOPTS),$(NODEBUGCFLAGS_$(_TEMP)))
+NODEBUGCFLAGS+=-DNODEBUG -DGLOW_OPTION_NODEBUG
 
 ifneq ($(origin DEBUGLDFLAGS_$(_ARCH)),undefined)
 DEBUGLDFLAGS:=$(DEBUGLDFLAGS_$(_ARCH))

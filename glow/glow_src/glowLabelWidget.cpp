@@ -30,8 +30,10 @@
 		GNU Lesser General Public License for more details.
 		
 		You should have received a copy of the GNU Lesser General Public
-		License along with this library; if not, write to the Free Software
-		Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+		License along with this library; if not, write to
+			Free Software Foundation, Inc.
+			59 Temple Place, Suite 330
+			Boston, MA 02111-1307 USA
 	
 	VERSION:
 	
@@ -293,12 +295,9 @@ void GlowLabelWidget::OnWidgetPaint()
 					thisLineWidth += font_.CharWidth(text_[j]);
 				}
 				
-				// Find delta
-				x = float((alignment_ == alignRight) ?
-					thisLineWidth : thisLineWidth/2) / float(Width()/2);
-				
 				// Offset
-				::glBitmap(0, 0, 0, 0, x, 0, 0);
+				::glBitmap(0, 0, 0, 0, (alignment_ == alignRight) ?
+					-thisLineWidth : -thisLineWidth/2, 0, 0);
 			}
 		}
 		else
