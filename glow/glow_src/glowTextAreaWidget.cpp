@@ -811,7 +811,7 @@ void GlowTextAreaWidget::OnWidgetReshape(
 }
 
 
-GlowWidget::AutoPackError GlowTextAreaWidget::OnAutoPack( // TODO
+GlowWidget::AutoPackError GlowTextAreaWidget::OnAutoPack(
 	int hSize,
 	int vSize,
 	AutoPackOptions hOption,
@@ -823,29 +823,40 @@ GlowWidget::AutoPackError GlowTextAreaWidget::OnAutoPack( // TODO
 {
 	GLOW_DEBUGSCOPE("GlowTextAreaWidget::OnAutoPack");
 	
+	// Behavior:
+	// Enforces a hard minimum of width of '0' and font leading, plus the
+	// inset margin.
+	// Preferred size is current size.
+	// Does not allow changes unless using forcedSize
+	
 	int hnew = Width();
-	if (hnew < 20 || (hSize != unspecifiedSize && hSize < hnew))
+	if ((hOption == preferredSize || hOption == expandPreferredSize) &&
+		hSize != unspecifiedSize && hnew > hSize)
 	{
 		return hAutoPackError;
 	}
-	if (hOption == forcedSize || hOption == expandPreferredSize)
+	else if (hOption == forcedSize)
 	{
 		hnew = hSize;
 	}
+	if (hnew < ::glutBitmapWidth(font_, '0')+inset_+inset_)
+	{
+		return hAutoPackError;
+	}
 	
 	int vnew = Height();
-	int preferred = font_.Leading()+inset_+inset_;
-	if (vSize != unspecifiedSize && vSize < preferred)
+	if ((vOption == preferredSize || vOption == expandPreferredSize) &&
+		vSize != unspecifiedSize && vnew > hSize)
 	{
 		return vAutoPackError;
 	}
-	if (vOption == forcedSize)
+	else if (vOption == forcedSize)
 	{
 		vnew = vSize;
 	}
-	else if (vOption == expandPreferredSize || vOption == preferredSize)
+	if (vnew < font_.Leading()+inset_+inset_)
 	{
-		vnew = preferred;
+		return vAutoPackError;
 	}
 	
 	Reshape(hnew, vnew);

@@ -135,6 +135,9 @@ RELEASE NOTES
       GlowScrollBarWidget incorrectly raised an assertion if min or
       max was set such that min + span == max. Fixed. (also in 1.0.2)
 
+      GlowTextFieldWidget's OnAutoPack wasn't reporting an error if the
+      width was too small. Fixed. (also in 1.0.3)
+
       GlowSubwindow::OnJoystick() was missing. Fixed.
 
       Several more reference fixes.

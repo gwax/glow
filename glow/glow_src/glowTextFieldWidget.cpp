@@ -649,13 +649,17 @@ GlowWidget::AutoPackError GlowTextFieldWidget::OnAutoPack(
 	GLOW_DEBUGSCOPE("GlowTextFieldWidget::OnAutoPack");
 	
 	int hnew = Width();
-	if (hnew < 20 || (hSize != unspecifiedSize && hSize < hnew))
+	if (hSize != unspecifiedSize && hSize < hnew)
 	{
 		return hAutoPackError;
 	}
 	if (hOption == forcedSize || hOption == expandPreferredSize)
 	{
 		hnew = hSize;
+	}
+	if (hSize < ::glutBitmapWidth(font_, '0')+inset_+inset_)
+	{
+		return hAutoPackError;
 	}
 	
 	int vnew = Height();

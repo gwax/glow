@@ -125,6 +125,11 @@ GlowWidget::AutoPackError GlowPanelWidget::OnAutoPack(
 {
 	GLOW_DEBUGSCOPE("GlowPanelWidget::OnAutoPack");
 	
+	// Behavior:
+	// Enforces a hard minimum of 4.
+	// Preferred size is current size.
+	// Does not allow changes unless using forcedSize
+	
 	int hnew = Width();
 	if ((hOption == preferredSize || hOption == expandPreferredSize) &&
 		hSize != unspecifiedSize && hnew > hSize)
@@ -133,11 +138,11 @@ GlowWidget::AutoPackError GlowPanelWidget::OnAutoPack(
 	}
 	else if (hOption == forcedSize)
 	{
-		if (hSize < 4)
-		{
-			return hAutoPackError;
-		}
 		hnew = hSize;
+	}
+	if (hnew < 4)
+	{
+		return hAutoPackError;
 	}
 	
 	int vnew = Height();
@@ -148,11 +153,11 @@ GlowWidget::AutoPackError GlowPanelWidget::OnAutoPack(
 	}
 	else if (vOption == forcedSize)
 	{
-		if (vSize < 4)
-		{
-			return vAutoPackError;
-		}
 		vnew = vSize;
+	}
+	if (vnew < 4)
+	{
+		return vAutoPackError;
 	}
 	
 	Reshape(hnew, vnew);
