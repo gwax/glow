@@ -67,14 +67,18 @@ GLOW uses senders and receivers to report most high-level events, including menu
 <blockquote>
 
 <p>
-To use senders and receivers in your application, first you need to compile <tt>vA_Message.cpp</tt>, and include <tt>vA_Message.h</tt> in your source file. Next decide on a type to use as a message. If you use an aggregate type like a class, it is probably a good idea to send a pointer or a reference to it as a message, rather than its entire value. Let's suppose you have a class <tt>MyMessageType</tt>, and you're going to send a reference as the message type.
+To use senders and receivers in your application, first you need to compile <tt>glowSenderReceiver.cpp</tt>, and include <tt>glowSenderReceiver.h</tt> in your source file. Next decide on a type to use as a message. If you use an aggregate type like a class, it is probably a good idea to send a pointer or a reference to it as a message, rather than its entire value. Let's suppose you have a struct <tt>MyMessageType</tt>, and you're going to send a reference as the message type.
 </p>
 <blockquote>
-<tt><pre>class MyMessageType {
+<tt><pre>struct MyMessageType {
     int data1;
     std::string data2;
 };</pre></tt>
 </blockquote>
+
+<p>
+<b>Writing a receiver</b>
+</p>
 <p>
 First, you need to write a receiver class for your message. Subclass <tt>TReceiver&lt;MyMessageType&&gt;</tt>, and implement the method <tt>OnMessage(MyMessageType&)</tt>. This method will be called whenever the receiver receives a message. Notice that, since we decided to use a non-const reference as our message type, the receiver can modify the message data.
 </p>
@@ -90,6 +94,10 @@ void MyReceiver::OnMessage(MyMessageType& message) {
     ++message.data1;
 }</pre></tt>
 </blockquote>
+
+<p>
+<b>Creating a network of senders and receivers</b>
+</p>
 <p>
 Next, you need to create sender and receiver objects. Just make an object of type <tt>TSender&lt;MyMessageType&&gt;</tt> and an object of type <tt>MyReceiver</tt>. You can also make a class that inherits from <tt>TSender&lt;MyMessageType&&gt;</tt>.
 </p>
@@ -98,11 +106,15 @@ Next, you need to create sender and receiver objects. Just make an object of typ
 MyReceiver myreceiver;</pre></tt>
 </blockquote>
 <p>
-To actually send a message, you need to bind the sender to the receiver. To do this, call the <tt>Bind()</tt> method on your sender, and give it a pointer to the receiver. You can also sever the connection by calling the <tt>Unbind()</tt> method.
+Before you can send messages, you need to bind the sender to the receiver. To do this, call the <tt>Bind()</tt> method on your sender, and give it a pointer to the receiver. You can also sever the connection by calling the <tt>Unbind()</tt> method.
 </p>
 <blockquote>
 <tt><pre>mysender.Bind(&myreceiver);</pre></tt>
 </blockquote>
+
+<p>
+<b>Sending messages</b>
+</p>
 <p>
 To actually send a message, just call the <tt>Send()</tt> method on the sender, and give it the message. For example,
 </p>
@@ -151,6 +163,10 @@ Received message
  data2 = Hello, world!
 data1 is now 101</pre></tt>
 </blockquote>
+
+<p>
+<b>Additional features</b>
+</p>
 <p>
 There are several other methods you can use to manage connections. The <tt>IsBoundTo()</tt> method of <tt>TSender</tt> lets you query whether the sender is bound to a certain receiver. <tt>NumReceivers()</tt> returns the number of receivers a sender is bound to. <tt>UnbindAll()</tt> severs all connections with this sender. Calling <tt>NumSenders()</tt> on a receiver will return the number of senders bound to that receiver.
 </p>
@@ -188,7 +204,7 @@ You may also send a message to a single receiver without explicitly binding. To 
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 22 June 2000
 </address>
 
 

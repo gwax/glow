@@ -39,7 +39,9 @@ Sidebar: Makefile customization
 
 <blockquote>
 
-<h3>Philosophy</h3>
+<p>
+<b>Philosophy</b>
+</p>
 <p>
 This document describes the makefiles provided in the GLOW tutorials. This material is not really necessary to understand GLOW, especially if you prefer to use your own makefile. But if you prefer to just use the provided makefiles, and your environment is significantly different from mine, you may need some of this information.
 </p>
@@ -47,7 +49,9 @@ This document describes the makefiles provided in the GLOW tutorials. This mater
 My makefile is designed with two goals. (1) To automate as much as possible the handling of dependencies. (2) To allow construction of makefiles that can be used across platforms. For most cases, then, it is sufficient to configure a makefile just once, and reuse it for different OS's, environments, debug/nodebug, etc.
 </p>
 
-<h3>Usage</h3>
+<p>
+<b>Usage</b>
+</p>
 <p>
 Once you have configured a makefile, just invoke it with "make" (or "gmake" depending on how gnu-make is installed on your system). If you give it no argument, it will do a complete build, or you may give it arguments as listed below:
 </p>
@@ -268,7 +272,9 @@ This symbol should be set to the flag that should be passed to the compiler to t
 The makefile provides facilities for customizing the configuration based on the operating system or environment. I call these two facilities architecture specializations and file-option specializations. Architecture specializations allow you to customize based on the architecture. (Or techincally, the value returned by the unix command "uname".) File-option specializations allow you to customize based on the existence of files that you can create in your build directory.
 </p>
 
-<h3>Architecture specializations</h3>
+<p>
+<b>Architecture specializations</b>
+</p>
 <p>
 Architecture specializations allow you to specify different configurations depending on the architecture. This can be useful if you're developing in a multiplatform environment and want to work from the same source code base. For example, I develop on a cluster that includes both SGI IRIX workstations and x86-based Linux workstations. Under these two environments, the compiler used is different (CC on IRIX, gcc on Linux), and so are the libraries and CFLAGS necessary to build my programs.
 </p>
@@ -298,7 +304,9 @@ Now, if you compile under IRIX, it will use CC, but if you compile under anythin
 Any symbol can carry an architecture specialization. If you look through the makefiles provided in this tutorial, you'll see the defaults set up for gcc, with an IRIX specialization for COMPILE, LIBS, DEPFLAGS, CFLAGS and LDFLAGS.
 </p>
 
-<h3>File-option specializations</h3>
+<p>
+<b>File-option specializations</b>
+</p>
 <p>
 File-option specializations allow you to specify different configurations depending on the existence of files in your build directory. This lets you build different versions of your program (such as debug and non-debug versions) using the same makefile.
 </p>
@@ -361,7 +369,7 @@ The second type of file-option specialization is for makefile symbols that speci
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 22 June 2000
 </address>
 
 

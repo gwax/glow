@@ -39,12 +39,16 @@ Sidebar: About the Mandelbrot Set
 
 <blockquote>
 
-<h3>What is the Mandelbrot Set?</h3>
+<p>
+<b>What is the Mandelbrot Set?</b>
+</p>
 <p>
 The Mandelbrot Set is one of the most beautiful objects in mathematics. It is a fractal shape resulting from a fairly simple computation. Its real beauty, however, is that, although it is self-similar under magnification, the magnified copies are not identical to the whole. The set, in fact, contains an infinite number of different variations on itself.
 </p>
 
-<h3>The mathematical foundation</h3>
+<p>
+<b>The mathematical foundation</b>
+</p>
 <p>
 The mathematics behind the Mandelbrot Set is pretty straightforward. Consider the complex plane, the set of all complex numbers graphed along two axes. For every coordinate (<i>x</i>,&nbsp;<i>y</i>) on the plane, there is a corresponding complex number <i>z</i>&nbsp;=&nbsp;<i>x</i>&nbsp;+&nbsp;<i>iy</i>, where <i>i</i>&nbsp;=&nbsp;sqrt(-1).
 </p>
@@ -79,7 +83,9 @@ The Mandelbrot Set is defined as the set of complex numbers such that the series
 
 <blockquote>
 
-<h3>Performing the computation</h3>
+<p>
+<b>Performing the computation</b>
+</p>
 <p>
 To actually view the Mandelbrot Set, we typically need a computer to test each <i>C</i> and determine whether its corresponding series <i>z</i><sub><i>n</i></sub> escapes or achieves an orbit. Unfortunately, a computer can't directly test whether the limit of a series is infinity. However, we can make a good guess, based on the following theorem.
 </p>
@@ -118,7 +124,9 @@ For example, here is a C++ function that tests an input for Mandelbrot Set membe
 To compute an image, we need only to iterate over the pixels, determine what complex number each pixel corresponds to, and call in_mandelbrot_set(). In general, the higher the magnification you are using, the higher value of MAX_ITERS you will probably need to generate an accurate image. I've found that a value of 1000 tends to be good enough for most low magnifications.
 </p>
 
-<h3>Colors for the image</h3>
+<p>
+<b>Colors for the image</b>
+</p>
 <p>
 To make a visually attractive picture based on the Mandelbrot Set, we need to assign colors to each pixel. Traditionally, pixels that are found to be in the set are colored black, and pixels found to be outside the set are colored a different color. One way of making interesting patterns just outside the set is to assign different colors based on how many iterations it took for |<i>z</i><sub><i>n</i></sub>| to exceed 2.
 </p>
@@ -150,7 +158,7 @@ A simple coloring scheme often works very well. For example, you can interpolate
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 22 June 2000
 </address>
 
 

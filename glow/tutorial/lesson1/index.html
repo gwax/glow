@@ -130,7 +130,10 @@ Now, let's make a window that will display an image of the Mandelbrot set. To ma
 <p>
 Look at the class declaration for class <tt>MandelWind</tt>, located in the file <tt>mandelwind.h</tt>. It incorporates two data objects: a pointer to a <tt>MandelData</tt> object to handle calculation of the raw Mandelbrot data, and a member of type <tt>unsigned char*</tt>, which will point to the actual image we can render using <tt>glDrawPixels()</tt>. It also has a constructor. Note especially the existence of the virtual method <tt>OnEndPaint()</tt>. This is a method that GLOW calls when it needs to update (paint) the window. We will write this method to draw the image of the Mandelbrot Set.
 </p>
-<h3>The MandelWind constructor</h3>
+
+<p>
+<b>The MandelWind constructor</b>
+</p>
 <p>
 The actual method implementations are located in the file <tt>mandelwind.cpp</tt>. First, let's look at the constructor. It first gets the pointer to the given <tt>MandelData</tt> object, and makes sure it is recalculated. It then computes an image based on the raw Mandelbrot data, by stepping through the raw data, and coloring in-set pixels (raw data == 0) black, and out-of-set pixels red.
 </p>
@@ -148,7 +151,10 @@ Note, though, the very beginning of the constructor. It calls the constructor of
 <p>
 Calling the constructor for <tt>GlowWindow</tt> automatically creates a toplevel GLUT window, with a single function call. You don't need to call all the GLUT functions describing the window, and you don't need to provide callbacks-- GLOW does that automatically. Pretty slick!
 </p>
-<h3>The MandelWind redraw method</h3>
+
+<p>
+<b>The MandelWind redraw method</b>
+</p>
 <blockquote>
 <pre>void MandelWind::OnEndPaint()
 {
@@ -270,7 +276,7 @@ You may also notice that it is possible to resize the window. If you do, the man
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 22 June 2000
 </address>
 
 

@@ -103,6 +103,10 @@ This lesson describes some additional basic user interface features. We will ext
 <p>
 GLUT lets you create simple menus and attach them to mouse clicks in a window. GLOW provides an elegant object-oriented API for handling menus, and includes several features that were left out of GLUT. We'll create a simple set of menus for controlling the Mandelbrot Set viewer. The menus will let us reset the magnification to its initial state, change the color scheme, or quit the program. We'll have the menu pop up when the user clicks the left mouse button in the view window.
 </p>
+
+<p>
+<b>Creating a simple menu</b>
+</p>
 <p>
 To see how menus are implemented, first look at <tt>mandelwind.cpp</tt>. The constructor for the <tt>MandelWind</tt> class has been expanded to include some menu code. First, a menu is created by constructing a <tt>GlowMenu</tt> object.
 </p>
@@ -116,6 +120,10 @@ Next, two menu entries are added. The first parameter to the <tt>AddEntry()</tt>
 <pre>menu-&gt;AddEntry("Reset zoom", RESETZOOM_ITEM);
 menu-&gt;AddEntry("Quit", QUIT_ITEM);</pre>
 </blockquote>
+
+<p>
+<b>Creating a submenu</b>
+</p>
 <p>
 Next, we create a second menu, called <tt>colorMenu</tt>, and add four items to this menu.
 </p>
@@ -140,6 +148,10 @@ The next line marks the first item of the color submenu.
 </blockquote>
 <p>
 A mark is a short string that is prepended before the menu item text. It isn't part of the item name (and won't show up if you query the item for its name), but is a separate attribute of the menu item. You can mark and unmark menu items, and you can also query items to determine whether they are marked. For our purposes, we will mark the menu item corresponding to the current color setting. To start off, that will be red. Notice that menu items are numbered starting from 0.
+</p>
+
+<p>
+<b>Linking menus to mouse clicks</b>
 </p>
 <p>
 The next line binds the main menu we created to clicks of the right mouse button in our window.
@@ -188,6 +200,10 @@ The last two lines involve setting up notification for when a menu item is selec
 <p>
 Now that we've built a menu, we need a way to be notified when a menu item is hit. There are several ways we can do this, but the best and most flexible is to create a menu receiver. A menu receiver is an object that inherits from the abstract class <tt>GlowMenuReceiver</tt>, and implements its <tt>OnMessage()</tt> method. This method is called when a menu item is chosen.
 </p>
+
+<p>
+<b>Configuring a class to receive menu events</b>
+</p>
 <p>
 Take a quick look at <tt>mandelwind.h</tt>. Notice that the MandelWind class, in addition to inheriting from <tt>GlowWindow</tt>, now also inherits from <tt>GlowMenuReceiver</tt>. Furthermore, it implements the method <tt>OnMessage(const&nbsp;GlowMenuMessage&)</tt>. (The class also inherits <tt>GlowIdleReceiver</tt> and implements another <tt>OnMessage()</tt> method-- we'll look at those later.)
 </p>
@@ -208,6 +224,10 @@ colorMenu-&gt;Notifier().Bind(this);</pre>
 </blockquote>
 <p>
 The <tt>GlowMenu::Notifier()</tt> method retuns a reference to a sender object associated with the menu. A sender is a descendent of <tt>TSender</tt>, and its role is to send messages to receivers like the <tt>GlowMenuReceiver</tt> we created. Whenever a menu item is selected, the menu's sender will broadcast a message to any receivers listening to the sender. We call the <tt>Bind()</tt> method of the sender associated with each menu to bind it to the receiver, which is <tt>this</tt>, the window object. Now our window object will receive notifications of menu hits.
+</p>
+
+<p>
+<b>Writing the receiver method</b>
 </p>
 <p>
 To actually receive the message, we implement the <tt>OnMessage()</tt> method.
@@ -302,6 +322,10 @@ Recall that GlowSubwindow is a superclass of GlowWindow. We could easily have us
 <p>
 Next, we'll add background processing to the program. The problem we're trying to address is that computing an entire image of the Mandelbrot Set, especially when you've zoomed in considerably, may take some time. Instead of "hanging" while that computation is going on, it would be better to show the progress of the computation and allow the user to continue to interact with the program during that time.
 </p>
+
+<p>
+<b>Idle event receivers</b>
+</p>
 <p>
 To accomplish this, we'll cause our window object to receive idle events. Idle events are raised continually when the application is idle (i.e. no other events are pending). What we'll do is respond to an idle event by performing a "little bit" of the computation, and then updating the image to show the progress. We'll then give control back to GLOW so it can look for other events such as mouse clicks. If the program is still idle, another idle event will be raised, and we can do a little bit more of the computation, until it is finished.
 </p>
@@ -315,6 +339,10 @@ public GlowWindow, public GlowMenuReceiver, public GlowIdleReceiver
     virtual void OnMessage(const GlowIdleMessage& message);
   ...</pre>
 </blockquote>
+
+<p>
+<b>Raising and handling idle events</b>
+</p>
 <p>
 Go back to <tt>mandelwind.cpp</tt>. Before we look at the new <tt>OnMessage()</tt> method, let's take a brief look at <tt>OnEndPaint()</tt>. Note that we've replaced the <tt>MandelData::Recalc()</tt> call to a small number of calls to the method <tt>RecalcOneLine()</tt>. This method recalculates a single line of the Mandelbrot image. So now, instead of recomputing the entire image before redrawing, the program computes only a small fraction of the image.
 </p>
@@ -336,15 +364,18 @@ if (!_data-&gt;IsDataValid()) {
 }</pre>
 </blockquote>
 <p>
-<tt>RegisterIdle()</tt> makes the given idle receiver eligible to receive idle events, and <tt>UnregisterIdle()</tt> makes it ineligible. So after computing a small fraction of the image, we make sure the window is receiving idle events, and if the image has finished being computed, we turn off idle events. Now, take a look at the idle event receiving method, <tt>OnMessage(const&nbsp;GlowIdleMessage&)</tt>.
+<tt>RegisterIdle()</tt> makes the given idle receiver eligible to receive idle events, and <tt>UnregisterIdle()</tt> makes it ineligible. So after computing a small fraction of the image, we make sure the window is receiving idle events, and if the image has finished being computed, we turn off idle events. It doesn't hurt to register an idle receiver that is already registered or unregister a receiver that is not registered.
+</p>
 <p>
+Now, take a look at the idle event receiving method, <tt>OnMessage(const&nbsp;GlowIdleMessage&)</tt>.
+</p>
 <blockquote>
 <pre>void MandelWind::OnMessage(const GlowIdleMessage& message)
 {
     Refresh();
 }</pre>
 </blockquote>
-</p>
+<p>
 All it does is call Refresh(). This, in turn, causes the window to be redrawn, which, in turn, will cause the next small fraction of the image to be computed.
 </p>
 
@@ -458,7 +489,7 @@ GLOW also provides a timer event mechanism that allows you to schedule a piece o
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 22 June 2000
 </address>
 
 

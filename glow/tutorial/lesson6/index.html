@@ -66,7 +66,7 @@ Lesson 6: Integrating GLUT and GLOW Code
 <blockquote>
 
 <p>
-This lesson will give an overview of how to mix GLUT and GLOW code. Although GLOW is designed to override and hide GLUT's interfaces, it is possible to use GLUT and GLOW side-by-side. This is often useful, for example, for adding a GLOW-based widget panel to an existing GLUT program. This lesson will step you through adding a widget panel to one of the common GLUT sample programs, detailing the changes that must be made to the program to support side-by-side integration with GLOW. At the end of this lesson, you should know how to write programs that use both the GLOW API and the GLUT API.
+This lesson will give an overview of how to mix GLUT and GLOW code. Although GLOW is designed to override and hide GLUT's interfaces, it is possible to use GLUT and GLOW side-by-side. This is often useful, for example, for adding a GLOW-based widget panel to an existing GLUT program. This lesson will step you through adding a widget panel to one of the common GLUT sample programs, detailing the changes that must be made to the program to support side-by-side integration with GLOW. At the end of this lesson, you should know how to write programs that use both the GLOW API and the GLUT API side by side.
 </p>
 
 </blockquote>
@@ -116,6 +116,10 @@ The figure below shows the control panel we're going to implement. Although it l
 <p>
 You can read more about creating widget palettes in lesson 4, so only a brief overview will be given here. <tt>mechcontrols.h</tt> defines the class we're going to implement. It is a receiver for the events raised by the widget types we're going to implement. It also stores information it will need, including pointers to all its widgets, and the GLUT window ID of the rendering window.
 </p>
+
+<p>
+<b>Building the GLOW widget palette</b>
+</p>
 <p>
 The file <tt>mechcontrols.cpp</tt> contains the code for creating the widget palette and handling its events. First, we declare <tt>extern</tt> to get access to some of glutmech's state variables, which we will modify in response to widget manipulations.
 </p>
@@ -136,6 +140,10 @@ It then adds controls to the widget palette. Note the use of panels to help arra
 <blockquote>
 <pre>_controlWindow->Pack();</pre>
 </blockquote>
+
+<p>
+<b>Handling the widget events</b>
+</p>
 <p>
 Let's take a look at the event receivers. The pushbutton event receiver is fairly straightforward. First we respond to the quit button.
 </p>
@@ -154,7 +162,11 @@ In response to the fire button, first we call glutmech's function <tt>FireCannon
 }</pre>
 </blockquote>
 <p>
-The function <tt>Glow::RefreshGlutWindow()</tt> posts a refresh event for the window with the given GLUT id-- in this case, the main rendering window. It's equivalent to the GLUT 4 function <tt>::glutPostWindowRedisplay()</tt>, but is available in GLOW even when GLUT 4 functions are not available. Since we're involving ourselves with GLUT code, we need to make sure we keep track of the current window.
+The function <tt>Glow::RefreshGlutWindow()</tt> posts a refresh event for the window with the given GLUT id-- in this case, the main rendering window. It's equivalent to the GLUT 4 function <tt>glutPostWindowRedisplay()</tt>, but is available in GLOW even when GLUT 4 functions are not available. Since we're involving ourselves with GLUT code, we need to make sure we keep track of the current window.
+</p>
+
+<p>
+<b>Idle and menu status functions</b>
 </p>
 <p>
 The next event handler handles checkbox toggle events. The wireframe checkbox is pretty straightforward; we update glutmech's wireframe state variable <tt>solid_part</tt>, and post a refresh event for the GLUT window. The other checkbox, which toggles animation on or off, demonstrates an important note when integrating GLOW and GLUT code.
@@ -171,10 +183,10 @@ The next event handler handles checkbox toggle events. The wireframe checkbox is
 }</pre>
 </blockquote>
 <p>
-The original <tt>glutmech</tt> code responds to the toggling of animation by calling <tt>::glutIdleFunc()</tt> to enable or disable the reporting of idle events to its animation function. GLOW, however, requires control over the idle event callback in order to implement its idle event reporting system based on receivers. If you call <tt>::glutIdleFunc()</tt> directly when GLOW is active, you risk confusing GLOW, or having GLOW undo your idle event callback. Therefore, GLOW provides the static method <tt>Glow::SetIdleFunc()</tt> as a workaround. It behaves exactly the same as <tt>::glutIdleFunc()</tt>, but is implemented in a way that does not interfere with GLOW.
+The original <tt>glutmech</tt> code responds to the toggling of animation by calling <tt>glutIdleFunc()</tt> to enable or disable the reporting of idle events to its animation function. GLOW, however, requires control over the idle event callback in order to implement its idle event reporting system based on receivers. If you call <tt>glutIdleFunc()</tt> directly when GLOW is active, you risk confusing GLOW, or having GLOW undo your idle event callback. Therefore, GLOW provides the static method <tt>Glow::SetIdleFunc()</tt> as a workaround. It behaves exactly the same as <tt>::glutIdleFunc()</tt>, but is implemented in a way that does not interfere with GLOW.
 </p>
 <p>
-A similar issue concerns the <tt>::glutMenuStatusFunc()</tt> callback. GLOW needs control of that callback in order to properly detect certain menu events. Therefore, GLOW provides the static method <tt>Glow::SetMenuStatusFunc()</tt>. It has the same signature and behaves exactly the same as <tt>::glutMenuStatusFunc</tt>, but is implemented in a way that does not interfere with GLOW.
+A similar issue concerns the <tt>glutMenuStatusFunc()</tt> callback. GLOW needs control of that callback in order to properly detect certain menu events. Therefore, GLOW provides the static method <tt>Glow::SetMenuStatusFunc()</tt>. It has the same signature and behaves exactly the same as <tt>glutMenuStatusFunc</tt>, but is implemented in a way that does not interfere with GLOW.
 </p>
 <p>
 The last event handler listens for slider widget events. For each event it receives, it updates the appropriate state variable in <tt>glutmech</tt>, and then calls <tt>Glow::RefreshGlutWindow()</tt> to refresh the main drawing window.
@@ -219,7 +231,7 @@ GLOW_NAMESPACE_USING
 #include "mechcontrols.h"</pre>
 </blockquote>
 <p>
-The next major change is down in the function <tt>menu_select()</tt>. Here, just as in our code to handle toggles of the animation check box, we need to replace calls to <tt>::glutIdleFunc()</tt> with calls to <tt>Glow::SetIdleFunc()</tt>.
+The next major change is down in the function <tt>menu_select()</tt>. Here, just as in our code to handle toggles of the animation check box, we need to replace calls to <tt>glutIdleFunc()</tt> with calls to <tt>Glow::SetIdleFunc()</tt>.
 </p>
 <blockquote>
 <pre>switch (mode) {
@@ -234,7 +246,7 @@ The next major change is down in the function <tt>menu_select()</tt>. Here, just
 ...</pre>
 </blockquote>
 <p>
-Finally, let's go down to <tt>main()</tt>. There are two major changes here. First, we changed the call <tt>::glutInit()</tt> with the corresponding GLOW call <tt>Glow::Init()</tt>, and the call to <tt>::glutMainLoop()</tt> with <tt>Glow::MainLoop()</tt>. Finally, we instantiate our control panel widget by adding this line before entering the main loop:
+Finally, let's go down to <tt>main()</tt>. There are two major changes here. First, we changed the call <tt>glutInit()</tt> with the corresponding GLOW call <tt>Glow::Init()</tt>, and the call to <tt>glutMainLoop()</tt> with <tt>Glow::MainLoop()</tt>. Finally, we instantiate our control panel widget by adding this line before entering the main loop:
 </p>
 <blockquote>
 <pre>new MechControls(windowID);</pre>
@@ -246,7 +258,7 @@ That's it! For the most part, the rest of the code has been left alone.
 <b>Could you summarize what needs to be done to add GLOW code to a GLUT program?</b>
 </p>
 <p>
-Sure. First, you need to replace a few calls. The call to <tt>::glutInit()</tt> needs to be replaced with <tt>Glow::Init()</tt>. The call to <tt>::glutMainLoop()</tt> needs to be replaced with <tt>Glow::MainLoop()</tt>. Finally, all calls to <tt>::glutIdleFunc()</tt> need to be replaced with <tt>Glow::SetIdleFunc()</tt>, and all calls to <tt>::glutMenuStatusFunc()</tt> need to be replaced with <tt>Glow::SetMenuStatusFunc()</tt>.
+Sure. First, you need to replace a few calls. The call to <tt>glutInit()</tt> needs to be replaced with <tt>Glow::Init()</tt>. The call to <tt>glutMainLoop()</tt> needs to be replaced with <tt>Glow::MainLoop()</tt>. Finally, all calls to <tt>glutIdleFunc()</tt> need to be replaced with <tt>Glow::SetIdleFunc()</tt>, and all calls to <tt>glutMenuStatusFunc()</tt> need to be replaced with <tt>Glow::SetMenuStatusFunc()</tt>.
 </p>
 <p>
 Next, you need to write the GLOW code to set up GLOW-based windows and user interface elements and to connect together the event handlers. This setup should be done at the same time as the GLUT setup. Note that the constructors for GLOW windows, subwindows and menus can change GLUT state such as display mode and initial window size, so make sure those get set again if you create GLUT windows after having constructed GLOW objects.
@@ -307,7 +319,7 @@ Because GLUT does not come with a widget system by itself, many GLUT-based progr
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 1 May 2000
+Last updated 22 June 2000
 </address>
 
 

@@ -83,7 +83,8 @@ RELEASE NOTES
     A complete history of publicly released versions can be found on the
     GLOW web site.
 
-    This release of GLOW focused on final bug fixing.
+    This release of GLOW focused on final bug fixing and cleaning up of
+	the tutorial.
 
 
     Features added
@@ -104,6 +105,8 @@ RELEASE NOTES
       Lessons 7 and 8 didn't build under MSVC. Fixed.
 
       Mat4f was missing the cast to GLfloat* operator. Fixed.
+
+      A couple of minor bugs were found in the tutorial. Fixed.
 
 
     Internal changes

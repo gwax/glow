@@ -108,6 +108,10 @@ Now, this feature set poses several problems for us. First of all, how do we all
 <p>
 Second, how do we implement a way for the user to rotate the cube in an intuitive way? The algorithms behind this aren't entirely trivial, and we'd like to avoid mucking around with quaternions if we can help it. Fortunately, GLOW includes an implementation of such a rotater, based on the arcball algorithm developed by Ken Shoemake. We can simply plug the arcball module into our drawing system, hook it up to the mouse events, and we'll have a rotatable cube. We'll also see how this is done shortly.
 </p>
+
+<p>
+<b>The component tree</b>
+</p>
 <p>
 Both the above techniques are based on a concept called the <i>component tree</i>. This is a way to organize drawing commands in a GLOW window. If you are familiar with the concept of a scene graph, you'll find that the component tree is quite similar.
 </p>
@@ -150,6 +154,10 @@ Now let's jump into <tt>mandelgizmo.cpp</tt>, and look down at the bottom of the
 <p>
 This is just another way to initialize the <tt>GlowWindow</tt>. If you recall, in the <tt>MandelWind</tt> constructor, we passed the same parameters to a constructor of <tt>GlowWindow</tt>. You need to do one of the two: call the <tt>GlowWindow</tt> constructor, or call the <tt>Init()</tt> method, to actually create and initialize the window.
 </p>
+
+<p>
+<b>Creating a widget palette subwindow</b>
+</p>
 <blockquote>
 <pre>_widgetsPanel = new GlowQuickPaletteSubwindow(this, 0, 0, 200, 25,
     GlowQuickPalette::horizontal, GlowQuickPalette::alignCenter, 10, 0, 0);</pre>
@@ -181,6 +189,10 @@ Note that we've done something rather subtle here-- we've given the label some r
 <p>
 Once again, we use the <tt>Pack()</tt> method to arrange the widgets. Notice that, for a <tt>GlowQuickPaletteSubwindow</tt>, the pack method takes a boolean parameter, which specifies whether the subwindow should be resized to its preferred size after being packed. In this case, we do resize the subwindow, to make sure it is set to its preferred height. This is because we want the drawing subwindow to be located right below it:
 </p>
+
+<p>
+<b>Creating the drawing subwindow</b>
+</p>
 <blockquote>
 <pre>_gizmoPanel = new MandelGizmoSubwindow(this, 200, _widgetsPanel-&gt;Height(),
     image, width, height, fpsIndicator);
@@ -188,6 +200,10 @@ Reshape(200, 200+_widgetsPanel->Height());</pre>
 </blockquote>
 <p>
 Here we create a second subwindow, which will contain the drawing of the cube. It covers the remaining area of the window. We'll look at this subwindow a little more in the next section, but for now, just note that we're positioning it just below the widget bar (the y-location is the height of the widget panel). After the subwindow is created, we call the <tt>Reshape()</tt> method to programmatically resize the toplevel window to a size big enough to hold both subwindows.
+</p>
+
+<p>
+<b>Handling window resizing with subwindows</b>
 </p>
 <p>
 We'll look at the drawing subwindow in more detail in the next section, but first, let's take a look at the <tt>OnReshape()</tt> method of <tt>MandelGizmoWindow</tt>. The first thing we do is enforce a minimum size:
@@ -266,6 +282,9 @@ Because of this restriction, it is probably usually best to use the parameterize
 <blockquote>
 
 <p>
+<b>Setting up the subwindow</b>
+</p>
+<p>
 In this section, we'll take a closer look at the <tt>MandelGizmoSubwindow</tt>. First, the constructor. We pass the appropriate parameters to the base class's constructor to actually initialize the subwindow:
 </p>
 <blockquote>
@@ -278,13 +297,17 @@ GlowSubwindow(parent, 0, ypos, size, size,
 { ...</pre>
 </blockquote>
 <p>
-We could also have called the <tt>Init()</tt> method. Notice that the first parameter of the constructor is a pointer to the parent of the subwindow; i.e. the component that the subwindow should be attached to. A subwindow may be attached to a toplevel window, a subwindow, or even a component. Next, we start doing some curious things:
+We could also have called the <tt>Init()</tt> method. Notice that the first parameter of the constructor is a pointer to the parent of the subwindow; i.e. the component that the subwindow should be attached to. A subwindow may be attached to a toplevel window, another subwindow, or even a component. Next, we start doing some curious things:
 </p>
 <blockquote>
 <pre>SetAutoSwapBuffersEnabled(false);</pre>
 </blockquote>
 <p>
 Normally, GLOW will automatically swap buffers once you're done drawing. This call disables automatic swapping of buffers for this subwindow. We do this because we want to manually swap buffers further below. I'll explain why later on.
+</p>
+
+<p>
+<b>Setting up a rotatable cube</b>
 </p>
 <blockquote>
 <pre>_manip = new GlowViewManipulator(this,
@@ -306,6 +329,10 @@ Notice that we didn't write an explicit destructor for <tt>MandelGizmoSubwindow<
 </p>
 <p>
 You <i>can</i> simply <tt>delete</tt> a component object directly; however, this is potentially dangerous. For example, take the close button we implemented earlier. What if we had decided to add a normal pushbutton, connected to a receiver that directly deleted the <tt>MandelGizmoWindow</tt>? This would cause the window and everything attached to it to be destructed, including the subwindows and the pushbutton itself. But then, what happens when we return from the receiver's <tt>OnMessage</tt> method? GLOW is in the middle of iterating over the pushbutton's receivers, but suddenly, the pushbutton object and all its data (including the receiver list) has been destructed from underneath it. This will probably lead to a segmentation fault. To avoid this problem, the pushbutton that we actually created using <tt>AddDismissPushButton()</tt> does a deferred delete by calling <tt>Close()</tt>. If you need to delete a component, subwindow or window manually, it is probably best to do the same.
+</p>
+
+<p>
+<b>Writing a component</b>
 </p>
 <p>
 Let's take a detour and look at the class <tt>MandelGizmoComponent</tt>.
@@ -329,6 +356,10 @@ The constructor of the base class <tt>GlowComponent</tt> has only one parameter,
 </p>
 <p>
 In addition, if you look at the <tt>OnEndPaint()</tt> method, you'll see that it contains only the drawing commands necessary to draw the cube. It doesn't set up any matrices, camera, lighting or anything of the sort; it depends on its parents to perform that setup. Think of it as a function that draws the cube using the current transforms, lighting, texture and other parameters set up by the caller.
+</p>
+
+<p>
+<b>Drawing the component tree</b>
 </p>
 <p>
 To understand how drawing is being done in our program, let's go back to the class <tt>MandelGizmoSubwindow</tt> and look at the drawing methods.
@@ -387,6 +418,10 @@ This has the effect, just like traversing a scene graph, of applying the rotatio
 </p>
 <p>
 You may have already noticed that <tt>OnBeginPaint()</tt> returns a boolean value. This allows the component to control the drawing of its child components. If you return true, the child components will be drawn by having their <tt>OnBeginPaint()</tt> and <tt>OnEndPaint()</tt> methods called. If you return false, the child components will not be drawn. Normally, you should simply return true from <tt>OnEndPaint()</tt>.
+</p>
+
+<p>
+<b>Handling subwindow events</b>
 </p>
 <p>
 To finish up our discussion on the <tt>GlowViewManipulator</tt>, we need to respond to mouse events in the drawing subwindow by informing the view manipulator. To do that, we override the mouse event handlers in <tt>MandelGizmoSubwindow</tt>:
@@ -586,7 +621,7 @@ From this point on, the tutorial will deal primarily with advanced features. The
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 10 April 2000
+Last updated 22 June 2000
 </address>
 
 

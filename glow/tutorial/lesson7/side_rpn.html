@@ -93,7 +93,10 @@ could be computed using RPN in this way:
 <blockquote>
 
 <p>
-The real power of RPN comes in its memory system, however. Most normal calculators have a memory that you can use to store partial results. For example, to evaluate 10/(2+3), you'll need to evaluate 2+3 first and temporarily store the intermediate result:
+<b>Memory in traditional calculators</b>
+</p>
+<p>
+The real power of RPN comes in its memory system. Most normal calculators have a memory that you can use to store partial results. For example, to evaluate 10/(2+3), you'll need to evaluate 2+3 first and temporarily store the intermediate result:
 </p>
 <blockquote>
 <tt>[2] [+] [3] [=] [store] [1] [0] [/] [recall] [=]</tt>
@@ -110,11 +113,19 @@ Some more sophisticated calculators provide parentheses, so you don't have to ma
 <p>
 However, this requires the calculator to "remember" that you're in the middle of an expression (10/x). As a result, it can be non-intuitive what mode the calculator is in, or exactly what it's doing at any given point. If you make a mistake, you'll typically need to start over.
 </p>
+
+<p>
+<b>Memory in RPN calculators</b>
+</p>
 <p>
 RPN calculators use a different memory model, based on a stack. Since you're reading this in the middle of a tutorial on a programming API, I'm going to assume you already know what a stack is. To put it simply, you store intermediate values by pushing them on the stack, and you can use previously stored values by popping them off.
 </p>
 <p>
-In fact, the entire RPN model is based on a stack machine. When you enter a value, you're manipulating the value on the top of the stack, and pressing the enter key duplicates the value on top of the stack, and pushes the duplicate on top. Pressing an operator key pops the top two values off the stack, applies the operation, and pushes the result.
+In fact, the entire RPN model is based on a stack machine. When you enter a value, you're manipulating the value on the top of the stack, and pressing the enter key duplicates the value on top of the stack, and pushes the duplicate on top. Pressing an operator key pops the top two values off the stack, applies the operation, and pushes the result back on the stack.
+</p>
+
+<p>
+<b>A simple stack example</b>
 </p>
 <p>
 As an example, let's consider the expression 10/(2+3). Using an RPN calculator, we compute it like this:
@@ -155,6 +166,9 @@ So what are the advantages of this method? First, notice that we didn't need to 
 
 <blockquote>
 
+<p>
+<b>Computing (e-1)^(2/(pi-log(pi))) on an RPN calculator</b>
+</p>
 <p>
 Let's take a look at one more example. Suppose we want to evaluate (e-1)^(2/(pi-log(pi))) on our calculator.
 </p>
@@ -207,6 +221,10 @@ We can now finish off the computation:
 <p>
 We needed to hit the inverse key once more to change from inverse mode back to normal mode to get the power function. And we're done!
 </p>
+
+<p>
+<b>Computing (e-1)^(2/(pi-log(pi))) on a traditional calculator</b>
+</p>
 <p>
 Now let's look at what would be involved if we had to perform the same computation on a standard notation calculator without parentheses. We'll consider a calculator with multiple memory locations (we'll need them!) that you can specify by letter. It might have looked like this:
 </p>
@@ -244,6 +262,10 @@ Alas, the exponentiation operator doesn't commute either, so we had to store yet
 </blockquote>
 <p>
 Finally! And we almost forgot which memory location was holding e-1.
+</p>
+
+<p>
+<b>Play it again, Sam!</b>
 </p>
 <p>
 To summarize, let's compare the full order of operations using our RPN calculator, versus the standard calculator. Using RPN:
@@ -285,7 +307,7 @@ Try out the RPN calculator we build in this tutorial. It does take a little gett
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 8 June 2000
+Last updated 22 June 2000
 </address>
 
 

@@ -200,6 +200,10 @@ Because RPN is better!!
 <p>
 A graphical calculator user interface should look as much like a real calculator as possible, and this means an orderly arrangement of the keys into a grid. Unfortunately, the QuickPalette API we looked at in lesson 4 is not well-suited for such an arrangement of widgets. We need finer control over the exact size and placement of the buttons. Therefore, GLOW provides a low-level API that givew you detailed control over the size, location, appearance and behavior of each widget you create. Each widget class also provides a wealth of methods for dynamically modifying any widget's size, location, appearance and behavior.
 </p>
+
+<p>
+<b>Setting up a widget window</b>
+</p>
 <p>
 To see this API in action, let's take a look at the file <tt>calcui.cpp</tt>. This file implements the <tt>class CalcUI</tt>, which manages a single calculator user interface window. (It is declared in <tt>calcui.h</tt>; if you open that file, you'll see that the class declaration is very simple.) About halfway through <tt>calcui.cpp</tt> is the constructor for <tt>class CalcUI</tt>. Let's go through this constructor.
 </p>
@@ -213,6 +217,10 @@ That first line constructs a window that will hold the calculator widgets. The c
 <blockquote>
 <pre>_receiver = new CalcUIReceiver(engine, _window);</pre>
 </blockquote>
+
+<p>
+<b>Parameter blocks</b>
+</p>
 <p>
 Now we'll start populating the window with widgets. First, we'll create the display. It'll be a panel widget with a "sunken" appearance and a white background, and we'll display the numbers inside. To create the panel, we first create and fill out a parameter block, and then pass the parameter block to the constructor for <tt>GlowPanelWidget</tt>.
 </p>
@@ -238,11 +246,15 @@ The default values for each parameter block are stored in a static member called
 <p>
 Then every time you subsequently construct a new <tt>GlowPanelParams</tt>, the background color parameter will be white. (Initially, the default is a light gray.)
 </p>
+
+<p>
+<b>Creating widgets in a hierarchy</b>
+</p>
 <p>
 Under the parameter block API, you construct a widget by creating it with <tt>new</tt>, and passing two parameters to the constructor. The second parameter is the parameter block you filled out. The first is either a widget root or a parent widget.
 </p>
 <p>
-A widget root is a window or subwindow that is designed to contain widgets. It is also a subclass of <tt>GlowWidgetRoot</tt>. Currently, three basic widget root classes are provided: <tt>GlowWidgetSubwindow</tt>, <tt>GlowWidgetWindow</tt> and <tt>GlowFixedSizeWidgetWindow</tt>. (The classes <tt>GlowQuickPaletteSubwindow</tt> and <tt>GlowQuickPaletteWindow</tt> are subclasses of <tt>GlowWidgetSubwindow</tt> and <tt>GlowFixedSizeWidgetWindow</tt>, respectively, and are therefore also widget roots.) A widget root automatically manages a set of widgets by routing events to the appropriate widget, managing keyboard focus and handling event filters. That is why you do not need to override any <tt>OnMouseDown()</tt> methods when working with widgets; the widget root handles that for you.
+A widget root is a window or subwindow that is designed to contain widgets. Therefore, it's a subclass of either <tt>GlowWindow</tt> or <tt>GlowSubwindow</tt>. It is also a subclass of <tt>GlowWidgetRoot</tt>. Currently, three basic widget root classes are provided: <tt>GlowWidgetSubwindow</tt>, <tt>GlowWidgetWindow</tt> and <tt>GlowFixedSizeWidgetWindow</tt>. (The classes <tt>GlowQuickPaletteSubwindow</tt> and <tt>GlowQuickPaletteWindow</tt> are subclasses of <tt>GlowWidgetSubwindow</tt> and <tt>GlowFixedSizeWidgetWindow</tt>, respectively, and are therefore also widget roots.) A widget root automatically manages a set of widgets by routing events to the appropriate widget, managing keyboard focus and handling event filters. That is why you do not need to override any <tt>OnMouseDown()</tt> methods when working with widgets; the widget root handles that for you.
 </p>
 <p>
 To simply create a widget inside a particular widget root, pass a pointer to the root in the first parameter of the widget's constructor. That is how we created the panel above: we passed <tt>_window</tt>, which is a pointer to the <tt>GlowFixedSizeWidgetWindow</tt> we created. You can also pass a pointer to another widget in the first parameter to the constructor. In that case, the new widget will be added as a child of the given widget, the same way we nested widgets inside panels in lessons 4 and 6. The next widgets we create are label widgets that will actually display the text of the calculator's display. They're child widgets of the panel we just created.
@@ -283,6 +295,10 @@ _receiver->_displayLabel0 = new GlowLabelWidget(
 <p>
 Notice that we can reuse the parameter block. It is, after all, just a struct. The parameters for the new labels are the same as the original label, except for the vertical position.
 </p>
+
+<p>
+<b>Creating the pushbutton grid</b>
+</p>
 <p>
 Now that we've created the display, let's go on to the rest of the calculator. We're going to make the remaining widgets children of a non-drawing panel. Why we're doing this will become clear later on, but I'll give you a hint right now. One of the features of the calculator is that the display can either display a single line, or all four lines of the stack. That is, the display can be resized vertically. When that happens, all the widgets below it must be moved up or down. How can we do that efficiently?
 </p>
@@ -318,6 +334,10 @@ Things to note. First off, to specify a receiver for the widget, set the <tt>rec
 <p>
 The <tt>refcon</tt> field sets a value for the widget's reference constant. Every widget has a reference constannt associated with it. It is a long integer (usually 32 bits, although it may be 64 bits on some systems-- long enough to hold a pointer) that you can use for your own purposes. For this calculator, we're going to use the reference constant to identify the pushbutton. We'll use it to store the button code that should be sent to the <tt>CalcEngine</tt> when this button is pressed.
 </p>
+
+<p>
+<b>Non-drawing panels</b>
+</p>
 <p>
 The next bunch of lines create the remaining buttons. We won't look at them in detail; it should be pretty straightforward. So let's skip down to look at another rather interesting technique. We'll start about a score of lines down where this comment appears:
 </p>
@@ -349,6 +369,10 @@ _receiver->_panel2->Hide();</pre>
 </blockquote>
 <p>
 Here we get a big hint about why all these non-drawing panels are being created. Remember that parent widgets can affect the drawing of their children. In this case, we're hiding the second panel (the one containing the inverted functions, i.e. sqrt, log, root, arcsin, arccos, arctan). This has the affect of automatically hiding those buttons as well. In fact, now, to switch all six buttons, we need only to make two method calls: hide one panel and show the other.
+</p>
+
+<p>
+<b>Additional notes</b>
 </p>
 <p>
 I'll let you look at the rest of the constructor at your leisure. It creates several more controls at the bottom of the calculator, for controlling preferences such as whether trigonometric computations should be done in degrees or radians. Pay special attention to the creation of radio buttons (<tt>GlowRadioButtonWidget</tt>). Those widgets are special widgets in that they must be created as child widgets of a <tt>GlowRadioGroupWidget</tt>. The radio group manages the set of radio buttons and keeps track of which one is currently selected.
@@ -417,6 +441,9 @@ Yes, I know. You may be wondering why some of those things were done, especially
 <blockquote>
 
 <p>
+<b>Responding to widget events</b>
+</p>
+<p>
 So as you may have noticed in the previous section, nearly all the widgets were set up to notify our receiver object, of type <tt>CalcUIReceiver</tt>, when toggled. Let's look at that receiver class now and get an idea of how it works.
 </p>
 <blockquote>
@@ -450,6 +477,10 @@ The next piece of code handles the quit pushbutton. We identify this pushbutton 
     exit(0);
 }</pre>
 </blockquote>
+
+<p>
+<b>Handling the inverse button</b>
+</p>
 <p>
 The button with reference constant -2 is the inverse button. We want to handle this by "toggling" the transcendental function keys between normal and inverse functions (e.g. between exp and log). If you recall, we grouped each set of buttons into a panel, one for the normal functions and one for the inverse functions. To toggle the function, we just hide the visible panel and show the invisible panel. Since the buttons are child widgets of the panel, this has the affect of hiding and showing those buttons as a group.
 </p>
@@ -469,6 +500,10 @@ The button with reference constant -2 is the inverse button. We want to handle t
 <p>
 Note that we can also set the color of the button. When we switch to inverse mode, we set the button to a reddish color; when we switch back to normal mode, we set the color back to the default gray. Colors can be specified in several ways. Shown above, you can construct a color by passing RGB values as floats to the constructor of the class <tt>GlowColor</tt>. That constructor can also accept integers in the range [0..255]. Also shown above, you can reference a color that already is defined, such as the color in the parameter block defaults. The <tt>GlowColor</tt> class also provides a set of common colors as static member objects, such as <tt>GlowColor::white</tt>, which we used to specify the background color of the display panel.
 </p>
+
+<p>
+<b>Ready-to-use windows</b>
+</p>
 <p>
 Reference constant -3 identifies the "About" button. We respond to it by popping up an "About" box, which we'll implement using a <tt>GlowMessageWindow</tt>. The ready-to-use window classes also provide a low-level parameter block API for creation; this code illustrates how to use it:
 </p>
@@ -479,16 +514,20 @@ Reference constant -3 identifies the "About" button. We respond to it by popping
     mparams.x = _window->GlobalPositionX()+30;
     mparams.y = _window->GlobalPositionY()+30;
     if (message.modifiers & Glow::ctrlModifier) {
-        mparams.text = "GlowCalc (lesson 7) version 0.9.7\nby Daniel Azuma\n\n"
+        mparams.text = "GlowCalc\nA GLOW-based RPN calculator\nby Daniel Azuma\n\n"
             "Down with monopolistic software corporations!";
     } else {
-        mparams.text = "GlowCalc (lesson 7) version 0.9.7\nby Daniel Azuma";
+        mparams.text = "GlowCalc\nA GLOW-based RPN calculator\nby Daniel Azuma";
     }
     GlowMessageWindow* messageWind = new GlowMessageWindow(mparams);
     ...</pre>
 </blockquote>
 <p>
 A few things to notice in that code. First, we position the about box window above the calculator window by setting the x and y coordinates according to tthe global (screen) position of the calculator window. Second, notice the test of <tt>message.modifiers</tt>. This field indicates which modifier keys were down when the "about" button was pressed. Here we implemented a little Easter Egg: if the user control-clicks the "about" button, a special little message is addedd to the about box text.
+</p>
+
+<p>
+<b>Modal windows</b>
 </p>
 <p>
 The last line introduces one more useful concept: modal windows.
@@ -513,6 +552,10 @@ Also notice that the call to make a window modal is called "<tt>PushModalWindow(
 </p>
 <p>
 When a modal window is closed, it is automatically popped from the modal window stack. That is the case with our about box: <tt>GlowMessageWindow</tt> automatically causes the window to close when one of the buttons is pressed. This automatically causes the window to be un-modalized, thus re-activating all the calculator controls. We don't need to pop the window off the stack manually.
+</p>
+
+<p>
+<b>Handling the display checkbox</b>
 </p>
 <p>
 I know this is a lot of information, but let's look at one more piece of code as another example of how widgets can be manipulated easily. We added a checkbox to the user interface. Toggling the checkbox is supposed to toggle the display between one-line mode and four-line mode. (In four-line mode, the entire RPN stack is visible.) Because this causes the display to be resized vertically, all the buttons and other controls need to be moved up and down. We have a lot of controls; this would take a lot of code, except that we chose to group them all as children of a non-drawing panel. Therefore, to move all those widgets, we just need to move their parent panel. Since the children are positioned relative to the parent panel, this causes them to move automatically. Take a look at the code from the check box receiver:
@@ -714,7 +757,7 @@ This has been a complicated lesson that has covered a lot of features and techni
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 9 May 2000
+Last updated 22 June 2000
 </address>
 
 

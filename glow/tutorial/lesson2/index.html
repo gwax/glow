@@ -156,6 +156,10 @@ That method, along with many of the methods in <tt>GlowWindow</tt>, is actually 
 <p>
 The real beauty of the Mandelbrot Set appears when you magnify parts of it. Let's construct a user interface for zooming in and out of the set. One simple way to do this is to use the mouse, and let the user drag out a rectangle to magnify. For simplicity, our implementation will limit these rectangles to have the same aspect ratio as the window itself, and we'll have the user drag the rectangle from center to corner. We'll also implement a similar interface to "zoom out".
 </p>
+
+<p>
+<b>About the event handling methods</b>
+</p>
 <p>
 Take another look at our class declaration in <tt>mandelwind.h</tt>. You'll see three virtual methods for handling mouse-related events: <tt>OnMouseDown()</tt>, <tt>OnMouseUp()</tt>, and <tt>OnMouseDrag()</tt>.
 </p>
@@ -171,6 +175,10 @@ virtual void OnMouseDrag(int x, int y);</pre>
 </p>
 <p>
 The button parameter is set to one of the values <tt>Glow::leftButton</tt>, <tt>Glow::middleButton</tt> or <tt>Glow::rightButton</tt>. Modifier flags that can be set are given by the masks <tt>Glow::shiftModifier</tt>, <tt>Glow::ctrlModifier</tt> and <tt>Glow::altModifier</tt>. The x and y coordinates are given in <i>window coordinates</i>. These are different from the OpenGL drawing coordinates. They start at (0,0) at the upper left of the window, and increase down and right. The bottom right pixel is denoted by (width-1,height-1), where width and height are the dimensions of the window.
+</p>
+
+<p>
+<b>Writing OnMouseDown() and OnMouseDrag()</b>
 </p>
 <p>
 Now, let's take a look at the implementation in a little more detail. First, <tt>OnMouseDown()</tt>. The first thing we do is check the value of <tt>_dragType</tt>, which is a flag that denotes the current status (zooming in, zooming out, or not dragging). We respond to a mouse-down only if we're not already dragging. Next, we make sure the button pressed is the left mouse button; we will ignore the other two mouse buttons for now. Next we check if the shift key is down. If it is, we go into zooming-out mode; if it isn't, we go into zooming-in mode. Note that the code for starting a zoom-out calls two methods, <tt>Width()</tt> and <tt>Height()</tt>. These are methods of <tt>GlowWindow</tt> that tell the current dimensions of the window.
@@ -200,6 +208,10 @@ After setting the mode, <tt>OnMouseDown()</tt> calls a method to determine the i
 <p>
 <tt>OnMouseDrag()</tt> is called whenever the position of the mouse changes while one of the buttons is down. We implement this method to simply update our current value for the zoom factor based on the new mouse coordinates, and then call <tt>Refresh()</tt> to update the window. <tt>OnMouseUp()</tt> does one final computing of the zoom factor., Next, it informs the data object to zoom in or out, resets <tt>_dragType</tt> to <tt>NO_DRAG</tt>, and calls <tt>Refresh()</tt>.
 </p>
+
+<p>
+<b>A few more details</b>
+</p>
 <p>
 Now that we've implemented methods to respond to mouse events, we have two more things to do to make our zoomable Mandelbrot viewer work well. First, we should probably give some graphical feedback while the user is dragging a rectangle. We'll accomplish this by simply drawing the rectangle in gray atop the currently displayed image. Look at the end of <tt>OnEndPaint()</tt>, and you'll notice a bit of code that draws a rectangle if the user is currently dragging. Probably the only unfarmiliar part of this code is the call to the method <tt>NormalizeCoordinates()</tt>. This is a useful utility method of <tt>GlowWindow</tt> that converts window coordinates (given by the mouse events) to normalized OpenGL drawing coordinates in two dimensions, with (0,0) at the center of the window, x increasing to the right and y increasing to the top.
 </p>
@@ -218,7 +230,7 @@ GlowWindow("Mandelglow", GlowWindow::autoPosition, GlowWindow::autoPosition,
 <b>Why in the world did we have to set an event mask?</b>
 </p>
 <p>
-All GLOW events are reported via virtual methods, and each method does have a default implementation that simply ignores the event. From a functional point of view, we don't need an event mask. GLOW can call the virtual methods for every event that gets reported, and those that we're not interested in will fall through to the default, do-nothing event handler. However, there is some performance overhead involved with detecting and dispatching an event. The event mask, then, is a hint to GLOW to tell it which events a window is interested in receiving. GLOW uses this information internally to decide which events to listen for and dispatch to the virtual methods of the window object. More technically, the event mask describes which GLUT callbacks should be registered for a particular window.
+All GLOW events are reported via virtual methods, and each method does have a default implementation that simply ignores the event. From a functional point of view, we don't need the event mask. GLOW can call the virtual methods for every event that gets reported, and those that we're not interested in will fall through to the default, do-nothing event handler. However, there is some performance overhead involved with detecting and dispatching an event. The event mask, then, is a hint to GLOW to tell it which events a window is interested in receiving. GLOW uses this information internally to decide which events to listen for and dispatch to the virtual methods of the window object. More technically, the event mask describes which GLUT callbacks should be registered for a particular window.
 </p>
 <p>
 When you're writing a window class for a GLOW program, be sure to pay attention to which events you want to receive. You need to implement the corresponding virtual method, AND set the appropriate bit in the event mask. If you are debugging a window class and discover that you don't seem to be receiving certain events, the first thing you should check is that your event mask is correct. (Another important thing to check is that you've spelled the names of the virtual methods correctly; that bug gets me quite often.) The constants corresponding to bits in the event mask can be found in class <tt>Glow</tt>.
@@ -319,7 +331,7 @@ In the next lesson we'll see how to add more user interface features through men
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 7 April 2000
+Last updated 22 June 2000
 </address>
 
 

@@ -71,6 +71,9 @@ Recent versions of gcc are getting close to being ANSI C++ compliant. The primar
 <p>
 The MIPSPro 7.3 C++ compiler for IRIX is able to compile GLOW with a small amount of effort. The main issue is compatibility with <tt>namespace std</tt> and the new header naming scheme. In particular the new-style C header names are not provided in the development system. To work around this, wrapper headers are present in the source distribution of GLOW in the folder "Compat-SGI". You should install these headers or otherwise include the folder in an <tt>-I</tt> directive to the compiler.
 </p>
+<p>
+If you are using a version of MIPSPro newer than 7.3.0, check your <tt>/usr/include/CC</tt> directory (and it would probably be a good idea to check </tt>/usr/include</tt> also) to make sure headers with these names have not been added by SGI. If the files are already present, you should not use the ones in "Compat-SGI".
+</p>
 
 <p>
 To compile GLOW, you also need to pass the following flags to <tt>CC</tt>:
@@ -208,7 +211,7 @@ Finally, if you're compiling in debug mode, you may want to change the debug inf
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 23 May 2000
+Last updated 22 June 2000
 </address>
 
 

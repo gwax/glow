@@ -151,14 +151,18 @@ To use widgets, you need to #include the header file <tt>glowQuickPalette.h</tt>
 <p>
 To see how to create widgets, let's take a look at the new constructor for <tt>MandelWind</tt>, in the file <tt>mandelwind.cpp</tt>. It's been greatly expanded. First off, we've commented out the code we added in lesson 3 that creates a menu to attach to the right mouse button; we're going to provide access to this functionality using widgets instead.
 </p>
+
+<p>
+<b>Creating a widget palette window</b>
+</p>
+<p>
+The next line creates an object of type <tt>GlowQuickPaletteWindow</tt>. This is a subclass of <tt>GlowWindow</tt> that is designed to arrange and display widgets. Because it is a <tt>GlowWindow</tt> subclass, it will create a second toplevel window.
+</p>
 <blockquote>
 <pre>_controlWindow = new GlowQuickPaletteWindow("Controls");</pre>
 </blockquote>
 <p>
-The next line creates an object of type <tt>GlowQuickPaletteWindow</tt>. This is a subclass of <tt>GlowWindow</tt> that is designed to arrange and display widgets. Because it is a <tt>GlowWindow</tt> subclass, it will create a second toplevel window.
-</p>
-<p>
-The following lines of code will add widgets to the window, but before we look at them, a word about how widgets will actually be arranged within the window. When we create widgets, we won't give them a specific location in the window. Instead, the window will automatically arrange widgets based on their preferred sizes, and arrangement parameters that you can specify.
+The lines of code following will add widgets to the window, but before we look at them, a word about how widgets will actually be arranged within the window. When we create widgets, we won't give them a specific location in the window. Instead, the window will automatically arrange widgets based on their preferred sizes, and arrangement parameters that you can specify.
 </p>
 <p>
 The main arrangement parameters are <i>arrangement</i> and <i>alignment</i>. Arrangement is a direction that the widgets will build, either horizontal or vertical; alignment is their alignment within the alloted space, either up against one side, centered, or expanded to fill the space. For now, we're using the default arrangement and alignment values for <tt>GlowQuickPaletteWindow</tt>, which are vertical arrangement, and align-left. This means widgets will be arranged in a vertical column, left justified. You can create more complicated arrangements using arranging panels, described a little farther below. You can also control the spacing and margins around the widgets.
@@ -166,22 +170,33 @@ The main arrangement parameters are <i>arrangement</i> and <i>alignment</i>. Arr
 <p>
 Widgets aren't actually arranged until you call the <tt>Pack()</tt> method. At that time, each widget is queried to determine its preferred size, and <tt>GlowQuickPaletteWindow</tt> positions them according to the arrangement parameters. The window then resizes itself and displays itself by calling <tt>Show()</tt>. Generally, to create a window full of widgets, you create the window itself, then add the widgets in the order you want them to be arranged in, then call <tt>Pack()</tt>.
 </p>
+
+<p>
+<b>Adding widgets to a palette</b>
+</p>
 <p>
 Okay, on to adding widgets...
 </p>
 <blockquote>
 <pre>_controlWindow->AddLabel(
-    "Mandelglow (lesson 4)\nversion 0.9.5\nby Daniel Azuma");</pre>
+    "Mandelglow (lesson 4)\nby Daniel Azuma");</pre>
 </blockquote>
 <p>
-A number of methods are provided in <tt>GlowQuickPaletteWindow</tt> to add widgets to the window. This line creates a label widget, which is an object of type <tt>GlowLabelWidget</tt>. This widget simply displays a few lines of static text in the window. Notice that you can specify several lines of text in the label, separated by newline characters. Labels don't automatically word-wrap, so you need to explicitly separate any labels into multiple lines.
+A number of methods are provided in <tt>GlowQuickPaletteWindow</tt> to add widgets to the window. This line creates a label widget, which is an object of type <tt>GlowLabelWidget</tt>. This widget simply displays a few lines of static text in the window. Notice that you can specify several lines of text in the label, separated by newline characters. Labels don't automatically word-wrap, so you need to explicitly separate your labels into multiple lines.
+</p>
+<p>
+The next line adds a panel, which is of type <tt>GlowQuickPanelWidget</tt>.
 </p>
 <blockquote>
 <pre>GlowQuickPanelWidget* panel = _controlWindow->AddPanel(
     GlowQuickPanelWidget::etchedStyle, "Calculation");</pre>
 </blockquote>
+
 <p>
-The next line adds a panel, which is of type <tt>GlowQuickPanelWidget</tt>. A panel is a special widget that is designed to contain and arrange other widgets. Panels may be invisible, or they may appear as boxes in the window. They may also include a title. The panel created here appears as an etched box in the window, and includes the title "Calculation". We'll put widgets that control calculation parameters in this panel. Note that the method returns a pointer to the panel object; we'll use that pointer in the next line...
+<b>What's a panel?</b>
+</p>
+<p>
+A panel is a special widget that is designed to contain and arrange other widgets. Panels may be invisible, or they may appear as boxes in the window. They may also include a title. The panel created here appears as an etched box in the window, and includes the title "Calculation". We'll put widgets that control calculation parameters in this panel. Note that the method returns a pointer to the panel object; we'll use that pointer in the next line...
 </p>
 <blockquote>
 <pre>panel->AddCheckBox("Background calcuation", GlowCheckBoxWidget::on, this);</pre>
@@ -194,14 +209,21 @@ This line adds a checkbox widget (<tt>GlowCheckBoxWidget</tt>) to the panel. <tt
     GlowSliderWidget::defaultOptions, 2, "%.0f", "Iterations:\n%.0f", this);</pre>
 </blockquote>
 <p>
-This line adds a slider widget (<tt>GlowLabeledSliderWidget</tt>), also inside the calculation panel. Sliders are complex widgets with a lot of parameters. Here, in order, they are the lower bound, upper bound, initial value, options, number of evenly-spaced tick marks, printf pattern for upper and lower bound value labels, printf pattern for current value label, and pointer to an event receiver.
+This line adds a slider widget (<tt>GlowLabeledSliderWidget</tt>), also inside the calculation panel. Sliders are complex widgets with a lot of parameters. Here, in order, they are the lower bound, upper bound, initial value, options, number of evenly-spaced tick marks, printf pattern for upper and lower bound value labels, printf pattern for current value label, and pointer to an event receiver. The two printf patterns should include a <tt>%f</tt> placeholder, using the formatting used by the C standard library call <tt>printf</tt>. The placeholder will be replaced with the value associated with that label: the current value, the minimum value or the maximum value. If you want the number formatted as an integer rather than a float, you should use "<tt>%.0f</tt>" to indicate that you want no digits after the decimal point.
+</p>
+
+<p>
+<b>Nested panels</b>
+</p>
+<p>
+Next we add a second panel to the window. This panel will be titled "View".
 </p>
 <blockquote>
 <pre>panel = _controlWindow->AddPanel(
     GlowQuickPanelWidget::etchedStyle, "View");</pre>
 </blockquote>
 <p>
-We now add a second panel to the window. This panel will be titled "View".
+We now add a popup menu widget to the "View" panel.
 </p>
 <blockquote>
 <pre>GlowLabeledPopupMenuWidget* popup = panel->AddPopupMenu(
@@ -212,7 +234,7 @@ popup->AddItem("Blue");
 popup->AddItem("Multi");</pre>
 </blockquote>
 <p>
-Here we add a popup menu widget to the "View" panel. Note that we can take the pointer to the <tt>GlowLabeledPopupMenuWidget</tt> object returned from the call to <tt>AddPopupMenu</tt> and use it to further configure the widget. In this case, we set up the menu items with the color scheme options.
+Note that we can take the pointer to the <tt>GlowLabeledPopupMenuWidget</tt> object returned from the call to <tt>AddPopupMenu</tt> and use it to further configure the widget. In this case, we set up the menu items with the color scheme options.
 </p>
 <blockquote>
 <pre>_multiColorControlsPanel = panel->AddPanel(
@@ -230,6 +252,10 @@ After the sliders are added, notice this line:
 <p>
 This causes the panel, plus all its contents (i.e. the two sliders we added to it), to be deactivated. Widgets in the inactive state appear "grayed out" and do not respond to mouse clicks or other events. We want to set up the user interface so this panel appears active only when the popup menu is set to "Multi". The initial value of the menu is "Red", so we deactivate the panel initially.
 </p>
+
+<p>
+<b>Arranging panels</b>
+</p>
 <p>
 After we add one more button to the "View" panel, notice this line:
 </p>
@@ -244,6 +270,10 @@ This adds another panel to the window, but a special kind of panel called an arr
 <pre>_quitButton = panel->AddPushButton("Quit", this);
 _saveButton = panel->AddPushButton("Save Image", this);</pre>
 </blockquote>
+
+<p>
+<b>Displaying the widget palette</b>
+</p>
 <p>
 Now we're done adding all the widgets. To actually arrange them in the window and display the window, we call <tt>Pack()</tt>.
 </p>
@@ -292,6 +322,10 @@ GLOW provides a number of other types of widgets. You can browse the APIs for Gl
 <p>
 Now that we know how to create widgets, we need to respond to the user's manipulation of our widgets. Widget manipulations are reported as widget events, and you respond to them by creating event receiver objects, subclasses of the template <tt>TReceiver&lt;&gt;</tt>. If you remember from lesson 3, this is the same mechanism we used to receive menu events and idle events. Each widget defines its own event type.
 </p>
+
+<p>
+<b>Widget event classes</b>
+</p>
 <p>
 Let's go back once again to <tt>mandelwind.h</tt> and look at the revised class declaration.
 </p>
@@ -322,6 +356,10 @@ Remember that we need to bind each widget to the receivers that should be notifi
 <pre>_quitButton->Notifier().Bind(myObject1);
 _quitButton->Notifier().Bind(myObject2);</pre>
 </blockquote>
+
+<p>
+<b>Writing event receiver methods</b>
+</p>
 <p>
 Now let's take a look at a few examples of receiving widget events. The simplest example is the checkbox. We merely need to change the value of the class member <tt>_updateInBackground</tt> to match the new value of the widget.
 </p>
@@ -401,6 +439,10 @@ In our case, we want the slider that controls the number of iterations to be "no
 <p>
 If you looked through the new event handlers carefully, you probably noticed that there's one event that doesn't correspond to any of the widgets we created. We implemented <tt>GlowTextFieldWindowReceiver</tt>, which handles events from a ready-to-use window called, of course, a <tt>GlowTextFieldWindow</tt>. Ready-to-use windows are entire windows that may be created using a single line of code.
 </p>
+
+<p>
+<b>Creating a ready-to-use window</b>
+</p>
 <p>
 A text field window is meant to allow the user to enter a short string like a file name. It includes a prompt string, a text field, and any number of configurable pushbuttons that may be used to dismiss the window. We create a <tt>GlowTextFieldWindow</tt> in response to a press of the "save" button in <tt>OnMessage(const GlowPushButtonMessage&)</tt>:
 </p>
@@ -416,6 +458,10 @@ This code creates a text field window with the title "Save Image", positioned au
 </p>
 <p>
 The prompt is a <tt>GlowLabelWidget</tt>, and so you may cause it to span multiple lines by including newline characters. Also, notice the syntax for specifying buttons: a set of strings delimited by tabs. You must specify at least one button, but you may give as many as you want, as long as they fit in the window.
+</p>
+
+<p>
+<b>Ready-to-use window events</b>
 </p>
 <p>
 To receive events raised by the text field window, we inherit from <tt>GlowTextFieldWindowReceiver</tt> and implement its appropriate <tt>OnMessage()</tt> method.
@@ -613,7 +659,7 @@ You may also find it useful to look through the reference pages on <tt>GlowWidge
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 7 April 2000
+Last updated 22 June 2000
 </address>
 
 
