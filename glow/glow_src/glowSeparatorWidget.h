@@ -162,10 +162,10 @@ class GlowSeparatorWidget :
 	
 	private:
 	
-		Style _style;
+		Style style_;
 		
-		GlowColor _lightBevelColor;
-		GlowColor _darkBevelColor;
+		GlowColor lightBevelColor_;
+		GlowColor darkBevelColor_;
 	
 	protected:
 	

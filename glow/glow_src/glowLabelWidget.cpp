@@ -110,21 +110,21 @@ void GlowLabelWidget::Init(
 	GlowWidget::Init(root, parent, params);
 	if (params.text == 0)
 	{
-		_text = 0;
+		text_ = 0;
 	}
 	else
 	{
-		_text = new char[GLOW_CSTD::strlen(params.text)+1];
-		GLOW_CSTD::strcpy(_text, params.text);
+		text_ = new char[GLOW_CSTD::strlen(params.text)+1];
+		GLOW_CSTD::strcpy(text_, params.text);
 	}
-	_font = params.font;
-	_RecalcText();
-	_opaque = params.opaque;
-	_hIndent = params.hIndent;
-	_vIndent = params.vIndent;
-	_backColor = params.backColor;
-	_textColor = params.textColor;
-	_disableTextColor = params.disableTextColor;
+	font_ = params.font;
+	RecalcText_();
+	opaque_ = params.opaque;
+	hIndent_ = params.hIndent;
+	vIndent_ = params.vIndent;
+	backColor_ = params.backColor;
+	textColor_ = params.textColor;
+	disableTextColor_ = params.disableTextColor;
 }
 
 
@@ -132,7 +132,7 @@ GlowLabelWidget::~GlowLabelWidget()
 {
 	GLOW_DEBUGSCOPE("GlowLabelWidget::~GlowLabelWidget");
 	
-	delete[] _text;
+	delete[] text_;
 }
 
 
@@ -141,53 +141,53 @@ void GlowLabelWidget::SetText(
 {
 	GLOW_DEBUGSCOPE("GlowLabelWidget::SetText");
 	
-	delete[] _text;
+	delete[] text_;
 	if (text == 0)
 	{
-		_text = 0;
+		text_ = 0;
 	}
 	else
 	{
-		_text = new char[GLOW_CSTD::strlen(text)+1];
-		GLOW_CSTD::strcpy(_text, text);
+		text_ = new char[GLOW_CSTD::strlen(text)+1];
+		GLOW_CSTD::strcpy(text_, text);
 	}
-	_RecalcText();
+	RecalcText_();
 	Refresh();
 }
 
 
-void GlowLabelWidget::_RecalcText()
+void GlowLabelWidget::RecalcText_()
 {
-	_textHeight = 1;
-	_maxLineWidth = 0;
+	textHeight_ = 1;
+	maxLineWidth_ = 0;
 	int thisLineWidth = 0;
-	int strlength = (_text == 0) ? 0 : GLOW_CSTD::strlen(_text);
+	int strlength = (text_ == 0) ? 0 : GLOW_CSTD::strlen(text_);
 	for (int i=0; i<strlength; i++)
 	{
-		if (_text[i] == '\r')
+		if (text_[i] == '\r')
 		{
-			_textHeight++;
+			textHeight_++;
 			thisLineWidth = 0;
-			if (i+1<strlength && _text[i+1] == '\n')
+			if (i+1<strlength && text_[i+1] == '\n')
 			{
 				i++;
 			}
 		}
-		else if (_text[i] == '\n')
+		else if (text_[i] == '\n')
 		{
-			_textHeight++;
+			textHeight_++;
 			thisLineWidth = 0;
 		}
 		else
 		{
-			thisLineWidth += _font.CharWidth(_text[i]);
-			if (thisLineWidth > _maxLineWidth)
+			thisLineWidth += font_.CharWidth(text_[i]);
+			if (thisLineWidth > maxLineWidth_)
 			{
-				_maxLineWidth = thisLineWidth;
+				maxLineWidth_ = thisLineWidth;
 			}
 		}
 	}
-	_textHeight *= _font.Leading();
+	textHeight_ *= font_.Leading();
 }
 
 
@@ -204,7 +204,7 @@ GlowWidget::AutoPackError GlowLabelWidget::OnAutoPack(
 	GLOW_DEBUGSCOPE("GlowLabelWidget::OnAutoPack");
 
 	int hnew = Width();
-	int preferred = _maxLineWidth+_hIndent+_hIndent;
+	int preferred = maxLineWidth_+hIndent_+hIndent_;
 	if (hSize != unspecifiedSize && hSize < preferred)
 	{
 		return hAutoPackError;
@@ -219,7 +219,7 @@ GlowWidget::AutoPackError GlowLabelWidget::OnAutoPack(
 	}
 	
 	int vnew = Height();
-	preferred = _textHeight+_vIndent+_vIndent;
+	preferred = textHeight_+vIndent_+vIndent_;
 	if (vSize != unspecifiedSize && vSize < preferred)
 	{
 		return vAutoPackError;
@@ -243,37 +243,37 @@ void GlowLabelWidget::OnWidgetPaint()
 {
 	GLOW_DEBUGSCOPE("GlowLabelWidget::OnWidgetPaint");
 	
-	if (_opaque)
+	if (opaque_)
 	{
-		_backColor.Apply();
+		backColor_.Apply();
 		::glRectf(-1.0f, -1.0f, 1.0f, 1.0f);
 	}
 	
-	int vPos = _font.BaselinePos()+_vIndent;
+	int vPos = font_.BaselinePos()+vIndent_;
 	GLfloat x, y;
 	
 	if (IsActive())
 	{
-		_textColor.Apply();
+		textColor_.Apply();
 	}
 	else
 	{
-		_disableTextColor.Apply();
+		disableTextColor_.Apply();
 	}
-	NormalizeCoordinates(_hIndent, vPos, x, y);
+	NormalizeCoordinates(hIndent_, vPos, x, y);
 	::glRasterPos2f(x, y);
-	int textlen = (_text == 0) ? 0 : GLOW_CSTD::strlen(_text);
+	int textlen = (text_ == 0) ? 0 : GLOW_CSTD::strlen(text_);
 	for (int i=0; i<textlen; i++)
 	{
-		if (_text[i] == '\n')
+		if (text_[i] == '\n')
 		{
-			vPos += _font.Leading();
-			NormalizeCoordinates(_hIndent, vPos, x, y);
+			vPos += font_.Leading();
+			NormalizeCoordinates(hIndent_, vPos, x, y);
 			::glRasterPos2f(x, y);
 		}
 		else
 		{
-			::glutBitmapCharacter(_font, _text[i]);
+			::glutBitmapCharacter(font_, text_[i]);
 		}
 	}
 }
@@ -365,17 +365,17 @@ void GlowWidgetLabelHelper::InitLabel(
 	GlowColor textColor,
 	GlowColor disableTextColor)
 {
-	_main = main;
-	_labelSpacing = spacing;
-	_labelPosition = position;
-	_labelWidth = width;
-	_labelHeight = height;
+	main_ = main;
+	labelSpacing_ = spacing;
+	labelPosition_ = position;
+	labelWidth_ = width;
+	labelHeight_ = height;
 	GlowLabelParams params;
 	params.text = text;
 	params.font = font;
 	params.textColor = textColor;
 	params.disableTextColor = disableTextColor;
-	_label = new GlowWidgetLabelWidget(main, params);
+	label_ = new GlowWidgetLabelWidget(main, params);
 	RepositionLabel();
 }
 
@@ -388,25 +388,25 @@ GlowWidget::AutoPackError GlowWidgetLabelHelper::HelpAutoPack(
 	int& topMargin,
 	int& bottomMargin)
 {
-	if (_label->GetText() == 0)
+	if (label_->GetText() == 0)
 	{
 		return GlowWidget::noAutoPackError;
 	}
 	
 	// Determine preferred size for label
-	_label->FindPreferredSize(_labelWidth, _labelHeight);
+	label_->FindPreferredSize(labelWidth_, labelHeight_);
 	
 	// Adjust size according to label
 	if (hSize != GlowWidget::unspecifiedSize)
 	{
-		if (_labelPosition == leftLabelPosition ||
-			_labelPosition == rightLabelPosition)
+		if (labelPosition_ == leftLabelPosition ||
+			labelPosition_ == rightLabelPosition)
 		{
-			hSize -= _labelWidth + _labelSpacing;
+			hSize -= labelWidth_ + labelSpacing_;
 		}
-		else if (_labelWidth > _main->Width())
+		else if (labelWidth_ > main_->Width())
 		{
-			hSize -= _labelWidth - _main->Width();
+			hSize -= labelWidth_ - main_->Width();
 		}
 		if (hSize < 2)
 		{
@@ -415,14 +415,14 @@ GlowWidget::AutoPackError GlowWidgetLabelHelper::HelpAutoPack(
 	}
 	if (vSize != GlowWidget::unspecifiedSize)
 	{
-		if (_labelPosition == topLabelPosition ||
-			_labelPosition == bottomLabelPosition)
+		if (labelPosition_ == topLabelPosition ||
+			labelPosition_ == bottomLabelPosition)
 		{
-			vSize -= _labelHeight + _labelSpacing;
+			vSize -= labelHeight_ + labelSpacing_;
 		}
-		else if (_labelHeight > _main->Height())
+		else if (labelHeight_ > main_->Height())
 		{
-			vSize -= _labelHeight - _main->Height();
+			vSize -= labelHeight_ - main_->Height();
 		}
 		if (vSize < 2)
 		{
@@ -431,31 +431,31 @@ GlowWidget::AutoPackError GlowWidgetLabelHelper::HelpAutoPack(
 	}
 	
 	// Adjust margins according to label
-	switch (_labelPosition)
+	switch (labelPosition_)
 	{
 		case leftLabelPosition:
-			leftMargin = GLOW_STD::max(leftMargin, _labelWidth+_labelSpacing);
+			leftMargin = GLOW_STD::max(leftMargin, labelWidth_+labelSpacing_);
 			break;
 		case rightLabelPosition:
-			rightMargin = GLOW_STD::max(rightMargin, _labelWidth+_labelSpacing);
+			rightMargin = GLOW_STD::max(rightMargin, labelWidth_+labelSpacing_);
 			break;
 		case topLabelPosition:
-			topMargin = GLOW_STD::max(topMargin, _labelHeight+_labelSpacing);
+			topMargin = GLOW_STD::max(topMargin, labelHeight_+labelSpacing_);
 			break;
 		case bottomLabelPosition:
-			bottomMargin = GLOW_STD::max(bottomMargin, _labelHeight+_labelSpacing);
+			bottomMargin = GLOW_STD::max(bottomMargin, labelHeight_+labelSpacing_);
 			break;
 	}
-	if ((_labelPosition == leftLabelPosition || _labelPosition == rightLabelPosition) &&
-		_labelHeight > _main->Height())
+	if ((labelPosition_ == leftLabelPosition || labelPosition_ == rightLabelPosition) &&
+		labelHeight_ > main_->Height())
 	{
-		topMargin = GLOW_STD::max(topMargin, (_labelHeight-_main->Height())/2);
-		bottomMargin = GLOW_STD::max(bottomMargin, (_labelHeight-_main->Height())/2);
+		topMargin = GLOW_STD::max(topMargin, (labelHeight_-main_->Height())/2);
+		bottomMargin = GLOW_STD::max(bottomMargin, (labelHeight_-main_->Height())/2);
 	}
-	if ((_labelPosition == topLabelPosition || _labelPosition == bottomLabelPosition) &&
-		_labelWidth > _main->Width())
+	if ((labelPosition_ == topLabelPosition || labelPosition_ == bottomLabelPosition) &&
+		labelWidth_ > main_->Width())
 	{
-		rightMargin = GLOW_STD::max(rightMargin, _labelWidth-_main->Width());
+		rightMargin = GLOW_STD::max(rightMargin, labelWidth_-main_->Width());
 	}
 	
 	return GlowWidget::noAutoPackError;
@@ -464,39 +464,39 @@ GlowWidget::AutoPackError GlowWidgetLabelHelper::HelpAutoPack(
 
 void GlowWidgetLabelHelper::RepositionLabel()
 {
-	switch (_labelPosition)
+	switch (labelPosition_)
 	{
 		case leftLabelPosition:
-			_label->AutoPack(
-				-_labelWidth-_labelSpacing,
-				-_labelSpacing,
-				(_main->Height()-_labelHeight-1)/2,
-				(_main->Height()+_labelHeight+1)/2,
+			label_->AutoPack(
+				-labelWidth_-labelSpacing_,
+				-labelSpacing_,
+				(main_->Height()-labelHeight_-1)/2,
+				(main_->Height()+labelHeight_+1)/2,
 				GlowWidget::preferredSize | GlowWidget::rightPos,
 				GlowWidget::preferredSize | GlowWidget::centerPos);
 			break;
 		case rightLabelPosition:
-			_label->AutoPack(
-				_labelSpacing,
-				_labelSpacing+_labelWidth,
-				(_main->Height()-_labelHeight-1)/2,
-				(_main->Height()+_labelHeight+1)/2,
+			label_->AutoPack(
+				labelSpacing_,
+				labelSpacing_+labelWidth_,
+				(main_->Height()-labelHeight_-1)/2,
+				(main_->Height()+labelHeight_+1)/2,
 				GlowWidget::preferredSize | GlowWidget::leftPos,
 				GlowWidget::preferredSize | GlowWidget::centerPos);
 			break;
 		case topLabelPosition:
-			_label->AutoPack(
-				0, _main->Width(),
-				-_labelHeight-_labelSpacing,
-				-_labelSpacing,
+			label_->AutoPack(
+				0, main_->Width(),
+				-labelHeight_-labelSpacing_,
+				-labelSpacing_,
 				GlowWidget::preferredSize | GlowWidget::leftPos,
 				GlowWidget::preferredSize | GlowWidget::bottomPos);
 			break;
 		case bottomLabelPosition:
-			_label->AutoPack(
-				0, _main->Width(),
-				_labelSpacing,
-				_labelSpacing+_labelHeight,
+			label_->AutoPack(
+				0, main_->Width(),
+				labelSpacing_,
+				labelSpacing_+labelHeight_,
 				GlowWidget::preferredSize | GlowWidget::leftPos,
 				GlowWidget::preferredSize | GlowWidget::topPos);
 			break;

@@ -222,7 +222,7 @@ class GlowMenuButtonWidget :
 	
 	private:
 	
-		Glow_MenuButtonSubwindow* _subwindow;
+		Glow_MenuButtonSubwindow* subwindow_;
 	
 	protected:
 	
@@ -380,11 +380,11 @@ class GlowPopupMenuWidget :
 	
 	private:
 	
-		char* _mark;
-		GlowMenu* _menu;
-		int _curItem;
-		Glow_PopupMenuSubwindow* _subwindow;
-		TSender<const GlowPopupMenuMessage&> _sender;
+		char* mark_;
+		GlowMenu* menu_;
+		int curItem_;
+		Glow_PopupMenuSubwindow* subwindow_;
+		TSender<const GlowPopupMenuMessage&> sender_;
 	
 	protected:
 	
@@ -465,8 +465,8 @@ class GlowLabeledPopupMenuWidget :
 	
 	private:
 	
-		GlowColor _upLabelColor;
-		GlowColor _downLabelColor;
+		GlowColor upLabelColor_;
+		GlowColor downLabelColor_;
 };
 
 

@@ -221,7 +221,7 @@ class GlowWidget :
 			noAutoPackError = 0,
 			hAutoPackError = 1,
 			vAutoPackError = 2,
-			_maximum = 255
+			maximum_ = 255
 		};
 		
 		// Sizing/justification options
@@ -428,43 +428,43 @@ class GlowWidget :
 	
 	private:
 	
-		inline void _SetHasKeyboardFocus(
+		inline void SetHasKeyboardFocus_(
 			bool val);
 		
-		void _BroadcastNotifyList();
-		void _BroadcastMask(
+		void BroadcastNotifyList_();
+		void BroadcastMask_(
 			bool unmasking);
-		void _AddToNotifyList();
-		void _NotifyOne(
+		void AddToNotifyList_();
+		void NotifyOne_(
 			const Glow_OldWidgetState& oldState);
 	
 	private:
 	
 		// List of deferred widget operations
-		static GLOW_STD::map<GlowWidget*, Glow_OldWidgetState> _notifyList;
-		static void _ExecuteNotify();
+		static GLOW_STD::map<GlowWidget*, Glow_OldWidgetState> notifyList_;
+		static void ExecuteNotify_();
 	
 	private:
 	
-		int _xpos;
-		int _ypos;
-		int _width;
-		int _height;
+		int xpos_;
+		int ypos_;
+		int width_;
+		int height_;
 		
-		bool _refreshEnabled;
-		bool _clipping;
-		GLint _oldScissor[4];
-		GlowColor _backColor;
+		bool refreshEnabled_;
+		bool clipping_;
+		GLint oldScissor_[4];
+		GlowColor backColor_;
 		
-		GlowWidgetRoot* _root;
-		GlowWidget* _parentWidget;
+		GlowWidgetRoot* root_;
+		GlowWidget* parentWidget_;
 		
-		bool _receivingMouse;
-		bool _receivingKeyboard;
-		bool _hasFocus;
-		short _visibility;
+		bool receivingMouse_;
+		bool receivingKeyboard_;
+		bool hasFocus_;
+		short visibility_;
 		
-		long _refcon;
+		long refcon_;
 };
 
 GLOW_INTERNAL_SETUPENUMBITFIELD(GlowWidget::AutoPackOptions)
@@ -563,30 +563,30 @@ class GlowWidgetRoot
 	
 	private:
 	
-		inline void _RegisterMouseWidget(
+		inline void RegisterMouseWidget_(
 			GlowWidget* widget);
-		inline void _RegisterKeyboardWidget(
+		inline void RegisterKeyboardWidget_(
 			GlowWidget* widget);
-		void _UnregisterMouseWidget(
+		void UnregisterMouseWidget_(
 			GlowWidget* widget);
-		void _UnregisterKeyboardWidget(
+		void UnregisterKeyboardWidget_(
 			GlowWidget* widget);
 	
 	private:
 	
-		GlowColor _backColor;
-		GLOW_STD::list<GlowWidget*> _mouseWidgets;
-		GLOW_STD::list<GlowWidget*> _keyboardWidgets;
-		GLOW_STD::list<GlowWidget*>::iterator _curKeyboardFocus;
+		GlowColor backColor_;
+		GLOW_STD::list<GlowWidget*> mouseWidgets_;
+		GLOW_STD::list<GlowWidget*> keyboardWidgets_;
+		GLOW_STD::list<GlowWidget*>::iterator curKeyboardFocus_;
 		
-		GlowWidget* _leftButton;
-		GlowWidget* _middleButton;
-		GlowWidget* _rightButton;
+		GlowWidget* leftButton_;
+		GlowWidget* middleButton_;
+		GlowWidget* rightButton_;
 		
-		GlowSubwindow* _subwindow;
+		GlowSubwindow* subwindow_;
 		
 		// Event filter senders
-		TSender<GlowWidgetKeyboardData&> _keyboardFilters;
+		TSender<GlowWidgetKeyboardData&> keyboardFilters_;
 };
 
 
@@ -615,7 +615,7 @@ class GlowWidgetKeyboardData
 	
 	private:
 	
-		bool _continue;
+		bool continue_;
 };
 
 

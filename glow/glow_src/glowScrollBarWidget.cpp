@@ -182,7 +182,7 @@ inline void Glow_ScrollBar_TimerFunc::Unregister()
 void Glow_ScrollBar_TimerFunc::OnMessage(
 	const GlowTimerMessage& message)
 {
-	_scrollBar->_HandlePartPeriodical(false);
+	_scrollBar->HandlePartPeriodical_(false);
 }
 
 
@@ -213,38 +213,38 @@ void GlowScrollBarWidget::Init(
 	GLOW_DEBUG(params.max < params.min + params.span,
 		"max <= min while constructing GlowScrollBar");
 	GlowWidget::Init(root, parent, params);
-	_min = params.min;
-	_max = params.max;
-	_topValue = params.initialTop;
-	_span = params.span;
-	if (_topValue > _max-_span) _topValue = _max-_span;
-	if (_topValue < _min) _topValue = _min;
-	_firstDelay = params.firstDelay;
-	_secondDelay = params.secondDelay;
-	_toggleTimer = 0;
-	_arrowStep = params.arrowStep;
-	_pageStep = params.pageStep;
+	min_ = params.min;
+	max_ = params.max;
+	topValue_ = params.initialTop;
+	span_ = params.span;
+	if (topValue_ > max_-span_) topValue_ = max_-span_;
+	if (topValue_ < min_) topValue_ = min_;
+	firstDelay_ = params.firstDelay;
+	secondDelay_ = params.secondDelay;
+	toggleTimer_ = 0;
+	arrowStep_ = params.arrowStep;
+	pageStep_ = params.pageStep;
 	if (params.receiver != 0)
 	{
-		_sender.Bind(params.receiver);
+		sender_.Bind(params.receiver);
 	}
-	_stripColor = params.stripColor;
-	_indicatorColor = params.indicatorColor;
-	_shadowColor = params.shadowColor;
-	_buttonColor = params.buttonColor;
-	_buttonIconColor = params.buttonIconColor;
-	_hiliteStripColor = params.hiliteStripColor;
-	_hiliteIndicatorColor = params.hiliteIndicatorColor;
-	_hiliteButtonColor = params.hiliteButtonColor;
-	_hiliteButtonIconColor = params.hiliteButtonIconColor;
-	_disableStripColor = params.disableStripColor;
-	_disableIndicatorColor = params.disableIndicatorColor;
-	_disableButtonColor = params.disableButtonColor;
-	_disableButtonIconColor = params.disableButtonIconColor;
-	_disableOutlineColor = params.disableOutlineColor;
-	_lightBevelColor = params.lightBevelColor;
-	_darkBevelColor = params.darkBevelColor;
-	_curPart = noPart;
+	stripColor_ = params.stripColor;
+	indicatorColor_ = params.indicatorColor;
+	shadowColor_ = params.shadowColor;
+	buttonColor_ = params.buttonColor;
+	buttonIconColor_ = params.buttonIconColor;
+	hiliteStripColor_ = params.hiliteStripColor;
+	hiliteIndicatorColor_ = params.hiliteIndicatorColor;
+	hiliteButtonColor_ = params.hiliteButtonColor;
+	hiliteButtonIconColor_ = params.hiliteButtonIconColor;
+	disableStripColor_ = params.disableStripColor;
+	disableIndicatorColor_ = params.disableIndicatorColor;
+	disableButtonColor_ = params.disableButtonColor;
+	disableButtonIconColor_ = params.disableButtonIconColor;
+	disableOutlineColor_ = params.disableOutlineColor;
+	lightBevelColor_ = params.lightBevelColor;
+	darkBevelColor_ = params.darkBevelColor;
+	curPart_ = noPart;
 	
 	RegisterMouseEvents();
 }
@@ -325,7 +325,7 @@ GlowWidget::AutoPackError GlowScrollBarWidget::OnAutoPack(
 }
 
 
-void GlowScrollBarWidget::_DrawArrowButton(
+void GlowScrollBarWidget::DrawArrowButton_(
 	Part part,
 	float left,
 	float right,
@@ -336,28 +336,28 @@ void GlowScrollBarWidget::_DrawArrowButton(
 	// Quad
 	if (!IsActive())
 	{
-		_disableButtonColor.Apply();
+		disableButtonColor_.Apply();
 	}
-	else if (_curPart == part)
+	else if (curPart_ == part)
 	{
-		_hiliteButtonColor.Apply();
+		hiliteButtonColor_.Apply();
 	}
 	else
 	{
-		_buttonColor.Apply();
+		buttonColor_.Apply();
 	}
 	::glRectf(left, -1.0f, right, 1.0f);
 	
 	if (IsActive())
 	{
 		// Left/top bevels
-		if (_curPart == part)
+		if (curPart_ == part)
 		{
-			_darkBevelColor.Apply();
+			darkBevelColor_.Apply();
 		}
 		else
 		{
-			_lightBevelColor.Apply();
+			lightBevelColor_.Apply();
 		}
 		::glBegin(GL_QUAD_STRIP);
 		::glVertex2f(left, -1.0f);
@@ -369,13 +369,13 @@ void GlowScrollBarWidget::_DrawArrowButton(
 		::glEnd();
 		
 		// Right/bottom bevels
-		if (_curPart == part)
+		if (curPart_ == part)
 		{
-			_lightBevelColor.Apply();
+			lightBevelColor_.Apply();
 		}
 		else
 		{
-			_darkBevelColor.Apply();
+			darkBevelColor_.Apply();
 		}
 		::glBegin(GL_QUAD_STRIP);
 		::glVertex2f(right, 1.0f);
@@ -388,7 +388,7 @@ void GlowScrollBarWidget::_DrawArrowButton(
 	}
 	else
 	{
-		_disableOutlineColor.Apply();
+		disableOutlineColor_.Apply();
 		::glBegin(GL_LINE_LOOP);
 		::glVertex2f(right, 1.0f);
 		::glVertex2f(right, -1.0f);
@@ -400,15 +400,15 @@ void GlowScrollBarWidget::_DrawArrowButton(
 	// Arrow
 	if (!IsActive())
 	{
-		_disableButtonIconColor.Apply();
+		disableButtonIconColor_.Apply();
 	}
-	else if (_curPart == part)
+	else if (curPart_ == part)
 	{
-		_hiliteButtonIconColor.Apply();
+		hiliteButtonIconColor_.Apply();
 	}
 	else
 	{
-		_buttonIconColor.Apply();
+		buttonIconColor_.Apply();
 	}
 	if (part == upButtonPart)
 	{
@@ -430,7 +430,7 @@ void GlowScrollBarWidget::_DrawArrowButton(
 
 
 // Compute normalized coordinates for parts.
-void GlowScrollBarWidget::_ComputePartPositions(
+void GlowScrollBarWidget::ComputePartPositions_(
 	float& pseudoWidth,
 	float& pseudoHeight,
 	int& arrowButtons,
@@ -465,12 +465,12 @@ void GlowScrollBarWidget::_ComputePartPositions(
 	stripLeft = -1.0f+buttonWidth*arrowButtons;
 	stripRight = 1.0f-buttonWidth*arrowButtons;
 	
-	indicLeft = stripLeft + (stripRight-stripLeft)/float(_max-_min)*float(_topValue-_min);
-	float indicWidth = (stripRight-stripLeft)/float(_max-_min)*float(_span);
+	indicLeft = stripLeft + (stripRight-stripLeft)/float(max_-min_)*float(topValue_-min_);
+	float indicWidth = (stripRight-stripLeft)/float(max_-min_)*float(span_);
 	if (indicWidth < buttonWidth)
 	{
 		indicWidth = buttonWidth;
-		indicLeft = stripLeft + (stripRight-stripLeft-indicWidth)/float(_max-_min-_span)*float(_topValue-_min);
+		indicLeft = stripLeft + (stripRight-stripLeft-indicWidth)/float(max_-min_-span_)*float(topValue_-min_);
 	}
 	indicRight = indicLeft + indicWidth;
 }
@@ -479,7 +479,7 @@ void GlowScrollBarWidget::_ComputePartPositions(
 // Compute normalized position from a mouse position.
 // left=-1, right=1, top=-1, bottom=1
 // Returns true iff inside the widget
-bool GlowScrollBarWidget::_NormalizePosition(
+bool GlowScrollBarWidget::NormalizePosition_(
 	int x,
 	int y,
 	float& pos)
@@ -499,7 +499,7 @@ bool GlowScrollBarWidget::_NormalizePosition(
 
 // When dragging indicator, update control value according to mouse position.
 // Return true iff value changed
-bool GlowScrollBarWidget::_UpdateDragValue(
+bool GlowScrollBarWidget::UpdateDragValue_(
 	int x,
 	int y)
 {
@@ -512,20 +512,20 @@ bool GlowScrollBarWidget::_UpdateDragValue(
 	float stripRight = 0.0f;
 	float indicLeft = 0.0f;
 	float indicRight = 0.0f;
-	_ComputePartPositions(pseudoWidth, pseudoHeight, arrowButtons, buttonWidth,
+	ComputePartPositions_(pseudoWidth, pseudoHeight, arrowButtons, buttonWidth,
 		stripLeft, stripRight, indicLeft, indicRight);
 	
 	// Interpret position
 	float pos = 0.0f;
-	_NormalizePosition(x, y, pos);
-	float value = float(pos-_posOffset-stripLeft)*float(_max-_span-_min)/
+	NormalizePosition_(x, y, pos);
+	float value = float(pos-posOffset_-stripLeft)*float(max_-span_-min_)/
 		float(stripRight-stripLeft-(indicRight-indicLeft));
-	int newtop = _min + static_cast<int>(GLOW_CSTD::floor(value+0.5f));
-	if (newtop < _min) newtop = _min;
-	if (newtop > _max-_span) newtop = _max-_span;
-	if (newtop != _topValue)
+	int newtop = min_ + static_cast<int>(GLOW_CSTD::floor(value+0.5f));
+	if (newtop < min_) newtop = min_;
+	if (newtop > max_-span_) newtop = max_-span_;
+	if (newtop != topValue_)
 	{
-		_topValue = newtop;
+		topValue_ = newtop;
 		return true;
 	}
 	return false;
@@ -533,8 +533,8 @@ bool GlowScrollBarWidget::_UpdateDragValue(
 
 
 // When dragging in button parts or page parts, determine if we're
-// still in the part, and update _inside. Return true iff change.
-bool GlowScrollBarWidget::_UpdateInsideState(
+// still in the part, and update inside_. Return true iff change.
+bool GlowScrollBarWidget::UpdateInsideState_(
 	int x,
 	int y)
 {
@@ -547,36 +547,36 @@ bool GlowScrollBarWidget::_UpdateInsideState(
 	float stripRight = 0;
 	float indicLeft = 0;
 	float indicRight = 0;
-	_ComputePartPositions(pseudoWidth, pseudoHeight, arrowButtons, buttonWidth,
+	ComputePartPositions_(pseudoWidth, pseudoHeight, arrowButtons, buttonWidth,
 		stripLeft, stripRight, indicLeft, indicRight);
 	
 	// Interpret position
 	float pos = 0;
 	bool ninside = false;
-	if (_NormalizePosition(x, y, pos))
+	if (NormalizePosition_(x, y, pos))
 	{
-		_savePosition = pos;
-		if (_curPart == upPagePart)
+		savePosition_ = pos;
+		if (curPart_ == upPagePart)
 		{
 			ninside = (pos >= stripLeft && pos <= indicLeft);
 		}
-		else if (_curPart == downPagePart)
+		else if (curPart_ == downPagePart)
 		{
 			ninside = (pos >= indicRight && pos <= stripRight);
 		}
-		else if (_curPart == upButtonPart && !_innerButton)
+		else if (curPart_ == upButtonPart && !innerButton_)
 		{
 			ninside = (pos >= -1.0f && pos <= buttonWidth-1.0f);
 		}
-		else if (_curPart == downButtonPart && !_innerButton)
+		else if (curPart_ == downButtonPart && !innerButton_)
 		{
 			ninside = (pos >= 1.0f-buttonWidth && pos <= 1.0f);
 		}
-		else if (_curPart == downButtonPart && _innerButton)
+		else if (curPart_ == downButtonPart && innerButton_)
 		{
 			ninside = (pos >= buttonWidth-1.0f && pos <= buttonWidth*2.0f-1.0f);
 		}
-		else if (_curPart == upButtonPart && _innerButton)
+		else if (curPart_ == upButtonPart && innerButton_)
 		{
 			ninside = (pos >= 1.0f-buttonWidth*2.0f && pos <= 1.0f-buttonWidth);
 		}
@@ -587,15 +587,15 @@ bool GlowScrollBarWidget::_UpdateInsideState(
 	}
 	
 	// Check for changes
-	if (ninside && !_inside)
+	if (ninside && !inside_)
 	{
-		_inside = true;
-		_toggleTimer = 1;
+		inside_ = true;
+		toggleTimer_ = 1;
 		return true;
 	}
-	else if (!ninside && _inside)
+	else if (!ninside && inside_)
 	{
-		_inside = false;
+		inside_ = false;
 		_timer->Unregister();
 		return true;
 	}
@@ -603,14 +603,14 @@ bool GlowScrollBarWidget::_UpdateInsideState(
 }
 
 
-void GlowScrollBarWidget::_HandlePartPeriodical(
+void GlowScrollBarWidget::HandlePartPeriodical_(
 	bool first)
 {
 	// Handle part stuff
-	OnPart(_curPart, _button, _modifiers);
+	OnPart(curPart_, button_, modifiers_);
 	Refresh();
 	
-	if ((_curPart == upPagePart || _curPart == downPagePart) && _inside)
+	if ((curPart_ == upPagePart || curPart_ == downPagePart) && inside_)
 	{
 		// Check to make sure we're still in page region
 		float pseudoWidth = 0;
@@ -621,36 +621,36 @@ void GlowScrollBarWidget::_HandlePartPeriodical(
 		float stripRight = 0;
 		float indicLeft = 0;
 		float indicRight = 0;
-		_ComputePartPositions(pseudoWidth, pseudoHeight, arrowButtons, buttonWidth,
+		ComputePartPositions_(pseudoWidth, pseudoHeight, arrowButtons, buttonWidth,
 			stripLeft, stripRight, indicLeft, indicRight);
 		
-		if (_curPart == upPagePart)
+		if (curPart_ == upPagePart)
 		{
-			if (_savePosition < stripLeft || _savePosition > indicLeft)
+			if (savePosition_ < stripLeft || savePosition_ > indicLeft)
 			{
-				_inside = false;
-				_toggleTimer = 0;
+				inside_ = false;
+				toggleTimer_ = 0;
 			}
 		}
-		else //if (_curPart == downPagePart)
+		else //if (curPart_ == downPagePart)
 		{
-			if (_savePosition < indicRight || _savePosition > stripRight)
+			if (savePosition_ < indicRight || savePosition_ > stripRight)
 			{
-				_inside = false;
-				_toggleTimer = 0;
+				inside_ = false;
+				toggleTimer_ = 0;
 			}
 		}
 	}
 	
-	if (_inside)
+	if (inside_)
 	{
 		if (first)
 		{
-			_toggleTimer = _firstDelay;
+			toggleTimer_ = firstDelay_;
 		}
 		else
 		{
-			_toggleTimer = _secondDelay;
+			toggleTimer_ = secondDelay_;
 		}
 	}
 }
@@ -669,7 +669,7 @@ void GlowScrollBarWidget::OnWidgetPaint()
 	float stripRight = 0;
 	float indicLeft = 0;
 	float indicRight = 0;
-	_ComputePartPositions(pseudoWidth, pseudoHeight, arrowButtons, buttonWidth,
+	ComputePartPositions_(pseudoWidth, pseudoHeight, arrowButtons, buttonWidth,
 		stripLeft, stripRight, indicLeft, indicRight);
 	GLfloat bevelHeight = 4.0f/pseudoHeight;
 	GLfloat bevelWidth = 4.0f/pseudoWidth;
@@ -684,32 +684,32 @@ void GlowScrollBarWidget::OnWidgetPaint()
 	// Draw strip back
 	if (!IsActive())
 	{
-		_disableStripColor.Apply();
+		disableStripColor_.Apply();
 	}
-	else if (_curPart == upPagePart)
+	else if (curPart_ == upPagePart)
 	{
-		_hiliteStripColor.Apply();
+		hiliteStripColor_.Apply();
 	}
 	else
 	{
-		_stripColor.Apply();
+		stripColor_.Apply();
 	}
 	::glRectf(-1.0f, -1.0f, indicLeft, 1.0f);
 	if (IsActive())
 	{
-		if (_curPart == downPagePart)
+		if (curPart_ == downPagePart)
 		{
-			_hiliteStripColor.Apply();
+			hiliteStripColor_.Apply();
 		}
 		else
 		{
-			_stripColor.Apply();
+			stripColor_.Apply();
 		}
 	}
 	::glRectf(indicRight, -1.0f, 1.0f, 1.0f);
 	if (!IsActive())
 	{
-		_disableOutlineColor.Apply();
+		disableOutlineColor_.Apply();
 		::glBegin(GL_LINE_LOOP);
 		::glVertex2f(-1.0f, 1.0f);
 		::glVertex2f(-1.0f, -1.0f);
@@ -719,32 +719,32 @@ void GlowScrollBarWidget::OnWidgetPaint()
 	}
 	
 	// Draw shadow
-	if (_curPart == indicatorPart)
+	if (curPart_ == indicatorPart)
 	{
-		_shadowColor.Apply();
-		::glRectf(_savePosition, -1.0f,
-			_savePosition+indicRight-indicLeft, 1.0f);
+		shadowColor_.Apply();
+		::glRectf(savePosition_, -1.0f,
+			savePosition_+indicRight-indicLeft, 1.0f);
 		
 		// Top/left bevels
-		_darkBevelColor.Apply();
+		darkBevelColor_.Apply();
 		::glBegin(GL_QUAD_STRIP);
-		::glVertex2f(_savePosition+indicRight-indicLeft, 1.0f);
-		::glVertex2f(_savePosition+indicRight-indicLeft-bevelWidth, 1.0f-bevelHeight);
-		::glVertex2f(_savePosition, 1.0f);
-		::glVertex2f(_savePosition+bevelWidth, 1.0f-bevelHeight);
-		::glVertex2f(_savePosition, -1.0f);
-		::glVertex2f(_savePosition+bevelWidth, -1.0f+bevelHeight);
+		::glVertex2f(savePosition_+indicRight-indicLeft, 1.0f);
+		::glVertex2f(savePosition_+indicRight-indicLeft-bevelWidth, 1.0f-bevelHeight);
+		::glVertex2f(savePosition_, 1.0f);
+		::glVertex2f(savePosition_+bevelWidth, 1.0f-bevelHeight);
+		::glVertex2f(savePosition_, -1.0f);
+		::glVertex2f(savePosition_+bevelWidth, -1.0f+bevelHeight);
 		::glEnd();
 		
 		// Bottom/right bevel
-		_lightBevelColor.Apply();
+		lightBevelColor_.Apply();
 		::glBegin(GL_QUAD_STRIP);
-		::glVertex2f(_savePosition, -1.0f);
-		::glVertex2f(_savePosition+bevelWidth, -1.0f+bevelHeight);
-		::glVertex2f(_savePosition+indicRight-indicLeft, -1.0f);
-		::glVertex2f(_savePosition+indicRight-indicLeft-bevelWidth, -1.0f+bevelHeight);
-		::glVertex2f(_savePosition+indicRight-indicLeft, 1.0f);
-		::glVertex2f(_savePosition+indicRight-indicLeft-bevelWidth, 1.0f-bevelHeight);
+		::glVertex2f(savePosition_, -1.0f);
+		::glVertex2f(savePosition_+bevelWidth, -1.0f+bevelHeight);
+		::glVertex2f(savePosition_+indicRight-indicLeft, -1.0f);
+		::glVertex2f(savePosition_+indicRight-indicLeft-bevelWidth, -1.0f+bevelHeight);
+		::glVertex2f(savePosition_+indicRight-indicLeft, 1.0f);
+		::glVertex2f(savePosition_+indicRight-indicLeft-bevelWidth, 1.0f-bevelHeight);
 		::glEnd();
 	}
 		
@@ -752,7 +752,7 @@ void GlowScrollBarWidget::OnWidgetPaint()
 /*	if (IsActive())
 	{
 		// Top bevel
-		_darkBevelColor.Apply();
+		darkBevelColor_.Apply();
 		::glBegin(GL_QUADS);
 		::glVertex2f(stripLeft-bevelWidth, 1.0f);
 		::glVertex2f(stripLeft, 1.0-bevelHeight);
@@ -761,7 +761,7 @@ void GlowScrollBarWidget::OnWidgetPaint()
 		::glEnd();
 		
 		// Bottom bevel
-		_lightBevelColor.Apply();
+		lightBevelColor_.Apply();
 		::glBegin(GL_QUADS);
 		::glVertex2f(stripLeft-bevelWidth, -1.0f);
 		::glVertex2f(stripLeft, -1.0+bevelHeight);
@@ -774,41 +774,41 @@ void GlowScrollBarWidget::OnWidgetPaint()
 	if (arrowButtons != 0)
 	{
 		// Left up button
-		_DrawArrowButton(upButtonPart, -1.0f, -1.0f+buttonWidth,
+		DrawArrowButton_(upButtonPart, -1.0f, -1.0f+buttonWidth,
 			bevelWidth, bevelHeight, buttonWidth);
 		// Right down button
-		_DrawArrowButton(downButtonPart, 1.0f-buttonWidth, 1.0f,
+		DrawArrowButton_(downButtonPart, 1.0f-buttonWidth, 1.0f,
 			bevelWidth, bevelHeight, buttonWidth);
 	}
 	if (arrowButtons == 2)
 	{
 		// Left down button
-		_DrawArrowButton(downButtonPart, -1.0f+buttonWidth, -1.0f+buttonWidth*2.0f,
+		DrawArrowButton_(downButtonPart, -1.0f+buttonWidth, -1.0f+buttonWidth*2.0f,
 			bevelWidth, bevelHeight, buttonWidth);
 		// Right up button
-		_DrawArrowButton(upButtonPart, 1.0f-buttonWidth*2.0f, 1.0f-buttonWidth,
+		DrawArrowButton_(upButtonPart, 1.0f-buttonWidth*2.0f, 1.0f-buttonWidth,
 			bevelWidth, bevelHeight, buttonWidth);
 	}
 	
 	// Draw indicator
 	if (!IsActive())
 	{
-		_disableIndicatorColor.Apply();
+		disableIndicatorColor_.Apply();
 	}
-	else if (_curPart == indicatorPart)
+	else if (curPart_ == indicatorPart)
 	{
-		_hiliteIndicatorColor.Apply();
+		hiliteIndicatorColor_.Apply();
 	}
 	else
 	{
-		_indicatorColor.Apply();
+		indicatorColor_.Apply();
 	}
 	::glRectf(indicLeft, -1.0f, indicRight, 1.0f);
 		
 	if (IsActive())
 	{
 		// Top bevel
-		_lightBevelColor.Apply();
+		lightBevelColor_.Apply();
 		::glBegin(GL_QUAD_STRIP);
 		::glVertex2f(indicRight, 1.0f);
 		::glVertex2f(indicRight-bevelWidth, 1.0f-bevelHeight);
@@ -819,7 +819,7 @@ void GlowScrollBarWidget::OnWidgetPaint()
 		::glEnd();
 		
 		// Bottom bevel
-		_darkBevelColor.Apply();
+		darkBevelColor_.Apply();
 		::glBegin(GL_QUAD_STRIP);
 		::glVertex2f(indicLeft, -1.0f);
 		::glVertex2f(indicLeft+bevelWidth, -1.0f+bevelHeight);
@@ -833,7 +833,7 @@ void GlowScrollBarWidget::OnWidgetPaint()
 		float ridgeTop = 1.0f-bevelHeight*2.0f;
 		float ridgeBottom = -1.0f+bevelHeight*3.0f;
 		float indicCenter = (indicRight+indicLeft)*0.5f;
-		_lightBevelColor.Apply();
+		lightBevelColor_.Apply();
 		::glBegin(GL_LINES);
 		::glVertex2f(indicCenter-float(9)/pseudoWidth, ridgeBottom);
 		::glVertex2f(indicCenter-float(9)/pseudoWidth, ridgeTop);
@@ -842,7 +842,7 @@ void GlowScrollBarWidget::OnWidgetPaint()
 		::glVertex2f(indicCenter+float(7)/pseudoWidth, ridgeBottom);
 		::glVertex2f(indicCenter+float(7)/pseudoWidth, ridgeTop);
 		::glEnd();
-		_darkBevelColor.Apply();
+		darkBevelColor_.Apply();
 		::glBegin(GL_LINES);
 		::glVertex2f(indicCenter-float(7)/pseudoWidth, ridgeBottom);
 		::glVertex2f(indicCenter-float(7)/pseudoWidth, ridgeTop);
@@ -854,7 +854,7 @@ void GlowScrollBarWidget::OnWidgetPaint()
 	}
 	else
 	{
-		_disableOutlineColor.Apply();
+		disableOutlineColor_.Apply();
 		::glBegin(GL_LINE_LOOP);
 		::glVertex2f(indicLeft, 1.0f);
 		::glVertex2f(indicLeft, -1.0f);
@@ -864,10 +864,10 @@ void GlowScrollBarWidget::OnWidgetPaint()
 	}
 	
 	// If a timer start is scheduled, then start it
-	if (_toggleTimer > 0)
+	if (toggleTimer_ > 0)
 	{
-		_timer->Register(_toggleTimer, this);
-		_toggleTimer = 0;
+		_timer->Register(toggleTimer_, this);
+		toggleTimer_ = 0;
 	}
 }
 
@@ -880,7 +880,7 @@ void GlowScrollBarWidget::OnWidgetMouseDown(
 {
 	GLOW_DEBUGSCOPE("GlowScrollBarWidget::OnWidgetMouseDown");
 	
-	if (_curPart != noPart)
+	if (curPart_ != noPart)
 	{
 		return;
 	}
@@ -894,63 +894,63 @@ void GlowScrollBarWidget::OnWidgetMouseDown(
 	float stripRight = 0;
 	float indicLeft = 0;
 	float indicRight = 0;
-	_ComputePartPositions(pseudoWidth, pseudoHeight, arrowButtons, buttonWidth,
+	ComputePartPositions_(pseudoWidth, pseudoHeight, arrowButtons, buttonWidth,
 		stripLeft, stripRight, indicLeft, indicRight);
 
 	// Interpret position
 	float pos = 0;
-	_NormalizePosition(x, y, pos);
-	_savePosition = pos;
-	_button = button;
-	_modifiers = modifiers;
-	_inside = true;
+	NormalizePosition_(x, y, pos);
+	savePosition_ = pos;
+	button_ = button;
+	modifiers_ = modifiers;
+	inside_ = true;
 	if (arrowButtons > 0)
 	{
 		if (pos < buttonWidth-1.0f)
 		{
-			_curPart = upButtonPart;
-			_innerButton = false;
-			_HandlePartPeriodical(true);
+			curPart_ = upButtonPart;
+			innerButton_ = false;
+			HandlePartPeriodical_(true);
 		}
 		else if (pos > 1.0f-buttonWidth)
 		{
-			_curPart = downButtonPart;
-			_innerButton = false;
-			_HandlePartPeriodical(true);
+			curPart_ = downButtonPart;
+			innerButton_ = false;
+			HandlePartPeriodical_(true);
 		}
 		else if (arrowButtons == 2)
 		{
 			if (pos < buttonWidth*2.0f-1.0f)
 			{
-				_curPart = downButtonPart;
-				_innerButton = true;
-				_HandlePartPeriodical(true);
+				curPart_ = downButtonPart;
+				innerButton_ = true;
+				HandlePartPeriodical_(true);
 			}
 			else if (pos > 1.0f-buttonWidth*2.0f)
 			{
-				_curPart = upButtonPart;
-				_innerButton = true;
-				_HandlePartPeriodical(true);
+				curPart_ = upButtonPart;
+				innerButton_ = true;
+				HandlePartPeriodical_(true);
 			}
 		}
 	}
-	if (_curPart == noPart)
+	if (curPart_ == noPart)
 	{
 		if (pos < indicLeft)
 		{
-			_curPart = upPagePart;
-			_HandlePartPeriodical(true);
+			curPart_ = upPagePart;
+			HandlePartPeriodical_(true);
 		}
 		else if (pos > indicRight)
 		{
-			_curPart = downPagePart;
-			_HandlePartPeriodical(true);
+			curPart_ = downPagePart;
+			HandlePartPeriodical_(true);
 		}
 		else
 		{
-			_curPart = indicatorPart;
-			_posOffset = pos-indicLeft;
-			_savePosition = indicLeft;
+			curPart_ = indicatorPart;
+			posOffset_ = pos-indicLeft;
+			savePosition_ = indicLeft;
 			Refresh();
 		}
 	}
@@ -965,20 +965,20 @@ void GlowScrollBarWidget::OnWidgetMouseUp(
 {
 	GLOW_DEBUGSCOPE("GlowScrollBarWidget::OnWidgetMouseUp");
 	
-	Part savePart = _curPart;
-	if (_curPart != noPart)
+	Part savePart = curPart_;
+	if (curPart_ != noPart)
 	{
-		if (_curPart == indicatorPart)
+		if (curPart_ == indicatorPart)
 		{
-			_UpdateDragValue(x, y);
+			UpdateDragValue_(x, y);
 		}
 		else
 		{
 			_timer->Unregister();
 		}
-		_curPart = noPart;
-		_inside = false;
-		OnReleased(savePart, _button, _modifiers);
+		curPart_ = noPart;
+		inside_ = false;
+		OnReleased(savePart, button_, modifiers_);
 		Refresh();
 	}
 }
@@ -990,21 +990,21 @@ void GlowScrollBarWidget::OnWidgetMouseDrag(
 {
 	GLOW_DEBUGSCOPE("GlowScrollBarWidget::OnWidgetMouseDrag");
 	
-	if (_curPart != noPart)
+	if (curPart_ != noPart)
 	{
-		if (_curPart == indicatorPart)
+		if (curPart_ == indicatorPart)
 		{
 			// Dragging indicator
-			if (_UpdateDragValue(x, y))
+			if (UpdateDragValue_(x, y))
 			{
-				OnDragged(_button, _modifiers);
+				OnDragged(button_, modifiers_);
 				Refresh();
 			}
 		}
 		else
 		{
 			// Dragging button or page
-			if (_UpdateInsideState(x, y))
+			if (UpdateInsideState_(x, y))
 			{
 				Refresh();
 			}
@@ -1023,10 +1023,10 @@ void GlowScrollBarWidget::OnDragged(
 	msg.widget = this;
 	msg.part = indicatorPart;
 	msg.released = false;
-	msg.topValue = _topValue;
+	msg.topValue = topValue_;
 	msg.mouseButton = mouseButton;
 	msg.modifiers = modifiers;
-	_sender.Send(msg);
+	sender_.Send(msg);
 }
 
 
@@ -1040,32 +1040,32 @@ void GlowScrollBarWidget::OnPart(
 	switch (part)
 	{
 		case upButtonPart:
-			MoveTopValue(-_arrowStep);
+			MoveTopValue(-arrowStep_);
 			break;
 		
 		case downButtonPart:
-			MoveTopValue(_arrowStep);
+			MoveTopValue(arrowStep_);
 			break;
 		
 		case upPagePart:
-			if (_pageStep == spanPageStep)
+			if (pageStep_ == spanPageStep)
 			{
-				MoveTopValue(-_span);
+				MoveTopValue(-span_);
 			}
 			else
 			{
-				MoveTopValue(-_pageStep);
+				MoveTopValue(-pageStep_);
 			}
 			break;
 		
 		case downPagePart:
-			if (_pageStep == spanPageStep)
+			if (pageStep_ == spanPageStep)
 			{
-				MoveTopValue(_span);
+				MoveTopValue(span_);
 			}
 			else
 			{
-				MoveTopValue(_pageStep);
+				MoveTopValue(pageStep_);
 			}
 			break;
 		
@@ -1077,10 +1077,10 @@ void GlowScrollBarWidget::OnPart(
 	msg.widget = this;
 	msg.part = part;
 	msg.released = false;
-	msg.topValue = _topValue;
+	msg.topValue = topValue_;
 	msg.mouseButton = mouseButton;
 	msg.modifiers = modifiers;
-	_sender.Send(msg);
+	sender_.Send(msg);
 }
 
 
@@ -1095,10 +1095,10 @@ void GlowScrollBarWidget::OnReleased(
 	msg.widget = this;
 	msg.part = part;
 	msg.released = true;
-	msg.topValue = _topValue;
+	msg.topValue = topValue_;
 	msg.mouseButton = mouseButton;
 	msg.modifiers = modifiers;
-	_sender.Send(msg);
+	sender_.Send(msg);
 }
 
 

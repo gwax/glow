@@ -88,7 +88,7 @@ GlowQuickPaletteWindow::GlowQuickPaletteWindow(
 	GLOW_ASSERT(hmargin!=parentSetting);
 	GLOW_ASSERT(vmargin!=parentSetting);
 	GlowFixedSizeWidgetWindow::Init(name, x, y, 100, 100);
-	_panel = new GlowQuickPanelWidget(this, 0,
+	panel_ = new GlowQuickPanelWidget(this, 0,
 		GlowQuickPanelWidget::plainStyle, 0, arrangement, alignment,
 		spacing, hmargin, vmargin);
 	Hide();
@@ -99,8 +99,8 @@ void GlowQuickPaletteWindow::Pack()
 {
 	GLOW_DEBUGSCOPE("GlowQuickPaletteWindow::Pack");
 	
-	_panel->AutoReshape();
-	ForceReshape(_panel->Width(), _panel->Height());
+	panel_->AutoReshape();
+	ForceReshape(panel_->Width(), panel_->Height());
 	Show();
 }
 
@@ -131,7 +131,7 @@ GlowQuickPaletteSubwindow::GlowQuickPaletteSubwindow(
 	GLOW_ASSERT(hmargin!=parentSetting);
 	GLOW_ASSERT(vmargin!=parentSetting);
 	GlowWidgetSubwindow::Init(parent, x, y, width, height);
-	_panel = new GlowQuickPanelWidget(this, 0,
+	panel_ = new GlowQuickPanelWidget(this, 0,
 		GlowQuickPanelWidget::plainStyle, 0, arrangement, alignment,
 		spacing, hmargin, vmargin);
 	Hide();
@@ -143,10 +143,10 @@ void GlowQuickPaletteSubwindow::Pack(
 {
 	GLOW_DEBUGSCOPE("GlowQuickPaletteSubwindow::Pack");
 	
-	_panel->AutoReshape();
+	panel_->AutoReshape();
 	if (resizeOnPack)
 	{
-		Reshape(_panel->Width(), _panel->Height());
+		Reshape(panel_->Width(), panel_->Height());
 	}
 	Show();
 }
@@ -168,8 +168,8 @@ GlowQuickRadioGroupWidget::GlowQuickRadioGroupWidget(
 	params.x = params.y = 0;
 	params.receiver = receiver;
 	GlowRadioGroupWidget::Init(parent, params);
-	_arrangement = arrangement;
-	_spacing = spacing;
+	arrangement_ = arrangement;
+	spacing_ = spacing;
 }
 
 
@@ -203,7 +203,7 @@ GlowWidget::AutoPackError GlowQuickRadioGroupWidget::OnAutoPack(
 		GlowRadioButtonWidget* button = dynamic_cast<GlowRadioButtonWidget*>(child);
 		if (button != 0)
 		{
-			if (_arrangement == GlowQuickPalette::horizontal)
+			if (arrangement_ == GlowQuickPalette::horizontal)
 			{
 				button->AutoPack(position, unspecifiedPos, 0, unspecifiedPos,
 					leftPos | preferredSize, topPos | preferredSize);
@@ -211,7 +211,7 @@ GlowWidget::AutoPackError GlowQuickRadioGroupWidget::OnAutoPack(
 				{
 					size = button->Height();
 				}
-				position += button->Width()+_spacing;
+				position += button->Width()+spacing_;
 			}
 			else
 			{
@@ -221,22 +221,22 @@ GlowWidget::AutoPackError GlowQuickRadioGroupWidget::OnAutoPack(
 				{
 					size = button->Width();
 				}
-				position += button->Height()+_spacing;
+				position += button->Height()+spacing_;
 			}
 		}
 	}
 	
 	// Preferred width and height
 	int pwidth = 0, pheight = 0;
-	if (_arrangement == GlowQuickPalette::horizontal)
+	if (arrangement_ == GlowQuickPalette::horizontal)
 	{
-		pwidth = position-_spacing;
+		pwidth = position-spacing_;
 		pheight = size;
 	}
 	else
 	{
 		pwidth = size;
-		pheight = position-_spacing;
+		pheight = position-spacing_;
 	}
 	
 	int hnew = Width();
@@ -290,7 +290,7 @@ GlowQuickPanelWidget* GlowQuickPalette::AddPanel(
 {
 	GLOW_DEBUGSCOPE("GlowQuickPanelWidget::AddPanel");
 	
-	return new GlowQuickPanelWidget(_panel->Root(), _panel,
+	return new GlowQuickPanelWidget(panel_->Root(), panel_,
 		style, label, arrangement, alignment, spacing, hmargin, vmargin);
 }
 
@@ -306,7 +306,7 @@ GlowPanelWidget* GlowQuickPalette::AddFixedPanel(
 	params.width = width;
 	params.height = height;
 	params.style = style;
-	return new GlowPanelWidget(_panel, params);
+	return new GlowPanelWidget(panel_, params);
 }
 
 
@@ -318,7 +318,7 @@ GlowSeparatorWidget* GlowQuickPalette::AddSeparator(
 	GlowSeparatorParams params;
 	params.x = params.y = 0;
 	params.style = style;
-	if (_panel->_arrangement == GlowQuickPalette::vertical)
+	if (panel_->arrangement_ == GlowQuickPalette::vertical)
 	{
 		params.width = 10;
 		params.height = 4;
@@ -328,7 +328,7 @@ GlowSeparatorWidget* GlowQuickPalette::AddSeparator(
 		params.height = 10;
 		params.width = 4;
 	}
-	return new GlowSeparatorWidget(_panel, params);
+	return new GlowSeparatorWidget(panel_, params);
 }
 
 
@@ -342,7 +342,7 @@ GlowPushButtonWidget* GlowQuickPalette::AddPushButton(
 	params.x = params.y = 0;
 	params.text = label;
 	params.receiver = receiver;
-	return new GlowPushButtonWidget(_panel, params);
+	return new GlowPushButtonWidget(panel_, params);
 }
 
 
@@ -357,7 +357,7 @@ GlowDismissPushButtonWidget* GlowQuickPalette::AddDismissPushButton(
 	params.x = params.y = 0;
 	params.text = label;
 	params.receiver = receiver;
-	return new GlowDismissPushButtonWidget(_panel, params, toDismiss);
+	return new GlowDismissPushButtonWidget(panel_, params, toDismiss);
 }
 
 
@@ -373,7 +373,7 @@ GlowMenuButtonWidget* GlowQuickPalette::AddMenuButton(
 	params.text = label;
 	params.menu = menu;
 	params.iconType = iconType;
-	return new GlowMenuButtonWidget(_panel, params);
+	return new GlowMenuButtonWidget(panel_, params);
 }
 
 
@@ -387,7 +387,7 @@ GlowLabeledPopupMenuWidget* GlowQuickPalette::AddPopupMenu(
 	params.x = params.y = 0;
 	params.receiver = receiver;
 	params.labelText = label;
-	return new GlowLabeledPopupMenuWidget(_panel, params);
+	return new GlowLabeledPopupMenuWidget(panel_, params);
 }
 
 
@@ -403,7 +403,7 @@ GlowCheckBoxWidget* GlowQuickPalette::AddCheckBox(
 	params.text = label;
 	params.receiver = receiver;
 	params.state = initialValue;
-	return new GlowCheckBoxWidget(_panel, params);
+	return new GlowCheckBoxWidget(panel_, params);
 }
 
 
@@ -414,7 +414,7 @@ GlowQuickRadioGroupWidget* GlowQuickPalette::AddRadioGroup(
 {
 	GLOW_DEBUGSCOPE("GlowQuickPanelWidget::AddRadioGroup");
 	
-	return new GlowQuickRadioGroupWidget(_panel, receiver, arrangement, spacing);
+	return new GlowQuickRadioGroupWidget(panel_, receiver, arrangement, spacing);
 }
 
 
@@ -432,7 +432,7 @@ GlowLabeledSliderWidget* GlowQuickPalette::AddSlider(
 	
 	GlowLabeledSliderParams params;
 	params.x = params.y = 0;
-	if (_panel->_arrangement == horizontal)
+	if (panel_->arrangement_ == horizontal)
 	{
 		params.width = 30;
 		params.height = 130;
@@ -452,7 +452,7 @@ GlowLabeledSliderWidget* GlowQuickPalette::AddSlider(
 	params.receiver = receiver;
 	params.labelTemplate = label;
 	params.minmaxTemplate = valueLabel;
-	return new GlowLabeledSliderWidget(_panel, params);
+	return new GlowLabeledSliderWidget(panel_, params);
 }
 
 
@@ -467,7 +467,7 @@ GlowScrollBarWidget* GlowQuickPalette::AddScrollBar(
 	
 	GlowScrollBarParams params;
 	params.x = params.y = 0;
-	if (_panel->_arrangement == horizontal)
+	if (panel_->arrangement_ == horizontal)
 	{
 		params.width = 20;
 		params.height = 120;
@@ -482,7 +482,7 @@ GlowScrollBarWidget* GlowQuickPalette::AddScrollBar(
 	params.span = span;
 	params.initialTop = initialTop;
 	params.receiver = receiver;
-	return new GlowScrollBarWidget(_panel, params);
+	return new GlowScrollBarWidget(panel_, params);
 }
 
 
@@ -499,8 +499,8 @@ GlowLabeledTextFieldWidget* GlowQuickPalette::AddTextField(
 	params.initialText = text;
 	params.labelText = label;
 	GlowLabeledTextFieldWidget* ret =
-		new GlowLabeledTextFieldWidget(_panel, params);
-	if (_panel->Root()->GetKeyboardFocus() == 0)
+		new GlowLabeledTextFieldWidget(panel_, params);
+	if (panel_->Root()->GetKeyboardFocus() == 0)
 	{
 		ret->GrabKeyboardFocus();
 	}
@@ -522,8 +522,8 @@ GlowLabeledHiddenTextFieldWidget* GlowQuickPalette::AddHiddenTextField(
 	params.initialText = text;
 	params.labelText = label;
 	GlowLabeledHiddenTextFieldWidget* ret =
-		new GlowLabeledHiddenTextFieldWidget(_panel, params, hideCharacter);
-	if (_panel->Root()->GetKeyboardFocus() == 0)
+		new GlowLabeledHiddenTextFieldWidget(panel_, params, hideCharacter);
+	if (panel_->Root()->GetKeyboardFocus() == 0)
 	{
 		ret->GrabKeyboardFocus();
 	}
@@ -539,7 +539,7 @@ GlowLabelWidget* GlowQuickPalette::AddLabel(
 	GlowLabelParams params;
 	params.x = params.y = 0;
 	params.text = text;
-	return new GlowLabelWidget(_panel, params);
+	return new GlowLabelWidget(panel_, params);
 }
 
 
@@ -561,19 +561,19 @@ GlowQuickPanelWidget::GlowQuickPanelWidget(
 	params.clipping = false;
 	GlowPanelWidget::Init(root, parent, params);
 	
-	_panel = this;
+	panel_ = this;
 	
-	_arrangement = (arrangement == parentArrangement ?
+	arrangement_ = (arrangement == parentArrangement ?
 		parent->GetArrangement() : arrangement);
-	_alignment = (alignment == parentAlignment ?
+	alignment_ = (alignment == parentAlignment ?
 		parent->GetAlignment() : alignment);
-	_spacing = (spacing == parentSetting ?
+	spacing_ = (spacing == parentSetting ?
 		parent->GetSpacing() : spacing);
-	_hmargin = (hmargin == parentSetting ?
+	hmargin_ = (hmargin == parentSetting ?
 		parent->GetHMargin() : hmargin);
-	_vmargin = (vmargin == parentSetting ?
+	vmargin_ = (vmargin == parentSetting ?
 		parent->GetVMargin() : vmargin);
-	_label = 0;
+	label_ = 0;
 	
 	if (label != 0 && *label != 0)
 	{
@@ -582,7 +582,7 @@ GlowQuickPanelWidget::GlowQuickPanelWidget(
 		lparams.hIndent = 3;
 		lparams.x = lparams.y = 0;
 		lparams.text = label;
-		_label = new GlowLabelWidget(this, lparams);
+		label_ = new GlowLabelWidget(this, lparams);
 	}
 }
 
@@ -599,7 +599,7 @@ GlowWidget::AutoPackError GlowQuickPanelWidget::OnAutoPack(
 {
 	GLOW_DEBUGSCOPE("GlowQuickPanelWidget::OnAutoPack");
 	
-	int position = (_arrangement == vertical) ? _vmargin : _hmargin;
+	int position = (arrangement_ == vertical) ? vmargin_ : hmargin_;
 	int size = 0;
 	int minWidth = position;
 	
@@ -614,15 +614,15 @@ GlowWidget::AutoPackError GlowQuickPanelWidget::OnAutoPack(
 		}
 		
 		// Handle the label of the panel (if any) differently.
-		if (widget == _label)
+		if (widget == label_)
 		{
 			if (GetStyle() == GlowPanelWidget::etchedStyle)
 			{
 				// Etched style: label is half in and half out of the panel
-				widget->AutoPack(_hmargin, unspecifiedPos, 0, unspecifiedPos,
+				widget->AutoPack(hmargin_, unspecifiedPos, 0, unspecifiedPos,
 					leftPos | preferredSize, centerPos | preferredSize);
 				topMargin = widget->Height()/2;
-				if (_arrangement == vertical)
+				if (arrangement_ == vertical)
 				{
 					position += widget->Height()/2;
 				}
@@ -630,44 +630,44 @@ GlowWidget::AutoPackError GlowQuickPanelWidget::OnAutoPack(
 			else
 			{
 				// Other style: label is completely out of the panel
-				widget->AutoPack(_hmargin, unspecifiedPos, unspecifiedPos, 0,
+				widget->AutoPack(hmargin_, unspecifiedPos, unspecifiedPos, 0,
 					leftPos | preferredSize, bottomPos | preferredSize);
 				topMargin = widget->Height();
 			}
-			minWidth = widget->Width()+_hmargin+_hmargin;
+			minWidth = widget->Width()+hmargin_+hmargin_;
 			continue;
 		}
 		
 		int leftMargin = 0, rightMargin = 0, topMargin = 0, bottomMargin = 0;
-		if (_arrangement == horizontal)
+		if (arrangement_ == horizontal)
 		{
-			widget->AutoPack(position, unspecifiedPos, _vmargin, unspecifiedPos,
+			widget->AutoPack(position, unspecifiedPos, vmargin_, unspecifiedPos,
 				leftPos | preferredSize, topPos | preferredSize,
 				leftMargin, rightMargin, topMargin, bottomMargin);
 			size = GLOW_STD::max(size, widget->Height()+topMargin+bottomMargin);
-			position += widget->Width()+leftMargin+rightMargin+_spacing;
+			position += widget->Width()+leftMargin+rightMargin+spacing_;
 		}
 		else
 		{
-			widget->AutoPack(_hmargin, unspecifiedPos, position, unspecifiedPos,
+			widget->AutoPack(hmargin_, unspecifiedPos, position, unspecifiedPos,
 				leftPos | preferredSize, topPos | preferredSize,
 				leftMargin, rightMargin, topMargin, bottomMargin);
 			size = GLOW_STD::max(size, widget->Width()+leftMargin+rightMargin);
-			position += widget->Height()+topMargin+bottomMargin+_spacing;
+			position += widget->Height()+topMargin+bottomMargin+spacing_;
 		}
 	}
 	
 	// Preferred width and height
 	int pwidth = 0, pheight = 0;
-	if (_arrangement == horizontal)
+	if (arrangement_ == horizontal)
 	{
-		pwidth = GLOW_STD::max(minWidth, position-_spacing+_hmargin);
-		pheight = size+_vmargin+_vmargin;
+		pwidth = GLOW_STD::max(minWidth, position-spacing_+hmargin_);
+		pheight = size+vmargin_+vmargin_;
 	}
 	else
 	{
-		pwidth = GLOW_STD::max(minWidth, size+_hmargin+_hmargin);
-		pheight = position-_spacing+_vmargin;
+		pwidth = GLOW_STD::max(minWidth, size+hmargin_+hmargin_);
+		pheight = position-spacing_+vmargin_;
 	}
 	
 	// Panel width
@@ -701,13 +701,13 @@ GlowWidget::AutoPackError GlowQuickPanelWidget::OnAutoPack(
 	}
 	
 	// Update size
-	if (_arrangement == horizontal)
+	if (arrangement_ == horizontal)
 	{
-		size = vnew-_vmargin-_vmargin;
+		size = vnew-vmargin_-vmargin_;
 	}
 	else
 	{
-		size = hnew-_hmargin-_hmargin;
+		size = hnew-hmargin_-hmargin_;
 	}
 	
 	// Now align contents
@@ -715,22 +715,22 @@ GlowWidget::AutoPackError GlowQuickPanelWidget::OnAutoPack(
 	for (GlowComponent* child = FirstChild(); child != 0; child = child->Next(), ++i)
 	{
 		GlowWidget* widget = dynamic_cast<GlowWidget*>(child);
-		if (widget == 0 || widget == _label || !widget->IsVisible())
+		if (widget == 0 || widget == label_ || !widget->IsVisible())
 		{
 			continue;
 		}
 		
-		if (_arrangement == horizontal)
+		if (arrangement_ == horizontal)
 		{
 			// Horizontal arrangement
-			AutoPackOptions vOption = (_alignment & alignExpand) ?
+			AutoPackOptions vOption = (alignment_ & alignExpand) ?
 				expandPreferredSize : preferredSize;
 			
-			if ((_alignment & 3) == alignBottom)
+			if ((alignment_ & 3) == alignBottom)
 			{
 				vOption |= bottomPos;
 			}
-			else if ((_alignment & 3) == alignCenter)
+			else if ((alignment_ & 3) == alignCenter)
 			{
 				vOption |= centerPos;
 			}
@@ -739,19 +739,19 @@ GlowWidget::AutoPackError GlowQuickPanelWidget::OnAutoPack(
 				vOption |= topPos;
 			}
 			widget->AutoPack(unspecifiedPos, unspecifiedPos,
-				_vmargin, _vmargin+size, noMove | noReshape, vOption);
+				vmargin_, vmargin_+size, noMove | noReshape, vOption);
 		}
 		else
 		{
 			// Vertical arrangement
-			AutoPackOptions hOption = (_alignment & alignExpand) ?
+			AutoPackOptions hOption = (alignment_ & alignExpand) ?
 				expandPreferredSize : preferredSize;
 			
-			if ((_alignment & 3) == alignLeft)
+			if ((alignment_ & 3) == alignLeft)
 			{
 				hOption |= leftPos;
 			}
-			else if ((_alignment & 3) == alignCenter)
+			else if ((alignment_ & 3) == alignCenter)
 			{
 				hOption |= centerPos;
 			}
@@ -759,7 +759,7 @@ GlowWidget::AutoPackError GlowQuickPanelWidget::OnAutoPack(
 			{
 				hOption |= rightPos;
 			}
-			widget->AutoPack(_hmargin, _hmargin+size,
+			widget->AutoPack(hmargin_, hmargin_+size,
 				unspecifiedPos, unspecifiedPos, hOption, noMove | noReshape);
 		}
 	}

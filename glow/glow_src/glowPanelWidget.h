@@ -167,11 +167,11 @@ class GlowPanelWidget :
 	
 	private:
 	
-		Style _style;
+		Style style_;
 		
-		GlowColor _backColor;
-		GlowColor _lightBevelColor;
-		GlowColor _darkBevelColor;
+		GlowColor backColor_;
+		GlowColor lightBevelColor_;
+		GlowColor darkBevelColor_;
 	
 	protected:
 	

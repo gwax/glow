@@ -64,7 +64,7 @@ GLOW_NAMESPACE_BEGIN
 inline Glow_TransformData_IdleReceiver::Glow_TransformData_IdleReceiver(
 	GlowTransformData* transform)
 {
-	_transform = transform;
+	transform_ = transform;
 }
 
 
@@ -77,7 +77,7 @@ inline Glow_TransformData_IdleReceiver::Glow_TransformData_IdleReceiver(
 inline Glow_ViewManip_IdleReceiver::Glow_ViewManip_IdleReceiver(
 	GlowViewManipulator* manip)
 {
-	_manip = manip;
+	manip_ = manip;
 }
 
 
@@ -89,11 +89,11 @@ inline Glow_ViewManip_IdleReceiver::Glow_ViewManip_IdleReceiver(
 
 inline GlowTransformData::GlowTransformData(
 	bool persistent) :
-_receiver(this)
+receiver_(this)
 {
-	_spinning = false;
-	_scale = 1;
-	_persistent = persistent;
+	spinning_ = false;
+	scale_ = 1;
+	persistent_ = persistent;
 }
 
 
@@ -102,13 +102,13 @@ inline GlowTransformData::GlowTransformData(
 	const Quatf& rot,
 	GLfloat scale,
 	bool persistent) :
-_translation(trans),
-_rotation(rot),
-_receiver(this)
+translation_(trans),
+rotation_(rot),
+receiver_(this)
 {
-	_spinning = false;
-	_scale = scale;
-	_persistent = persistent;
+	spinning_ = false;
+	scale_ = scale;
+	persistent_ = persistent;
 }
 
 
@@ -117,9 +117,9 @@ inline void GlowTransformData::Set(
 	const Quatf& rot,
 	GLfloat scale)
 {
-	_translation = trans;
-	_rotation = rot;
-	_scale = scale;
+	translation_ = trans;
+	rotation_ = rot;
+	scale_ = scale;
 	RefreshAll();
 }
 
@@ -127,7 +127,7 @@ inline void GlowTransformData::Set(
 inline void GlowTransformData::SetScale(
 	GLfloat scale)
 {
-	_scale = scale;
+	scale_ = scale;
 	RefreshAll();
 }
 
@@ -135,7 +135,7 @@ inline void GlowTransformData::SetScale(
 inline void GlowTransformData::SetTranslation(
 	const Vec3f& trans)
 {
-	_translation = trans;
+	translation_ = trans;
 	RefreshAll();
 }
 
@@ -143,16 +143,16 @@ inline void GlowTransformData::SetTranslation(
 inline void GlowTransformData::SetRotation(
 	const Quatf& rot)
 {
-	_rotation = rot;
+	rotation_ = rot;
 	RefreshAll();
 }
 
 
 inline void GlowTransformData::SetIdentity()
 {
-	_scale = 1.0f;
-	_rotation.SetIdentity();
-	_translation.SetZero();
+	scale_ = 1.0f;
+	rotation_.SetIdentity();
+	translation_.SetZero();
 	RefreshAll();
 }
 
@@ -160,8 +160,8 @@ inline void GlowTransformData::SetIdentity()
 inline void GlowTransformData::AddScale(
 	GLfloat scale)
 {
-	_translation *= scale;
-	_scale *= scale;
+	translation_ *= scale;
+	scale_ *= scale;
 	RefreshAll();
 }
 
@@ -169,7 +169,7 @@ inline void GlowTransformData::AddScale(
 inline void GlowTransformData::AddTranslation(
 	const Vec3f& trans)
 {
-	_translation += trans;
+	translation_ += trans;
 	RefreshAll();
 }
 
@@ -177,25 +177,25 @@ inline void GlowTransformData::AddTranslation(
 inline void GlowTransformData::AddRotation(
 	const Quatf& rot)
 {
-	_translation = rot * _translation;
-	_rotation = rot % _rotation;
-	_rotation.Normalize();
+	translation_ = rot * translation_;
+	rotation_ = rot % rotation_;
+	rotation_.Normalize();
 	RefreshAll();
 }
 
 
 inline bool GlowTransformData::IsSpinning() const
 {
-	return _spinning;
+	return spinning_;
 }
 
 
 inline void GlowTransformData::StopSpinning()
 {
-	if (_spinning)
+	if (spinning_)
 	{
-		Glow::UnregisterIdle(&_receiver);
-		_spinning = false;
+		Glow::UnregisterIdle(&receiver_);
+		spinning_ = false;
 	}
 }
 
@@ -203,63 +203,63 @@ inline void GlowTransformData::StopSpinning()
 inline void GlowTransformData::StartSpinning(
 	const Quatf& spin)
 {
-	_curSpin = spin;
-	if (!_spinning)
+	curSpin_ = spin;
+	if (!spinning_)
 	{
-		Glow::RegisterIdle(&_receiver);
-		_spinning = true;
+		Glow::RegisterIdle(&receiver_);
+		spinning_ = true;
 	}
 }
 
 
 inline void GlowTransformData::StepSpin()
 {
-	AddRotation(_curSpin);
+	AddRotation(curSpin_);
 }
 
 
 inline GLfloat GlowTransformData::GetScale() const
 {
-	return _scale;
+	return scale_;
 }
 
 
 inline const Vec3f& GlowTransformData::GetTranslation() const
 {
-	return _translation;
+	return translation_;
 }
 
 
 inline const Quatf& GlowTransformData::GetRotation() const
 {
-	return _rotation;
+	return rotation_;
 }
 
 
 inline Vec3f GlowTransformData::Apply(
 	const Vec3f& vec) const
 {
-	return _rotation*(vec*_scale)+_translation;
+	return rotation_*(vec*scale_)+translation_;
 }
 
 
 inline Vec3f GlowTransformData::ApplyInverse(
 	const Vec3f& vec) const
 {
-	return (_rotation.Conjugate()*(vec-_translation))/_scale;
+	return (rotation_.Conjugate()*(vec-translation_))/scale_;
 }
 
 
 inline bool GlowTransformData::IsPersistent() const
 {
-	return _persistent;
+	return persistent_;
 }
 
 
 inline void GlowTransformData::SetPersistent(
 	bool persist)
 {
-	_persistent = persist;
+	persistent_ = persist;
 }
 
 
@@ -287,169 +287,169 @@ inline void GlowViewTransform::Set(
 	const Quatf& rot,
 	GLfloat scale)
 {
-	_transform->Set(trans, rot, scale);
+	transform_->Set(trans, rot, scale);
 }
 
 
 inline void GlowViewTransform::SetScale(
 	GLfloat scale)
 {
-	_transform->SetScale(scale);
+	transform_->SetScale(scale);
 }
 
 
 inline void GlowViewTransform::SetTranslation(
 	const Vec3f& trans)
 {
-	_transform->SetTranslation(trans);
+	transform_->SetTranslation(trans);
 }
 
 
 inline void GlowViewTransform::SetRotation(
 	const Quatf& rot)
 {
-	_transform->SetRotation(rot);
+	transform_->SetRotation(rot);
 }
 
 
 inline void GlowViewTransform::SetIdentity()
 {
-	_transform->SetIdentity();
+	transform_->SetIdentity();
 }
 
 
 inline void GlowViewTransform::AddScale(
 	GLfloat scale)
 {
-	_transform->AddScale(scale);
+	transform_->AddScale(scale);
 }
 
 
 inline void GlowViewTransform::AddTranslation(
 	const Vec3f& trans)
 {
-	_transform->AddTranslation(trans);
+	transform_->AddTranslation(trans);
 }
 
 
 inline void GlowViewTransform::AddRotation(
 	const Quatf& rot)
 {
-	_transform->AddRotation(rot);
+	transform_->AddRotation(rot);
 }
 
 
 inline GLfloat GlowViewTransform::GetScale() const
 {
-	return _transform->GetScale();
+	return transform_->GetScale();
 }
 
 
 inline const Vec3f& GlowViewTransform::GetTranslation() const
 {
-	return _transform->GetTranslation();
+	return transform_->GetTranslation();
 }
 
 
 inline const Quatf& GlowViewTransform::GetRotation() const
 {
-	return _transform->GetRotation();
+	return transform_->GetRotation();
 }
 
 
 inline Vec3f GlowViewTransform::Apply(
 	const Vec3f& vec) const
 {
-	return _transform->Apply(vec);
+	return transform_->Apply(vec);
 }
 
 
 inline Vec3f GlowViewTransform::ApplyInverse(
 	const Vec3f& vec) const
 {
-	return _transform->ApplyInverse(vec);
+	return transform_->ApplyInverse(vec);
 }
 
 
 inline void GlowViewTransform::ApplyToGLMatrix() const
 {
-	_transform->ApplyToGLMatrix();
+	transform_->ApplyToGLMatrix();
 }
 
 
 inline void GlowViewTransform::ApplyInverseToGLMatrix() const
 {
-	_transform->ApplyInverseToGLMatrix();
+	transform_->ApplyInverseToGLMatrix();
 }
 
 
 inline void GlowViewTransform::GetMatrix(
 	Mat4f& matrix) const
 {
-	_transform->GetMatrix(matrix);
+	transform_->GetMatrix(matrix);
 }
 
 
 inline void GlowViewTransform::GetGLMatrixf(
 	GLfloat* matrix) const
 {
-	_transform->GetGLMatrixf(matrix);
+	transform_->GetGLMatrixf(matrix);
 }
 
 
 inline bool GlowViewTransform::IsSpinning() const
 {
-	return _transform->IsSpinning();
+	return transform_->IsSpinning();
 }
 
 
 inline void GlowViewTransform::StopSpinning()
 {
-	_transform->StopSpinning();
+	transform_->StopSpinning();
 }
 
 
 inline void GlowViewTransform::StartSpinning(
 	const Quatf& spin)
 {
-	_transform->StartSpinning(spin);
+	transform_->StartSpinning(spin);
 }
 
 
 inline void GlowViewTransform::StepSpin()
 {
-	_transform->StepSpin();
+	transform_->StepSpin();
 }
 
 
 inline GlowTransformData* GlowViewTransform::TransformData() const
 {
-	return _transform;
+	return transform_;
 }
 
 
 inline void GlowViewTransform::RefreshAllConnected() const
 {
-	_transform->RefreshAll();
+	transform_->RefreshAll();
 }
 
 
-inline void GlowViewTransform::_RawDisconnect()
+inline void GlowViewTransform::RawDisconnect_()
 {
-	_transform->_clients.erase(
-		GLOW_STD::find(_transform->_clients.begin(), _transform->_clients.end(), this));
-	if (!_transform->_persistent && _transform->_clients.empty())
+	transform_->clients_.erase(
+		GLOW_STD::find(transform_->clients_.begin(), transform_->clients_.end(), this));
+	if (!transform_->persistent_ && transform_->clients_.empty())
 	{
-		delete _transform;
+		delete transform_;
 	}
 }
 
 
-inline void GlowViewTransform::_RawConnect(
+inline void GlowViewTransform::RawConnect_(
 	GlowTransformData* transform)
 {
-	_transform = transform;
-	_transform->_clients.push_back(this);
+	transform_ = transform;
+	transform_->clients_.push_back(this);
 }
 
 
@@ -460,7 +460,7 @@ inline void GlowViewTransform::_RawConnect(
 */
 
 inline GlowViewManipulator::GlowViewManipulator() :
-_receiver(this)
+receiver_(this)
 {
 }
 
@@ -468,7 +468,7 @@ _receiver(this)
 inline GlowViewManipulator::GlowViewManipulator(
 	GlowComponent *parent,
 	const GlowViewManipulatorParams& params) :
-_receiver(this)
+receiver_(this)
 {
 	Init(parent, params);
 }
@@ -477,109 +477,109 @@ _receiver(this)
 inline void GlowViewManipulator::SetColor(
 	GlowColor c)
 {
-	_color = c;
+	color_ = c;
 	ParentWindow()->Refresh();
 }
 
 
 inline bool GlowViewManipulator::IsDragging() const
 {
-	return _dragType != idleState;
+	return dragType_ != idleState;
 }
 
 
 inline bool GlowViewManipulator::IsSpinnable() const
 {
-	return _spinnable;
+	return spinnable_;
 }
 
 
 inline GlowViewManipulator::State GlowViewManipulator::GetState() const
 {
-	return _dragType;
+	return dragType_;
 }
 
 
 inline bool GlowViewManipulator::IsDrawing() const
 {
-	return _draw;
+	return draw_;
 }
 
 
 inline void GlowViewManipulator::SetDrawing(
 	bool draw)
 {
-	_draw = draw;
+	draw_ = draw;
 }
 
 
 inline float GlowViewManipulator::GetScaleThrottle() const
 {
-	return _scaleThrottle;
+	return scaleThrottle_;
 }
 
 
 inline void GlowViewManipulator::SetScaleThrottle(
 	float throttle)
 {
-	_scaleThrottle = throttle;
+	scaleThrottle_ = throttle;
 }
 
 
 inline float GlowViewManipulator::GetTranslationThrottle() const
 {
-	return _transThrottle;
+	return transThrottle_;
 }
 
 
 inline void GlowViewManipulator::SetTranslationThrottle(
 	float throttle)
 {
-	_transThrottle = throttle;
+	transThrottle_ = throttle;
 }
 
 
 inline float GlowViewManipulator::GetRotationThrottle() const
 {
-	return _rotThrottle * 2.0f;
+	return rotThrottle_ * 2.0f;
 }
 
 
 inline void GlowViewManipulator::SetRotationThrottle(
 	float throttle)
 {
-	_rotThrottle = throttle * 0.5f;
+	rotThrottle_ = throttle * 0.5f;
 }
 
 
 inline GLOW_STD::vector<Vec3f>& GlowViewManipulator::AxisConstraints()
 {
-	return _axisConstraints;
+	return axisConstraints_;
 }
 
 
 inline const GLOW_STD::vector<Vec3f>& GlowViewManipulator::AxisConstraints() const
 {
-	return _axisConstraints;
+	return axisConstraints_;
 }
 
 
 inline void GlowViewManipulator::SetAxisConstraintsActive(
 	bool active)
 {
-	_axisConstraintsActive = active;
+	axisConstraintsActive_ = active;
 }
 
 
 inline bool GlowViewManipulator::IsAxisConstraintsActive() const
 {
-	return _axisConstraintsActive;
+	return axisConstraintsActive_;
 }
 
 
-inline void GlowViewManipulator::_SimDrag()
+inline void GlowViewManipulator::SimDrag_()
 {
-	InDrag(_xCur, _yCur);
+	InDrag(xCur_, yCur_);
 }
 
 

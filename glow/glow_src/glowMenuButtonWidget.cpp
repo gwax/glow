@@ -187,29 +187,29 @@ Glow_MenuButtonSubwindow::Glow_MenuButtonSubwindow(
 	GlowSubwindowInWidget::Init(parent, 0, 0,
 		parent->Width(), parent->Height(),
 		Glow::rgbBuffer | Glow::doubleBuffer, Glow::menuEvents);
-	_label = new char[GLOW_CSTD::strlen(label)+1];
-	GLOW_CSTD::strcpy(_label, label);
-	_font = font;
-	_labelWidth = _font.StringWidth(_label);
-	_down = false;
-	_iconType = iconType;
-	_leftSpacing = leftSpacing;
+	label_ = new char[GLOW_CSTD::strlen(label)+1];
+	GLOW_CSTD::strcpy(label_, label);
+	font_ = font;
+	labelWidth_ = font_.StringWidth(label_);
+	down_ = false;
+	iconType_ = iconType;
+	leftSpacing_ = leftSpacing;
 }
 
 
 Glow_MenuButtonSubwindow::~Glow_MenuButtonSubwindow()
 {
-	delete[] _label;
+	delete[] label_;
 }
 
 
-void Glow_MenuButtonSubwindow::_SetLabel(
+void Glow_MenuButtonSubwindow::SetLabel_(
 	const char* label)
 {
-	delete[] _label;
-	_label = new char[GLOW_CSTD::strlen(label)+1];
-	GLOW_CSTD::strcpy(_label, label);
-	_labelWidth = _font.StringWidth(_label);
+	delete[] label_;
+	label_ = new char[GLOW_CSTD::strlen(label)+1];
+	GLOW_CSTD::strcpy(label_, label);
+	labelWidth_ = font_.StringWidth(label_);
 	Refresh();
 }
 
@@ -219,17 +219,17 @@ void Glow_MenuButtonSubwindow::PreferredSize(
 	int& height,
 	const char* str)
 {
-	height = _font.Leading() + 12;
+	height = font_.Leading() + 12;
 	if (str == 0)
 	{
-		width = _labelWidth + _leftSpacing + _leftSpacing;
+		width = labelWidth_ + leftSpacing_ + leftSpacing_;
 	}
 	else
 	{
-		width = _font.StringWidth(str) +
-			_leftSpacing + _leftSpacing;
+		width = font_.StringWidth(str) +
+			leftSpacing_ + leftSpacing_;
 	}
-	if (_iconType != 0)
+	if (iconType_ != 0)
 	{
 		width += height*3/4;
 	}
@@ -246,30 +246,30 @@ void Glow_MenuButtonSubwindow::OnEndPaint()
 	float etchWidth = float(2)/float(Width());
 	
 	// Box
-	if (_down)
+	if (down_)
 	{
-		_hiliteBoxColor.Apply();
+		hiliteBoxColor_.Apply();
 	}
 	else if (!IsActive())
 	{
-		_disableBoxColor.Apply();
+		disableBoxColor_.Apply();
 	}
 	else
 	{
-		_boxColor.Apply();
+		boxColor_.Apply();
 	}
 	::glRectf(-1.0f, -1.0f, 1.0f, 1.0f);
 	
 	// Bevels
 	if (IsActive())
 	{
-		if (_down)
+		if (down_)
 		{
-			_darkBevelColor.Apply();
+			darkBevelColor_.Apply();
 		}
 		else
 		{
-			_lightBevelColor.Apply();
+			lightBevelColor_.Apply();
 		}
 		::glBegin(GL_QUAD_STRIP);
 		::glVertex2f(-1.0f, -1.0f);
@@ -279,13 +279,13 @@ void Glow_MenuButtonSubwindow::OnEndPaint()
 		::glVertex2f(1.0f, 1.0f);
 		::glVertex2f(1.0f-bevelWidth, 1.0f-bevelHeight);
 		::glEnd();
-		if (_down)
+		if (down_)
 		{
-			_lightBevelColor.Apply();
+			lightBevelColor_.Apply();
 		}
 		else
 		{
-			_darkBevelColor.Apply();
+			darkBevelColor_.Apply();
 		}
 		::glBegin(GL_QUAD_STRIP);
 		::glVertex2f(-1.0f, -1.0f);
@@ -298,7 +298,7 @@ void Glow_MenuButtonSubwindow::OnEndPaint()
 	}
 	else
 	{
-		_disableOutlineColor.Apply();
+		disableOutlineColor_.Apply();
 		::glBegin(GL_LINE_LOOP);
 		::glVertex2f(-1.0f, -1.0f);
 		::glVertex2f(-1.0f, 1.0f-etchHeight);
@@ -308,42 +308,42 @@ void Glow_MenuButtonSubwindow::OnEndPaint()
 	}
 	
 	// Label
-	if (_down)
+	if (down_)
 	{
-		_hiliteTextColor.Apply();
+		hiliteTextColor_.Apply();
 	}
 	else if (!IsActive())
 	{
-		_disableTextColor.Apply();
+		disableTextColor_.Apply();
 	}
 	else
 	{
-		_textColor.Apply();
+		textColor_.Apply();
 	}
-	::glRasterPos2f(float(-1)+float(_leftSpacing*2)/float(Width()),
-		float(_font.Leading()-_font.BaselinePos()*2)/float(Height()));
-	int labellen = GLOW_CSTD::strlen(_label);
+	::glRasterPos2f(float(-1)+float(leftSpacing_*2)/float(Width()),
+		float(font_.Leading()-font_.BaselinePos()*2)/float(Height()));
+	int labellen = GLOW_CSTD::strlen(label_);
 	for (int i=0; i<labellen; i++)
 	{
-		::glutBitmapCharacter(_font, _label[i]);
+		::glutBitmapCharacter(font_, label_[i]);
 	}
 	
 	// Menu icon
-	if (_iconType & (GlowMenuButtonWidget::arrowIcon | GlowMenuButtonWidget::menuIcon))
+	if (iconType_ & (GlowMenuButtonWidget::arrowIcon | GlowMenuButtonWidget::menuIcon))
 	{
-		if (_down)
+		if (down_)
 		{
-			_hiliteIconColor.Apply();
+			hiliteIconColor_.Apply();
 		}
 		else if (!IsActive())
 		{
-			_disableIconColor.Apply();
+			disableIconColor_.Apply();
 		}
 		else
 		{
-			_iconColor.Apply();
+			iconColor_.Apply();
 		}
-		if (_iconType == GlowMenuButtonWidget::arrowIcon)
+		if (iconType_ == GlowMenuButtonWidget::arrowIcon)
 		{
 			float icontop = 0.3f;
 			float iconbottom = -0.3f;
@@ -355,7 +355,7 @@ void Glow_MenuButtonSubwindow::OnEndPaint()
 			::glVertex2f((iconleft+iconright)*0.5f, iconbottom);
 			::glEnd();
 		}
-		else if (_iconType == GlowMenuButtonWidget::menuIcon)
+		else if (iconType_ == GlowMenuButtonWidget::menuIcon)
 		{
 			float icontop = 0.65f;
 			float iconbottom = -0.5f;
@@ -377,17 +377,17 @@ void Glow_MenuButtonSubwindow::OnEndPaint()
 			::glVertex2f(iconright, iconmid);
 			::glVertex2f(iconright, iconbottom);
 			::glEnd();
-			if (_down)
+			if (down_)
 			{
-				_hiliteIconColor.Apply();
+				hiliteIconColor_.Apply();
 			}
 			else if (!IsActive())
 			{
-				_disableIconColor.Apply();
+				disableIconColor_.Apply();
 			}
 			else
 			{
-				_iconColor.Apply();
+				iconColor_.Apply();
 			}
 			::glBegin(GL_LINE_LOOP);
 			::glVertex2f(iconleft, iconbottom);
@@ -404,14 +404,14 @@ void Glow_MenuButtonSubwindow::OnMenuDown(
 	int x,
 	int y)
 {
-	_down = true;
+	down_ = true;
 	Refresh();
 }
 
 
 void Glow_MenuButtonSubwindow::OnMenuUp()
 {
-	_down = false;
+	down_ = false;
 	Refresh();
 }
 
@@ -426,24 +426,24 @@ void Glow_PopupMenuSubwindow::OnMenuDown(
 	int x,
 	int y)
 {
-	_down = true;
+	down_ = true;
 	Refresh();
-	_widget->Refresh();
+	widget_->Refresh();
 }
 
 
 void Glow_PopupMenuSubwindow::OnMenuUp()
 {
-	_down = false;
+	down_ = false;
 	Refresh();
-	_widget->Refresh();
+	widget_->Refresh();
 }
 
 
 void Glow_PopupMenuSubwindow::OnDirectMenuHit(
 	const GlowMenuMessage& message)
 {
-	_widget->OnHit(message.code);
+	widget_->OnHit(message.code);
 }
 
 
@@ -461,23 +461,23 @@ void GlowMenuButtonWidget::Init(
 	GLOW_DEBUGSCOPE("GlowMenuButtonWidget::Init");
 	
 	GlowWidget::Init(root, parent, params);
-	_subwindow = new Glow_MenuButtonSubwindow(this, params.text,
+	subwindow_ = new Glow_MenuButtonSubwindow(this, params.text,
 		params.font, params.iconType, params.spacing);
-	_subwindow->_boxColor = params.boxColor;
-	_subwindow->_textColor = params.textColor;
-	_subwindow->_iconColor = params.iconColor;
-	_subwindow->_hiliteBoxColor = params.hiliteBoxColor;
-	_subwindow->_hiliteTextColor = params.hiliteTextColor;
-	_subwindow->_hiliteIconColor = params.hiliteIconColor;
-	_subwindow->_disableBoxColor = params.disableBoxColor;
-	_subwindow->_disableTextColor = params.disableTextColor;
-	_subwindow->_disableIconColor = params.disableIconColor;
-	_subwindow->_disableOutlineColor = params.disableOutlineColor;
-	_subwindow->_lightBevelColor = params.lightBevelColor;
-	_subwindow->_darkBevelColor = params.darkBevelColor;
+	subwindow_->boxColor_ = params.boxColor;
+	subwindow_->textColor_ = params.textColor;
+	subwindow_->iconColor_ = params.iconColor;
+	subwindow_->hiliteBoxColor_ = params.hiliteBoxColor;
+	subwindow_->hiliteTextColor_ = params.hiliteTextColor;
+	subwindow_->hiliteIconColor_ = params.hiliteIconColor;
+	subwindow_->disableBoxColor_ = params.disableBoxColor;
+	subwindow_->disableTextColor_ = params.disableTextColor;
+	subwindow_->disableIconColor_ = params.disableIconColor;
+	subwindow_->disableOutlineColor_ = params.disableOutlineColor;
+	subwindow_->lightBevelColor_ = params.lightBevelColor;
+	subwindow_->darkBevelColor_ = params.darkBevelColor;
 	if (params.menu != 0)
 	{
-		_subwindow->_SetMenu(params.menu);
+		subwindow_->SetMenu_(params.menu);
 	}
 }
 
@@ -495,7 +495,7 @@ GlowWidget::AutoPackError GlowMenuButtonWidget::OnAutoPack(
 	GLOW_DEBUGSCOPE("GlowMenuButtonWidget::OnAutoPack");
 	
 	int pwidth = 0, pheight = 0;
-	_subwindow->PreferredSize(pwidth, pheight);
+	subwindow_->PreferredSize(pwidth, pheight);
 	
 	int hnew = Width();
 	if (hSize != unspecifiedSize && hSize < pwidth)
@@ -533,25 +533,25 @@ GlowWidget::AutoPackError GlowMenuButtonWidget::OnAutoPack(
 
 void GlowMenuButtonWidget::OnWidgetMove()
 {
-	_subwindow->Move(RootPositionX(), RootPositionY());
+	subwindow_->Move(RootPositionX(), RootPositionY());
 }
 
 
 void GlowMenuButtonWidget::OnWidgetReshape()
 {
-	_subwindow->Reshape(Width(), Height());
+	subwindow_->Reshape(Width(), Height());
 }
 
 
 void GlowMenuButtonWidget::OnWidgetVisible()
 {
-	_subwindow->Show();
+	subwindow_->Show();
 }
 
 
 void GlowMenuButtonWidget::OnWidgetInvisible()
 {
-	_subwindow->Hide();
+	subwindow_->Hide();
 }
 
 
@@ -573,17 +573,17 @@ void GlowPopupMenuWidget::Init(
 	// Mark
 	if (params.mark != 0)
 	{
-		_mark = new char[GLOW_CSTD::strlen(params.mark)+1];
-		GLOW_CSTD::strcpy(_mark, params.mark);
+		mark_ = new char[GLOW_CSTD::strlen(params.mark)+1];
+		GLOW_CSTD::strcpy(mark_, params.mark);
 	}
 	else
 	{
-		_mark = 0;
+		mark_ = 0;
 	}
 	
 	// Menu
-	_menu = new GlowMenu;
-	_menu->SetBindState(GlowMenu::bindSubwindow);
+	menu_ = new GlowMenu;
+	menu_->SetBindState(GlowMenu::bindSubwindow);
 	
 	// Fill in items
 	if (params.items != 0)
@@ -594,44 +594,44 @@ void GlowPopupMenuWidget::Init(
 		{
 			char* tok = GLOW_CSTD::strtok(i==0 ? tempbuf : 0, "\t");
 			if (tok == 0) break;
-			_menu->AddEntry(tok, i);
+			menu_->AddEntry(tok, i);
 		}
 		delete[] tempbuf;
 	}
 	
 	// Find and mark initial current item
-	_curItem = params.initial;
-	if (_curItem < 0) _curItem = 0;
-	if (_curItem >= _menu->NumItems()) _curItem = _menu->NumItems()-1;
-	if (_mark != 0 && _curItem != -1)
+	curItem_ = params.initial;
+	if (curItem_ < 0) curItem_ = 0;
+	if (curItem_ >= menu_->NumItems()) curItem_ = menu_->NumItems()-1;
+	if (mark_ != 0 && curItem_ != -1)
 	{
-		_menu->SetItemMark(_curItem, _mark);
+		menu_->SetItemMark(curItem_, mark_);
 	}
 	
 	// Menubutton subwindow
-	_subwindow = new Glow_PopupMenuSubwindow(this, "", params.font,
+	subwindow_ = new Glow_PopupMenuSubwindow(this, "", params.font,
 		GlowMenuButtonWidget::arrowIcon, params.spacing);
-	_subwindow->_boxColor = params.boxColor;
-	_subwindow->_textColor = params.textColor;
-	_subwindow->_iconColor = params.iconColor;
-	_subwindow->_hiliteBoxColor = params.hiliteBoxColor;
-	_subwindow->_hiliteTextColor = params.hiliteTextColor;
-	_subwindow->_hiliteIconColor = params.hiliteIconColor;
-	_subwindow->_disableBoxColor = params.disableBoxColor;
-	_subwindow->_disableTextColor = params.disableTextColor;
-	_subwindow->_disableIconColor = params.disableIconColor;
-	_subwindow->_disableOutlineColor = params.disableOutlineColor;
-	_subwindow->_lightBevelColor = params.lightBevelColor;
-	_subwindow->_darkBevelColor = params.darkBevelColor;
-	_subwindow->_SetMenu(_menu);
-	if (_curItem >= 0)
+	subwindow_->boxColor_ = params.boxColor;
+	subwindow_->textColor_ = params.textColor;
+	subwindow_->iconColor_ = params.iconColor;
+	subwindow_->hiliteBoxColor_ = params.hiliteBoxColor;
+	subwindow_->hiliteTextColor_ = params.hiliteTextColor;
+	subwindow_->hiliteIconColor_ = params.hiliteIconColor;
+	subwindow_->disableBoxColor_ = params.disableBoxColor;
+	subwindow_->disableTextColor_ = params.disableTextColor;
+	subwindow_->disableIconColor_ = params.disableIconColor;
+	subwindow_->disableOutlineColor_ = params.disableOutlineColor;
+	subwindow_->lightBevelColor_ = params.lightBevelColor;
+	subwindow_->darkBevelColor_ = params.darkBevelColor;
+	subwindow_->SetMenu_(menu_);
+	if (curItem_ >= 0)
 	{
-		_subwindow->_SetLabel(_menu->GetItemLabel(_curItem));
+		subwindow_->SetLabel_(menu_->GetItemLabel(curItem_));
 	}
 	
 	if (params.receiver != 0)
 	{
-		_sender.Bind(params.receiver);
+		sender_.Bind(params.receiver);
 	}
 }
 
@@ -640,7 +640,7 @@ GlowPopupMenuWidget::~GlowPopupMenuWidget()
 {
 	GLOW_DEBUGSCOPE("GlowPopupMenuWidget::~GlowPopupMenuWidget");
 	
-	delete[] _mark;
+	delete[] mark_;
 }
 
 
@@ -649,13 +649,13 @@ void GlowPopupMenuWidget::SetMark(
 {
 	GLOW_DEBUGSCOPE("GlowPopupMenuWidget::SetMark");
 	
-	delete _mark;
-	_mark = new char[GLOW_CSTD::strlen(mark)+1];
-	GLOW_CSTD::strcpy(_mark, mark);
-	_menu->UnmarkItem(_curItem);
-	if (_mark != 0)
+	delete mark_;
+	mark_ = new char[GLOW_CSTD::strlen(mark)+1];
+	GLOW_CSTD::strcpy(mark_, mark);
+	menu_->UnmarkItem(curItem_);
+	if (mark_ != 0)
 	{
-		_menu->SetItemMark(_curItem, _mark);
+		menu_->SetItemMark(curItem_, mark_);
 	}
 }
 
@@ -673,11 +673,11 @@ GlowWidget::AutoPackError GlowPopupMenuWidget::OnAutoPack(
 	GLOW_DEBUGSCOPE("GlowPopupMenuWidget::OnAutoPack");
 	
 	int pwidth = 0, pheight = 0;
-	_subwindow->PreferredSize(pwidth, pheight, "");
+	subwindow_->PreferredSize(pwidth, pheight, "");
 	for (int i=0; i<NumItems(); i++)
 	{
 		int w = 0;
-		_subwindow->PreferredSize(w, pheight, GetItemLabel(i));
+		subwindow_->PreferredSize(w, pheight, GetItemLabel(i));
 		if (w > pwidth) pwidth = w;
 	}
 	
@@ -720,18 +720,18 @@ int GlowPopupMenuWidget::AddItem(
 {
 	GLOW_DEBUGSCOPE("GlowPopupMenuWidget::AddItem");
 	
-	_menu->AddEntry(label, _menu->NumItems());
-	if (_menu->NumItems() == 1)
+	menu_->AddEntry(label, menu_->NumItems());
+	if (menu_->NumItems() == 1)
 	{
-		_curItem = 0;
-		_subwindow->_SetLabel(_menu->GetItemLabel(_curItem));
-		if (_mark != 0)
+		curItem_ = 0;
+		subwindow_->SetLabel_(menu_->GetItemLabel(curItem_));
+		if (mark_ != 0)
 		{
-			_menu->SetItemMark(_curItem, _mark);
+			menu_->SetItemMark(curItem_, mark_);
 		}
-		_subwindow->Refresh();
+		subwindow_->Refresh();
 	}
-	return _menu->NumItems()-1;
+	return menu_->NumItems()-1;
 }
 
 
@@ -741,32 +741,32 @@ void GlowPopupMenuWidget::RemoveItem(
 	GLOW_DEBUGSCOPE("GlowPopupMenuWidget::RemoveItem");
 	
 	GLOW_ASSERT(itemNum >= 0);
-	GLOW_ASSERT(itemNum < _menu->NumItems());
+	GLOW_ASSERT(itemNum < menu_->NumItems());
 	
-	int max = _menu->NumItems();
+	int max = menu_->NumItems();
 	for (int i=itemNum+1; i<max; i++)
 	{
-		_menu->SetItemCode(i, i-1);
+		menu_->SetItemCode(i, i-1);
 	}
-	if (_curItem == itemNum)
+	if (curItem_ == itemNum)
 	{
 		if (max == 1)
 		{
-			_curItem = -1;
-			_subwindow->_SetLabel("");
+			curItem_ = -1;
+			subwindow_->SetLabel_("");
 		}
 		else
 		{
-			_curItem = 0;
-			_subwindow->_SetLabel(_menu->GetItemLabel(_curItem));
+			curItem_ = 0;
+			subwindow_->SetLabel_(menu_->GetItemLabel(curItem_));
 		}
-		_subwindow->Refresh();
+		subwindow_->Refresh();
 	}
-	else if (_curItem > itemNum)
+	else if (curItem_ > itemNum)
 	{
-		_curItem--;
+		curItem_--;
 	}
-	_menu->RemoveItem(itemNum);
+	menu_->RemoveItem(itemNum);
 }
 
 
@@ -777,13 +777,13 @@ void GlowPopupMenuWidget::SetItemLabel(
 	GLOW_DEBUGSCOPE("GlowPopupMenuWidget::SetItemLabel");
 	
 	GLOW_ASSERT(itemNum >= 0);
-	GLOW_ASSERT(itemNum < _menu->NumItems());
+	GLOW_ASSERT(itemNum < menu_->NumItems());
 	
-	_menu->SetItemLabel(itemNum, label);
-	if (_curItem == itemNum)
+	menu_->SetItemLabel(itemNum, label);
+	if (curItem_ == itemNum)
 	{
-		_subwindow->_SetLabel(label);
-		_subwindow->Refresh();
+		subwindow_->SetLabel_(label);
+		subwindow_->Refresh();
 	}
 }
 
@@ -794,16 +794,16 @@ void GlowPopupMenuWidget::SetCurItem(
 	GLOW_DEBUGSCOPE("GlowPopupMenuWidget::SetCurItem");
 	
 	GLOW_ASSERT(itemNum >= 0);
-	GLOW_ASSERT(itemNum < _menu->NumItems());
+	GLOW_ASSERT(itemNum < menu_->NumItems());
 	
-	if (itemNum != _curItem)
+	if (itemNum != curItem_)
 	{
-		_menu->UnmarkItem(_curItem);
-		_curItem = itemNum;
-		_subwindow->_SetLabel(_menu->GetItemLabel(_curItem));
-		if (_mark != 0)
+		menu_->UnmarkItem(curItem_);
+		curItem_ = itemNum;
+		subwindow_->SetLabel_(menu_->GetItemLabel(curItem_));
+		if (mark_ != 0)
 		{
-			_menu->SetItemMark(_curItem, _mark);
+			menu_->SetItemMark(curItem_, mark_);
 		}
 	}
 }
@@ -811,25 +811,25 @@ void GlowPopupMenuWidget::SetCurItem(
 
 void GlowPopupMenuWidget::OnWidgetMove()
 {
-	_subwindow->Move(RootPositionX(), RootPositionY());
+	subwindow_->Move(RootPositionX(), RootPositionY());
 }
 
 
 void GlowPopupMenuWidget::OnWidgetReshape()
 {
-	_subwindow->Reshape(Width(), Height());
+	subwindow_->Reshape(Width(), Height());
 }
 
 
 void GlowPopupMenuWidget::OnWidgetVisible()
 {
-	_subwindow->Show();
+	subwindow_->Show();
 }
 
 
 void GlowPopupMenuWidget::OnWidgetInvisible()
 {
-	_subwindow->Hide();
+	subwindow_->Hide();
 }
 
 
@@ -837,20 +837,20 @@ void GlowPopupMenuWidget::OnHit(
 	int item)
 {
 	GlowPopupMenuMessage outmsg;
-	outmsg.oldItem = _curItem;
-	if (_curItem != item)
+	outmsg.oldItem = curItem_;
+	if (curItem_ != item)
 	{
-		_menu->UnmarkItem(_curItem);
-		_curItem = item;
-		_subwindow->_SetLabel(_menu->GetItemLabel(_curItem));
-		if (_mark != 0)
+		menu_->UnmarkItem(curItem_);
+		curItem_ = item;
+		subwindow_->SetLabel_(menu_->GetItemLabel(curItem_));
+		if (mark_ != 0)
 		{
-			_menu->SetItemMark(_curItem, _mark);
+			menu_->SetItemMark(curItem_, mark_);
 		}
 	}
 	outmsg.item = item;
 	outmsg.widget = this;
-	_sender.Send(outmsg);
+	sender_.Send(outmsg);
 }
 
 
@@ -871,8 +871,8 @@ void GlowLabeledPopupMenuWidget::Init(
 	InitLabel(this, params.labelPosition, params.labelWidth,
 		params.labelHeight, params.labelSpacing, params.labelText,
 		params.labelFont, params.labelColor, params.disableLabelColor);
-	_upLabelColor = params.labelColor;
-	_downLabelColor = params.hiliteLabelColor;
+	upLabelColor_ = params.labelColor;
+	downLabelColor_ = params.hiliteLabelColor;
 }
 
 
@@ -883,11 +883,11 @@ void GlowLabeledPopupMenuWidget::OnWidgetPaint()
 	Label()->SetRefreshEnabled(false);
 	if (IsDown())
 	{
-		Label()->SetTextColor(_downLabelColor);
+		Label()->SetTextColor(downLabelColor_);
 	}
 	else
 	{
-		Label()->SetTextColor(_upLabelColor);
+		Label()->SetTextColor(upLabelColor_);
 	}
 	Label()->SetRefreshEnabled(true);
 }

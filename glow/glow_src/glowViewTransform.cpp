@@ -128,7 +128,7 @@ color(0.5, 1.0, 1.0)
 void Glow_TransformData_IdleReceiver::OnMessage(
 	const GlowIdleMessage& message)
 {
-	_transform->StepSpin();
+	transform_->StepSpin();
 }
 
 
@@ -141,7 +141,7 @@ void Glow_TransformData_IdleReceiver::OnMessage(
 void Glow_ViewManip_IdleReceiver::OnMessage(
 	const GlowIdleMessage& message)
 {
-	_manip->_SimDrag();
+	manip_->SimDrag_();
 }
 
 
@@ -158,10 +158,10 @@ void GlowTransformData::ApplyToGLMatrix() const
 	// Base transform
 	Vec3f axis;
 	GLfloat angle;
-	_rotation.GetRotation(axis, angle);
-	glTranslatef(_translation.GetX(), _translation.GetY(), _translation.GetZ());
+	rotation_.GetRotation(axis, angle);
+	glTranslatef(translation_.GetX(), translation_.GetY(), translation_.GetZ());
 	glRotatef(angle*Math::radiansToDegrees, axis.GetX(), axis.GetY(), axis.GetZ());
-	glScalef(_scale, _scale, _scale);
+	glScalef(scale_, scale_, scale_);
 }
 
 
@@ -172,11 +172,11 @@ void GlowTransformData::ApplyInverseToGLMatrix() const
 	// Base transform
 	Vec3f axis;
 	GLfloat angle;
-	_rotation.GetRotation(axis, angle);
-	GLfloat scaleinv = 1.0f/_scale;
+	rotation_.GetRotation(axis, angle);
+	GLfloat scaleinv = 1.0f/scale_;
 	glScalef(scaleinv, scaleinv, scaleinv);
 	glRotatef(-angle*Math::radiansToDegrees, axis.GetX(), axis.GetY(), axis.GetZ());
-	glTranslatef(-_translation.GetX(), -_translation.GetY(), -_translation.GetZ());
+	glTranslatef(-translation_.GetX(), -translation_.GetY(), -translation_.GetZ());
 }
 
 
@@ -189,12 +189,12 @@ void GlowTransformData::GetMatrix(
 	Mat4f matrix2;
 	Vec3f axis;
 	GLfloat angle;
-	_rotation.GetRotation(axis, angle);
-	matrix2.SetTranslation(_translation);
+	rotation_.GetRotation(axis, angle);
+	matrix2.SetTranslation(translation_);
 	matrix *= matrix2;
 	matrix2.SetRotation(axis, angle);
 	matrix *= matrix2;
-	matrix2.SetScale(_scale);
+	matrix2.SetScale(scale_);
 	matrix *= matrix2;
 }
 
@@ -210,8 +210,8 @@ void GlowTransformData::GetGLMatrixf(
 
 void GlowTransformData::RefreshAll()
 {
-	for (GLOW_STD::vector<GlowViewTransform*>::iterator iter = _clients.begin();
-		iter != _clients.end(); ++iter)
+	for (GLOW_STD::vector<GlowViewTransform*>::iterator iter = clients_.begin(),
+		enditer = clients_.end(); iter != enditer; ++iter)
 	{
 		(*iter)->ParentWindow()->Refresh();
 	}
@@ -220,11 +220,11 @@ void GlowTransformData::RefreshAll()
 
 GlowTransformData::~GlowTransformData()
 {
-	for (GLOW_STD::vector<GlowViewTransform*>::iterator iter = _clients.begin();
-		iter != _clients.end(); ++iter)
+	for (GLOW_STD::vector<GlowViewTransform*>::iterator iter = clients_.begin(),
+		enditer = clients_.end(); iter != enditer; ++iter)
 	{
-		(*iter)->_transform = new GlowTransformData(
-			_translation, _rotation, _scale, false);
+		(*iter)->transform_ = new GlowTransformData(
+			translation_, rotation_, scale_, false);
 	}
 }
 
@@ -242,7 +242,7 @@ void GlowViewTransform::Init(
 	GLOW_DEBUGSCOPE("GlowViewTransform::Init");
 	GlowComponent::Init(parent);
 	
-	_RawConnect((params.connectTo != 0) ? params.connectTo :
+	RawConnect_((params.connectTo != 0) ? params.connectTo :
 		new GlowTransformData(params.initialTranslation,
 			params.initialRotation, params.initialScale, false));
 }
@@ -250,7 +250,7 @@ void GlowViewTransform::Init(
 
 GlowViewTransform::~GlowViewTransform()
 {
-	_RawDisconnect();
+	RawDisconnect_();
 }
 
 
@@ -275,10 +275,10 @@ void GlowViewTransform::ConnectTo(
 {
 	GLOW_DEBUGSCOPE("GlowViewTransform::ConnectTo");
 	GLOW_ASSERT(transform);
-	if (transform != _transform)
+	if (transform != transform_)
 	{
-		_RawDisconnect();
-		_RawConnect(transform);
+		RawDisconnect_();
+		RawConnect_(transform);
 	}
 }
 
@@ -288,10 +288,10 @@ void GlowViewTransform::ConnectTo(
 {
 	GLOW_DEBUGSCOPE("GlowViewTransform::ConnectTo");
 	GLOW_ASSERT(transform);
-	if (transform->TransformData() != _transform)
+	if (transform->TransformData() != transform_)
 	{
-		_RawDisconnect();
-		_RawConnect(transform->TransformData());
+		RawDisconnect_();
+		RawConnect_(transform->TransformData());
 	}
 }
 
@@ -300,10 +300,10 @@ void GlowViewTransform::Disconnect()
 {
 	GLOW_DEBUGSCOPE("GlowViewTransform::Disconnect");
 	GlowTransformData* newTransform = new GlowTransformData(
-		_transform->GetTranslation(), _transform->GetRotation(),
-		_transform->GetScale(), false);
-	_RawDisconnect();
-	_RawConnect(newTransform);
+		transform_->GetTranslation(), transform_->GetRotation(),
+		transform_->GetScale(), false);
+	RawDisconnect_();
+	RawConnect_(newTransform);
 }
 
 
@@ -320,19 +320,19 @@ void GlowViewManipulator::Init(
 	GLOW_DEBUGSCOPE("GlowViewManip::Init");
 	GlowComponent::Init(parent);
 	
-	_color = params.color;
-	_draw = params.draw;
-	_axisConstraintsActive = params.axisConstraintsActive;
-	_axisConstraints = params.axisConstraints;
-	_transThrottle = params.translationThrottle;
-	_rotThrottle = params.rotationThrottle * 0.5f;
-	_scaleThrottle = params.scaleThrottle * 0.5f;
-	_dragType = idleState;
-	_spinnable = params.spinnable;
-	_spinDataLength = params.spinDataLength;
-	_spinStart = false;
+	color_ = params.color;
+	draw_ = params.draw;
+	axisConstraintsActive_ = params.axisConstraintsActive;
+	axisConstraints_ = params.axisConstraints;
+	transThrottle_ = params.translationThrottle;
+	rotThrottle_ = params.rotationThrottle * 0.5f;
+	scaleThrottle_ = params.scaleThrottle * 0.5f;
+	dragType_ = idleState;
+	spinnable_ = params.spinnable;
+	spinDataLength_ = params.spinDataLength;
+	spinStart_ = false;
 	
-	_RawConnect((params.connectTo != 0) ? params.connectTo :
+	RawConnect_((params.connectTo != 0) ? params.connectTo :
 		new GlowTransformData(params.initialTranslation,
 			params.initialRotation, params.initialScale, false));
 }
@@ -343,7 +343,7 @@ void GlowViewManipulator::OnEndPaint()
 	GLOW_DEBUGSCOPE("GlowViewManipulator::OnEndPaint");
 	
 	// Finish up
-	if (_dragType != idleState && _draw)
+	if (dragType_ != idleState && draw_)
 	{
 		::glMatrixMode(GL_MODELVIEW);
 		::glLoadIdentity();
@@ -360,25 +360,25 @@ void GlowViewManipulator::OnEndPaint()
 		::glDisable(GL_LIGHTING);
 		::glDepthFunc(GL_ALWAYS);
 		
-		_color.Apply();
+		color_.Apply();
 		::glBegin(GL_LINES);
-		_DrawArc(Vec3f(1.0f, 0.0f, 0.0f), Vec3f(0.0f, 1.0f, 0.0f));
-		_DrawArc(Vec3f(0.0f, 1.0f, 0.0f), Vec3f(-1.0f, 0.0f, 0.0f));
-		_DrawArc(Vec3f(-1.0f, 0.0f, 0.0f), Vec3f(0.0f, -1.0f, 0.0f));
-		_DrawArc(Vec3f(0.0f, -1.0f, 0.0f), Vec3f(1.0f, 0.0f, 0.0f));
-		if (_dragType == scalingState)
+		DrawArc_(Vec3f(1.0f, 0.0f, 0.0f), Vec3f(0.0f, 1.0f, 0.0f));
+		DrawArc_(Vec3f(0.0f, 1.0f, 0.0f), Vec3f(-1.0f, 0.0f, 0.0f));
+		DrawArc_(Vec3f(-1.0f, 0.0f, 0.0f), Vec3f(0.0f, -1.0f, 0.0f));
+		DrawArc_(Vec3f(0.0f, -1.0f, 0.0f), Vec3f(1.0f, 0.0f, 0.0f));
+		if (dragType_ == scalingState)
 		{
-			::glVertex2f(_xStart, _yStart);
-			::glVertex2f(_xStart, _yCur);
+			::glVertex2f(xStart_, yStart_);
+			::glVertex2f(xStart_, yCur_);
 		}
-		else if (_dragType == translatingState)
+		else if (dragType_ == translatingState)
 		{
-			::glVertex2f(_xStart, _yStart);
-			::glVertex2f(_xCur, _yCur);
+			::glVertex2f(xStart_, yStart_);
+			::glVertex2f(xCur_, yCur_);
 		}
-		else //if (_dragType == rotatingState)
+		else //if (dragType_ == rotatingState)
 		{
-			_DrawArc(_ballDown, _ballCur);
+			DrawArc_(ballDown_, ballCur_);
 		}
 		::glEnd();
 		
@@ -393,51 +393,51 @@ void GlowViewManipulator::OnEndPaint()
 	}
 	
 	// Compute spin data, and start spinning
-	if (_spinnable)
+	if (spinnable_)
 	{
-		if (_dragType == rotatingState &&
-			(!_axisConstraintsActive || _axisConstraints.size() < 2))
+		if (dragType_ == rotatingState &&
+			(!axisConstraintsActive_ || axisConstraints_.size() < 2))
 		{
 			// While rotating
 			int curTime = glutGet(GLenum(GLUT_ELAPSED_TIME));
-			_spinData.push_back(GLOW_STD::pair<Vec3f, int>(_ballCur, curTime));
-			while (_spinData.front().second < curTime-_spinDataLength &&
-				_spinData.size() > 3)
+			spinData_.push_back(GLOW_STD::pair<Vec3f, int>(ballCur_, curTime));
+			while (spinData_.front().second < curTime-spinDataLength_ &&
+				spinData_.size() > 3)
 			{
-				_spinData.pop_front();
+				spinData_.pop_front();
 			}
 		}
-		else if (_spinStart && _spinData.size() > 0)
+		else if (spinStart_ && spinData_.size() > 0)
 		{
-			_spinStart = false;
+			spinStart_ = false;
 			int curTime = glutGet(GLenum(GLUT_ELAPSED_TIME));
-			while (_spinData.front().second < curTime-_spinDataLength &&
-				_spinData.size() > 2)
+			while (spinData_.front().second < curTime-spinDataLength_ &&
+				spinData_.size() > 2)
 			{
-				_spinData.pop_front();
+				spinData_.pop_front();
 			}
-			if (_ballCur != _spinData.front().first)
+			if (ballCur_ != spinData_.front().first)
 			{
 				// Ready to begin spinning
 				Quatf curSpin;
-				if (_spinData.size() < 2)
+				if (spinData_.size() < 2)
 				{
-					curSpin.SetImaginary(_spinData.front().first % _ballCur);
-					curSpin.SetW(_spinData.front().first * _ballCur);
+					curSpin.SetImaginary(spinData_.front().first % ballCur_);
+					curSpin.SetW(spinData_.front().first * ballCur_);
 					curSpin.Normalize();
-					curSpin.ScaleRotation(_rotThrottle/float(_spinData.size()));
-					_transform->StartSpinning(curSpin);
+					curSpin.ScaleRotation(rotThrottle_/float(spinData_.size()));
+					transform_->StartSpinning(curSpin);
 				}
 				else
 				{
-					curSpin.SetImaginary(_spinData.front().first % _spinData.back().first);
-					curSpin.SetW(_spinData.front().first * _spinData.back().first);
+					curSpin.SetImaginary(spinData_.front().first % spinData_.back().first);
+					curSpin.SetW(spinData_.front().first * spinData_.back().first);
 					curSpin.Normalize();
-					curSpin.ScaleRotation(_rotThrottle/float(_spinData.size()-1));
-					_transform->StartSpinning(curSpin);
+					curSpin.ScaleRotation(rotThrottle_/float(spinData_.size()-1));
+					transform_->StartSpinning(curSpin);
 				}
 			}
-			_spinData.clear();
+			spinData_.clear();
 		}
 	}
 	::glPopMatrix();
@@ -450,15 +450,15 @@ void GlowViewManipulator::BeginScaleDrag(
 {
 	GLOW_DEBUGSCOPE("GlowViewManipulator::BeginScaleDrag");
 	
-	_transform->StopSpinning();
-	_xStart = xn;
-	_yStart = yn;
-	_xCur = xn;
-	_yCur = yn;
-	_dragType = scalingState;
-	_oldTranslation = _transform->GetTranslation();
-	_oldRotation = _transform->GetRotation();
-	_oldScale = _transform->GetScale();
+	transform_->StopSpinning();
+	xStart_ = xn;
+	yStart_ = yn;
+	xCur_ = xn;
+	yCur_ = yn;
+	dragType_ = scalingState;
+	oldTranslation_ = transform_->GetTranslation();
+	oldRotation_ = transform_->GetRotation();
+	oldScale_ = transform_->GetScale();
 }
 
 
@@ -468,15 +468,15 @@ void GlowViewManipulator::BeginTranslationDrag(
 {
 	GLOW_DEBUGSCOPE("GlowViewManipulator::BeginTranslationDrag");
 	
-	_transform->StopSpinning();
-	_xStart = xn;
-	_yStart = yn;
-	_xCur = xn;
-	_yCur = yn;
-	_dragType = translatingState;
-	_oldTranslation = _transform->GetTranslation();
-	_oldRotation = _transform->GetRotation();
-	_oldScale = _transform->GetScale();
+	transform_->StopSpinning();
+	xStart_ = xn;
+	yStart_ = yn;
+	xCur_ = xn;
+	yCur_ = yn;
+	dragType_ = translatingState;
+	oldTranslation_ = transform_->GetTranslation();
+	oldRotation_ = transform_->GetRotation();
+	oldScale_ = transform_->GetScale();
 }
 
 
@@ -486,19 +486,19 @@ void GlowViewManipulator::BeginRotationDrag(
 {
 	GLOW_DEBUGSCOPE("GlowViewManipulator::BeginRotationDrag");
 	
-	_transform->StopSpinning();
-	_xStart = xn;
-	_yStart = yn;
-	_xCur = xn;
-	_yCur = yn;
-	_dragType = rotatingState;
-	_ballDown = _ballCur = _MouseToBall(_xStart, _yStart);
-	_oldTranslation = _transform->GetTranslation();
-	_oldRotation = _transform->GetRotation();
-	_oldScale = _transform->GetScale();
-	if (_spinnable)
+	transform_->StopSpinning();
+	xStart_ = xn;
+	yStart_ = yn;
+	xCur_ = xn;
+	yCur_ = yn;
+	dragType_ = rotatingState;
+	ballDown_ = ballCur_ = MouseToBall_(xStart_, yStart_);
+	oldTranslation_ = transform_->GetTranslation();
+	oldRotation_ = transform_->GetRotation();
+	oldScale_ = transform_->GetScale();
+	if (spinnable_)
 	{
-		Glow::RegisterIdle(&_receiver);
+		Glow::RegisterIdle(&receiver_);
 	}
 }
 
@@ -509,51 +509,51 @@ void GlowViewManipulator::InDrag(
 {
 	GLOW_DEBUGSCOPE("GlowViewManipulator::InDrag");
 	
-	_xCur = xn;
-	_yCur = yn;
-	if (_dragType == scalingState)
+	xCur_ = xn;
+	yCur_ = yn;
+	if (dragType_ == scalingState)
 	{
-		float curScale = GLOW_CSTD::pow(2.0f, (_yCur-_yStart)*_scaleThrottle);
-		_transform->Set(_oldTranslation * curScale, _oldRotation,
-			_oldScale * curScale);
+		float curScale = GLOW_CSTD::pow(2.0f, (yCur_-yStart_)*scaleThrottle_);
+		transform_->Set(oldTranslation_ * curScale, oldRotation_,
+			oldScale_ * curScale);
 	}
-	else if (_dragType == translatingState)
+	else if (dragType_ == translatingState)
 	{
-		Vec3f curTranslation((_xCur - _xStart) * _transThrottle,
-			(_yCur - _yStart) * _transThrottle, 0);
-		_transform->Set(_oldTranslation + curTranslation, _oldRotation, _oldScale);
+		Vec3f curTranslation((xCur_ - xStart_) * transThrottle_,
+			(yCur_ - yStart_) * transThrottle_, 0);
+		transform_->Set(oldTranslation_ + curTranslation, oldRotation_, oldScale_);
 	}
-	else if (_dragType == rotatingState)
+	else if (dragType_ == rotatingState)
 	{
-		_ballDown = _MouseToBall(_xStart, _yStart);
-		_ballCur = _MouseToBall(_xCur, _yCur);
+		ballDown_ = MouseToBall_(xStart_, yStart_);
+		ballCur_ = MouseToBall_(xCur_, yCur_);
 		Quatf curRotation;
-		if (_xCur != _xStart || _yCur != _yStart)
+		if (xCur_ != xStart_ || yCur_ != yStart_)
 		{
-			if (_axisConstraintsActive && _axisConstraints.size() != 0)
+			if (axisConstraintsActive_ && axisConstraints_.size() != 0)
 			{
-				GLOW_STD::vector<Vec3f>::iterator best = _axisConstraints.begin();
+				GLOW_STD::vector<Vec3f>::iterator best = axisConstraints_.begin();
 				float bestValue = 2;
-				for (GLOW_STD::vector<Vec3f>::iterator iter = best;
-					iter != _axisConstraints.end(); ++iter)
+				for (GLOW_STD::vector<Vec3f>::iterator iter = best,
+					enditer = axisConstraints_.end(); iter != enditer; ++iter)
 				{
-					float curValue = GLOW_CSTD::fabs(_ballCur*(*iter));
+					float curValue = GLOW_CSTD::fabs(ballCur_*(*iter));
 					if (curValue < bestValue)
 					{
 						bestValue = curValue;
 						best = iter;
 					}
 				}
-				_ballDown = (_ballDown-(*best)*(_ballDown*(*best))).Normalized();
-				_ballCur = (_ballCur-(*best)*(_ballCur*(*best))).Normalized();
+				ballDown_ = (ballDown_-(*best)*(ballDown_*(*best))).Normalized();
+				ballCur_ = (ballCur_-(*best)*(ballCur_*(*best))).Normalized();
 			}
-			curRotation.SetImaginary(_ballDown%_ballCur);
-			curRotation.SetW(_ballDown*_ballCur);
+			curRotation.SetImaginary(ballDown_%ballCur_);
+			curRotation.SetW(ballDown_*ballCur_);
 			curRotation.Normalize();
-			curRotation.ScaleRotation(_rotThrottle);
+			curRotation.ScaleRotation(rotThrottle_);
 		}
-		_transform->Set(curRotation * _oldTranslation,
-			curRotation % _oldRotation, _oldScale);
+		transform_->Set(curRotation * oldTranslation_,
+			curRotation % oldRotation_, oldScale_);
 	}
 }
 
@@ -567,12 +567,12 @@ void GlowViewManipulator::EndDrag(
 	if (IsDragging())
 	{
 		InDrag(xn, yn);
-		if (_dragType == rotatingState && _spinnable)
+		if (dragType_ == rotatingState && spinnable_)
 		{
-			Glow::UnregisterIdle(&_receiver);
-			_spinStart = true;
+			Glow::UnregisterIdle(&receiver_);
+			spinStart_ = true;
 		}
-		_dragType = idleState;
+		dragType_ = idleState;
 	}
 }
 
@@ -581,27 +581,27 @@ void GlowViewManipulator::SetSpinnable(
 	bool spinnable)
 {
 	GLOW_DEBUGSCOPE("GlowViewManipulator::SetSpinnable");
-	if (!spinnable && _spinnable)
+	if (!spinnable && spinnable_)
 	{
-		_transform->StopSpinning();
+		transform_->StopSpinning();
 	}
-	if (_dragType == rotatingState)
+	if (dragType_ == rotatingState)
 	{
-		if (spinnable && !_spinnable)
+		if (spinnable && !spinnable_)
 		{
-			Glow::RegisterIdle(&_receiver);
+			Glow::RegisterIdle(&receiver_);
 		}
-		else if (!spinnable && _spinnable)
+		else if (!spinnable && spinnable_)
 		{
-			Glow::UnregisterIdle(&_receiver);
-			_spinData.clear();
+			Glow::UnregisterIdle(&receiver_);
+			spinData_.clear();
 		}
 	}
-	_spinnable = spinnable;
+	spinnable_ = spinnable;
 }
 
 
-Vec3f GlowViewManipulator::_MouseToBall(
+Vec3f GlowViewManipulator::MouseToBall_(
 	GLfloat xn,
 	GLfloat yn)
 {
@@ -617,7 +617,7 @@ Vec3f GlowViewManipulator::_MouseToBall(
 }
 
 
-void GlowViewManipulator::_DrawArc(
+void GlowViewManipulator::DrawArc_(
 	const Vec3f& start,
 	const Vec3f& end,
 	int level)
@@ -630,8 +630,8 @@ void GlowViewManipulator::_DrawArc(
 	else
 	{
 		Vec3f mid = (start+end).Normalized();
-		_DrawArc(start, mid, level-1);
-		_DrawArc(mid, end, level-1);
+		DrawArc_(start, mid, level-1);
+		DrawArc_(mid, end, level-1);
 	}
 }
 

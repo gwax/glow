@@ -102,9 +102,9 @@ void GlowSeparatorWidget::Init(
 	GLOW_DEBUGSCOPE("GlowSeparatorWidget::Init");
 	
 	GlowWidget::Init(root, parent, params);
-	_style = params.style;
-	_lightBevelColor = params.lightBevelColor;
-	_darkBevelColor = params.darkBevelColor;
+	style_ = params.style;
+	lightBevelColor_ = params.lightBevelColor;
+	darkBevelColor_ = params.darkBevelColor;
 }
 
 
@@ -179,7 +179,7 @@ void GlowSeparatorWidget::OnWidgetPaint()
 {
 	GLOW_DEBUGSCOPE("GlowSeparatorWidget::OnWidgetPaint");
 	
-	if (_style == transparentStyle)
+	if (style_ == transparentStyle)
 	{
 		return;
 	}
@@ -187,13 +187,13 @@ void GlowSeparatorWidget::OnWidgetPaint()
 	float etchHeight = float(2)/float(Height());
 	float etchWidth = float(2)/float(Width());
 	
-	if (_style == ridgeStyle)
+	if (style_ == ridgeStyle)
 	{
-		_lightBevelColor.Apply();
+		lightBevelColor_.Apply();
 	}
 	else
 	{
-		_darkBevelColor.Apply();
+		darkBevelColor_.Apply();
 	}
 	::glBegin(GL_LINES);
 	if (Width() > Height())
@@ -207,13 +207,13 @@ void GlowSeparatorWidget::OnWidgetPaint()
 		::glVertex2f(0.0f-etchWidth, 1.0f);
 	}
 	::glEnd();
-	if (_style == valleyStyle)
+	if (style_ == valleyStyle)
 	{
-		_lightBevelColor.Apply();
+		lightBevelColor_.Apply();
 	}
 	else
 	{
-		_darkBevelColor.Apply();
+		darkBevelColor_.Apply();
 	}
 	::glBegin(GL_LINES);
 	if (Width() > Height())

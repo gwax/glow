@@ -201,14 +201,14 @@ void GlowMessageWindow::Init(
 	int buttonsWidth = -params.windowSpacing;
 	while (true)
 	{
-		pbparams.text = GLOW_CSTD::strtok(_buttons.size()==0 ? tempbuf : 0, "\t");
+		pbparams.text = GLOW_CSTD::strtok(buttons_.size()==0 ? tempbuf : 0, "\t");
 		if (pbparams.text == 0) break;
-		_buttons.push_back(new Glow_MessageWindowButton(this, pbparams, _buttons.size()));
-		_buttons.back()->AutoReshape();
-		buttonsWidth += _buttons.back()->Width() + params.windowSpacing;
+		buttons_.push_back(new Glow_MessageWindowButton(this, pbparams, buttons_.size()));
+		buttons_.back()->AutoReshape();
+		buttonsWidth += buttons_.back()->Width() + params.windowSpacing;
 	}
-	int buttonHeight = _buttons.front()->Height();
-	GLOW_DEBUG(_buttons.size()==0, "No buttons specified in GlowMessageWindow");
+	int buttonHeight = buttons_.front()->Height();
+	GLOW_DEBUG(buttons_.size()==0, "No buttons specified in GlowMessageWindow");
 	GLOW_DEBUG(buttonsWidth>800, "Buttons too wide in GlowMessageWindow");
 	delete[] tempbuf;
 	
@@ -232,8 +232,8 @@ void GlowMessageWindow::Init(
 	
 	// Arrange buttons
 	int xbutton = (windowWidth - buttonsWidth)/2;
-	for (GLOW_STD::vector<GlowPushButtonWidget*>::iterator iter = _buttons.begin();
-		iter != _buttons.end(); ++iter)
+	for (GLOW_STD::vector<GlowPushButtonWidget*>::iterator iter = buttons_.begin();
+		iter != buttons_.end(); ++iter)
 	{
 		(*iter)->Move(xbutton, label->Height()+params.windowSpacing*2+10);
 		xbutton += (*iter)->Width()+params.windowSpacing;
@@ -245,27 +245,27 @@ void GlowMessageWindow::Init(
 	
 	if (params.receiver != 0)
 	{
-		_sender.Bind(params.receiver);
+		sender_.Bind(params.receiver);
 	}
 	
 	// Enter and escape filters
-	_enterFilter = new GlowWidgetMapToPushButtonFilter(
-		(params.enterButton<0 || params.enterButton>=int(_buttons.size())) ?
-			0 : _buttons[params.enterButton],
+	enterFilter_ = new GlowWidgetMapToPushButtonFilter(
+		(params.enterButton<0 || params.enterButton>=int(buttons_.size())) ?
+			0 : buttons_[params.enterButton],
 		Glow::enterKey, Glow::noModifier);
-	_escapeFilter = new GlowWidgetMapToPushButtonFilter(
-		(params.escapeButton<0 || params.escapeButton>=int(_buttons.size())) ?
-			0 : _buttons[params.escapeButton],
+	escapeFilter_ = new GlowWidgetMapToPushButtonFilter(
+		(params.escapeButton<0 || params.escapeButton>=int(buttons_.size())) ?
+			0 : buttons_[params.escapeButton],
 		Glow::escapeKey, Glow::noModifier);
-	RegisterFilter(_enterFilter);
-	RegisterFilter(_escapeFilter);
+	RegisterFilter(enterFilter_);
+	RegisterFilter(escapeFilter_);
 }
 
 
 GlowMessageWindow::~GlowMessageWindow()
 {
-	delete _enterFilter;
-	delete _escapeFilter;
+	delete enterFilter_;
+	delete escapeFilter_;
 }
 
 
@@ -281,7 +281,7 @@ void GlowMessageWindow::OnButtonPressed(
 	message.response = response;
 	message.mouseButton = mouseButton;
 	message.modifiers = modifiers;
-	_sender.Send(message);
+	sender_.Send(message);
 	Close();
 }
 

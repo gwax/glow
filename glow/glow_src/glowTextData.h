@@ -156,9 +156,9 @@ class GlowTextData :
 	
 	private:
 	
-		GLOW_STD::vector<int> _lineBreaks;
-		int _selStart;
-		int _selEnd;
+		GLOW_STD::vector<int> lineBreaks_;
+		int selStart_;
+		int selEnd_;
 };
 
 

@@ -905,8 +905,8 @@ void Glow::ExecuteDeferred_()
 	}
 	
 	// Deferred activation and deactivation
-	for (GLOW_STD::map<GlowComponent*, bool>::iterator iter = activateNotifyList_.begin();
-		iter != activateNotifyList_.end(); ++iter)
+	for (GLOW_STD::map<GlowComponent*, bool>::iterator iter = activateNotifyList_.begin(),
+		enditer = activateNotifyList_.end(); iter != enditer; ++iter)
 	{
 		if ((*iter).second)
 		{
@@ -959,8 +959,8 @@ void Glow::PushModalWindow(
 		// This is the first modal window
 		// Go through and deactivate all toplevel windows except the one
 		// to be made modal
-		for (WindowRegistryIterator_ iter = windowRegistry_.begin();
-			iter != windowRegistry_.end(); iter++)
+		for (WindowRegistryIterator_ iter = windowRegistry_.begin(),
+			enditer = windowRegistry_.end(); iter != enditer; ++iter)
 		{
 			GlowSubwindow* subwind = (*iter).second;
 			if (subwind->IsTopLevel() && subwind != wind)
@@ -995,8 +995,8 @@ void Glow::PopModalWindow()
 		if (modalWindows_.empty())
 		{
 			// This was the last modal window. Reactivate windows
-			for (WindowRegistryIterator_ iter = windowRegistry_.begin();
-				iter != windowRegistry_.end(); iter++)
+			for (WindowRegistryIterator_ iter = windowRegistry_.begin(),
+				enditer = windowRegistry_.end(); iter != enditer; ++iter)
 			{
 				GlowSubwindow* subwind = (*iter).second;
 				if (subwind->IsTopLevel() && subwind != wind)
@@ -2207,7 +2207,8 @@ GlowMenu::~GlowMenu()
 	
 	Glow::RemoveMenu_(menuNum_);
 	::glutDestroyMenu(menuNum_);
-	for (MenuItemIterator_ iter = itemData_.begin(); iter != itemData_.end(); ++iter)
+	for (MenuItemIterator_ iter = itemData_.begin(),
+		enditer = itemData_.end(); iter != enditer; ++iter)
 	{
 		delete[] (*iter).label;
 		delete[] (*iter).mark;
@@ -2513,7 +2514,8 @@ void GlowMenu::UnmarkAllItems()
 	GLOW_DEBUGSCOPE("GlowMenu::UnmarkAllItems");
 	
 	int itemNum = 0;
-	for (MenuItemIterator_ iter = itemData_.begin(); iter != itemData_.end(); ++iter)
+	for (MenuItemIterator_ iter = itemData_.begin(),
+		enditer = itemData_.end(); iter != enditer; ++iter)
 	{
 		delete[] (*iter).mark;
 		(*iter).mark = 0;

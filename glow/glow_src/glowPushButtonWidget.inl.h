@@ -103,37 +103,37 @@ inline void GlowPushButtonWidget::Init(
 
 inline const char* GlowPushButtonWidget::GetText() const
 {
-	return _label;
+	return label_;
 }
 
 
 inline GlowFont GlowPushButtonWidget::GetFont() const
 {
-	return _font;
+	return font_;
 }
 
 
 inline void GlowPushButtonWidget::SetFont(
 	GlowFont font)
 {
-	_font = font;
+	font_ = font;
 	Refresh();
 }
 
 
 inline GlowPushButtonWidget::Behavior GlowPushButtonWidget::GetBehavior() const
 {
-	return _behavior;
+	return behavior_;
 }
 
 
 inline void GlowPushButtonWidget::SetBehavior(
 	Behavior behavior)
 {
-	_behavior = behavior;
-	if (_behavior == normalBehavior && _state)
+	behavior_ = behavior;
+	if (behavior_ == normalBehavior && state_)
 	{
-		_state = false;
+		state_ = false;
 		Refresh();
 	}
 }
@@ -141,94 +141,94 @@ inline void GlowPushButtonWidget::SetBehavior(
 
 inline bool GlowPushButtonWidget::IsDown() const
 {
-	return _state;
+	return state_;
 }
 
 
 inline void GlowPushButtonWidget::SetDown(
 	bool down)
 {
-	_state = down;
+	state_ = down;
 	Refresh();
 }
 
 
 inline GlowColor GlowPushButtonWidget::GetUpBoxColor() const
 {
-	return _upBoxColor;
+	return upBoxColor_;
 }
 
 
 inline GlowColor GlowPushButtonWidget::GetUpTextColor() const
 {
-	return _upTextColor;
+	return upTextColor_;
 }
 
 
 inline GlowColor GlowPushButtonWidget::GetDownBoxColor() const
 {
-	return _downBoxColor;
+	return downBoxColor_;
 }
 
 
 inline GlowColor GlowPushButtonWidget::GetDownTextColor() const
 {
-	return _downTextColor;
+	return downTextColor_;
 }
 
 
 inline GlowColor GlowPushButtonWidget::GetHiliteBoxColor() const
 {
-	return _hiliteBoxColor;
+	return hiliteBoxColor_;
 }
 
 
 inline GlowColor GlowPushButtonWidget::GetHiliteTextColor() const
 {
-	return _hiliteTextColor;
+	return hiliteTextColor_;
 }
 
 
 inline GlowColor GlowPushButtonWidget::GetDisableUpBoxColor() const
 {
-	return _disableUpBoxColor;
+	return disableUpBoxColor_;
 }
 
 
 inline GlowColor GlowPushButtonWidget::GetDisableDownBoxColor() const
 {
-	return _disableDownBoxColor;
+	return disableDownBoxColor_;
 }
 
 
 inline GlowColor GlowPushButtonWidget::GetDisableTextColor() const
 {
-	return _disableTextColor;
+	return disableTextColor_;
 }
 
 
 inline GlowColor GlowPushButtonWidget::GetDisableOutlineColor() const
 {
-	return _disableOutlineColor;
+	return disableOutlineColor_;
 }
 
 
 inline GlowColor GlowPushButtonWidget::GetLightBevelColor() const
 {
-	return _lightBevelColor;
+	return lightBevelColor_;
 }
 
 
 inline GlowColor GlowPushButtonWidget::GetDarkBevelColor() const
 {
-	return _darkBevelColor;
+	return darkBevelColor_;
 }
 
 
 inline void GlowPushButtonWidget::SetUpBoxColor(
 	GlowColor c)
 {
-	_upBoxColor = c;
+	upBoxColor_ = c;
 	Refresh();
 }
 
@@ -236,7 +236,7 @@ inline void GlowPushButtonWidget::SetUpBoxColor(
 inline void GlowPushButtonWidget::SetUpTextColor(
 	GlowColor c)
 {
-	_upTextColor = c;
+	upTextColor_ = c;
 	Refresh();
 }
 
@@ -244,7 +244,7 @@ inline void GlowPushButtonWidget::SetUpTextColor(
 inline void GlowPushButtonWidget::SetDownBoxColor(
 	GlowColor c)
 {
-	_downBoxColor = c;
+	downBoxColor_ = c;
 	Refresh();
 }
 
@@ -252,7 +252,7 @@ inline void GlowPushButtonWidget::SetDownBoxColor(
 inline void GlowPushButtonWidget::SetDownTextColor(
 	GlowColor c)
 {
-	_downTextColor = c;
+	downTextColor_ = c;
 	Refresh();
 }
 
@@ -260,7 +260,7 @@ inline void GlowPushButtonWidget::SetDownTextColor(
 inline void GlowPushButtonWidget::SetHiliteBoxColor(
 	GlowColor c)
 {
-	_hiliteBoxColor = c;
+	hiliteBoxColor_ = c;
 	Refresh();
 }
 
@@ -268,7 +268,7 @@ inline void GlowPushButtonWidget::SetHiliteBoxColor(
 inline void GlowPushButtonWidget::SetHiliteTextColor(
 	GlowColor c)
 {
-	_hiliteTextColor = c;
+	hiliteTextColor_ = c;
 	Refresh();
 }
 
@@ -276,7 +276,7 @@ inline void GlowPushButtonWidget::SetHiliteTextColor(
 inline void GlowPushButtonWidget::SetDisableUpBoxColor(
 	GlowColor c)
 {
-	_disableUpBoxColor = c;
+	disableUpBoxColor_ = c;
 	Refresh();
 }
 
@@ -284,7 +284,7 @@ inline void GlowPushButtonWidget::SetDisableUpBoxColor(
 inline void GlowPushButtonWidget::SetDisableDownBoxColor(
 	GlowColor c)
 {
-	_disableDownBoxColor = c;
+	disableDownBoxColor_ = c;
 	Refresh();
 }
 
@@ -292,7 +292,7 @@ inline void GlowPushButtonWidget::SetDisableDownBoxColor(
 inline void GlowPushButtonWidget::SetDisableTextColor(
 	GlowColor c)
 {
-	_disableTextColor = c;
+	disableTextColor_ = c;
 	Refresh();
 }
 
@@ -300,7 +300,7 @@ inline void GlowPushButtonWidget::SetDisableTextColor(
 inline void GlowPushButtonWidget::SetDisableOutlineColor(
 	GlowColor c)
 {
-	_disableOutlineColor = c;
+	disableOutlineColor_ = c;
 	Refresh();
 }
 
@@ -308,7 +308,7 @@ inline void GlowPushButtonWidget::SetDisableOutlineColor(
 inline void GlowPushButtonWidget::SetLightBevelColor(
 	GlowColor c)
 {
-	_lightBevelColor = c;
+	lightBevelColor_ = c;
 	Refresh();
 }
 
@@ -316,14 +316,14 @@ inline void GlowPushButtonWidget::SetLightBevelColor(
 inline void GlowPushButtonWidget::SetDarkBevelColor(
 	GlowColor c)
 {
-	_darkBevelColor = c;
+	darkBevelColor_ = c;
 	Refresh();
 }
 
 
 inline TSender<const GlowPushButtonMessage&>& GlowPushButtonWidget::Notifier()
 {
-	return _sender;
+	return sender_;
 }
 
 
@@ -352,7 +352,7 @@ inline GlowDismissPushButtonWidget::GlowDismissPushButtonWidget(
 	GlowComponent* todismiss)
 {
 	GlowPushButtonWidget::Init(parent->Root(), parent, params);
-	_todismiss = todismiss;
+	todismiss_ = todismiss;
 }
 
 
@@ -362,7 +362,7 @@ inline GlowDismissPushButtonWidget::GlowDismissPushButtonWidget(
 	GlowComponent* todismiss)
 {
 	GlowPushButtonWidget::Init(root, 0, params);
-	_todismiss = todismiss;
+	todismiss_ = todismiss;
 }
 
 
@@ -372,7 +372,7 @@ inline void GlowDismissPushButtonWidget::Init(
 	GlowComponent* todismiss)
 {
 	GlowPushButtonWidget::Init(parent->Root(), parent, params);
-	_todismiss = todismiss;
+	todismiss_ = todismiss;
 }
 
 
@@ -382,20 +382,20 @@ inline void GlowDismissPushButtonWidget::Init(
 	GlowComponent* todismiss)
 {
 	GlowPushButtonWidget::Init(root, 0, params);
-	_todismiss = todismiss;
+	todismiss_ = todismiss;
 }
 
 
 inline void GlowDismissPushButtonWidget::SetToDismiss(
 	GlowComponent* todismiss)
 {
-	_todismiss = todismiss;
+	todismiss_ = todismiss;
 }
 
 
 inline GlowComponent* GlowDismissPushButtonWidget::GetToDismiss() const
 {
-	return _todismiss;
+	return todismiss_;
 }
 
 
@@ -410,48 +410,48 @@ inline GlowWidgetMapToPushButtonFilter::GlowWidgetMapToPushButtonFilter(
 	Glow::KeyCode key,
 	Glow::Modifiers modifiers)
 {
-	_widget = widget;
-	_keyCode = key;
-	_modifiers = modifiers;
+	widget_ = widget;
+	keyCode_ = key;
+	modifiers_ = modifiers;
 }
 
 
 inline void GlowWidgetMapToPushButtonFilter::SetPushButton(
 	GlowPushButtonWidget* widget)
 {
-	_widget = widget;
+	widget_ = widget;
 }
 
 
 inline GlowPushButtonWidget* GlowWidgetMapToPushButtonFilter::GetPushButton() const
 {
-	return _widget;
+	return widget_;
 }
 
 
 inline void GlowWidgetMapToPushButtonFilter::SetKeyCode(
 	Glow::KeyCode key)
 {
-	_keyCode = key;
+	keyCode_ = key;
 }
 
 
 inline Glow::KeyCode GlowWidgetMapToPushButtonFilter::GetKeyCode() const
 {
-	return _keyCode;
+	return keyCode_;
 }
 
 
 inline void GlowWidgetMapToPushButtonFilter::SetModifiers(
 	Glow::Modifiers modifiers)
 {
-	_modifiers = modifiers;
+	modifiers_ = modifiers;
 }
 
 
 inline Glow::Modifiers GlowWidgetMapToPushButtonFilter::GetModifiers() const
 {
-	return _modifiers;
+	return modifiers_;
 }
 
 

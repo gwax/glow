@@ -72,7 +72,7 @@ GLOW_NAMESPACE_BEGIN
 
 bool GlowRenderSwitch::OnBeginPaint()
 {
-	return _enabled;
+	return enabled_;
 }
 
 

@@ -106,104 +106,104 @@ inline void GlowScrollBarWidget::Init(
 
 inline GlowColor GlowScrollBarWidget::GetStripColor() const
 {
-	return _stripColor;
+	return stripColor_;
 }
 
 
 inline GlowColor GlowScrollBarWidget::GetIndicatorColor() const
 {
-	return _indicatorColor;
+	return indicatorColor_;
 }
 
 
 inline GlowColor GlowScrollBarWidget::GetShadowColor() const
 {
-	return _shadowColor;
+	return shadowColor_;
 }
 
 
 inline GlowColor GlowScrollBarWidget::GetButtonColor() const
 {
-	return _buttonColor;
+	return buttonColor_;
 }
 
 
 inline GlowColor GlowScrollBarWidget::GetButtonIconColor() const
 {
-	return _buttonIconColor;
+	return buttonIconColor_;
 }
 
 
 inline GlowColor GlowScrollBarWidget::GetHiliteStripColor() const
 {
-	return _hiliteStripColor;
+	return hiliteStripColor_;
 }
 
 
 inline GlowColor GlowScrollBarWidget::GetHiliteIndicatorColor() const
 {
-	return _hiliteIndicatorColor;
+	return hiliteIndicatorColor_;
 }
 
 
 inline GlowColor GlowScrollBarWidget::GetHiliteButtonColor() const
 {
-	return _hiliteButtonColor;
+	return hiliteButtonColor_;
 }
 
 
 inline GlowColor GlowScrollBarWidget::GetHiliteButtonIconColor() const
 {
-	return _hiliteButtonIconColor;
+	return hiliteButtonIconColor_;
 }
 
 
 inline GlowColor GlowScrollBarWidget::GetDisableStripColor() const
 {
-	return _disableStripColor;
+	return disableStripColor_;
 }
 
 
 inline GlowColor GlowScrollBarWidget::GetDisableIndicatorColor() const
 {
-	return _disableIndicatorColor;
+	return disableIndicatorColor_;
 }
 
 
 inline GlowColor GlowScrollBarWidget::GetDisableButtonColor() const
 {
-	return _disableButtonColor;
+	return disableButtonColor_;
 }
 
 
 inline GlowColor GlowScrollBarWidget::GetDisableButtonIconColor() const
 {
-	return _disableButtonIconColor;
+	return disableButtonIconColor_;
 }
 
 
 inline GlowColor GlowScrollBarWidget::GetDisableOutlineColor() const
 {
-	return _disableOutlineColor;
+	return disableOutlineColor_;
 }
 
 
 inline GlowColor GlowScrollBarWidget::GetLightBevelColor() const
 {
-	return _lightBevelColor;
+	return lightBevelColor_;
 }
 
 
 inline GlowColor GlowScrollBarWidget::GetDarkBevelColor() const
 {
-	return _darkBevelColor;
+	return darkBevelColor_;
 }
 
 
 inline void GlowScrollBarWidget::SetStripColor(
 	GlowColor c)
 {
-	_stripColor = c;
+	stripColor_ = c;
 	Refresh();
 }
 
@@ -211,7 +211,7 @@ inline void GlowScrollBarWidget::SetStripColor(
 inline void GlowScrollBarWidget::SetIndicatorColor(
 	GlowColor c)
 {
-	_indicatorColor = c;
+	indicatorColor_ = c;
 	Refresh();
 }
 
@@ -219,7 +219,7 @@ inline void GlowScrollBarWidget::SetIndicatorColor(
 inline void GlowScrollBarWidget::SetShadowColor(
 	GlowColor c)
 {
-	_shadowColor = c;
+	shadowColor_ = c;
 	Refresh();
 }
 
@@ -227,7 +227,7 @@ inline void GlowScrollBarWidget::SetShadowColor(
 inline void GlowScrollBarWidget::SetButtonColor(
 	GlowColor c)
 {
-	_buttonColor = c;
+	buttonColor_ = c;
 	Refresh();
 }
 
@@ -235,7 +235,7 @@ inline void GlowScrollBarWidget::SetButtonColor(
 inline void GlowScrollBarWidget::SetButtonIconColor(
 	GlowColor c)
 {
-	_buttonIconColor = c;
+	buttonIconColor_ = c;
 	Refresh();
 }
 
@@ -243,7 +243,7 @@ inline void GlowScrollBarWidget::SetButtonIconColor(
 inline void GlowScrollBarWidget::SetHiliteStripColor(
 	GlowColor c)
 {
-	_hiliteStripColor = c;
+	hiliteStripColor_ = c;
 	Refresh();
 }
 
@@ -251,7 +251,7 @@ inline void GlowScrollBarWidget::SetHiliteStripColor(
 inline void GlowScrollBarWidget::SetHiliteIndicatorColor(
 	GlowColor c)
 {
-	_hiliteIndicatorColor = c;
+	hiliteIndicatorColor_ = c;
 	Refresh();
 }
 
@@ -259,7 +259,7 @@ inline void GlowScrollBarWidget::SetHiliteIndicatorColor(
 inline void GlowScrollBarWidget::SetHiliteButtonColor(
 	GlowColor c)
 {
-	_hiliteButtonColor = c;
+	hiliteButtonColor_ = c;
 	Refresh();
 }
 
@@ -267,7 +267,7 @@ inline void GlowScrollBarWidget::SetHiliteButtonColor(
 inline void GlowScrollBarWidget::SetHiliteButtonIconColor(
 	GlowColor c)
 {
-	_hiliteButtonIconColor = c;
+	hiliteButtonIconColor_ = c;
 	Refresh();
 }
 
@@ -275,7 +275,7 @@ inline void GlowScrollBarWidget::SetHiliteButtonIconColor(
 inline void GlowScrollBarWidget::SetDisableStripColor(
 	GlowColor c)
 {
-	_disableStripColor = c;
+	disableStripColor_ = c;
 	Refresh();
 }
 
@@ -283,7 +283,7 @@ inline void GlowScrollBarWidget::SetDisableStripColor(
 inline void GlowScrollBarWidget::SetDisableIndicatorColor(
 	GlowColor c)
 {
-	_disableIndicatorColor = c;
+	disableIndicatorColor_ = c;
 	Refresh();
 }
 
@@ -291,7 +291,7 @@ inline void GlowScrollBarWidget::SetDisableIndicatorColor(
 inline void GlowScrollBarWidget::SetDisableButtonColor(
 	GlowColor c)
 {
-	_disableButtonColor = c;
+	disableButtonColor_ = c;
 	Refresh();
 }
 
@@ -299,7 +299,7 @@ inline void GlowScrollBarWidget::SetDisableButtonColor(
 inline void GlowScrollBarWidget::SetDisableButtonIconColor(
 	GlowColor c)
 {
-	_disableButtonIconColor = c;
+	disableButtonIconColor_ = c;
 	Refresh();
 }
 
@@ -307,7 +307,7 @@ inline void GlowScrollBarWidget::SetDisableButtonIconColor(
 inline void GlowScrollBarWidget::SetDisableOutlineColor(
 	GlowColor c)
 {
-	_disableOutlineColor = c;
+	disableOutlineColor_ = c;
 	Refresh();
 }
 
@@ -315,7 +315,7 @@ inline void GlowScrollBarWidget::SetDisableOutlineColor(
 inline void GlowScrollBarWidget::SetLightBevelColor(
 	GlowColor c)
 {
-	_lightBevelColor = c;
+	lightBevelColor_ = c;
 	Refresh();
 }
 
@@ -323,47 +323,47 @@ inline void GlowScrollBarWidget::SetLightBevelColor(
 inline void GlowScrollBarWidget::SetDarkBevelColor(
 	GlowColor c)
 {
-	_darkBevelColor = c;
+	darkBevelColor_ = c;
 	Refresh();
 }
 
 
 inline long GlowScrollBarWidget::GetTopValue() const
 {
-	return _topValue;
+	return topValue_;
 }
 
 
 inline long GlowScrollBarWidget::GetBottomValue() const
 {
-	return _topValue+_span;
+	return topValue_+span_;
 }
 
 
 inline long GlowScrollBarWidget::GetMaximum() const
 {
-	return _max;
+	return max_;
 }
 
 
 inline long GlowScrollBarWidget::GetMinimum() const
 {
-	return _min;
+	return min_;
 }
 
 
 inline long GlowScrollBarWidget::GetSpan() const
 {
-	return _span;
+	return span_;
 }
 
 
 inline void GlowScrollBarWidget::SetTopValue(
 	long val)
 {
-	_topValue = val;
-	if (_topValue < _min) _topValue = _min;
-	if (_topValue+_span > _max) _topValue = _max-_span;
+	topValue_ = val;
+	if (topValue_ < min_) topValue_ = min_;
+	if (topValue_+span_ > max_) topValue_ = max_-span_;
 	Refresh();
 }
 
@@ -371,9 +371,9 @@ inline void GlowScrollBarWidget::SetTopValue(
 inline void GlowScrollBarWidget::MoveTopValue(
 	long delta)
 {
-	_topValue += delta;
-	if (_topValue < _min) _topValue = _min;
-	if (_topValue+_span > _max) _topValue = _max-_span;
+	topValue_ += delta;
+	if (topValue_ < min_) topValue_ = min_;
+	if (topValue_+span_ > max_) topValue_ = max_-span_;
 	Refresh();
 }
 
@@ -381,9 +381,9 @@ inline void GlowScrollBarWidget::MoveTopValue(
 inline void GlowScrollBarWidget::SetMaximum(
 	long val)
 {
-	GLOW_DEBUG(val <= _min+_span, "max <= min in GlowScrollBarWidget::SetMaximum");
-	_max = val;
-	if (_topValue+_span > _max) _topValue = _max-_span;
+	GLOW_DEBUG(val <= min_+span_, "max <= min in GlowScrollBarWidget::SetMaximum");
+	max_ = val;
+	if (topValue_+span_ > max_) topValue_ = max_-span_;
 	Refresh();
 }
 
@@ -391,9 +391,9 @@ inline void GlowScrollBarWidget::SetMaximum(
 inline void GlowScrollBarWidget::SetMinimum(
 	long val)
 {
-	GLOW_DEBUG(_max-_span <= val, "min >= max in GlowScrollBarWidget::SetMinimum");
-	_min = val;
-	if (_topValue < _min) _topValue = _min;
+	GLOW_DEBUG(max_-span_ <= val, "min >= max in GlowScrollBarWidget::SetMinimum");
+	min_ = val;
+	if (topValue_ < min_) topValue_ = min_;
 	Refresh();
 }
 
@@ -402,68 +402,68 @@ inline void GlowScrollBarWidget::SetSpan(
 	long val)
 {
 	GLOW_DEBUG(val < 1, "span<1 in GlowScrollBarWidget::SetSpan");
-	GLOW_DEBUG(val > _max-_min, "span > max-min in GlowScrollBarWidget::SetSpan");
-	_span = val;
-	if (_topValue+_span > _max) _topValue = _max-_span;
+	GLOW_DEBUG(val > max_-min_, "span > max-min in GlowScrollBarWidget::SetSpan");
+	span_ = val;
+	if (topValue_+span_ > max_) topValue_ = max_-span_;
 	Refresh();
 }
 
 
 inline int GlowScrollBarWidget::GetFirstDelay() const
 {
-	return _firstDelay;
+	return firstDelay_;
 }
 
 
 inline void GlowScrollBarWidget::SetFirstDelay(
 	int msecs)
 {
-	_firstDelay = msecs;
+	firstDelay_ = msecs;
 }
 
 
 inline int GlowScrollBarWidget::GetSecondDelay() const
 {
-	return _secondDelay;
+	return secondDelay_;
 }
 
 
 inline void GlowScrollBarWidget::SetSecondDelay(
 	int msecs)
 {
-	_secondDelay = msecs;
+	secondDelay_ = msecs;
 }
 
 
 inline long GlowScrollBarWidget::GetPageStep() const
 {
-	return _pageStep;
+	return pageStep_;
 }
 
 
 inline void GlowScrollBarWidget::SetPageStep(
 	long pageStep)
 {
-	_pageStep = pageStep;
+	pageStep_ = pageStep;
 }
 
 
 inline long GlowScrollBarWidget::GetArrowStep() const
 {
-	return _arrowStep;
+	return arrowStep_;
 }
 
 
 inline void GlowScrollBarWidget::SetArrowStep(
 	long arrowStep)
 {
-	_arrowStep = arrowStep;
+	arrowStep_ = arrowStep;
 }
 
 
 inline TSender<const GlowScrollBarMessage&>& GlowScrollBarWidget::Notifier()
 {
-	return _sender;
+	return sender_;
 }
 
 

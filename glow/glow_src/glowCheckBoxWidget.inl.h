@@ -103,61 +103,61 @@ inline void GlowCheckBoxWidget::Init(
 
 inline const char* GlowCheckBoxWidget::GetText() const
 {
-	return _label;
+	return label_;
 }
 
 
 inline GlowFont GlowCheckBoxWidget::GetFont() const
 {
-	return _font;
+	return font_;
 }
 
 
 inline void GlowCheckBoxWidget::SetFont(
 	GlowFont font)
 {
-	_font = font;
+	font_ = font;
 	Refresh();
 }
 
 
 inline int GlowCheckBoxWidget::GetSpacing() const
 {
-	return _spacing;
+	return spacing_;
 }
 
 
 inline void GlowCheckBoxWidget::SetSpacing(
 	int spacing)
 {
-	_spacing = spacing;
+	spacing_ = spacing;
 	Refresh();
 }
 
 
 inline GlowCheckBoxWidget::Behavior GlowCheckBoxWidget::GetBehavior() const
 {
-	return _behavior;
+	return behavior_;
 }
 
 
 inline void GlowCheckBoxWidget::SetBehavior(
 	Behavior behavior)
 {
-	_behavior = behavior;
+	behavior_ = behavior;
 }
 
 
 inline GlowCheckBoxWidget::State GlowCheckBoxWidget::GetState() const
 {
-	return _state;
+	return state_;
 }
 
 
 inline void GlowCheckBoxWidget::SetState(
 	GlowCheckBoxWidget::State state)
 {
-	_state = state;
+	state_ = state;
 	Refresh();
 }
 
@@ -172,80 +172,80 @@ inline void GlowCheckBoxWidget::Hit(
 
 inline GlowColor GlowCheckBoxWidget::GetBoxColor() const
 {
-	return _boxColor;
+	return boxColor_;
 }
 
 
 inline GlowColor GlowCheckBoxWidget::GetTextColor() const
 {
-	return _textColor;
+	return textColor_;
 }
 
 
 inline GlowColor GlowCheckBoxWidget::GetCheckColor() const
 {
-	return _checkColor;
+	return checkColor_;
 }
 
 
 inline GlowColor GlowCheckBoxWidget::GetHiliteBoxColor() const
 {
-	return _hiliteBoxColor;
+	return hiliteBoxColor_;
 }
 
 
 inline GlowColor GlowCheckBoxWidget::GetHiliteTextColor() const
 {
-	return _hiliteTextColor;
+	return hiliteTextColor_;
 }
 
 
 inline GlowColor GlowCheckBoxWidget::GetHiliteCheckColor() const
 {
-	return _hiliteCheckColor;
+	return hiliteCheckColor_;
 }
 
 
 inline GlowColor GlowCheckBoxWidget::GetDisableBoxColor() const
 {
-	return _disableBoxColor;
+	return disableBoxColor_;
 }
 
 
 inline GlowColor GlowCheckBoxWidget::GetDisableTextColor() const
 {
-	return _disableTextColor;
+	return disableTextColor_;
 }
 
 
 inline GlowColor GlowCheckBoxWidget::GetDisableCheckColor() const
 {
-	return _disableCheckColor;
+	return disableCheckColor_;
 }
 
 
 inline GlowColor GlowCheckBoxWidget::GetDisableOutlineColor() const
 {
-	return _disableOutlineColor;
+	return disableOutlineColor_;
 }
 
 
 inline GlowColor GlowCheckBoxWidget::GetLightBevelColor() const
 {
-	return _lightBevelColor;
+	return lightBevelColor_;
 }
 
 
 inline GlowColor GlowCheckBoxWidget::GetDarkBevelColor() const
 {
-	return _darkBevelColor;
+	return darkBevelColor_;
 }
 
 
 inline void GlowCheckBoxWidget::SetBoxColor(
 	GlowColor c)
 {
-	_boxColor = c;
+	boxColor_ = c;
 	Refresh();
 }
 
@@ -253,7 +253,7 @@ inline void GlowCheckBoxWidget::SetBoxColor(
 inline void GlowCheckBoxWidget::SetTextColor(
 	GlowColor c)
 {
-	_textColor = c;
+	textColor_ = c;
 	Refresh();
 }
 
@@ -261,7 +261,7 @@ inline void GlowCheckBoxWidget::SetTextColor(
 inline void GlowCheckBoxWidget::SetCheckColor(
 	GlowColor c)
 {
-	_checkColor = c;
+	checkColor_ = c;
 	Refresh();
 }
 
@@ -269,7 +269,7 @@ inline void GlowCheckBoxWidget::SetCheckColor(
 inline void GlowCheckBoxWidget::SetHiliteBoxColor(
 	GlowColor c)
 {
-	_hiliteBoxColor = c;
+	hiliteBoxColor_ = c;
 	Refresh();
 }
 
@@ -277,7 +277,7 @@ inline void GlowCheckBoxWidget::SetHiliteBoxColor(
 inline void GlowCheckBoxWidget::SetHiliteTextColor(
 	GlowColor c)
 {
-	_hiliteTextColor = c;
+	hiliteTextColor_ = c;
 	Refresh();
 }
 
@@ -285,7 +285,7 @@ inline void GlowCheckBoxWidget::SetHiliteTextColor(
 inline void GlowCheckBoxWidget::SetHiliteCheckColor(
 	GlowColor c)
 {
-	_hiliteCheckColor = c;
+	hiliteCheckColor_ = c;
 	Refresh();
 }
 
@@ -293,7 +293,7 @@ inline void GlowCheckBoxWidget::SetHiliteCheckColor(
 inline void GlowCheckBoxWidget::SetDisableBoxColor(
 	GlowColor c)
 {
-	_disableBoxColor = c;
+	disableBoxColor_ = c;
 	Refresh();
 }
 
@@ -301,7 +301,7 @@ inline void GlowCheckBoxWidget::SetDisableBoxColor(
 inline void GlowCheckBoxWidget::SetDisableTextColor(
 	GlowColor c)
 {
-	_disableTextColor = c;
+	disableTextColor_ = c;
 	Refresh();
 }
 
@@ -309,7 +309,7 @@ inline void GlowCheckBoxWidget::SetDisableTextColor(
 inline void GlowCheckBoxWidget::SetDisableCheckColor(
 	GlowColor c)
 {
-	_disableCheckColor = c;
+	disableCheckColor_ = c;
 	Refresh();
 }
 
@@ -317,7 +317,7 @@ inline void GlowCheckBoxWidget::SetDisableCheckColor(
 inline void GlowCheckBoxWidget::SetDisableOutlineColor(
 	GlowColor c)
 {
-	_disableOutlineColor = c;
+	disableOutlineColor_ = c;
 	Refresh();
 }
 
@@ -325,7 +325,7 @@ inline void GlowCheckBoxWidget::SetDisableOutlineColor(
 inline void GlowCheckBoxWidget::SetLightBevelColor(
 	GlowColor c)
 {
-	_lightBevelColor = c;
+	lightBevelColor_ = c;
 	Refresh();
 }
 
@@ -333,14 +333,14 @@ inline void GlowCheckBoxWidget::SetLightBevelColor(
 inline void GlowCheckBoxWidget::SetDarkBevelColor(
 	GlowColor c)
 {
-	_darkBevelColor = c;
+	darkBevelColor_ = c;
 	Refresh();
 }
 
 
 inline TSender<const GlowCheckBoxMessage&>& GlowCheckBoxWidget::Notifier()
 {
-	return _sender;
+	return sender_;
 }
 
 

@@ -117,30 +117,30 @@ void GlowCheckBoxWidget::Init(
 	GLOW_DEBUGSCOPE("GlowCheckBoxWidget::Init");
 	
 	GlowWidget::Init(root, parent, params);
-	_label = new char[GLOW_CSTD::strlen(params.text)+1];
-	GLOW_CSTD::strcpy(_label, params.text);
-	_font = params.font;
-	_labelWidth = _font.StringWidth(_label);
-	_spacing = params.spacing;
-	_state = params.state;
-	_behavior = params.behavior;
-	_down = false;
-	_inside = false;
-	_boxColor = params.boxColor;
-	_textColor = params.textColor;
-	_checkColor = params.checkColor;
-	_hiliteBoxColor = params.hiliteBoxColor;
-	_hiliteTextColor = params.hiliteTextColor;
-	_hiliteCheckColor = params.hiliteCheckColor;
-	_disableBoxColor = params.disableBoxColor;
-	_disableTextColor = params.disableTextColor;
-	_disableCheckColor = params.disableCheckColor;
-	_disableOutlineColor = params.disableOutlineColor;
-	_lightBevelColor = params.lightBevelColor;
-	_darkBevelColor = params.darkBevelColor;
+	label_ = new char[GLOW_CSTD::strlen(params.text)+1];
+	GLOW_CSTD::strcpy(label_, params.text);
+	font_ = params.font;
+	labelWidth_ = font_.StringWidth(label_);
+	spacing_ = params.spacing;
+	state_ = params.state;
+	behavior_ = params.behavior;
+	down_ = false;
+	inside_ = false;
+	boxColor_ = params.boxColor;
+	textColor_ = params.textColor;
+	checkColor_ = params.checkColor;
+	hiliteBoxColor_ = params.hiliteBoxColor;
+	hiliteTextColor_ = params.hiliteTextColor;
+	hiliteCheckColor_ = params.hiliteCheckColor;
+	disableBoxColor_ = params.disableBoxColor;
+	disableTextColor_ = params.disableTextColor;
+	disableCheckColor_ = params.disableCheckColor;
+	disableOutlineColor_ = params.disableOutlineColor;
+	lightBevelColor_ = params.lightBevelColor;
+	darkBevelColor_ = params.darkBevelColor;
 	if (params.receiver != 0)
 	{
-		_sender.Bind(params.receiver);
+		sender_.Bind(params.receiver);
 	}
 	RegisterMouseEvents();
 }
@@ -150,7 +150,7 @@ GlowCheckBoxWidget::~GlowCheckBoxWidget()
 {
 	GLOW_DEBUGSCOPE("GlowCheckBoxWidget::~GlowCheckBoxWidget");
 	
-	delete[] _label;
+	delete[] label_;
 }
 
 
@@ -159,10 +159,10 @@ void GlowCheckBoxWidget::SetText(
 {
 	GLOW_DEBUGSCOPE("GlowCheckBoxWidget::SetText");
 	
-	delete[] _label;
-	_label = new char[GLOW_CSTD::strlen(text)+1];
-	GLOW_CSTD::strcpy(_label, text);
-	_labelWidth = _font.StringWidth(_label);
+	delete[] label_;
+	label_ = new char[GLOW_CSTD::strlen(text)+1];
+	GLOW_CSTD::strcpy(label_, text);
+	labelWidth_ = font_.StringWidth(label_);
 	Refresh();
 }
 
@@ -180,7 +180,7 @@ GlowWidget::AutoPackError GlowCheckBoxWidget::OnAutoPack(
 	GLOW_DEBUGSCOPE("GlowCheckBoxWidget::OnAutoPack");
 	
 	int vnew = Height();
-	int preferred = _font.Leading() + 1;
+	int preferred = font_.Leading() + 1;
 	if (vSize != unspecifiedSize && vSize < preferred)
 	{
 		return vAutoPackError;
@@ -195,7 +195,7 @@ GlowWidget::AutoPackError GlowCheckBoxWidget::OnAutoPack(
 	}
 	
 	int hnew = Width();
-	preferred = _labelWidth+_spacing+vnew+1;
+	preferred = labelWidth_+spacing_+vnew+1;
 	if (hSize != unspecifiedSize && hSize < preferred)
 	{
 		return hAutoPackError;
@@ -219,7 +219,7 @@ void GlowCheckBoxWidget::CropWidth()
 {
 	GLOW_DEBUGSCOPE("GlowCheckBoxWidget::CropWidth");
 	
-	int width = _labelWidth + _spacing + Height() + 1;
+	int width = labelWidth_ + spacing_ + Height() + 1;
 	if (width < Width())
 	{
 		Reshape(width, Height());
@@ -240,31 +240,31 @@ void GlowCheckBoxWidget::OnWidgetPaint()
 	// Draw box
 	if (IsActive())
 	{
-		if (_down && _inside)
+		if (down_ && inside_)
 		{
-			_hiliteBoxColor.Apply();
+			hiliteBoxColor_.Apply();
 		}
 		else
 		{
-			_boxColor.Apply();
+			boxColor_.Apply();
 		}
 	}
 	else
 	{
-		_disableBoxColor.Apply();
+		disableBoxColor_.Apply();
 	}
 	::glRectf(-1.0f, -1.0f, boxRight, 1.0f);
 	
 	// Draw bevels
 	if (IsActive())
 	{
-		if (_down && _inside)
+		if (down_ && inside_)
 		{
-			_darkBevelColor.Apply();
+			darkBevelColor_.Apply();
 		}
 		else
 		{
-			_lightBevelColor.Apply();
+			lightBevelColor_.Apply();
 		}
 		::glBegin(GL_QUAD_STRIP);
 		::glVertex2f(-1.0f, -1.0f);
@@ -274,13 +274,13 @@ void GlowCheckBoxWidget::OnWidgetPaint()
 		::glVertex2f(boxRight, 1.0f);
 		::glVertex2f(boxRight-bevelWidth, 1.0f-bevelHeight);
 		::glEnd();
-		if (_down && _inside)
+		if (down_ && inside_)
 		{
-			_lightBevelColor.Apply();
+			lightBevelColor_.Apply();
 		}
 		else
 		{
-			_darkBevelColor.Apply();
+			darkBevelColor_.Apply();
 		}
 		::glBegin(GL_QUAD_STRIP);
 		::glVertex2f(-1.0f, -1.0f);
@@ -293,7 +293,7 @@ void GlowCheckBoxWidget::OnWidgetPaint()
 	}
 	else
 	{
-		_disableOutlineColor.Apply();
+		disableOutlineColor_.Apply();
 		::glBegin(GL_LINE_LOOP);
 		::glVertex2f(-1.0f, -1.0f);
 		::glVertex2f(-1.0f, 1.0f-etchHeight);
@@ -303,27 +303,27 @@ void GlowCheckBoxWidget::OnWidgetPaint()
 	}
 	
 	// Draw mark
-	if (_state != off)
+	if (state_ != off)
 	{
 		if (IsActive())
 		{
-			if (_down && _inside)
+			if (down_ && inside_)
 			{
-				_hiliteCheckColor.Apply();
+				hiliteCheckColor_.Apply();
 			}
 			else
 			{
-				_checkColor.Apply();
+				checkColor_.Apply();
 			}
 		}
 		else
 		{
-			_disableCheckColor.Apply();
+			disableCheckColor_.Apply();
 		}
 		
 		::glBegin(GL_QUADS);
 		float hscale = (boxRight+1.0f)/2.0f;
-		if (_state == on)
+		if (state_ == on)
 		{
 			const float markOffset = 0.1f;
 			
@@ -337,7 +337,7 @@ void GlowCheckBoxWidget::OnWidgetPaint()
 			::glVertex2f((1.5f-markOffset)*hscale-1.0f, -0.5f-markOffset);
 			::glVertex2f((1.5f+markOffset)*hscale-1.0f, -0.5f+markOffset);
 		}
-		else //if (_state == half)
+		else //if (state_ == half)
 		{
 			const float markOffset = 0.2;
 			
@@ -352,25 +352,25 @@ void GlowCheckBoxWidget::OnWidgetPaint()
 	// Text label
 	if (IsActive())
 	{
-		if (_down && _inside)
+		if (down_ && inside_)
 		{
-			_hiliteTextColor.Apply();
+			hiliteTextColor_.Apply();
 		}
 		else
 		{
-			_textColor.Apply();
+			textColor_.Apply();
 		}
 	}
 	else
 	{
-		_disableTextColor.Apply();
+		disableTextColor_.Apply();
 	}
-	::glRasterPos2f(boxRight+float(_spacing*2)/float(Width()),
-		float(_font.Leading()-_font.BaselinePos()*2)/float(Height()));
-	int labellen = GLOW_CSTD::strlen(_label);
+	::glRasterPos2f(boxRight+float(spacing_*2)/float(Width()),
+		float(font_.Leading()-font_.BaselinePos()*2)/float(Height()));
+	int labellen = GLOW_CSTD::strlen(label_);
 	for (int i=0; i<labellen; i++)
 	{
-		::glutBitmapCharacter(_font, _label[i]);
+		::glutBitmapCharacter(font_, label_[i]);
 	}
 }
 
@@ -383,10 +383,10 @@ void GlowCheckBoxWidget::OnWidgetMouseDown(
 {
 	GLOW_DEBUGSCOPE("GlowCheckBoxWidget::OnWidgetMouseDown");
 	
-	_down = true;
-	_inside = true;
-	_button = button;
-	_modifiers = modifiers;
+	down_ = true;
+	inside_ = true;
+	button_ = button;
+	modifiers_ = modifiers;
 	Refresh();
 }
 
@@ -399,13 +399,13 @@ void GlowCheckBoxWidget::OnWidgetMouseUp(
 {
 	GLOW_DEBUGSCOPE("GlowCheckBoxWidget::OnWidgetMouseUp");
 	
-	if (_down)
+	if (down_)
 	{
-		_down = false;
+		down_ = false;
 		Refresh();
-		if (_inside)
+		if (inside_)
 		{
-			OnHit(_button, _modifiers);
+			OnHit(button_, modifiers_);
 		}
 	}
 }
@@ -418,27 +418,27 @@ void GlowCheckBoxWidget::OnWidgetMouseDrag(
 	GLOW_DEBUGSCOPE("GlowCheckBoxWidget::OnWidgetMouseDrag");
 	
 	bool inside = (x>=0 && y>=0 && x<=Width() && y<=Height());
-	if (inside == !_inside)
+	if (inside == !inside_)
 	{
 		Refresh();
 	}
-	_inside = inside;
+	inside_ = inside;
 }
 
 
 void GlowCheckBoxWidget::ToggleState()
 {
-	if (_state == off)
+	if (state_ == off)
 	{
-		_state = ((_behavior & halfFollowsOff) != 0) ? half : on;
+		state_ = ((behavior_ & halfFollowsOff) != 0) ? half : on;
 	}
-	else if (_state == on)
+	else if (state_ == on)
 	{
-		_state = ((_behavior & halfFollowsOn) != 0) ? half : off;
+		state_ = ((behavior_ & halfFollowsOn) != 0) ? half : off;
 	}
-	else //if (_state == half)
+	else //if (state_ == half)
 	{
-		_state = ((_behavior & offFollowsHalf) != 0) ? off : on;
+		state_ = ((behavior_ & offFollowsHalf) != 0) ? off : on;
 	}
 }
 
@@ -452,10 +452,10 @@ void GlowCheckBoxWidget::OnHit(
 	ToggleState();
 	GlowCheckBoxMessage msg;
 	msg.widget = this;
-	msg.state = _state;
+	msg.state = state_;
 	msg.mouseButton = mouseButton;
 	msg.modifiers = modifiers;
-	_sender.Send(msg);
+	sender_.Send(msg);
 }
 
 

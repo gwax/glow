@@ -205,21 +205,21 @@ class GlowLabelWidget :
 	
 	private:
 	
-		char* _text;
-		GlowFont _font;
-		int _maxLineWidth;
-		int _textHeight;
-		int _hIndent;
-		int _vIndent;
-		bool _opaque;
+		char* text_;
+		GlowFont font_;
+		int maxLineWidth_;
+		int textHeight_;
+		int hIndent_;
+		int vIndent_;
+		bool opaque_;
 		
-		GlowColor _backColor;
-		GlowColor _textColor;
-		GlowColor _disableTextColor;
+		GlowColor backColor_;
+		GlowColor textColor_;
+		GlowColor disableTextColor_;
 	
 	private:
 	
-		void _RecalcText();
+		void RecalcText_();
 	
 	protected:
 	
@@ -360,12 +360,12 @@ class GlowWidgetLabelHelper
 	
 	private:
 	
-		GlowWidget* _main;
-		GlowWidgetLabelWidget* _label;
-		LabelPosition _labelPosition;
-		int _labelSpacing;
-		int _labelWidth;
-		int _labelHeight;
+		GlowWidget* main_;
+		GlowWidgetLabelWidget* label_;
+		LabelPosition labelPosition_;
+		int labelSpacing_;
+		int labelWidth_;
+		int labelHeight_;
 };
 
 

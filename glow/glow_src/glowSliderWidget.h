@@ -221,38 +221,38 @@ class GlowSliderWidget :
 	
 	private:
 	
-		TSender<const GlowSliderMessage&> _sender;
-		Options _type;
-		int _xoffset;
-		int _yoffset;
-		double _min;
-		double _max;
-		double _value;
-		int _numTicks;
-		Glow::MouseButton _button;
-		Glow::Modifiers _modifiers;
-		bool _dragging;
+		TSender<const GlowSliderMessage&> sender_;
+		Options type_;
+		int xoffset_;
+		int yoffset_;
+		double min_;
+		double max_;
+		double value_;
+		int numTicks_;
+		Glow::MouseButton button_;
+		Glow::Modifiers modifiers_;
+		bool dragging_;
 		
-		GlowColor _stripColor;
-		GlowColor _indicatorColor;
-		GlowColor _tickMarkColor;
-		GlowColor _hiliteIndicatorColor;
-		GlowColor _disableStripColor;
-		GlowColor _disableIndicatorColor;
-		GlowColor _disableTickMarkColor;
-		GlowColor _disableOutlineColor;
-		GlowColor _lightBevelColor;
-		GlowColor _darkBevelColor;
+		GlowColor stripColor_;
+		GlowColor indicatorColor_;
+		GlowColor tickMarkColor_;
+		GlowColor hiliteIndicatorColor_;
+		GlowColor disableStripColor_;
+		GlowColor disableIndicatorColor_;
+		GlowColor disableTickMarkColor_;
+		GlowColor disableOutlineColor_;
+		GlowColor lightBevelColor_;
+		GlowColor darkBevelColor_;
 	
 	private:
 	
-		void _CalcValue(
+		void CalcValue_(
 			int x,
 			int y);
-		inline void _LeftBevelColor();
-		inline void _RightBevelColor();
-		inline void _TopBevelColor();
-		inline void _BottomBevelColor();
+		inline void LeftBevelColor_();
+		inline void RightBevelColor_();
+		inline void TopBevelColor_();
+		inline void BottomBevelColor_();
 	
 	protected:
 	
@@ -415,20 +415,20 @@ class GlowLabeledSliderWidget :
 	
 	private:
 	
-		GlowWidgetLabelWidget* _label;
-		char* _labelTemplate;
-		float _labelValue;
-		LabelPosition _labelPosition;
-		int _labelWidth;
-		int _labelHeight;
-		int _labelSpacing;
+		GlowWidgetLabelWidget* label_;
+		char* labelTemplate_;
+		float labelValue_;
+		LabelPosition labelPosition_;
+		int labelWidth_;
+		int labelHeight_;
+		int labelSpacing_;
 		
-		GlowWidgetLabelWidget* _minLabel;
-		GlowWidgetLabelWidget* _maxLabel;
-		char* _minmaxTemplate;
-		float _minLabelValue;
-		float _maxLabelValue;
-		int _minmaxSize;
+		GlowWidgetLabelWidget* minLabel_;
+		GlowWidgetLabelWidget* maxLabel_;
+		char* minmaxTemplate_;
+		float minLabelValue_;
+		float maxLabelValue_;
+		int minmaxSize_;
 };
 
 

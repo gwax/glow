@@ -90,23 +90,23 @@ inline GlowMessageWindow::GlowMessageWindow(
 
 inline TSender<const GlowMessageWindowMessage&>& GlowMessageWindow::Notifier()
 {
-	return _sender;
+	return sender_;
 }
 
 
 inline void GlowMessageWindow::SetEnterButton(
 	int num)
 {
-	GLOW_DEBUG(num >= int(_buttons.size()), "enterButton ID is too high");
-	_enterFilter->SetPushButton((num < 0) ? 0 : _buttons[num]);
+	GLOW_DEBUG(num >= int(buttons_.size()), "enterButton ID is too high");
+	enterFilter_->SetPushButton((num < 0) ? 0 : buttons_[num]);
 }
 
 
 inline void GlowMessageWindow::SetEscapeButton(
 	int num)
 {
-	GLOW_DEBUG(num >= int(_buttons.size()), "escapeButton ID is too high");
-	_escapeFilter->SetPushButton((num < 0) ? 0 : _buttons[num]);
+	GLOW_DEBUG(num >= int(buttons_.size()), "escapeButton ID is too high");
+	escapeFilter_->SetPushButton((num < 0) ? 0 : buttons_[num]);
 }
 
 

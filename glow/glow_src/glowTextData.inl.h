@@ -70,8 +70,8 @@ GLOW_NAMESPACE_BEGIN
 
 inline GlowTextData::GlowTextData()
 {
-	_lineBreaks.push_back(0);
-	_selStart = _selEnd = 0;
+	lineBreaks_.push_back(0);
+	selStart_ = selEnd_ = 0;
 }
 
 
@@ -84,8 +84,8 @@ inline GlowTextData::GlowTextData(
 	const GLOW_STD::string& str) :
 GLOW_STD::string(str)
 {
-	_lineBreaks.push_back(0);
-	_selStart = _selEnd = 0;
+	lineBreaks_.push_back(0);
+	selStart_ = selEnd_ = 0;
 }
 
 
@@ -93,8 +93,8 @@ inline GlowTextData::GlowTextData(
 	const char* str) :
 GLOW_STD::string(str)
 {
-	_lineBreaks.push_back(0);
-	_selStart = _selEnd = 0;
+	lineBreaks_.push_back(0);
+	selStart_ = selEnd_ = 0;
 }
 
 #else
@@ -103,8 +103,8 @@ inline GlowTextData::GlowTextData(
 	const GLOW_STD::string& str)
 {
 	assign(str);
-	_lineBreaks.push_back(0);
-	_selStart = _selEnd = 0;
+	lineBreaks_.push_back(0);
+	selStart_ = selEnd_ = 0;
 }
 
 
@@ -112,8 +112,8 @@ inline GlowTextData::GlowTextData(
 	const char* str)
 {
 	assign(str);
-	_lineBreaks.push_back(0);
-	_selStart = _selEnd = 0;
+	lineBreaks_.push_back(0);
+	selStart_ = selEnd_ = 0;
 }
 
 #endif
@@ -121,14 +121,14 @@ inline GlowTextData::GlowTextData(
 
 inline void GlowTextData::ClearLineBreaks()
 {
-	_lineBreaks.erase(_lineBreaks.begin(), _lineBreaks.end());
-	_lineBreaks.push_back(0);
+	lineBreaks_.erase(lineBreaks_.begin(), lineBreaks_.end());
+	lineBreaks_.push_back(0);
 }
 
 
 inline int GlowTextData::NumLines() const
 {
-	return _lineBreaks.size();
+	return lineBreaks_.size();
 }
 
 
@@ -136,10 +136,10 @@ inline GLOW_STD::string GlowTextData::Line(
 	int num) const
 {
 	GLOW_ASSERT(num > 0);
-	GLOW_ASSERT(num < int(_lineBreaks.size()));
-	return substr(_lineBreaks[num],
-		(num == int(_lineBreaks.size())-1) ? GLOW_STD::string::npos :
-		_lineBreaks[num+1]-_lineBreaks[num]);
+	GLOW_ASSERT(num < int(lineBreaks_.size()));
+	return substr(lineBreaks_[num],
+		(num == int(lineBreaks_.size())-1) ? GLOW_STD::string::npos :
+		lineBreaks_[num+1]-lineBreaks_[num]);
 }
 
 
@@ -147,27 +147,27 @@ inline GLOW_STD::string GlowTextData::ToEndOfLine(
 	int pos) const
 {
 	int num = LineNumOf(pos);
-	return substr(_lineBreaks[num],
-		(num == int(_lineBreaks.size())-1) ? GLOW_STD::string::npos :
-		_lineBreaks[num+1]-_lineBreaks[num]);
+	return substr(lineBreaks_[num],
+		(num == int(lineBreaks_.size())-1) ? GLOW_STD::string::npos :
+		lineBreaks_[num+1]-lineBreaks_[num]);
 }
 
 
 inline int GlowTextData::SelectionStart() const
 {
-	return _selStart;
+	return selStart_;
 }
 
 
 inline int GlowTextData::SelectionEnd() const
 {
-	return _selEnd;
+	return selEnd_;
 }
 
 
 inline int GlowTextData::SelectionLength() const
 {
-	return _selEnd - _selStart;
+	return selEnd_ - selStart_;
 }
 
 
@@ -179,15 +179,15 @@ inline void GlowTextData::SetSelection(
 	{
 		GLOW_ASSERT(end >= 0);
 		GLOW_ASSERT(start <= int(size()));
-		_selStart = end;
-		_selEnd = start;
+		selStart_ = end;
+		selEnd_ = start;
 	}
 	else
 	{
 		GLOW_ASSERT(start >= 0);
 		GLOW_ASSERT(end <= int(size()));
-		_selStart = start;
-		_selEnd = end;
+		selStart_ = start;
+		selEnd_ = end;
 	}
 }
 
@@ -197,14 +197,14 @@ inline void GlowTextData::SetSelection(
 {
 	GLOW_ASSERT(pos >= 0);
 	GLOW_ASSERT(pos <= int(size()));
-	_selStart = pos;
-	_selEnd = pos;
+	selStart_ = pos;
+	selEnd_ = pos;
 }
 
 
 inline GLOW_STD::string GlowTextData::SelectedText() const
 {
-	return substr(_selStart, _selEnd-_selStart);
+	return substr(selStart_, selEnd_-selStart_);
 }
 
 
@@ -212,23 +212,23 @@ inline void GlowTextData::ReplaceSelectionWith(
 	const char* str)
 {
 	int len = GLOW_CSTD::strlen(str);
-	replace(_selStart, _selEnd-_selStart, str, len);
-	_selEnd = _selStart+len;
+	replace(selStart_, selEnd_-selStart_, str, len);
+	selEnd_ = selStart_+len;
 }
 
 
 inline void GlowTextData::ReplaceSelectionWith(
 	char ch)
 {
-	replace(_selStart, _selEnd-_selStart, 1, ch);
-	_selEnd = _selStart+1;
+	replace(selStart_, selEnd_-selStart_, 1, ch);
+	selEnd_ = selStart_+1;
 }
 
 
 inline void GlowTextData::DeleteSelection()
 {
-	erase(_selStart, _selEnd-_selStart);
-	_selEnd = _selStart;
+	erase(selStart_, selEnd_-selStart_);
+	selEnd_ = selStart_;
 }
 
 

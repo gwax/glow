@@ -238,30 +238,30 @@ class GlowCheckBoxWidget :
 	
 	private:
 	
-		State _state;
-		char* _label;
-		GlowFont _font;
-		Behavior _behavior;
-		bool _down;
-		bool _inside;
-		Glow::MouseButton _button;
-		Glow::Modifiers _modifiers;
-		int _labelWidth;
-		int _spacing;
-		TSender<const GlowCheckBoxMessage&> _sender;
+		State state_;
+		char* label_;
+		GlowFont font_;
+		Behavior behavior_;
+		bool down_;
+		bool inside_;
+		Glow::MouseButton button_;
+		Glow::Modifiers modifiers_;
+		int labelWidth_;
+		int spacing_;
+		TSender<const GlowCheckBoxMessage&> sender_;
 		
-		GlowColor _boxColor;
-		GlowColor _textColor;
-		GlowColor _checkColor;
-		GlowColor _hiliteBoxColor;
-		GlowColor _hiliteTextColor;
-		GlowColor _hiliteCheckColor;
-		GlowColor _disableBoxColor;
-		GlowColor _disableTextColor;
-		GlowColor _disableCheckColor;
-		GlowColor _disableOutlineColor;
-		GlowColor _lightBevelColor;
-		GlowColor _darkBevelColor;
+		GlowColor boxColor_;
+		GlowColor textColor_;
+		GlowColor checkColor_;
+		GlowColor hiliteBoxColor_;
+		GlowColor hiliteTextColor_;
+		GlowColor hiliteCheckColor_;
+		GlowColor disableBoxColor_;
+		GlowColor disableTextColor_;
+		GlowColor disableCheckColor_;
+		GlowColor disableOutlineColor_;
+		GlowColor lightBevelColor_;
+		GlowColor darkBevelColor_;
 	
 	protected:
 	

@@ -167,7 +167,7 @@ class Glow_TransformData_IdleReceiver :
 	
 	private:
 	
-		GlowTransformData* _transform;
+		GlowTransformData* transform_;
 };
 
 
@@ -196,7 +196,7 @@ class Glow_ViewManip_IdleReceiver :
 	
 	private:
 	
-		GlowViewManipulator* _manip;
+		GlowViewManipulator* manip_;
 };
 
 
@@ -286,14 +286,14 @@ class GlowTransformData
 	
 	private:
 	
-		Vec3f _translation;
-		Quatf _rotation;
-		GLfloat _scale;
-		Quatf _curSpin;
-		bool _spinning;
-		bool _persistent;
-		Glow_TransformData_IdleReceiver _receiver;
-		GLOW_STD::vector<GlowViewTransform*> _clients;
+		Vec3f translation_;
+		Quatf rotation_;
+		GLfloat scale_;
+		Quatf curSpin_;
+		bool spinning_;
+		bool persistent_;
+		Glow_TransformData_IdleReceiver receiver_;
+		GLOW_STD::vector<GlowViewTransform*> clients_;
 };
 
 
@@ -385,12 +385,12 @@ class GlowViewTransform :
 	
 	protected:
 	
-		GlowTransformData* _transform;
+		GlowTransformData* transform_;
 	
 	protected:
 	
-		void _RawDisconnect();
-		void _RawConnect(
+		void RawDisconnect_();
+		void RawConnect_(
 			GlowTransformData* transform);
 	
 	protected:
@@ -493,45 +493,45 @@ class GlowViewManipulator :
 	
 	private:
 	
-		Glow_ViewManip_IdleReceiver _receiver;
+		Glow_ViewManip_IdleReceiver receiver_;
 		
-		GLfloat _oldScale;
-		Quatf _oldRotation;
-		Vec3f _oldTranslation;
+		GLfloat oldScale_;
+		Quatf oldRotation_;
+		Vec3f oldTranslation_;
 		
-		GLfloat _scaleThrottle;
-		GLfloat _transThrottle;
-		GLfloat _rotThrottle;
-		GLOW_STD::vector<Vec3f> _axisConstraints;
-		bool _axisConstraintsActive;
+		GLfloat scaleThrottle_;
+		GLfloat transThrottle_;
+		GLfloat rotThrottle_;
+		GLOW_STD::vector<Vec3f> axisConstraints_;
+		bool axisConstraintsActive_;
 		
-		State _dragType;
-		GLfloat _xStart;
-		GLfloat _yStart;
-		GLfloat _xCur;
-		GLfloat _yCur;
-		Vec3f _ballDown;
-		Vec3f _ballCur;
+		State dragType_;
+		GLfloat xStart_;
+		GLfloat yStart_;
+		GLfloat xCur_;
+		GLfloat yCur_;
+		Vec3f ballDown_;
+		Vec3f ballCur_;
 		
-		GLOW_STD::deque<GLOW_STD::pair<Vec3f, int> > _spinData;
-		Quatf _curSpin;
-		int _spinDataLength;
-		bool _spinnable;
-		bool _spinStart;
+		GLOW_STD::deque<GLOW_STD::pair<Vec3f, int> > spinData_;
+		Quatf curSpin_;
+		int spinDataLength_;
+		bool spinnable_;
+		bool spinStart_;
 		
-		GlowColor _color;
-		bool _draw;
+		GlowColor color_;
+		bool draw_;
 	
 	private:
 	
-		static Vec3f _MouseToBall(
+		static Vec3f MouseToBall_(
 			GLfloat xn,
 			GLfloat yn);
-		static void _DrawArc(
+		static void DrawArc_(
 			const Vec3f& start,
 			const Vec3f& end,
 			int level = 4);
-		inline void _SimDrag();
+		inline void SimDrag_();
 	
 	protected:
 	

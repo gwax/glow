@@ -104,10 +104,10 @@ void GlowPanelWidget::Init(
 	GLOW_DEBUGSCOPE("GlowPanelWidget::Init");
 	
 	GlowWidget::Init(root, parent, params);
-	_style = params.style;
-	_backColor = params.backColor;
-	_lightBevelColor = params.lightBevelColor;
-	_darkBevelColor = params.darkBevelColor;
+	style_ = params.style;
+	backColor_ = params.backColor;
+	lightBevelColor_ = params.lightBevelColor;
+	darkBevelColor_ = params.darkBevelColor;
 }
 
 
@@ -163,12 +163,12 @@ void GlowPanelWidget::OnWidgetPaint()
 {
 	GLOW_DEBUGSCOPE("GlowPanelWidget::OnWidgetPaint");
 	
-	if (_style == transparentStyle)
+	if (style_ == transparentStyle)
 	{
 		return;
 	}
 	
-	_backColor.Apply();
+	backColor_.Apply();
 	::glRectf(-1.0f, -1.0f, 1.0f, 1.0f);
 	
 	float bevelHeight = float(4)/float(Height());
@@ -176,16 +176,16 @@ void GlowPanelWidget::OnWidgetPaint()
 	float etchHeight = 2.1f/float(Height());
 	float etchWidth = 2.1f/float(Width());
 	
-	if (_style == etchedStyle)
+	if (style_ == etchedStyle)
 	{
-		_lightBevelColor.Apply();
+		lightBevelColor_.Apply();
 		::glBegin(GL_LINE_LOOP);
 		::glVertex2f(-1.0f+etchWidth, -1.0f);
 		::glVertex2f(-1.0f+etchWidth, 1.0f-etchHeight-etchHeight);
 		::glVertex2f(1.0f-etchWidth, 1.0f-etchHeight-etchHeight);
 		::glVertex2f(1.0f-etchWidth, -1.0f);
 		::glEnd();
-		_darkBevelColor.Apply();
+		darkBevelColor_.Apply();
 		::glBegin(GL_LINE_LOOP);
 		::glVertex2f(-1.0f, -1.0f+etchHeight);
 		::glVertex2f(-1.0f, 1.0f-etchHeight);
@@ -193,15 +193,15 @@ void GlowPanelWidget::OnWidgetPaint()
 		::glVertex2f(1.0f-etchWidth-etchWidth, -1.0f+etchHeight);
 		::glEnd();
 	}
-	else if (_style == raisedStyle || _style == loweredStyle)
+	else if (style_ == raisedStyle || style_ == loweredStyle)
 	{
-		if (_style == raisedStyle)
+		if (style_ == raisedStyle)
 		{
-			_lightBevelColor.Apply();
+			lightBevelColor_.Apply();
 		}
 		else
 		{
-			_darkBevelColor.Apply();
+			darkBevelColor_.Apply();
 		}
 		::glBegin(GL_QUAD_STRIP);
 		::glVertex2f(-1.0f, -1.0f);
@@ -212,13 +212,13 @@ void GlowPanelWidget::OnWidgetPaint()
 		::glVertex2f(1.0f-bevelWidth, 1.0f-bevelHeight);
 		::glEnd();
 
-		if (_style == raisedStyle)
+		if (style_ == raisedStyle)
 		{
-			_darkBevelColor.Apply();
+			darkBevelColor_.Apply();
 		}
 		else
 		{
-			_lightBevelColor.Apply();
+			lightBevelColor_.Apply();
 		}
 		::glBegin(GL_QUAD_STRIP);
 		::glVertex2f(-1.0f, -1.0f);

@@ -100,40 +100,40 @@ inline void GlowPanelWidget::Init(
 
 inline GlowPanelWidget::Style GlowPanelWidget::GetStyle() const
 {
-	return _style;
+	return style_;
 }
 
 
 inline void GlowPanelWidget::SetStyle(
 	Style style)
 {
-	_style = style;
+	style_ = style;
 	Refresh();
 }
 
 
 inline GlowColor GlowPanelWidget::GetBackColor() const
 {
-	return _backColor;
+	return backColor_;
 }
 
 
 inline GlowColor GlowPanelWidget::GetLightBevelColor() const
 {
-	return _lightBevelColor;
+	return lightBevelColor_;
 }
 
 
 inline GlowColor GlowPanelWidget::GetDarkBevelColor() const
 {
-	return _darkBevelColor;
+	return darkBevelColor_;
 }
 
 
 inline void GlowPanelWidget::SetBackColor(
 	GlowColor c)
 {
-	_backColor = c;
+	backColor_ = c;
 	Refresh();
 }
 
@@ -141,7 +141,7 @@ inline void GlowPanelWidget::SetBackColor(
 inline void GlowPanelWidget::SetLightBevelColor(
 	GlowColor c)
 {
-	_lightBevelColor = c;
+	lightBevelColor_ = c;
 	Refresh();
 }
 
@@ -149,7 +149,7 @@ inline void GlowPanelWidget::SetLightBevelColor(
 inline void GlowPanelWidget::SetDarkBevelColor(
 	GlowColor c)
 {
-	_darkBevelColor = c;
+	darkBevelColor_ = c;
 	Refresh();
 }
 

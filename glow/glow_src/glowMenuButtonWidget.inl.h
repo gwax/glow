@@ -92,11 +92,11 @@ class Glow_MenuButtonSubwindow :
 	
 	protected:
 	
-		inline const char* _GetLabel() const;
-		void _SetLabel(
+		inline const char* GetLabel_() const;
+		void SetLabel_(
 			const char* label);
-		inline GlowMenu* _GetMenu() const;
-		inline void _SetMenu(
+		inline GlowMenu* GetMenu_() const;
+		inline void SetMenu_(
 			GlowMenu* menu);
 		
 		void PreferredSize(
@@ -115,28 +115,28 @@ class Glow_MenuButtonSubwindow :
 	
 	private:
 	
-		char* _label;
-		GlowFont _font;
-		GlowMenuButtonWidget::IconType _iconType;
-		int _labelWidth;
-		int _leftSpacing;
+		char* label_;
+		GlowFont font_;
+		GlowMenuButtonWidget::IconType iconType_;
+		int labelWidth_;
+		int leftSpacing_;
 	
 	protected:
 	
-		bool _down;
+		bool down_;
 		
-		GlowColor _boxColor;
-		GlowColor _textColor;
-		GlowColor _iconColor;
-		GlowColor _hiliteBoxColor;
-		GlowColor _hiliteTextColor;
-		GlowColor _hiliteIconColor;
-		GlowColor _disableBoxColor;
-		GlowColor _disableTextColor;
-		GlowColor _disableIconColor;
-		GlowColor _disableOutlineColor;
-		GlowColor _lightBevelColor;
-		GlowColor _darkBevelColor;
+		GlowColor boxColor_;
+		GlowColor textColor_;
+		GlowColor iconColor_;
+		GlowColor hiliteBoxColor_;
+		GlowColor hiliteTextColor_;
+		GlowColor hiliteIconColor_;
+		GlowColor disableBoxColor_;
+		GlowColor disableTextColor_;
+		GlowColor disableIconColor_;
+		GlowColor disableOutlineColor_;
+		GlowColor lightBevelColor_;
+		GlowColor darkBevelColor_;
 };
 
 
@@ -173,7 +173,7 @@ class Glow_PopupMenuSubwindow :
 	
 	private:
 	
-		GlowPopupMenuWidget* _widget;
+		GlowPopupMenuWidget* widget_;
 };
 
 
@@ -183,13 +183,13 @@ class Glow_PopupMenuSubwindow :
 ===============================================================================
 */
 
-inline const char* Glow_MenuButtonSubwindow::_GetLabel() const
+inline const char* Glow_MenuButtonSubwindow::GetLabel_() const
 {
-	return _label;
+	return label_;
 }
 
 
-inline void Glow_MenuButtonSubwindow::_SetMenu(
+inline void Glow_MenuButtonSubwindow::SetMenu_(
 	GlowMenu* menu)
 {
 	SetMenu(Glow::leftButton, menu);
@@ -198,7 +198,7 @@ inline void Glow_MenuButtonSubwindow::_SetMenu(
 }
 
 
-inline GlowMenu* Glow_MenuButtonSubwindow::_GetMenu() const
+inline GlowMenu* Glow_MenuButtonSubwindow::GetMenu_() const
 {
 	return GetMenu(Glow::rightButton);
 }
@@ -218,7 +218,7 @@ inline Glow_PopupMenuSubwindow::Glow_PopupMenuSubwindow(
 	int leftSpacing) :
 Glow_MenuButtonSubwindow(parent, label, font, iconType, leftSpacing)
 {
-	_widget = parent;
+	widget_ = parent;
 }
 
 
@@ -267,243 +267,243 @@ inline void GlowMenuButtonWidget::Init(
 
 inline bool GlowMenuButtonWidget::IsDown() const
 {
-	return _subwindow->_down;
+	return subwindow_->down_;
 }
 
 
 inline void GlowMenuButtonWidget::SetText(
 	const char* text)
 {
-	_subwindow->_SetLabel(text);
+	subwindow_->SetLabel_(text);
 }
 
 
 inline const char* GlowMenuButtonWidget::GetText() const
 {
-	return _subwindow->_GetLabel();
+	return subwindow_->GetLabel_();
 }
 
 
 inline GlowFont GlowMenuButtonWidget::GetFont() const
 {
-	return _subwindow->_font;
+	return subwindow_->font_;
 }
 
 
 inline void GlowMenuButtonWidget::SetFont(
 	GlowFont font)
 {
-	_subwindow->_font = font;
-	_subwindow->Refresh();
+	subwindow_->font_ = font;
+	subwindow_->Refresh();
 }
 
 
 inline int GlowMenuButtonWidget::GetSpacing() const
 {
-	return _subwindow->_leftSpacing;
+	return subwindow_->leftSpacing_;
 }
 
 
 inline void GlowMenuButtonWidget::SetSpacing(
 	int spacing)
 {
-	_subwindow->_leftSpacing = spacing;
-	_subwindow->Refresh();
+	subwindow_->leftSpacing_ = spacing;
+	subwindow_->Refresh();
 }
 
 
 inline GlowMenuButtonWidget::IconType GlowMenuButtonWidget::GetIconType() const
 {
-	return _subwindow->_iconType;
+	return subwindow_->iconType_;
 }
 
 
 inline void GlowMenuButtonWidget::SetIconType(
 	IconType iconType)
 {
-	_subwindow->_iconType = iconType;
-	_subwindow->Refresh();
+	subwindow_->iconType_ = iconType;
+	subwindow_->Refresh();
 }
 
 
 inline void GlowMenuButtonWidget::SetMenu(
 	GlowMenu* menu)
 {
-	_subwindow->_SetMenu(menu);
+	subwindow_->SetMenu_(menu);
 }
 
 
 inline GlowMenu* GlowMenuButtonWidget::GetMenu() const
 {
-	return _subwindow->_GetMenu();
+	return subwindow_->GetMenu_();
 }
 
 
 inline GlowColor GlowMenuButtonWidget::GetBoxColor() const
 {
-	return _subwindow->_boxColor;
+	return subwindow_->boxColor_;
 }
 
 
 inline GlowColor GlowMenuButtonWidget::GetIconColor() const
 {
-	return _subwindow->_iconColor;
+	return subwindow_->iconColor_;
 }
 
 
 inline GlowColor GlowMenuButtonWidget::GetTextColor() const
 {
-	return _subwindow->_textColor;
+	return subwindow_->textColor_;
 }
 
 
 inline GlowColor GlowMenuButtonWidget::GetHiliteBoxColor() const
 {
-	return _subwindow->_hiliteBoxColor;
+	return subwindow_->hiliteBoxColor_;
 }
 
 
 inline GlowColor GlowMenuButtonWidget::GetHiliteIconColor() const
 {
-	return _subwindow->_hiliteIconColor;
+	return subwindow_->hiliteIconColor_;
 }
 
 
 inline GlowColor GlowMenuButtonWidget::GetHiliteTextColor() const
 {
-	return _subwindow->_hiliteTextColor;
+	return subwindow_->hiliteTextColor_;
 }
 
 
 inline GlowColor GlowMenuButtonWidget::GetDisableBoxColor() const
 {
-	return _subwindow->_disableBoxColor;
+	return subwindow_->disableBoxColor_;
 }
 
 
 inline GlowColor GlowMenuButtonWidget::GetDisableIconColor() const
 {
-	return _subwindow->_disableIconColor;
+	return subwindow_->disableIconColor_;
 }
 
 
 inline GlowColor GlowMenuButtonWidget::GetDisableTextColor() const
 {
-	return _subwindow->_disableTextColor;
+	return subwindow_->disableTextColor_;
 }
 
 
 inline GlowColor GlowMenuButtonWidget::GetDisableOutlineColor() const
 {
-	return _subwindow->_disableOutlineColor;
+	return subwindow_->disableOutlineColor_;
 }
 
 
 inline GlowColor GlowMenuButtonWidget::GetLightBevelColor() const
 {
-	return _subwindow->_lightBevelColor;
+	return subwindow_->lightBevelColor_;
 }
 
 
 inline GlowColor GlowMenuButtonWidget::GetDarkBevelColor() const
 {
-	return _subwindow->_darkBevelColor;
+	return subwindow_->darkBevelColor_;
 }
 
 
 inline void GlowMenuButtonWidget::SetBoxColor(
 	GlowColor c)
 {
-	_subwindow->_boxColor = c;
-	_subwindow->Refresh();
+	subwindow_->boxColor_ = c;
+	subwindow_->Refresh();
 }
 
 
 inline void GlowMenuButtonWidget::SetTextColor(
 	GlowColor c)
 {
-	_subwindow->_textColor = c;
-	_subwindow->Refresh();
+	subwindow_->textColor_ = c;
+	subwindow_->Refresh();
 }
 
 
 inline void GlowMenuButtonWidget::SetIconColor(
 	GlowColor c)
 {
-	_subwindow->_iconColor = c;
-	_subwindow->Refresh();
+	subwindow_->iconColor_ = c;
+	subwindow_->Refresh();
 }
 
 
 inline void GlowMenuButtonWidget::SetHiliteBoxColor(
 	GlowColor c)
 {
-	_subwindow->_hiliteBoxColor = c;
-	_subwindow->Refresh();
+	subwindow_->hiliteBoxColor_ = c;
+	subwindow_->Refresh();
 }
 
 
 inline void GlowMenuButtonWidget::SetHiliteTextColor(
 	GlowColor c)
 {
-	_subwindow->_hiliteTextColor = c;
-	_subwindow->Refresh();
+	subwindow_->hiliteTextColor_ = c;
+	subwindow_->Refresh();
 }
 
 
 inline void GlowMenuButtonWidget::SetHiliteIconColor(
 	GlowColor c)
 {
-	_subwindow->_hiliteIconColor = c;
-	_subwindow->Refresh();
+	subwindow_->hiliteIconColor_ = c;
+	subwindow_->Refresh();
 }
 
 
 inline void GlowMenuButtonWidget::SetDisableBoxColor(
 	GlowColor c)
 {
-	_subwindow->_disableBoxColor = c;
-	_subwindow->Refresh();
+	subwindow_->disableBoxColor_ = c;
+	subwindow_->Refresh();
 }
 
 
 inline void GlowMenuButtonWidget::SetDisableTextColor(
 	GlowColor c)
 {
-	_subwindow->_disableTextColor = c;
-	_subwindow->Refresh();
+	subwindow_->disableTextColor_ = c;
+	subwindow_->Refresh();
 }
 
 
 inline void GlowMenuButtonWidget::SetDisableIconColor(
 	GlowColor c)
 {
-	_subwindow->_disableIconColor = c;
-	_subwindow->Refresh();
+	subwindow_->disableIconColor_ = c;
+	subwindow_->Refresh();
 }
 
 
 inline void GlowMenuButtonWidget::SetDisableOutlineColor(
 	GlowColor c)
 {
-	_subwindow->_disableOutlineColor = c;
-	_subwindow->Refresh();
+	subwindow_->disableOutlineColor_ = c;
+	subwindow_->Refresh();
 }
 
 
 inline void GlowMenuButtonWidget::SetLightBevelColor(
 	GlowColor c)
 {
-	_subwindow->_lightBevelColor = c;
-	_subwindow->Refresh();
+	subwindow_->lightBevelColor_ = c;
+	subwindow_->Refresh();
 }
 
 
 inline void GlowMenuButtonWidget::SetDarkBevelColor(
 	GlowColor c)
 {
-	_subwindow->_darkBevelColor = c;
-	_subwindow->Refresh();
+	subwindow_->darkBevelColor_ = c;
+	subwindow_->Refresh();
 }
 
 
@@ -552,53 +552,53 @@ inline void GlowPopupMenuWidget::Init(
 
 inline bool GlowPopupMenuWidget::IsDown() const
 {
-	return _subwindow->_down;
+	return subwindow_->down_;
 }
 
 
 inline const char* GlowPopupMenuWidget::GetMark() const
 {
-	return _mark;
+	return mark_;
 }
 
 
 inline GlowFont GlowPopupMenuWidget::GetFont() const
 {
-	return _subwindow->_font;
+	return subwindow_->font_;
 }
 
 
 inline void GlowPopupMenuWidget::SetFont(
 	GlowFont font)
 {
-	_subwindow->_font = font;
-	_subwindow->Refresh();
+	subwindow_->font_ = font;
+	subwindow_->Refresh();
 }
 
 
 inline int GlowPopupMenuWidget::GetSpacing() const
 {
-	return _subwindow->_leftSpacing;
+	return subwindow_->leftSpacing_;
 }
 
 
 inline void GlowPopupMenuWidget::SetSpacing(
 	int spacing)
 {
-	_subwindow->_leftSpacing = spacing;
-	_subwindow->Refresh();
+	subwindow_->leftSpacing_ = spacing;
+	subwindow_->Refresh();
 }
 
 
 inline int GlowPopupMenuWidget::NumItems() const
 {
-	return _menu->NumItems();
+	return menu_->NumItems();
 }
 
 
 inline int GlowPopupMenuWidget::GetCurItem() const
 {
-	return _curItem;
+	return curItem_;
 }
 
 
@@ -606,183 +606,183 @@ inline const char* GlowPopupMenuWidget::GetItemLabel(
 	int itemNum) const
 {
 	GLOW_ASSERT(itemNum >= 0);
-	GLOW_ASSERT(itemNum < _menu->NumItems());
+	GLOW_ASSERT(itemNum < menu_->NumItems());
 	
-	return _menu->GetItemLabel(itemNum);
+	return menu_->GetItemLabel(itemNum);
 }
 
 
 inline GlowColor GlowPopupMenuWidget::GetBoxColor() const
 {
-	return _subwindow->_boxColor;
+	return subwindow_->boxColor_;
 }
 
 
 inline GlowColor GlowPopupMenuWidget::GetIconColor() const
 {
-	return _subwindow->_iconColor;
+	return subwindow_->iconColor_;
 }
 
 
 inline GlowColor GlowPopupMenuWidget::GetTextColor() const
 {
-	return _subwindow->_textColor;
+	return subwindow_->textColor_;
 }
 
 
 inline GlowColor GlowPopupMenuWidget::GetHiliteBoxColor() const
 {
-	return _subwindow->_hiliteBoxColor;
+	return subwindow_->hiliteBoxColor_;
 }
 
 
 inline GlowColor GlowPopupMenuWidget::GetHiliteIconColor() const
 {
-	return _subwindow->_hiliteIconColor;
+	return subwindow_->hiliteIconColor_;
 }
 
 
 inline GlowColor GlowPopupMenuWidget::GetHiliteTextColor() const
 {
-	return _subwindow->_hiliteTextColor;
+	return subwindow_->hiliteTextColor_;
 }
 
 
 inline GlowColor GlowPopupMenuWidget::GetDisableBoxColor() const
 {
-	return _subwindow->_disableBoxColor;
+	return subwindow_->disableBoxColor_;
 }
 
 
 inline GlowColor GlowPopupMenuWidget::GetDisableIconColor() const
 {
-	return _subwindow->_disableIconColor;
+	return subwindow_->disableIconColor_;
 }
 
 
 inline GlowColor GlowPopupMenuWidget::GetDisableTextColor() const
 {
-	return _subwindow->_disableTextColor;
+	return subwindow_->disableTextColor_;
 }
 
 
 inline GlowColor GlowPopupMenuWidget::GetDisableOutlineColor() const
 {
-	return _subwindow->_disableOutlineColor;
+	return subwindow_->disableOutlineColor_;
 }
 
 
 inline GlowColor GlowPopupMenuWidget::GetLightBevelColor() const
 {
-	return _subwindow->_lightBevelColor;
+	return subwindow_->lightBevelColor_;
 }
 
 
 inline GlowColor GlowPopupMenuWidget::GetDarkBevelColor() const
 {
-	return _subwindow->_darkBevelColor;
+	return subwindow_->darkBevelColor_;
 }
 
 
 inline void GlowPopupMenuWidget::SetBoxColor(
 	GlowColor c)
 {
-	_subwindow->_boxColor = c;
-	_subwindow->Refresh();
+	subwindow_->boxColor_ = c;
+	subwindow_->Refresh();
 }
 
 
 inline void GlowPopupMenuWidget::SetIconColor(
 	GlowColor c)
 {
-	_subwindow->_iconColor = c;
-	_subwindow->Refresh();
+	subwindow_->iconColor_ = c;
+	subwindow_->Refresh();
 }
 
 
 inline void GlowPopupMenuWidget::SetTextColor(
 	GlowColor c)
 {
-	_subwindow->_textColor = c;
-	_subwindow->Refresh();
+	subwindow_->textColor_ = c;
+	subwindow_->Refresh();
 }
 
 
 inline void GlowPopupMenuWidget::SetHiliteBoxColor(
 	GlowColor c)
 {
-	_subwindow->_hiliteBoxColor = c;
-	_subwindow->Refresh();
+	subwindow_->hiliteBoxColor_ = c;
+	subwindow_->Refresh();
 }
 
 
 inline void GlowPopupMenuWidget::SetHiliteIconColor(
 	GlowColor c)
 {
-	_subwindow->_hiliteIconColor = c;
-	_subwindow->Refresh();
+	subwindow_->hiliteIconColor_ = c;
+	subwindow_->Refresh();
 }
 
 
 inline void GlowPopupMenuWidget::SetHiliteTextColor(
 	GlowColor c)
 {
-	_subwindow->_hiliteTextColor = c;
-	_subwindow->Refresh();
+	subwindow_->hiliteTextColor_ = c;
+	subwindow_->Refresh();
 }
 
 
 inline void GlowPopupMenuWidget::SetDisableBoxColor(
 	GlowColor c)
 {
-	_subwindow->_disableBoxColor = c;
-	_subwindow->Refresh();
+	subwindow_->disableBoxColor_ = c;
+	subwindow_->Refresh();
 }
 
 
 inline void GlowPopupMenuWidget::SetDisableIconColor(
 	GlowColor c)
 {
-	_subwindow->_disableIconColor = c;
-	_subwindow->Refresh();
+	subwindow_->disableIconColor_ = c;
+	subwindow_->Refresh();
 }
 
 
 inline void GlowPopupMenuWidget::SetDisableTextColor(
 	GlowColor c)
 {
-	_subwindow->_disableTextColor = c;
-	_subwindow->Refresh();
+	subwindow_->disableTextColor_ = c;
+	subwindow_->Refresh();
 }
 
 
 inline void GlowPopupMenuWidget::SetDisableOutlineColor(
 	GlowColor c)
 {
-	_subwindow->_disableOutlineColor = c;
-	_subwindow->Refresh();
+	subwindow_->disableOutlineColor_ = c;
+	subwindow_->Refresh();
 }
 
 
 inline void GlowPopupMenuWidget::SetLightBevelColor(
 	GlowColor c)
 {
-	_subwindow->_lightBevelColor = c;
-	_subwindow->Refresh();
+	subwindow_->lightBevelColor_ = c;
+	subwindow_->Refresh();
 }
 
 
 inline void GlowPopupMenuWidget::SetDarkBevelColor(
 	GlowColor c)
 {
-	_subwindow->_darkBevelColor = c;
-	_subwindow->Refresh();
+	subwindow_->darkBevelColor_ = c;
+	subwindow_->Refresh();
 }
 
 
 inline TSender<const GlowPopupMenuMessage&>& GlowPopupMenuWidget::Notifier()
 {
-	return _sender;
+	return sender_;
 }
 
 

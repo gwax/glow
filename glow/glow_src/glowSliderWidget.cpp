@@ -152,29 +152,29 @@ void GlowSliderWidget::Init(
 	
 	GLOW_DEBUG(params.max < params.min, "max < min while constructing GlowSlider");
 	GlowWidget::Init(root, parent, params);
-	_dragging = false;
-	_type = params.options;
-	_min = params.min;
-	_max = params.max;
-	_value = params.initial;
-	if (_value > _max) _value = _max;
-	if (_value < _min) _value = _min;
-	_numTicks = params.numTicks;
+	dragging_ = false;
+	type_ = params.options;
+	min_ = params.min;
+	max_ = params.max;
+	value_ = params.initial;
+	if (value_ > max_) value_ = max_;
+	if (value_ < min_) value_ = min_;
+	numTicks_ = params.numTicks;
 	if (params.receiver != 0)
 	{
-		_sender.Bind(params.receiver);
+		sender_.Bind(params.receiver);
 	}
 	
-	_stripColor = params.stripColor;
-	_indicatorColor = params.indicatorColor;
-	_tickMarkColor = params.tickMarkColor;
-	_hiliteIndicatorColor = params.hiliteIndicatorColor;
-	_disableStripColor = params.disableStripColor;
-	_disableIndicatorColor = params.disableIndicatorColor;
-	_disableTickMarkColor = params.disableTickMarkColor;
-	_disableOutlineColor = params.disableOutlineColor;
-	_lightBevelColor = params.lightBevelColor;
-	_darkBevelColor = params.darkBevelColor;
+	stripColor_ = params.stripColor;
+	indicatorColor_ = params.indicatorColor;
+	tickMarkColor_ = params.tickMarkColor;
+	hiliteIndicatorColor_ = params.hiliteIndicatorColor;
+	disableStripColor_ = params.disableStripColor;
+	disableIndicatorColor_ = params.disableIndicatorColor;
+	disableTickMarkColor_ = params.disableTickMarkColor;
+	disableOutlineColor_ = params.disableOutlineColor;
+	lightBevelColor_ = params.lightBevelColor;
+	darkBevelColor_ = params.darkBevelColor;
 	
 	RegisterMouseEvents();
 }
@@ -236,40 +236,40 @@ GlowWidget::AutoPackError GlowSliderWidget::OnAutoPack(
 }
 
 
-void GlowSliderWidget::_CalcValue(
+void GlowSliderWidget::CalcValue_(
 	int x,
 	int y)
 {
 	if (Width() > Height())
 	{
-		_value = float(x-Height()/2)/float(Width()-Height());
+		value_ = float(x-Height()/2)/float(Width()-Height());
 	}
 	else
 	{
-		_value = float(y-Width()/2)/float(Height()-Width());
+		value_ = float(y-Width()/2)/float(Height()-Width());
 	}
-	if (_value > 1.0f) _value = 1.0f;
-	if (_value < 0.0f) _value = 0.0f;
-	if ((_type & logarithmic) != 0)
+	if (value_ > 1.0f) value_ = 1.0f;
+	if (value_ < 0.0f) value_ = 0.0f;
+	if ((type_ & logarithmic) != 0)
 	{
-		if ((_type & decreasing) != 0)
+		if ((type_ & decreasing) != 0)
 		{
-			_value = GLOW_CSTD::pow(_max, 1.0f-_value)*GLOW_CSTD::pow(_min, _value);
+			value_ = GLOW_CSTD::pow(max_, 1.0f-value_)*GLOW_CSTD::pow(min_, value_);
 		}
 		else
 		{
-			_value = GLOW_CSTD::pow(_min, 1.0f-_value)*GLOW_CSTD::pow(_max, _value);
+			value_ = GLOW_CSTD::pow(min_, 1.0f-value_)*GLOW_CSTD::pow(max_, value_);
 		}
 	}
 	else // linear
 	{
-		if ((_type & decreasing) != 0)
+		if ((type_ & decreasing) != 0)
 		{
-			_value = _max*(1.0f-_value)+_min*_value;
+			value_ = max_*(1.0f-value_)+min_*value_;
 		}
 		else
 		{
-			_value = _min*(1.0f-_value)+_max*_value;
+			value_ = min_*(1.0f-value_)+max_*value_;
 		}
 	}
 }
@@ -283,11 +283,11 @@ void GlowSliderWidget::OnWidgetPaint()
 	float pseudoHeight;
 	if (Width() < Height())
 	{
-		if ((_type & ticksOnTop) != 0)
+		if ((type_ & ticksOnTop) != 0)
 		{
 			::glScalef(-1.0f, 1.0f, 1.0f);
 		}
-		if ((_type & decreasing) == 0)
+		if ((type_ & decreasing) == 0)
 		{
 			::glScalef(1.0f, -1.0f, 1.0f);
 		}
@@ -297,11 +297,11 @@ void GlowSliderWidget::OnWidgetPaint()
 	}
 	else
 	{
-		if ((_type & ticksOnTop) != 0)
+		if ((type_ & ticksOnTop) != 0)
 		{
 			::glScalef(1.0f, -1.0f, 1.0f);
 		}
-		if ((_type & decreasing) != 0)
+		if ((type_ & decreasing) != 0)
 		{
 			::glScalef(-1.0f, 1.0f, 1.0f);
 		}
@@ -316,7 +316,7 @@ void GlowSliderWidget::OnWidgetPaint()
 	
 	// Draw strip
 	float top, bottom;
-	if (_numTicks == 0)
+	if (numTicks_ == 0)
 	{
 		top = 0.25f;
 		bottom = -0.25f;
@@ -330,18 +330,18 @@ void GlowSliderWidget::OnWidgetPaint()
 	// Strip back
 	if (!IsActive())
 	{
-		_disableStripColor.Apply();
+		disableStripColor_.Apply();
 	}
 	else
 	{
-		_stripColor.Apply();
+		stripColor_.Apply();
 	}
 	::glRectf(-1.0f, bottom, 1.0f, top);
 	
 	if (IsActive())
 	{
 		// Left bevel
-		_RightBevelColor();
+		RightBevelColor_();
 		::glBegin(GL_POLYGON);
 		::glVertex2f(-1.0f, bottom);
 		::glVertex2f(-1.0f+bevelWidth, bottom+bevelHeight);
@@ -350,7 +350,7 @@ void GlowSliderWidget::OnWidgetPaint()
 		::glEnd();
 		
 		// Top bevel
-		_BottomBevelColor();
+		BottomBevelColor_();
 		::glBegin(GL_POLYGON);
 		::glVertex2f(-1.0f, top);
 		::glVertex2f(-1.0f+bevelWidth, top-bevelHeight);
@@ -359,7 +359,7 @@ void GlowSliderWidget::OnWidgetPaint()
 		::glEnd();
 		
 		// Right bevel
-		_LeftBevelColor();
+		LeftBevelColor_();
 		::glBegin(GL_POLYGON);
 		::glVertex2f(1.0f, bottom);
 		::glVertex2f(1.0f-bevelWidth, bottom+bevelHeight);
@@ -368,7 +368,7 @@ void GlowSliderWidget::OnWidgetPaint()
 		::glEnd();
 		
 		// Bottom bevel
-		_TopBevelColor();
+		TopBevelColor_();
 		::glBegin(GL_POLYGON);
 		::glVertex2f(-1.0f, bottom);
 		::glVertex2f(-1.0f+bevelWidth, bottom+bevelHeight);
@@ -378,7 +378,7 @@ void GlowSliderWidget::OnWidgetPaint()
 	}
 	else
 	{
-		_disableOutlineColor.Apply();
+		disableOutlineColor_.Apply();
 		::glBegin(GL_LINE_LOOP);
 		::glVertex2f(-1.0f, bottom);
 		::glVertex2f(-1.0f, top);
@@ -391,25 +391,25 @@ void GlowSliderWidget::OnWidgetPaint()
 	float indicRadius = pseudoHeight/pseudoWidth;
 	if (!IsActive())
 	{
-		_disableTickMarkColor.Apply();
+		disableTickMarkColor_.Apply();
 	}
 	else
 	{
-		_tickMarkColor.Apply();
+		tickMarkColor_.Apply();
 	}
 	::glLineWidth(2);
-	if (_numTicks == 1)
+	if (numTicks_ == 1)
 	{
 		::glBegin(GL_LINES);
 		::glVertex2f(0.0f, -0.5f);
 		::glVertex2f(0.0f, -1.0f);
 		::glEnd();
 	}
-	else if (_numTicks > 1)
+	else if (numTicks_ > 1)
 	{
-		for (int i=0; i<_numTicks; i++)
+		for (int i=0; i<numTicks_; i++)
 		{
-			float pos = float(i)/float(_numTicks-1)*2.0f-1.0f;
+			float pos = float(i)/float(numTicks_-1)*2.0f-1.0f;
 			pos *= (1.0-indicRadius);
 			::glBegin(GL_LINES);
 			::glVertex2f(pos, -0.5f);
@@ -420,33 +420,33 @@ void GlowSliderWidget::OnWidgetPaint()
 	::glLineWidth(1);
 	
 	// Draw indicator
-	if (_max > _min)
+	if (max_ > min_)
 	{
 		float indicPos;
-		if ((_type & logarithmic) != 0)
+		if ((type_ & logarithmic) != 0)
 		{
-			indicPos = GLOW_CSTD::log(_value/_min)/GLOW_CSTD::log(_max/_min);
+			indicPos = GLOW_CSTD::log(value_/min_)/GLOW_CSTD::log(max_/min_);
 		}
 		else
 		{
-			indicPos = (_value-_min)/(_max-_min);
+			indicPos = (value_-min_)/(max_-min_);
 		}
 		indicPos = indicRadius-1.0f+indicPos*
 			(pseudoWidth-pseudoHeight)/pseudoWidth*2.0f;
-		if (_numTicks > 0)
+		if (numTicks_ > 0)
 		{
 			// With ticks (pentagons)
 			if (!IsActive())
 			{
-				_disableIndicatorColor.Apply();
+				disableIndicatorColor_.Apply();
 			}
-			else if (_dragging)
+			else if (dragging_)
 			{
-				_hiliteIndicatorColor.Apply();
+				hiliteIndicatorColor_.Apply();
 			}
 			else
 			{
-				_indicatorColor.Apply();
+				indicatorColor_.Apply();
 			}
 			::glBegin(GL_POLYGON);
 			::glVertex2f(indicPos, -0.5f);
@@ -459,7 +459,7 @@ void GlowSliderWidget::OnWidgetPaint()
 			if (IsActive())
 			{
 				// Bottom (crooked) bevel
-				_BottomBevelColor();
+				BottomBevelColor_();
 				::glBegin(GL_QUAD_STRIP);
 				::glVertex2f(indicPos-indicRadius, 0.0f);
 				::glVertex2f(indicPos-indicRadius+bevelWidth, bevelHeight);
@@ -470,7 +470,7 @@ void GlowSliderWidget::OnWidgetPaint()
 				::glEnd();
 				
 				// Left bevel
-				_LeftBevelColor();
+				LeftBevelColor_();
 				::glBegin(GL_QUADS);
 				::glVertex2f(indicPos-indicRadius, 0.0f);
 				::glVertex2f(indicPos-indicRadius+bevelWidth, bevelHeight);
@@ -479,7 +479,7 @@ void GlowSliderWidget::OnWidgetPaint()
 				::glEnd();
 				
 				// Top bevel
-				_TopBevelColor();
+				TopBevelColor_();
 				::glBegin(GL_QUADS);
 				::glVertex2f(indicPos-indicRadius, 1.0f);
 				::glVertex2f(indicPos-indicRadius+bevelWidth, 1.0f-bevelHeight);
@@ -488,7 +488,7 @@ void GlowSliderWidget::OnWidgetPaint()
 				::glEnd();
 				
 				// Right bevel
-				_RightBevelColor();
+				RightBevelColor_();
 				::glBegin(GL_QUADS);
 				::glVertex2f(indicPos+indicRadius, 0.0f);
 				::glVertex2f(indicPos+indicRadius-bevelWidth, bevelHeight);
@@ -499,7 +499,7 @@ void GlowSliderWidget::OnWidgetPaint()
 				// Ridges
 				float ridgeTop = 1.0f-bevelHeight*2.0f;
 				float ridgeBottom = -0.5f+bevelHeight*3.0f;
-				_LeftBevelColor();
+				LeftBevelColor_();
 				::glBegin(GL_LINES);
 				::glVertex2f(indicPos-float(7)/pseudoWidth, ridgeBottom);
 				::glVertex2f(indicPos-float(7)/pseudoWidth, ridgeTop);
@@ -508,7 +508,7 @@ void GlowSliderWidget::OnWidgetPaint()
 				::glVertex2f(indicPos+float(5)/pseudoWidth, ridgeBottom);
 				::glVertex2f(indicPos+float(5)/pseudoWidth, ridgeTop);
 				::glEnd();
-				_RightBevelColor();
+				RightBevelColor_();
 				::glBegin(GL_LINES);
 				::glVertex2f(indicPos-float(5)/pseudoWidth, ridgeBottom);
 				::glVertex2f(indicPos-float(5)/pseudoWidth, ridgeTop);
@@ -520,7 +520,7 @@ void GlowSliderWidget::OnWidgetPaint()
 			}
 			else
 			{
-				_disableOutlineColor.Apply();
+				disableOutlineColor_.Apply();
 				::glBegin(GL_LINE_LOOP);
 				::glVertex2f(indicPos, -0.5f);
 				::glVertex2f(indicPos-indicRadius+pixelWidth, 0.0f);
@@ -535,22 +535,22 @@ void GlowSliderWidget::OnWidgetPaint()
 			// No ticks (rects)
 			if (!IsActive())
 			{
-				_disableIndicatorColor.Apply();
+				disableIndicatorColor_.Apply();
 			}
-			else if (_dragging)
+			else if (dragging_)
 			{
-				_hiliteIndicatorColor.Apply();
+				hiliteIndicatorColor_.Apply();
 			}
 			else
 			{
-				_indicatorColor.Apply();
+				indicatorColor_.Apply();
 			}
 			::glRectf(indicPos-indicRadius, -1.0f, indicPos+indicRadius, 1.0f);
 			
 			if (IsActive())
 			{
 				// Bottom bevel
-				_BottomBevelColor();
+				BottomBevelColor_();
 				::glBegin(GL_QUADS);
 				::glVertex2f(indicPos-indicRadius, -1.0);
 				::glVertex2f(indicPos-indicRadius+bevelWidth, -1.0+bevelHeight);
@@ -559,7 +559,7 @@ void GlowSliderWidget::OnWidgetPaint()
 				::glEnd();
 				
 				// Left bevel
-				_LeftBevelColor();
+				LeftBevelColor_();
 				::glBegin(GL_QUADS);
 				::glVertex2f(indicPos-indicRadius, -1.0);
 				::glVertex2f(indicPos-indicRadius+bevelWidth, -1.0+bevelHeight);
@@ -568,7 +568,7 @@ void GlowSliderWidget::OnWidgetPaint()
 				::glEnd();
 				
 				// Top bevel
-				_TopBevelColor();
+				TopBevelColor_();
 				::glBegin(GL_QUADS);
 				::glVertex2f(indicPos-indicRadius, 1.0);
 				::glVertex2f(indicPos-indicRadius+bevelWidth, 1.0-bevelHeight);
@@ -577,7 +577,7 @@ void GlowSliderWidget::OnWidgetPaint()
 				::glEnd();
 				
 				// Right bevel
-				_RightBevelColor();
+				RightBevelColor_();
 				::glBegin(GL_QUADS);
 				::glVertex2f(indicPos+indicRadius, -1.0);
 				::glVertex2f(indicPos+indicRadius-bevelWidth, -1.0+bevelHeight);
@@ -588,7 +588,7 @@ void GlowSliderWidget::OnWidgetPaint()
 				// Ridges
 				float ridgeTop = 1.0-bevelHeight*2.0;
 				float ridgeBottom = -1.0+bevelHeight*2.0;
-				_LeftBevelColor();
+				LeftBevelColor_();
 				::glBegin(GL_LINES);
 				::glVertex2f(indicPos-float(7)/pseudoWidth, ridgeBottom);
 				::glVertex2f(indicPos-float(7)/pseudoWidth, ridgeTop);
@@ -597,7 +597,7 @@ void GlowSliderWidget::OnWidgetPaint()
 				::glVertex2f(indicPos+float(5)/pseudoWidth, ridgeBottom);
 				::glVertex2f(indicPos+float(5)/pseudoWidth, ridgeTop);
 				::glEnd();
-				_RightBevelColor();
+				RightBevelColor_();
 				::glBegin(GL_LINES);
 				::glVertex2f(indicPos-float(5)/pseudoWidth, ridgeBottom);
 				::glVertex2f(indicPos-float(5)/pseudoWidth, ridgeTop);
@@ -609,7 +609,7 @@ void GlowSliderWidget::OnWidgetPaint()
 			}
 			else
 			{
-				_disableOutlineColor.Apply();
+				disableOutlineColor_.Apply();
 				::glBegin(GL_LINE_LOOP);
 				::glVertex2f(indicPos-indicRadius, -1.0f);
 				::glVertex2f(indicPos-indicRadius, 1.0f);
@@ -630,19 +630,19 @@ void GlowSliderWidget::OnWidgetMouseDown(
 {
 	GLOW_DEBUGSCOPE("GlowSliderWidget::OnWidgetMouseDown");
 	
-	if (_max > _min)
+	if (max_ > min_)
 	{
 		int indicRadius, indicPos;
 		float valRatio;
-		if ((_type & logarithmic) != 0)
+		if ((type_ & logarithmic) != 0)
 		{
-			valRatio = GLOW_CSTD::log(_value/_min)/GLOW_CSTD::log(_max/_min);
+			valRatio = GLOW_CSTD::log(value_/min_)/GLOW_CSTD::log(max_/min_);
 		}
 		else
 		{
-			valRatio = (_value-_min)/(_max-_min);
+			valRatio = (value_-min_)/(max_-min_);
 		}
-		if ((_type & decreasing) != 0)
+		if ((type_ & decreasing) != 0)
 		{
 			valRatio = 1.0f-valRatio;
 		}
@@ -652,10 +652,10 @@ void GlowSliderWidget::OnWidgetMouseDown(
 			indicPos = indicRadius+static_cast<int>(float(Width()-2*indicRadius)*valRatio);
 			if (x > indicPos-indicRadius && x < indicPos+indicRadius)
 			{
-				_xoffset = indicPos-x;
-				_yoffset = 0;
-				_dragging = true;
-				_modifiers = modifiers;
+				xoffset_ = indicPos-x;
+				yoffset_ = 0;
+				dragging_ = true;
+				modifiers_ = modifiers;
 				Refresh();
 			}
 		}
@@ -665,10 +665,10 @@ void GlowSliderWidget::OnWidgetMouseDown(
 			indicPos = indicRadius+static_cast<int>(float(Height()-2*indicRadius)*valRatio);
 			if (y > indicPos-indicRadius && y < indicPos+indicRadius)
 			{
-				_xoffset = 0;
-				_yoffset = indicPos-y;
-				_dragging = true;
-				_modifiers = modifiers;
+				xoffset_ = 0;
+				yoffset_ = indicPos-y;
+				dragging_ = true;
+				modifiers_ = modifiers;
 				Refresh();
 			}
 		}
@@ -684,11 +684,11 @@ void GlowSliderWidget::OnWidgetMouseUp(
 {
 	GLOW_DEBUGSCOPE("GlowSliderWidget::OnWidgetMouseUp");
 	
-	if (_dragging)
+	if (dragging_)
 	{
-		_dragging = false;
-		_CalcValue(x+_xoffset, y+_yoffset);
-		OnReleased(_button, _modifiers);
+		dragging_ = false;
+		CalcValue_(x+xoffset_, y+yoffset_);
+		OnReleased(button_, modifiers_);
 		Refresh();
 	}
 }
@@ -700,10 +700,10 @@ void GlowSliderWidget::OnWidgetMouseDrag(
 {
 	GLOW_DEBUGSCOPE("GlowSliderWidget::OnWidgetMouseDrag");
 	
-	if (_dragging)
+	if (dragging_)
 	{
-		_CalcValue(x+_xoffset, y+_yoffset);
-		OnDragged(_button, _modifiers);
+		CalcValue_(x+xoffset_, y+yoffset_);
+		OnDragged(button_, modifiers_);
 		Refresh();
 	}
 }
@@ -718,10 +718,10 @@ void GlowSliderWidget::OnDragged(
 	GlowSliderMessage msg;
 	msg.widget = this;
 	msg.released = false;
-	msg.value = _value;
+	msg.value = value_;
 	msg.mouseButton = mouseButton;
 	msg.modifiers = modifiers;
-	_sender.Send(msg);
+	sender_.Send(msg);
 }
 
 
@@ -734,10 +734,10 @@ void GlowSliderWidget::OnReleased(
 	GlowSliderMessage msg;
 	msg.widget = this;
 	msg.released = true;
-	msg.value = _value;
+	msg.value = value_;
 	msg.mouseButton = mouseButton;
 	msg.modifiers = modifiers;
-	_sender.Send(msg);
+	sender_.Send(msg);
 }
 
 
@@ -757,58 +757,58 @@ void GlowLabeledSliderWidget::Init(
 	GlowSliderWidget::Init(root, parent, params);
 	
 	// Main label
-	_labelSpacing = params.labelSpacing;
-	_labelPosition = params.labelPosition;
-	_labelWidth = params.labelWidth;
-	_labelHeight = params.labelHeight;
-	_labelValue = GetValue();
+	labelSpacing_ = params.labelSpacing;
+	labelPosition_ = params.labelPosition;
+	labelWidth_ = params.labelWidth;
+	labelHeight_ = params.labelHeight;
+	labelValue_ = GetValue();
 	
 	GlowLabelParams lparams;
 	char buffer[1000];
 	if (params.labelTemplate == 0)
 	{
-		_labelTemplate = 0;
+		labelTemplate_ = 0;
 		lparams.text = 0;
 	}
 	else
 	{
-		_labelTemplate = new char[GLOW_CSTD::strlen(params.labelTemplate)+1];
-		GLOW_CSTD::strcpy(_labelTemplate, params.labelTemplate);
-		GLOW_CSTD::sprintf(buffer, _labelTemplate, _labelValue);
+		labelTemplate_ = new char[GLOW_CSTD::strlen(params.labelTemplate)+1];
+		GLOW_CSTD::strcpy(labelTemplate_, params.labelTemplate);
+		GLOW_CSTD::sprintf(buffer, labelTemplate_, labelValue_);
 		lparams.text = buffer;
 	}
 	lparams.font = params.labelFont;
 	lparams.textColor = params.labelColor;
 	lparams.disableTextColor = params.disableLabelColor;
-	_label = new GlowWidgetLabelWidget(this, lparams);
+	label_ = new GlowWidgetLabelWidget(this, lparams);
 	
 	// Min and max labels
-	_minLabelValue = GetMinimum();
-	_maxLabelValue = GetMaximum();
-	_minmaxSize = params.minmaxSize;
+	minLabelValue_ = GetMinimum();
+	maxLabelValue_ = GetMaximum();
+	minmaxSize_ = params.minmaxSize;
 	
 	lparams.font = params.minmaxFont;
 	lparams.textColor = params.minmaxColor;
 	lparams.disableTextColor = params.disableMinmaxColor;
 	if (params.minmaxTemplate == 0)
 	{
-		_minmaxTemplate = 0;
+		minmaxTemplate_ = 0;
 		lparams.text = 0;
 	}
 	else
 	{
-		_minmaxTemplate = new char[GLOW_CSTD::strlen(params.minmaxTemplate)+1];
-		GLOW_CSTD::strcpy(_minmaxTemplate, params.minmaxTemplate);
-		GLOW_CSTD::sprintf(buffer, _minmaxTemplate, _minLabelValue);
+		minmaxTemplate_ = new char[GLOW_CSTD::strlen(params.minmaxTemplate)+1];
+		GLOW_CSTD::strcpy(minmaxTemplate_, params.minmaxTemplate);
+		GLOW_CSTD::sprintf(buffer, minmaxTemplate_, minLabelValue_);
 		lparams.text = buffer;
 	}
-	_minLabel = new GlowWidgetLabelWidget(this, lparams);
-	if (_minmaxTemplate != 0)
+	minLabel_ = new GlowWidgetLabelWidget(this, lparams);
+	if (minmaxTemplate_ != 0)
 	{
-		GLOW_CSTD::sprintf(buffer, _minmaxTemplate, _maxLabelValue);
+		GLOW_CSTD::sprintf(buffer, minmaxTemplate_, maxLabelValue_);
 		lparams.text = buffer;
 	}
-	_maxLabel = new GlowWidgetLabelWidget(this, lparams);
+	maxLabel_ = new GlowWidgetLabelWidget(this, lparams);
 	
 	ResizeMinmax();
 	RepositionMinmax();
@@ -820,18 +820,18 @@ void GlowLabeledSliderWidget::RepositionLabel()
 {
 	// need to make sure label doesn't hit minmax
 	int leftMinmax = 0, rightMinmax = 0, topMinmax = 0, bottomMinmax = 0;
-	if (_minmaxTemplate != 0)
+	if (minmaxTemplate_ != 0)
 	{
 		if (Width() > Height())
 		{
 			// Horizontal slider
 			if (GetOptions() & ticksOnTop)
 			{
-				topMinmax = _minmaxSize;
+				topMinmax = minmaxSize_;
 			}
 			else
 			{
-				bottomMinmax = _minmaxSize;
+				bottomMinmax = minmaxSize_;
 			}
 		}
 		else
@@ -839,46 +839,46 @@ void GlowLabeledSliderWidget::RepositionLabel()
 			// Vertical slider
 			if (GetOptions() & ticksOnLeft)
 			{
-				leftMinmax = _minmaxSize;
+				leftMinmax = minmaxSize_;
 			}
 			else
 			{
-				rightMinmax = _minmaxSize;
+				rightMinmax = minmaxSize_;
 			}
 		}
 	}
-	switch (_labelPosition)
+	switch (labelPosition_)
 	{
 		case leftLabelPosition:
-			_label->AutoPack(
-				-leftMinmax-_labelWidth-_labelSpacing,
-				-leftMinmax-_labelSpacing,
-				(Height()-_labelHeight)/2,
-				(Height()+_labelHeight)/2,
+			label_->AutoPack(
+				-leftMinmax-labelWidth_-labelSpacing_,
+				-leftMinmax-labelSpacing_,
+				(Height()-labelHeight_)/2,
+				(Height()+labelHeight_)/2,
 				expandPreferredSize | rightPos, expandPreferredSize | centerPos);
 			break;
 		case rightLabelPosition:
-			_label->AutoPack(
-				rightMinmax+_labelSpacing,
-				rightMinmax+_labelSpacing+_labelWidth,
-				(Height()-_labelHeight)/2,
-				(Height()+_labelHeight)/2,
+			label_->AutoPack(
+				rightMinmax+labelSpacing_,
+				rightMinmax+labelSpacing_+labelWidth_,
+				(Height()-labelHeight_)/2,
+				(Height()+labelHeight_)/2,
 				expandPreferredSize | leftPos, expandPreferredSize | centerPos);
 			break;
 		case topLabelPosition:
-			_label->AutoPack(
-				(Width()-_labelWidth)/2,
-				(Width()+_labelWidth)/2,
-				-topMinmax-_labelHeight-_labelSpacing,
-				-topMinmax-_labelSpacing,
+			label_->AutoPack(
+				(Width()-labelWidth_)/2,
+				(Width()+labelWidth_)/2,
+				-topMinmax-labelHeight_-labelSpacing_,
+				-topMinmax-labelSpacing_,
 				expandPreferredSize | centerPos, expandPreferredSize | bottomPos);
 			break;
 		case bottomLabelPosition:
-			_label->AutoPack(
-				(Width()-_labelWidth)/2,
-				(Width()+_labelWidth)/2,
-				bottomMinmax+_labelSpacing,
-				bottomMinmax+_labelSpacing+_labelHeight,
+			label_->AutoPack(
+				(Width()-labelWidth_)/2,
+				(Width()+labelWidth_)/2,
+				bottomMinmax+labelSpacing_,
+				bottomMinmax+labelSpacing_+labelHeight_,
 				expandPreferredSize | centerPos, expandPreferredSize | topPos);
 			break;
 	}
@@ -900,52 +900,52 @@ GlowWidget::AutoPackError GlowLabeledSliderWidget::OnAutoPack(
 	// Deal with min and max labels
 	CheckMinmax();
 	ResizeMinmax();
-	if (_minmaxTemplate != 0)
+	if (minmaxTemplate_ != 0)
 	{
 		if (Width() > Height())
 		{
 			// Horizontal slider
-			_minmaxSize = GLOW_STD::max(_minLabel->Height(), _maxLabel->Height());
+			minmaxSize_ = GLOW_STD::max(minLabel_->Height(), maxLabel_->Height());
 			if (GetOptions() & ticksOnTop)
 			{
-				topMargin = _minmaxSize;
+				topMargin = minmaxSize_;
 			}
 			else
 			{
-				bottomMargin = _minmaxSize;
+				bottomMargin = minmaxSize_;
 			}
 		}
 		else
 		{
 			// Vertical slider
-			_minmaxSize = GLOW_STD::max(_minLabel->Width(), _maxLabel->Width());
+			minmaxSize_ = GLOW_STD::max(minLabel_->Width(), maxLabel_->Width());
 			if (GetOptions() & ticksOnLeft)
 			{
-				leftMargin = _minmaxSize;
+				leftMargin = minmaxSize_;
 			}
 			else
 			{
-				rightMargin = _minmaxSize;
+				rightMargin = minmaxSize_;
 			}
 		}
 	}
 	
 	// Deal with labels
-	if (_labelTemplate != 0)
+	if (labelTemplate_ != 0)
 	{
-		_label->FindPreferredSize(_labelWidth, _labelHeight);
+		label_->FindPreferredSize(labelWidth_, labelHeight_);
 		
 		// Adjust size according to label
 		if (hSize != unspecifiedSize)
 		{
-			if (_labelPosition == leftLabelPosition ||
-				_labelPosition == rightLabelPosition)
+			if (labelPosition_ == leftLabelPosition ||
+				labelPosition_ == rightLabelPosition)
 			{
-				hSize -= _labelWidth + _labelSpacing;
+				hSize -= labelWidth_ + labelSpacing_;
 			}
-			else if (_labelWidth > Width())
+			else if (labelWidth_ > Width())
 			{
-				hSize -= _labelWidth - Width();
+				hSize -= labelWidth_ - Width();
 			}
 			if (hSize < 2)
 			{
@@ -954,14 +954,14 @@ GlowWidget::AutoPackError GlowLabeledSliderWidget::OnAutoPack(
 		}
 		if (vSize != unspecifiedSize)
 		{
-			if (_labelPosition == topLabelPosition ||
-				_labelPosition == bottomLabelPosition)
+			if (labelPosition_ == topLabelPosition ||
+				labelPosition_ == bottomLabelPosition)
 			{
-				vSize -= _labelHeight + _labelSpacing;
+				vSize -= labelHeight_ + labelSpacing_;
 			}
-			else if (_labelHeight > Height())
+			else if (labelHeight_ > Height())
 			{
-				vSize -= _labelHeight - Height();
+				vSize -= labelHeight_ - Height();
 			}
 			if (vSize < 2)
 			{
@@ -970,32 +970,32 @@ GlowWidget::AutoPackError GlowLabeledSliderWidget::OnAutoPack(
 		}
 		
 		// Adjust margins according to label
-		switch (_labelPosition)
+		switch (labelPosition_)
 		{
 			case leftLabelPosition:
-				leftMargin += _labelWidth+_labelSpacing;
+				leftMargin += labelWidth_+labelSpacing_;
 				break;
 			case rightLabelPosition:
-				rightMargin +=  _labelWidth+_labelSpacing;
+				rightMargin +=  labelWidth_+labelSpacing_;
 				break;
 			case topLabelPosition:
-				topMargin +=  _labelHeight+_labelSpacing;
+				topMargin +=  labelHeight_+labelSpacing_;
 				break;
 			case bottomLabelPosition:
-				bottomMargin +=  _labelHeight+_labelSpacing;
+				bottomMargin +=  labelHeight_+labelSpacing_;
 				break;
 		}
-		if ((_labelPosition == leftLabelPosition || _labelPosition == rightLabelPosition) &&
-			_labelHeight > Height())
+		if ((labelPosition_ == leftLabelPosition || labelPosition_ == rightLabelPosition) &&
+			labelHeight_ > Height())
 		{
-			topMargin = GLOW_STD::max(topMargin, (_labelHeight-Height())/2);
-			bottomMargin = GLOW_STD::max(bottomMargin, (_labelHeight-Height())/2);
+			topMargin = GLOW_STD::max(topMargin, (labelHeight_-Height())/2);
+			bottomMargin = GLOW_STD::max(bottomMargin, (labelHeight_-Height())/2);
 		}
-		if ((_labelPosition == topLabelPosition || _labelPosition == bottomLabelPosition) &&
-			_labelWidth > Width())
+		if ((labelPosition_ == topLabelPosition || labelPosition_ == bottomLabelPosition) &&
+			labelWidth_ > Width())
 		{
-			leftMargin = GLOW_STD::max(leftMargin, (_labelWidth-Width())/2);
-			rightMargin = GLOW_STD::max(rightMargin, (_labelWidth-Width())/2);
+			leftMargin = GLOW_STD::max(leftMargin, (labelWidth_-Width())/2);
+			rightMargin = GLOW_STD::max(rightMargin, (labelWidth_-Width())/2);
 		}
 	}
 	
@@ -1016,20 +1016,20 @@ GlowWidget::AutoPackError GlowLabeledSliderWidget::OnAutoPack(
 void GlowLabeledSliderWidget::SetLabelTemplate(
 	const char* text)
 {
-	delete _labelTemplate;
+	delete labelTemplate_;
 	if (text == 0)
 	{
-		_labelTemplate = 0;
-		_label->SetText(0);
+		labelTemplate_ = 0;
+		label_->SetText(0);
 	}
 	else
 	{
-		_labelTemplate = new char[GLOW_CSTD::strlen(text)+1];
-		GLOW_CSTD::strcpy(_labelTemplate, text);
-		_labelValue = GetValue();
+		labelTemplate_ = new char[GLOW_CSTD::strlen(text)+1];
+		GLOW_CSTD::strcpy(labelTemplate_, text);
+		labelValue_ = GetValue();
 		char buffer[1000];
-		GLOW_CSTD::sprintf(buffer, _labelTemplate, _labelValue);
-		_label->SetText(buffer);
+		GLOW_CSTD::sprintf(buffer, labelTemplate_, labelValue_);
+		label_->SetText(buffer);
 	}
 }
 
@@ -1037,24 +1037,24 @@ void GlowLabeledSliderWidget::SetLabelTemplate(
 void GlowLabeledSliderWidget::SetMinmaxTemplate(
 	const char* text)
 {
-	delete _minmaxTemplate;
+	delete minmaxTemplate_;
 	if (text == 0)
 	{
-		_minmaxTemplate = 0;
-		_minLabel->SetText(0);
-		_maxLabel->SetText(0);
+		minmaxTemplate_ = 0;
+		minLabel_->SetText(0);
+		maxLabel_->SetText(0);
 	}
 	else
 	{
-		_minmaxTemplate = new char[GLOW_CSTD::strlen(text)+1];
-		GLOW_CSTD::strcpy(_minmaxTemplate, text);
+		minmaxTemplate_ = new char[GLOW_CSTD::strlen(text)+1];
+		GLOW_CSTD::strcpy(minmaxTemplate_, text);
 		char buffer[1000];
-		_minLabelValue = GetMinimum();
-		GLOW_CSTD::sprintf(buffer, _minmaxTemplate, _minLabelValue);
-		_minLabel->SetText(buffer);
-		_maxLabelValue = GetMaximum();
-		GLOW_CSTD::sprintf(buffer, _minmaxTemplate, _maxLabelValue);
-		_maxLabel->SetText(buffer);
+		minLabelValue_ = GetMinimum();
+		GLOW_CSTD::sprintf(buffer, minmaxTemplate_, minLabelValue_);
+		minLabel_->SetText(buffer);
+		maxLabelValue_ = GetMaximum();
+		GLOW_CSTD::sprintf(buffer, minmaxTemplate_, maxLabelValue_);
+		maxLabel_->SetText(buffer);
 		ResizeMinmax();
 		RepositionMinmax();
 	}
@@ -1065,16 +1065,16 @@ void GlowLabeledSliderWidget::OnWidgetPaint()
 {
 	GLOW_DEBUGSCOPE("GlowLabeledSliderWidget::OnWidgetPaint");
 	
-	if (_labelValue != GetValue())
+	if (labelValue_ != GetValue())
 	{
-		_labelValue = GetValue();
-		if (_labelTemplate != 0)
+		labelValue_ = GetValue();
+		if (labelTemplate_ != 0)
 		{
 			char buffer[1000];
-			GLOW_CSTD::sprintf(buffer, _labelTemplate, _labelValue);
-			_label->SetRefreshEnabled(false);
-			_label->SetText(buffer);
-			_label->SetRefreshEnabled(true);
+			GLOW_CSTD::sprintf(buffer, labelTemplate_, labelValue_);
+			label_->SetRefreshEnabled(false);
+			label_->SetText(buffer);
+			label_->SetRefreshEnabled(true);
 		}
 	}
 	if (CheckMinmax())
@@ -1089,30 +1089,30 @@ void GlowLabeledSliderWidget::OnWidgetPaint()
 bool GlowLabeledSliderWidget::CheckMinmax()
 {
 	bool needReposition = false;
-	if (_minLabelValue != GetMinimum())
+	if (minLabelValue_ != GetMinimum())
 	{
-		_minLabelValue = GetMinimum();
-		if (_minmaxTemplate != 0)
+		minLabelValue_ = GetMinimum();
+		if (minmaxTemplate_ != 0)
 		{
 			char buffer[1000];
-			GLOW_CSTD::sprintf(buffer, _minmaxTemplate, _minLabelValue);
-			_minLabel->SetRefreshEnabled(false);
-			_minLabel->SetText(buffer);
+			GLOW_CSTD::sprintf(buffer, minmaxTemplate_, minLabelValue_);
+			minLabel_->SetRefreshEnabled(false);
+			minLabel_->SetText(buffer);
 			needReposition = true;
-			_minLabel->SetRefreshEnabled(true);
+			minLabel_->SetRefreshEnabled(true);
 		}
 	}
-	if (_maxLabelValue != GetMaximum())
+	if (maxLabelValue_ != GetMaximum())
 	{
-		_maxLabelValue = GetMaximum();
-		if (_minmaxTemplate != 0)
+		maxLabelValue_ = GetMaximum();
+		if (minmaxTemplate_ != 0)
 		{
 			char buffer[1000];
-			GLOW_CSTD::sprintf(buffer, _minmaxTemplate, _maxLabelValue);
-			_maxLabel->SetRefreshEnabled(false);
-			_maxLabel->SetText(buffer);
+			GLOW_CSTD::sprintf(buffer, minmaxTemplate_, maxLabelValue_);
+			maxLabel_->SetRefreshEnabled(false);
+			maxLabel_->SetText(buffer);
 			needReposition = true;
-			_maxLabel->SetRefreshEnabled(true);
+			maxLabel_->SetRefreshEnabled(true);
 		}
 	}
 	return needReposition;
@@ -1122,10 +1122,10 @@ bool GlowLabeledSliderWidget::CheckMinmax()
 void GlowLabeledSliderWidget::ResizeMinmax()
 {
 	int pwidth = 0, pheight = 0;
-	_minLabel->FindPreferredSize(pwidth, pheight);
-	_minLabel->Reshape(pwidth, pheight);
-	_maxLabel->FindPreferredSize(pwidth, pheight);
-	_maxLabel->Reshape(pwidth, pheight);
+	minLabel_->FindPreferredSize(pwidth, pheight);
+	minLabel_->Reshape(pwidth, pheight);
+	maxLabel_->FindPreferredSize(pwidth, pheight);
+	maxLabel_->Reshape(pwidth, pheight);
 }
 
 
@@ -1138,14 +1138,14 @@ void GlowLabeledSliderWidget::RepositionMinmax()
 		AutoPackOptions vOption;
 		if (GetOptions() & ticksOnTop)
 		{
-			topLimit = -_minmaxSize;
+			topLimit = -minmaxSize_;
 			bottomLimit = 0;
 			vOption = bottomPos;
 		}
 		else
 		{
 			topLimit = Height();
-			bottomLimit = Height()+_minmaxSize;
+			bottomLimit = Height()+minmaxSize_;
 			vOption = topPos;
 		}
 		int minLeftLimit, minRightLimit, maxLeftLimit, maxRightLimit;
@@ -1156,9 +1156,9 @@ void GlowLabeledSliderWidget::RepositionMinmax()
 			minRightLimit = Width();
 			maxLeftLimit = 0;
 			maxRightLimit = Height();
-			minHOption = (_minLabel->Width() <= Height()) ?
+			minHOption = (minLabel_->Width() <= Height()) ?
 				centerPos : rightPos;
-			maxHOption = (_maxLabel->Width() <= Height()) ?
+			maxHOption = (maxLabel_->Width() <= Height()) ?
 				centerPos : leftPos;
 		}
 		else
@@ -1167,14 +1167,14 @@ void GlowLabeledSliderWidget::RepositionMinmax()
 			minRightLimit = Height();
 			maxLeftLimit = Width()-Height();
 			maxRightLimit = Width();
-			minHOption = (_minLabel->Width() <= Height()) ?
+			minHOption = (minLabel_->Width() <= Height()) ?
 				centerPos : leftPos;
-			maxHOption = (_maxLabel->Width() <= Height()) ?
+			maxHOption = (maxLabel_->Width() <= Height()) ?
 				centerPos : rightPos;
 		}
-		_minLabel->AutoPack(minLeftLimit, minRightLimit, topLimit, bottomLimit,
+		minLabel_->AutoPack(minLeftLimit, minRightLimit, topLimit, bottomLimit,
 			minHOption, vOption);
-		_maxLabel->AutoPack(maxLeftLimit, maxRightLimit, topLimit, bottomLimit,
+		maxLabel_->AutoPack(maxLeftLimit, maxRightLimit, topLimit, bottomLimit,
 			maxHOption, vOption);
 	}
 	else
@@ -1184,14 +1184,14 @@ void GlowLabeledSliderWidget::RepositionMinmax()
 		AutoPackOptions hOption;
 		if (GetOptions() & ticksOnLeft)
 		{
-			leftLimit = -_minmaxSize;
+			leftLimit = -minmaxSize_;
 			rightLimit = 0;
 			hOption = rightPos;
 		}
 		else
 		{
 			leftLimit = Width();
-			rightLimit = Width()+_minmaxSize;
+			rightLimit = Width()+minmaxSize_;
 			hOption = leftPos;
 		}
 		int minTopLimit, minBottomLimit, maxTopLimit, maxBottomLimit;
@@ -1202,9 +1202,9 @@ void GlowLabeledSliderWidget::RepositionMinmax()
 			minBottomLimit = Height();
 			maxTopLimit = 0;
 			maxBottomLimit = Width();
-			minVOption = (_minLabel->Height() <= Width()) ?
+			minVOption = (minLabel_->Height() <= Width()) ?
 				centerPos : bottomPos;
-			maxVOption = (_maxLabel->Height() <= Width()) ?
+			maxVOption = (maxLabel_->Height() <= Width()) ?
 				centerPos : topPos;
 		}
 		else
@@ -1213,14 +1213,14 @@ void GlowLabeledSliderWidget::RepositionMinmax()
 			minBottomLimit = Width();
 			maxTopLimit = Height()-Width();
 			maxBottomLimit = Height();
-			minVOption = (_minLabel->Height() <= Width()) ?
+			minVOption = (minLabel_->Height() <= Width()) ?
 				centerPos : topPos;
-			maxVOption = (_maxLabel->Height() <= Width()) ?
+			maxVOption = (maxLabel_->Height() <= Width()) ?
 				centerPos : bottomPos;
 		}
-		_minLabel->AutoPack(leftLimit, rightLimit, minTopLimit, minBottomLimit,
+		minLabel_->AutoPack(leftLimit, rightLimit, minTopLimit, minBottomLimit,
 			hOption, minVOption);
-		_maxLabel->AutoPack(leftLimit, rightLimit, maxTopLimit, maxBottomLimit,
+		maxLabel_->AutoPack(leftLimit, rightLimit, maxTopLimit, maxBottomLimit,
 			hOption, maxVOption);
 	}
 }

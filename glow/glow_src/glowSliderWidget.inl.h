@@ -106,68 +106,68 @@ inline void GlowSliderWidget::Init(
 
 inline GlowColor GlowSliderWidget::GetStripColor() const
 {
-	return _stripColor;
+	return stripColor_;
 }
 
 
 inline GlowColor GlowSliderWidget::GetIndicatorColor() const
 {
-	return _indicatorColor;
+	return indicatorColor_;
 }
 
 
 inline GlowColor GlowSliderWidget::GetTickMarkColor() const
 {
-	return _tickMarkColor;
+	return tickMarkColor_;
 }
 
 
 inline GlowColor GlowSliderWidget::GetHiliteIndicatorColor() const
 {
-	return _hiliteIndicatorColor;
+	return hiliteIndicatorColor_;
 }
 
 
 inline GlowColor GlowSliderWidget::GetDisableStripColor() const
 {
-	return _disableStripColor;
+	return disableStripColor_;
 }
 
 
 inline GlowColor GlowSliderWidget::GetDisableIndicatorColor() const
 {
-	return _disableIndicatorColor;
+	return disableIndicatorColor_;
 }
 
 
 inline GlowColor GlowSliderWidget::GetDisableTickMarkColor() const
 {
-	return _disableTickMarkColor;
+	return disableTickMarkColor_;
 }
 
 
 inline GlowColor GlowSliderWidget::GetDisableOutlineColor() const
 {
-	return _disableOutlineColor;
+	return disableOutlineColor_;
 }
 
 
 inline GlowColor GlowSliderWidget::GetLightBevelColor() const
 {
-	return _lightBevelColor;
+	return lightBevelColor_;
 }
 
 
 inline GlowColor GlowSliderWidget::GetDarkBevelColor() const
 {
-	return _darkBevelColor;
+	return darkBevelColor_;
 }
 
 
 inline void GlowSliderWidget::SetStripColor(
 	GlowColor c)
 {
-	_stripColor = c;
+	stripColor_ = c;
 	Refresh();
 }
 
@@ -175,7 +175,7 @@ inline void GlowSliderWidget::SetStripColor(
 inline void GlowSliderWidget::SetIndicatorColor(
 	GlowColor c)
 {
-	_indicatorColor = c;
+	indicatorColor_ = c;
 	Refresh();
 }
 
@@ -183,7 +183,7 @@ inline void GlowSliderWidget::SetIndicatorColor(
 inline void GlowSliderWidget::SetTickMarkColor(
 	GlowColor c)
 {
-	_tickMarkColor = c;
+	tickMarkColor_ = c;
 	Refresh();
 }
 
@@ -191,7 +191,7 @@ inline void GlowSliderWidget::SetTickMarkColor(
 inline void GlowSliderWidget::SetHiliteIndicatorColor(
 	GlowColor c)
 {
-	_hiliteIndicatorColor = c;
+	hiliteIndicatorColor_ = c;
 	Refresh();
 }
 
@@ -199,7 +199,7 @@ inline void GlowSliderWidget::SetHiliteIndicatorColor(
 inline void GlowSliderWidget::SetDisableStripColor(
 	GlowColor c)
 {
-	_disableStripColor = c;
+	disableStripColor_ = c;
 	Refresh();
 }
 
@@ -207,7 +207,7 @@ inline void GlowSliderWidget::SetDisableStripColor(
 inline void GlowSliderWidget::SetDisableIndicatorColor(
 	GlowColor c)
 {
-	_disableIndicatorColor = c;
+	disableIndicatorColor_ = c;
 	Refresh();
 }
 
@@ -215,7 +215,7 @@ inline void GlowSliderWidget::SetDisableIndicatorColor(
 inline void GlowSliderWidget::SetDisableTickMarkColor(
 	GlowColor c)
 {
-	_disableTickMarkColor = c;
+	disableTickMarkColor_ = c;
 	Refresh();
 }
 
@@ -223,7 +223,7 @@ inline void GlowSliderWidget::SetDisableTickMarkColor(
 inline void GlowSliderWidget::SetDisableOutlineColor(
 	GlowColor c)
 {
-	_disableOutlineColor = c;
+	disableOutlineColor_ = c;
 	Refresh();
 }
 
@@ -231,7 +231,7 @@ inline void GlowSliderWidget::SetDisableOutlineColor(
 inline void GlowSliderWidget::SetLightBevelColor(
 	GlowColor c)
 {
-	_lightBevelColor = c;
+	lightBevelColor_ = c;
 	Refresh();
 }
 
@@ -239,35 +239,35 @@ inline void GlowSliderWidget::SetLightBevelColor(
 inline void GlowSliderWidget::SetDarkBevelColor(
 	GlowColor c)
 {
-	_darkBevelColor = c;
+	darkBevelColor_ = c;
 	Refresh();
 }
 
 
 inline double GlowSliderWidget::GetValue() const
 {
-	return _value;
+	return value_;
 }
 
 
 inline double GlowSliderWidget::GetMaximum() const
 {
-	return _max;
+	return max_;
 }
 
 
 inline double GlowSliderWidget::GetMinimum() const
 {
-	return _min;
+	return min_;
 }
 
 
 inline void GlowSliderWidget::SetValue(
 	double val)
 {
-	_value = val;
-	if (_value > _max) _value = _max;
-	if (_value < _min) _value = _min;
+	value_ = val;
+	if (value_ > max_) value_ = max_;
+	if (value_ < min_) value_ = min_;
 	Refresh();
 }
 
@@ -275,9 +275,9 @@ inline void GlowSliderWidget::SetValue(
 inline void GlowSliderWidget::SetMaximum(
 	double val)
 {
-	GLOW_DEBUG(val < _min, "max < min in GlowSliderWidget::SetMaximum");
-	_max = val;
-	if (_value > _max) _value = _max;
+	GLOW_DEBUG(val < min_, "max < min in GlowSliderWidget::SetMaximum");
+	max_ = val;
+	if (value_ > max_) value_ = max_;
 	Refresh();
 }
 
@@ -285,95 +285,95 @@ inline void GlowSliderWidget::SetMaximum(
 inline void GlowSliderWidget::SetMinimum(
 	double val)
 {
-	GLOW_DEBUG(_max < val, "min > max in GlowSliderWidget::SetMinimum");
-	_min = val;
-	if (_value < _min) _value = _min;
+	GLOW_DEBUG(max_ < val, "min > max in GlowSliderWidget::SetMinimum");
+	min_ = val;
+	if (value_ < min_) value_ = min_;
 	Refresh();
 }
 
 
 inline int GlowSliderWidget::GetNumTickMarks() const
 {
-	return _numTicks;
+	return numTicks_;
 }
 
 
 inline void GlowSliderWidget::SetNumTickMarks(
 	int numTicks)
 {
-	_numTicks = numTicks;
+	numTicks_ = numTicks;
 	Refresh();
 }
 
 
 inline GlowSliderWidget::Options GlowSliderWidget::GetOptions() const
 {
-	return _type;
+	return type_;
 }
 
 
 inline void GlowSliderWidget::SetOptions(
 	Options options)
 {
-	_type = options;
+	type_ = options;
 	Refresh();
 }
 
 
 inline TSender<const GlowSliderMessage&>& GlowSliderWidget::Notifier()
 {
-	return _sender;
+	return sender_;
 }
 
 
-inline void GlowSliderWidget::_LeftBevelColor()
+inline void GlowSliderWidget::LeftBevelColor_()
 {
-	if ((_type & decreasing) != 0)
+	if ((type_ & decreasing) != 0)
 	{
-		_darkBevelColor.Apply();
+		darkBevelColor_.Apply();
 	}
 	else
 	{
-		_lightBevelColor.Apply();
-	}
-}
-
-
-inline void GlowSliderWidget::_RightBevelColor()
-{
-	if ((_type & decreasing) != 0)
-	{
-		_lightBevelColor.Apply();
-	}
-	else
-	{
-		_darkBevelColor.Apply();
+		lightBevelColor_.Apply();
 	}
 }
 
 
-inline void GlowSliderWidget::_TopBevelColor()
+inline void GlowSliderWidget::RightBevelColor_()
 {
-	if ((_type & ticksOnTop) != 0)
+	if ((type_ & decreasing) != 0)
 	{
-		_darkBevelColor.Apply();
+		lightBevelColor_.Apply();
 	}
 	else
 	{
-		_lightBevelColor.Apply();
+		darkBevelColor_.Apply();
 	}
 }
 
 
-inline void GlowSliderWidget::_BottomBevelColor()
+inline void GlowSliderWidget::TopBevelColor_()
 {
-	if ((_type & ticksOnTop) != 0)
+	if ((type_ & ticksOnTop) != 0)
 	{
-		_lightBevelColor.Apply();
+		darkBevelColor_.Apply();
 	}
 	else
 	{
-		_darkBevelColor.Apply();
+		lightBevelColor_.Apply();
+	}
+}
+
+
+inline void GlowSliderWidget::BottomBevelColor_()
+{
+	if ((type_ & ticksOnTop) != 0)
+	{
+		lightBevelColor_.Apply();
+	}
+	else
+	{
+		darkBevelColor_.Apply();
 	}
 }
 
@@ -423,68 +423,68 @@ inline void GlowLabeledSliderWidget::Init(
 
 inline bool GlowLabeledSliderWidget::HasLabel() const
 {
-	return _label->GetText() != 0;
+	return label_->GetText() != 0;
 }
 
 
 inline GlowColor GlowLabeledSliderWidget::GetLabelTextColor() const
 {
-	return _label->GetTextColor();
+	return label_->GetTextColor();
 }
 
 
 inline void GlowLabeledSliderWidget::SetLabelTextColor(
 	GlowColor c)
 {
-	_label->SetTextColor(c);
+	label_->SetTextColor(c);
 }
 
 
 inline GlowColor GlowLabeledSliderWidget::GetLabelDisableTextColor() const
 {
-	return _label->GetDisableTextColor();
+	return label_->GetDisableTextColor();
 }
 
 
 inline void GlowLabeledSliderWidget::SetLabelDisableTextColor(
 	GlowColor c)
 {
-	_label->SetDisableTextColor(c);
+	label_->SetDisableTextColor(c);
 }
 
 
 inline const char* GlowLabeledSliderWidget::GetLabelTemplate() const
 {
-	return _labelTemplate;
+	return labelTemplate_;
 }
 
 
 inline GlowFont GlowLabeledSliderWidget::GetLabelFont() const
 {
-	return _label->GetFont();
+	return label_->GetFont();
 }
 
 
 inline void GlowLabeledSliderWidget::SetLabelFont(
 	GlowFont font)
 {
-	_label->SetFont(font);
+	label_->SetFont(font);
 	RepositionLabel();
 }
 
 
 inline int GlowLabeledSliderWidget::GetLabelSpacing() const
 {
-	return _labelSpacing;
+	return labelSpacing_;
 }
 
 
 inline void GlowLabeledSliderWidget::SetLabelSpacing(
 	int spacing)
 {
-	if (spacing != _labelSpacing)
+	if (spacing != labelSpacing_)
 	{
-		_labelSpacing = spacing;
+		labelSpacing_ = spacing;
 		RepositionLabel();
 	}
 }
@@ -492,16 +492,16 @@ inline void GlowLabeledSliderWidget::SetLabelSpacing(
 
 inline GlowLabeledSliderWidget::LabelPosition GlowLabeledSliderWidget::GetLabelPosition() const
 {
-	return _labelPosition;
+	return labelPosition_;
 }
 
 
 inline void GlowLabeledSliderWidget::SetLabelPosition(
 	LabelPosition position)
 {
-	if (position != _labelPosition)
+	if (position != labelPosition_)
 	{
-		_labelPosition = position;
+		labelPosition_ = position;
 		RepositionLabel();
 	}
 }
@@ -509,16 +509,16 @@ inline void GlowLabeledSliderWidget::SetLabelPosition(
 
 inline int GlowLabeledSliderWidget::GetLabelWidth() const
 {
-	return _labelWidth;
+	return labelWidth_;
 }
 
 
 inline void GlowLabeledSliderWidget::SetLabelWidth(
 	int width)
 {
-	if (width != _labelWidth)
+	if (width != labelWidth_)
 	{
-		_labelWidth = width;
+		labelWidth_ = width;
 		RepositionLabel();
 	}
 }
@@ -526,16 +526,16 @@ inline void GlowLabeledSliderWidget::SetLabelWidth(
 
 inline int GlowLabeledSliderWidget::GetLabelHeight() const
 {
-	return _labelHeight;
+	return labelHeight_;
 }
 
 
 inline void GlowLabeledSliderWidget::SetLabelHeight(
 	int height)
 {
-	if (height != _labelHeight)
+	if (height != labelHeight_)
 	{
-		_labelHeight = height;
+		labelHeight_ = height;
 		RepositionLabel();
 	}
 }
@@ -543,28 +543,28 @@ inline void GlowLabeledSliderWidget::SetLabelHeight(
 
 inline bool GlowLabeledSliderWidget::HasMinmax() const
 {
-	return _minmaxTemplate != 0;
+	return minmaxTemplate_ != 0;
 }
 
 
 inline const char* GlowLabeledSliderWidget::GetMinmaxTemplate() const
 {
-	return _minmaxTemplate;
+	return minmaxTemplate_;
 }
 
 
 inline GlowFont GlowLabeledSliderWidget::GetMinmaxFont() const
 {
-	return _minLabel->GetFont();
+	return minLabel_->GetFont();
 }
 
 
 inline void GlowLabeledSliderWidget::SetMinmaxFont(
 	GlowFont font)
 {
-	_minLabel->SetFont(font);
-	_maxLabel->SetFont(font);
-	if (_minmaxTemplate != 0)
+	minLabel_->SetFont(font);
+	maxLabel_->SetFont(font);
+	if (minmaxTemplate_ != 0)
 	{
 		RepositionMinmax();
 	}
@@ -573,43 +573,43 @@ inline void GlowLabeledSliderWidget::SetMinmaxFont(
 
 inline GlowColor GlowLabeledSliderWidget::GetMinmaxTextColor() const
 {
-	return _minLabel->GetTextColor();
+	return minLabel_->GetTextColor();
 }
 
 
 inline void GlowLabeledSliderWidget::SetMinmaxTextColor(
 	GlowColor c)
 {
-	_minLabel->SetTextColor(c);
-	_maxLabel->SetTextColor(c);
+	minLabel_->SetTextColor(c);
+	maxLabel_->SetTextColor(c);
 }
 
 
 inline GlowColor GlowLabeledSliderWidget::GetMinmaxDisableTextColor() const
 {
-	return _minLabel->GetDisableTextColor();
+	return minLabel_->GetDisableTextColor();
 }
 
 
 inline void GlowLabeledSliderWidget::SetMinmaxDisableTextColor(
 	GlowColor c)
 {
-	_minLabel->SetDisableTextColor(c);
-	_maxLabel->SetDisableTextColor(c);
+	minLabel_->SetDisableTextColor(c);
+	maxLabel_->SetDisableTextColor(c);
 }
 
 
 inline int GlowLabeledSliderWidget::GetMinmaxSize() const
 {
-	return _minmaxSize;
+	return minmaxSize_;
 }
 
 
 inline void GlowLabeledSliderWidget::SetMinmaxSize(
 	int size)
 {
-	_minmaxSize = size;
-	if (_minmaxTemplate != 0)
+	minmaxSize_ = size;
+	if (minmaxTemplate_ != 0)
 	{
 		RepositionMinmax();
 	}

@@ -222,11 +222,11 @@ class GlowTextFieldWindow :
 	
 	private:
 	
-		TSender<const GlowTextFieldWindowMessage&> _sender;
-		GlowTextFieldWidget* _field;
-		GLOW_STD::vector<GlowPushButtonWidget*> _buttons;
-		GlowWidgetMapToPushButtonFilter* _enterFilter;
-		GlowWidgetMapToPushButtonFilter* _escapeFilter;
+		TSender<const GlowTextFieldWindowMessage&> sender_;
+		GlowTextFieldWidget* field_;
+		GLOW_STD::vector<GlowPushButtonWidget*> buttons_;
+		GlowWidgetMapToPushButtonFilter* enterFilter_;
+		GlowWidgetMapToPushButtonFilter* escapeFilter_;
 };
 
 

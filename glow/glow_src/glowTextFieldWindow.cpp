@@ -162,7 +162,7 @@ void Glow_TextFieldWindowButton::OnHit(
 	Glow::MouseButton mouseButton,
 	Glow::Modifiers modifiers)
 {
-	_wind->OnButtonPressed(_number, _wind->_field->GetTextChars(),
+	_wind->OnButtonPressed(_number, _wind->field_->GetTextChars(),
 		mouseButton, modifiers);
 }
 
@@ -216,15 +216,15 @@ void GlowTextFieldWindow::Init(
 	int buttonsWidth = -params.windowSpacing;
 	while (true)
 	{
-		pbparams.text = GLOW_CSTD::strtok(_buttons.size()==0 ? tempbuf : 0, "\t");
+		pbparams.text = GLOW_CSTD::strtok(buttons_.size()==0 ? tempbuf : 0, "\t");
 		if (pbparams.text == 0) break;
-		_buttons.push_back(new Glow_TextFieldWindowButton(this, pbparams, _buttons.size()));
-		_buttons.back()->AutoReshape();
-		buttonsWidth += _buttons.back()->Width() + params.windowSpacing;
+		buttons_.push_back(new Glow_TextFieldWindowButton(this, pbparams, buttons_.size()));
+		buttons_.back()->AutoReshape();
+		buttonsWidth += buttons_.back()->Width() + params.windowSpacing;
 	}
-	int buttonHeight = _buttons.front()->Height();
+	int buttonHeight = buttons_.front()->Height();
 	delete[] tempbuf;
-	GLOW_DEBUG(_buttons.size()==0, "No buttons specified in GlowTextFieldWindow");
+	GLOW_DEBUG(buttons_.size()==0, "No buttons specified in GlowTextFieldWindow");
 	GLOW_DEBUG(buttonsWidth>800, "Buttons too wide in GlowTextFieldWindow");
 	
 	// Set up label
@@ -250,13 +250,13 @@ void GlowTextFieldWindow::Init(
 	tparams.focusTextColor = params.fieldTextColor;
 	tparams.hiliteBackColor = params.fieldHiliteBackColor;
 	tparams.hiliteTextColor = params.fieldHiliteTextColor;
-	_field = (params.fieldHideCharacter == '\0') ?
+	field_ = (params.fieldHideCharacter == '\0') ?
 		new GlowTextFieldWidget(this, tparams) :
 		new GlowHiddenTextFieldWidget(this, tparams, params.fieldHideCharacter);
-	_field->AutoReshape();
-	GLOW_DEBUG(_field->Width()>800, "Field too wide in GlowTextFieldWindow");
-	GLOW_DEBUG(_field->Height()>100, "Field too tall in GlowTextFieldWindow");
-	_field->GrabKeyboardFocus();
+	field_->AutoReshape();
+	GLOW_DEBUG(field_->Width()>800, "Field too wide in GlowTextFieldWindow");
+	GLOW_DEBUG(field_->Height()>100, "Field too tall in GlowTextFieldWindow");
+	field_->GrabKeyboardFocus();
 	
 	// Determine window width
 	int windowWidth = buttonsWidth + params.windowSpacing*2;
@@ -264,46 +264,46 @@ void GlowTextFieldWindow::Init(
 	{
 		windowWidth = label->Width()+params.windowSpacing*2;
 	}
-	if (_field->Width()+params.windowSpacing*2 > windowWidth)
+	if (field_->Width()+params.windowSpacing*2 > windowWidth)
 	{
-		windowWidth = _field->Width()+params.windowSpacing*2;
+		windowWidth = field_->Width()+params.windowSpacing*2;
 	}
 	
 	// Arrange buttons
 	int xbutton = (windowWidth - buttonsWidth)/2;
-	for (GLOW_STD::vector<GlowPushButtonWidget*>::iterator iter = _buttons.begin();
-		iter != _buttons.end(); ++iter)
+	for (GLOW_STD::vector<GlowPushButtonWidget*>::iterator iter = buttons_.begin();
+		iter != buttons_.end(); ++iter)
 	{
 		(*iter)->Move(xbutton,
-			label->Height()+_field->Height()+params.windowSpacing*3+10);
+			label->Height()+field_->Height()+params.windowSpacing*3+10);
 		xbutton += (*iter)->Width()+params.windowSpacing;
 	}
 	
 	// Size window
-	ForceReshape(windowWidth, label->Height()+buttonHeight+_field->Height()+
+	ForceReshape(windowWidth, label->Height()+buttonHeight+field_->Height()+
 		params.windowSpacing*4+10);
 	
 	if (params.receiver != 0)
 	{
-		_sender.Bind(params.receiver);
+		sender_.Bind(params.receiver);
 	}
 	
 	// Enter and escape filters
-	_enterFilter = new GlowWidgetMapToPushButtonFilter(
-		(params.enterButton<0 || params.enterButton>=int(_buttons.size())) ? 0 : _buttons[params.enterButton],
+	enterFilter_ = new GlowWidgetMapToPushButtonFilter(
+		(params.enterButton<0 || params.enterButton>=int(buttons_.size())) ? 0 : buttons_[params.enterButton],
 		Glow::enterKey, Glow::noModifier);
-	_escapeFilter = new GlowWidgetMapToPushButtonFilter(
-		(params.escapeButton<0 || params.escapeButton>=int(_buttons.size())) ? 0 : _buttons[params.escapeButton],
+	escapeFilter_ = new GlowWidgetMapToPushButtonFilter(
+		(params.escapeButton<0 || params.escapeButton>=int(buttons_.size())) ? 0 : buttons_[params.escapeButton],
 		Glow::escapeKey, Glow::noModifier);
-	RegisterFilter(_enterFilter);
-	RegisterFilter(_escapeFilter);
+	RegisterFilter(enterFilter_);
+	RegisterFilter(escapeFilter_);
 }
 
 
 GlowTextFieldWindow::~GlowTextFieldWindow()
 {
-	delete _enterFilter;
-	delete _escapeFilter;
+	delete enterFilter_;
+	delete escapeFilter_;
 }
 
 
@@ -319,7 +319,7 @@ void GlowTextFieldWindow::OnButtonPressed(
 	message.text = text;
 	message.mouseButton = mouseButton;
 	message.modifiers = modifiers;
-	_sender.Send(message);
+	sender_.Send(message);
 	Close();
 }
 

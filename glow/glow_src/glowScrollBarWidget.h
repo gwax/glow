@@ -260,51 +260,51 @@ class GlowScrollBarWidget :
 	
 	private:
 	
-		TSender<const GlowScrollBarMessage&> _sender;
-		float _posOffset;
-		long _min;
-		long _max;
-		long _topValue;
-		long _span;
-		Glow::MouseButton _button;
-		Glow::Modifiers _modifiers;
-		Part _curPart;
-		bool _innerButton;
-		bool _inside;
-		int _firstDelay;
-		int _secondDelay;
-		int _toggleTimer;
-		float _savePosition;
-		long _pageStep;
-		long _arrowStep;
+		TSender<const GlowScrollBarMessage&> sender_;
+		float posOffset_;
+		long min_;
+		long max_;
+		long topValue_;
+		long span_;
+		Glow::MouseButton button_;
+		Glow::Modifiers modifiers_;
+		Part curPart_;
+		bool innerButton_;
+		bool inside_;
+		int firstDelay_;
+		int secondDelay_;
+		int toggleTimer_;
+		float savePosition_;
+		long pageStep_;
+		long arrowStep_;
 		
-		GlowColor _stripColor;
-		GlowColor _indicatorColor;
-		GlowColor _shadowColor;
-		GlowColor _buttonColor;
-		GlowColor _buttonIconColor;
-		GlowColor _hiliteStripColor;
-		GlowColor _hiliteIndicatorColor;
-		GlowColor _hiliteButtonColor;
-		GlowColor _hiliteButtonIconColor;
-		GlowColor _disableStripColor;
-		GlowColor _disableIndicatorColor;
-		GlowColor _disableButtonColor;
-		GlowColor _disableButtonIconColor;
-		GlowColor _disableOutlineColor;
-		GlowColor _lightBevelColor;
-		GlowColor _darkBevelColor;
+		GlowColor stripColor_;
+		GlowColor indicatorColor_;
+		GlowColor shadowColor_;
+		GlowColor buttonColor_;
+		GlowColor buttonIconColor_;
+		GlowColor hiliteStripColor_;
+		GlowColor hiliteIndicatorColor_;
+		GlowColor hiliteButtonColor_;
+		GlowColor hiliteButtonIconColor_;
+		GlowColor disableStripColor_;
+		GlowColor disableIndicatorColor_;
+		GlowColor disableButtonColor_;
+		GlowColor disableButtonIconColor_;
+		GlowColor disableOutlineColor_;
+		GlowColor lightBevelColor_;
+		GlowColor darkBevelColor_;
 	
 	private:
 	
-		void _DrawArrowButton(
+		void DrawArrowButton_(
 			Part part,
 			float left,
 			float right,
 			float bevelWidth,
 			float bevelHeight,
 			float buttonWidth);
-		void _ComputePartPositions(
+		void ComputePartPositions_(
 			float& pseudoWidth,
 			float& pseudoHeight,
 			int& arrowButtons,
@@ -313,17 +313,17 @@ class GlowScrollBarWidget :
 			float& stripRight,
 			float& indicLeft,
 			float& indicRight);
-		bool _NormalizePosition(
+		bool NormalizePosition_(
 			int x,
 			int y,
 			float& pos);
-		bool _UpdateDragValue(
+		bool UpdateDragValue_(
 			int x,
 			int y);
-		bool _UpdateInsideState(
+		bool UpdateInsideState_(
 			int x,
 			int y);
-		void _HandlePartPeriodical(
+		void HandlePartPeriodical_(
 			bool first);
 	
 	protected:

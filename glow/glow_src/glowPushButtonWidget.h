@@ -219,29 +219,29 @@ class GlowPushButtonWidget :
 	
 	private:
 	
-		bool _state;
-		Behavior _behavior;
-		char* _label;
-		GlowFont _font;
-		int _labelWidth;
-		bool _down;
-		bool _inside;
-		Glow::MouseButton _button;
-		Glow::Modifiers _modifiers;
-		TSender<const GlowPushButtonMessage&> _sender;
+		bool state_;
+		Behavior behavior_;
+		char* label_;
+		GlowFont font_;
+		int labelWidth_;
+		bool down_;
+		bool inside_;
+		Glow::MouseButton button_;
+		Glow::Modifiers modifiers_;
+		TSender<const GlowPushButtonMessage&> sender_;
 		
-		GlowColor _upBoxColor;
-		GlowColor _upTextColor;
-		GlowColor _downBoxColor;
-		GlowColor _downTextColor;
-		GlowColor _hiliteBoxColor;
-		GlowColor _hiliteTextColor;
-		GlowColor _disableUpBoxColor;
-		GlowColor _disableDownBoxColor;
-		GlowColor _disableTextColor;
-		GlowColor _disableOutlineColor;
-		GlowColor _lightBevelColor;
-		GlowColor _darkBevelColor;
+		GlowColor upBoxColor_;
+		GlowColor upTextColor_;
+		GlowColor downBoxColor_;
+		GlowColor downTextColor_;
+		GlowColor hiliteBoxColor_;
+		GlowColor hiliteTextColor_;
+		GlowColor disableUpBoxColor_;
+		GlowColor disableDownBoxColor_;
+		GlowColor disableTextColor_;
+		GlowColor disableOutlineColor_;
+		GlowColor lightBevelColor_;
+		GlowColor darkBevelColor_;
 	
 	protected:
 	
@@ -323,7 +323,7 @@ class GlowDismissPushButtonWidget :
 	
 	private:
 	
-		GlowComponent* _todismiss;
+		GlowComponent* todismiss_;
 };
 
 
@@ -428,9 +428,9 @@ class GlowWidgetMapToPushButtonFilter :
 	
 	private:
 	
-		GlowPushButtonWidget* _widget;
-		Glow::KeyCode _keyCode;
-		Glow::Modifiers _modifiers;
+		GlowPushButtonWidget* widget_;
+		Glow::KeyCode keyCode_;
+		Glow::Modifiers modifiers_;
 };
 
 

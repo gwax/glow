@@ -269,10 +269,11 @@ inline void TSender<T>::Send(
 	T message) const
 {
 	GLOW_STD::list<Receiver_Base*>::const_iterator iter = receivers_.begin();
-	while (iter != receivers_.end())
+	GLOW_STD::list<Receiver_Base*>::const_iterator enditer = receivers_.end();
+	while (iter != enditer)
 	{
 		TReceiver<T>* cur = static_cast<TReceiver<T>*>(*iter);
-		iter++;
+		++iter;
 		cur->OnMessage(message);
 	}
 }
@@ -326,10 +327,11 @@ inline void TSender_Void::Unbind(
 inline void TSender_Void::Send() const
 {
 	GLOW_STD::list<Receiver_Base*>::const_iterator iter = receivers_.begin();
-	while (iter != receivers_.end())
+	GLOW_STD::list<Receiver_Base*>::const_iterator enditer = receivers_.end();
+	while (iter != enditer)
 	{
 		TReceiver_Void* cur = static_cast<TReceiver_Void*>(*iter);
-		iter++;
+		++iter;
 		cur->OnMessage();
 	}
 }
@@ -374,10 +376,11 @@ inline void TSender<void>::Unbind(
 inline void TSender<void>::Send() const
 {
 	GLOW_STD::list<Receiver_Base*>::const_iterator iter = receivers_.begin();
-	while (iter != receivers_.end())
+	GLOW_STD::list<Receiver_Base*>::const_iterator enditer = receivers_.end();
+	while (iter != enditer)
 	{
 		TReceiver<void>* cur = static_cast<TReceiver<void>*>(*iter);
-		iter++;
+		++iter;
 		cur->OnMessage();
 	}
 }

@@ -100,81 +100,81 @@ inline void GlowTextFieldWidget::Init(
 
 inline GlowTextFieldWidget::Style GlowTextFieldWidget::GetStyle() const
 {
-	return _style;
+	return style_;
 }
 
 
 inline void GlowTextFieldWidget::SetStyle(
 	Style style)
 {
-	_style = style;
+	style_ = style;
 	Refresh();
 }
 
 
 inline GlowFont GlowTextFieldWidget::GetFont() const
 {
-	return _font;
+	return font_;
 }
 
 
 inline void GlowTextFieldWidget::SetFont(
 	GlowFont font)
 {
-	_font = font;
+	font_ = font;
 	Refresh();
 }
 
 
 inline int GlowTextFieldWidget::GetBlinkInterval() const
 {
-	return _blinkInterval;
+	return blinkInterval_;
 }
 
 
 inline void GlowTextFieldWidget::SetBlinkInterval(
 	int interval)
 {
-	_blinkInterval = interval;
+	blinkInterval_ = interval;
 }
 
 
 inline int GlowTextFieldWidget::GetAutoScrollInterval() const
 {
-	return _autoScrollInterval;
+	return autoScrollInterval_;
 }
 
 
 inline void GlowTextFieldWidget::SetAutoScrollInterval(
 	int interval)
 {
-	_autoScrollInterval = interval;
+	autoScrollInterval_ = interval;
 }
 
 
 inline const char* GlowTextFieldWidget::GetTextChars() const
 {
-	return _data.c_str();
+	return data_.c_str();
 }
 
 
 inline int GlowTextFieldWidget::GetTextLength() const
 {
-	return _data.length();
+	return data_.length();
 }
 
 
 inline const GLOW_STD::string& GlowTextFieldWidget::GetTextString() const
 {
-	return _data;
+	return data_;
 }
 
 
 inline void GlowTextFieldWidget::SetText(
 	const char* str)
 {
-	_data.assign(str);
-	_data.RevalidateSelection();
+	data_.assign(str);
+	data_.RevalidateSelection();
 	Refresh();
 }
 
@@ -182,33 +182,33 @@ inline void GlowTextFieldWidget::SetText(
 inline void GlowTextFieldWidget::SetText(
 	const GLOW_STD::string& str)
 {
-	_data.assign(str);
-	_data.RevalidateSelection();
+	data_.assign(str);
+	data_.RevalidateSelection();
 	Refresh();
 }
 
 
 inline GLOW_STD::string GlowTextFieldWidget::GetSelectionString() const
 {
-	return _data.SelectedText();
+	return data_.SelectedText();
 }
 
 
 inline int GlowTextFieldWidget::GetSelectionLength() const
 {
-	return _data.SelectionLength();
+	return data_.SelectionLength();
 }
 
 
 inline int GlowTextFieldWidget::GetSelectionStart() const
 {
-	return _data.SelectionStart();
+	return data_.SelectionStart();
 }
 
 
 inline int GlowTextFieldWidget::GetSelectionEnd() const
 {
-	return _data.SelectionEnd();
+	return data_.SelectionEnd();
 }
 
 
@@ -216,7 +216,7 @@ inline void GlowTextFieldWidget::SetSelection(
 	int start,
 	int end)
 {
-	_data.SetSelection(start, end);
+	data_.SetSelection(start, end);
 	Refresh();
 }
 
@@ -224,7 +224,7 @@ inline void GlowTextFieldWidget::SetSelection(
 inline void GlowTextFieldWidget::SetSelection(
 	int pos)
 {
-	_data.SetSelection(pos);
+	data_.SetSelection(pos);
 	Refresh();
 }
 
@@ -232,7 +232,7 @@ inline void GlowTextFieldWidget::SetSelection(
 inline void GlowTextFieldWidget::ReplaceSelectionWith(
 	const char* str)
 {
-	_data.ReplaceSelectionWith(str);
+	data_.ReplaceSelectionWith(str);
 	Refresh();
 }
 
@@ -240,99 +240,99 @@ inline void GlowTextFieldWidget::ReplaceSelectionWith(
 inline void GlowTextFieldWidget::ReplaceSelectionWith(
 	const GLOW_STD::string& str)
 {
-	_data.ReplaceSelectionWith(str.c_str());
+	data_.ReplaceSelectionWith(str.c_str());
 	Refresh();
 }
 
 
 inline GlowColor GlowTextFieldWidget::GetBackColor() const
 {
-	return _backColor;
+	return backColor_;
 }
 
 
 inline GlowColor GlowTextFieldWidget::GetCaretColor() const
 {
-	return _caretColor;
+	return caretColor_;
 }
 
 
 inline GlowColor GlowTextFieldWidget::GetTextColor() const
 {
-	return _textColor;
+	return textColor_;
 }
 
 
 inline GlowColor GlowTextFieldWidget::GetFocusBackColor() const
 {
-	return _focusBackColor;
+	return focusBackColor_;
 }
 
 
 inline GlowColor GlowTextFieldWidget::GetFocusTextColor() const
 {
-	return _focusTextColor;
+	return focusTextColor_;
 }
 
 
 inline GlowColor GlowTextFieldWidget::GetFocusCaretColor() const
 {
-	return _focusCaretColor;
+	return focusCaretColor_;
 }
 
 
 inline GlowColor GlowTextFieldWidget::GetHiliteBackColor() const
 {
-	return _hiliteBackColor;
+	return hiliteBackColor_;
 }
 
 
 inline GlowColor GlowTextFieldWidget::GetHiliteTextColor() const
 {
-	return _hiliteTextColor;
+	return hiliteTextColor_;
 }
 
 
 inline GlowColor GlowTextFieldWidget::GetDisableBackColor() const
 {
-	return _disableBackColor;
+	return disableBackColor_;
 }
 
 
 inline GlowColor GlowTextFieldWidget::GetDisableTextColor() const
 {
-	return _disableTextColor;
+	return disableTextColor_;
 }
 
 
 inline GlowColor GlowTextFieldWidget::GetDisableCaretColor() const
 {
-	return _disableCaretColor;
+	return disableCaretColor_;
 }
 
 
 inline GlowColor GlowTextFieldWidget::GetDisableOutlineColor() const
 {
-	return _disableOutlineColor;
+	return disableOutlineColor_;
 }
 
 
 inline GlowColor GlowTextFieldWidget::GetLightBevelColor() const
 {
-	return _lightBevelColor;
+	return lightBevelColor_;
 }
 
 
 inline GlowColor GlowTextFieldWidget::GetDarkBevelColor() const
 {
-	return _darkBevelColor;
+	return darkBevelColor_;
 }
 
 
 inline void GlowTextFieldWidget::SetBackColor(
 	GlowColor c)
 {
-	_backColor = c;
+	backColor_ = c;
 	Refresh();
 }
 
@@ -340,7 +340,7 @@ inline void GlowTextFieldWidget::SetBackColor(
 inline void GlowTextFieldWidget::SetCaretColor(
 	GlowColor c)
 {
-	_caretColor = c;
+	caretColor_ = c;
 	Refresh();
 }
 
@@ -348,7 +348,7 @@ inline void GlowTextFieldWidget::SetCaretColor(
 inline void GlowTextFieldWidget::SetTextColor(
 	GlowColor c)
 {
-	_textColor = c;
+	textColor_ = c;
 	Refresh();
 }
 
@@ -356,7 +356,7 @@ inline void GlowTextFieldWidget::SetTextColor(
 inline void GlowTextFieldWidget::SetFocusBackColor(
 	GlowColor c)
 {
-	_focusBackColor = c;
+	focusBackColor_ = c;
 	Refresh();
 }
 
@@ -364,7 +364,7 @@ inline void GlowTextFieldWidget::SetFocusBackColor(
 inline void GlowTextFieldWidget::SetFocusTextColor(
 	GlowColor c)
 {
-	_focusTextColor = c;
+	focusTextColor_ = c;
 	Refresh();
 }
 
@@ -372,7 +372,7 @@ inline void GlowTextFieldWidget::SetFocusTextColor(
 inline void GlowTextFieldWidget::SetFocusCaretColor(
 	GlowColor c)
 {
-	_focusCaretColor = c;
+	focusCaretColor_ = c;
 	Refresh();
 }
 
@@ -380,7 +380,7 @@ inline void GlowTextFieldWidget::SetFocusCaretColor(
 inline void GlowTextFieldWidget::SetHiliteBackColor(
 	GlowColor c)
 {
-	_hiliteBackColor = c;
+	hiliteBackColor_ = c;
 	Refresh();
 }
 
@@ -388,7 +388,7 @@ inline void GlowTextFieldWidget::SetHiliteBackColor(
 inline void GlowTextFieldWidget::SetHiliteTextColor(
 	GlowColor c)
 {
-	_hiliteTextColor = c;
+	hiliteTextColor_ = c;
 	Refresh();
 }
 
@@ -396,7 +396,7 @@ inline void GlowTextFieldWidget::SetHiliteTextColor(
 inline void GlowTextFieldWidget::SetDisableBackColor(
 	GlowColor c)
 {
-	_disableBackColor = c;
+	disableBackColor_ = c;
 	Refresh();
 }
 
@@ -404,7 +404,7 @@ inline void GlowTextFieldWidget::SetDisableBackColor(
 inline void GlowTextFieldWidget::SetDisableTextColor(
 	GlowColor c)
 {
-	_disableTextColor = c;
+	disableTextColor_ = c;
 	Refresh();
 }
 
@@ -412,7 +412,7 @@ inline void GlowTextFieldWidget::SetDisableTextColor(
 inline void GlowTextFieldWidget::SetDisableCaretColor(
 	GlowColor c)
 {
-	_disableCaretColor = c;
+	disableCaretColor_ = c;
 	Refresh();
 }
 
@@ -420,7 +420,7 @@ inline void GlowTextFieldWidget::SetDisableCaretColor(
 inline void GlowTextFieldWidget::SetDisableOutlineColor(
 	GlowColor c)
 {
-	_disableOutlineColor = c;
+	disableOutlineColor_ = c;
 	Refresh();
 }
 
@@ -428,7 +428,7 @@ inline void GlowTextFieldWidget::SetDisableOutlineColor(
 inline void GlowTextFieldWidget::SetLightBevelColor(
 	GlowColor c)
 {
-	_lightBevelColor = c;
+	lightBevelColor_ = c;
 	Refresh();
 }
 
@@ -436,7 +436,7 @@ inline void GlowTextFieldWidget::SetLightBevelColor(
 inline void GlowTextFieldWidget::SetDarkBevelColor(
 	GlowColor c)
 {
-	_darkBevelColor = c;
+	darkBevelColor_ = c;
 	Refresh();
 }
 
@@ -450,7 +450,7 @@ inline void GlowTextFieldWidget::SetDarkBevelColor(
 inline void Glow_TextField_BlinkTask::Init(
 	GlowTextFieldWidget* field)
 {
-	_field = field;
+	field_ = field;
 }
 
 
@@ -503,22 +503,22 @@ inline void GlowHiddenTextFieldWidget::Init(
 
 inline const char* GlowHiddenTextFieldWidget::GetTextChars() const
 {
-	return _hiddenData.c_str();
+	return hiddenData_.c_str();
 }
 
 
 inline const GLOW_STD::string& GlowHiddenTextFieldWidget::GetTextString() const
 {
-	return _hiddenData;
+	return hiddenData_;
 }
 
 
 inline void GlowHiddenTextFieldWidget::SetText(
 	const char* str)
 {
-	_hiddenData.assign(str);
-	_data.assign(_hiddenData.size(), _hideCharacter);
-	_data.RevalidateSelection();
+	hiddenData_.assign(str);
+	data_.assign(hiddenData_.size(), hideCharacter_);
+	data_.RevalidateSelection();
 	Refresh();
 }
 
@@ -526,23 +526,23 @@ inline void GlowHiddenTextFieldWidget::SetText(
 inline void GlowHiddenTextFieldWidget::SetText(
 	const GLOW_STD::string& str)
 {
-	_hiddenData.assign(str);
-	_data.assign(_hiddenData.size(), _hideCharacter);
-	_data.RevalidateSelection();
+	hiddenData_.assign(str);
+	data_.assign(hiddenData_.size(), hideCharacter_);
+	data_.RevalidateSelection();
 	Refresh();
 }
 
 
 inline GLOW_STD::string GlowHiddenTextFieldWidget::GetSelectionString() const
 {
-	return _hiddenData.substr(_data.SelectionStart(),
-		_data.SelectionEnd()-_data.SelectionStart());
+	return hiddenData_.substr(data_.SelectionStart(),
+		data_.SelectionEnd()-data_.SelectionStart());
 }
 
 
 inline char GlowHiddenTextFieldWidget::GetHideCharacter() const
 {
-	return _hideCharacter;
+	return hideCharacter_;
 }
 
 

@@ -100,34 +100,34 @@ inline void GlowSeparatorWidget::Init(
 
 inline GlowSeparatorWidget::Style GlowSeparatorWidget::GetStyle() const
 {
-	return _style;
+	return style_;
 }
 
 
 inline void GlowSeparatorWidget::SetStyle(
 	Style style)
 {
-	_style = style;
+	style_ = style;
 	Refresh();
 }
 
 
 inline GlowColor GlowSeparatorWidget::GetLightBevelColor() const
 {
-	return _lightBevelColor;
+	return lightBevelColor_;
 }
 
 
 inline GlowColor GlowSeparatorWidget::GetDarkBevelColor() const
 {
-	return _darkBevelColor;
+	return darkBevelColor_;
 }
 
 
 inline void GlowSeparatorWidget::SetLightBevelColor(
 	GlowColor c)
 {
-	_lightBevelColor = c;
+	lightBevelColor_ = c;
 	Refresh();
 }
 
@@ -135,7 +135,7 @@ inline void GlowSeparatorWidget::SetLightBevelColor(
 inline void GlowSeparatorWidget::SetDarkBevelColor(
 	GlowColor c)
 {
-	_darkBevelColor = c;
+	darkBevelColor_ = c;
 	Refresh();
 }
 

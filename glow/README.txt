@@ -112,8 +112,11 @@ RELEASE NOTES
       to GLOW_INTERNAL_MINMAXDEFINED.
 
       Private class members now named with a trailing underscore rather
-      than a leading underscore, in conformance to current C++ style
+      than a leading underscore, to conform to current C++ style
       recommendations.
+
+      A bunch of template-related optimizations (e.g. preincrementing
+      iterators, eliminating temporaries) done.
 
 
     To-do list
@@ -121,7 +124,21 @@ RELEASE NOTES
 
       Support for autoconfig
 
-      Support for GameGLUT features
+      Support for keyboard-up events (GameGLUT)
+
+      Support for game mode (GameGLUT)
+
+      Support for joystick callback (GameGLUT)
+
+      Support for warping cursor (GLUT 3.3)
+
+      GlowGeneralButtonWidget
+
+      GlowImagePushButtonWidget
+
+      GlowGeneralListWidget
+
+      GlowTextListWidget
 
 
     Known issues
@@ -135,10 +152,10 @@ RELEASE NOTES
       Under certain conditions, GLUT can lose track of some of its
       windows. This is most commonly manifested as windows or subwindows
       which unexpectedly stop redrawing. I'm fairly certain this is due
-      to a bug in GLUT, and I'm in contact with Mark Kilgard concerning
-      it. There is no known complete workaround short of applying a fix
-      to GLUT and recompiling it, but GLOW now provides an optional
-      partial workaround that can be activated by defining the symbol
+      to a bug in GLUT, and I've contacted Mark Kilgard concerning it.
+      There is no known complete workaround short of applying a fix to
+      GLUT and recompiling it, but GLOW now provides an optional partial
+      workaround that can be activated by defining the symbol
       GLOW_OPTION_GLUTREDISPLAYFIX.
 
       Because of the continuing incomplete state of GLUT in the Mac OS

@@ -135,27 +135,27 @@ void GlowRadioButtonWidget::Init(
 	GLOW_DEBUGSCOPE("GlowRadioButtonWidget::Init");
 	
 	GlowWidget::Init(parent->Root(), parent, params);
-	_group = parent;
-	_label = new char[GLOW_CSTD::strlen(params.text)+1];
-	GLOW_CSTD::strcpy(_label, params.text);
-	_font = params.font;
-	_labelWidth = _font.StringWidth(_label);
-	_spacing = params.spacing;
-	_down = false;
-	_inside = false;
-	_boxColor = params.boxColor;
-	_textColor = params.textColor;
-	_spotColor = params.spotColor;
-	_hiliteBoxColor = params.hiliteBoxColor;
-	_hiliteTextColor = params.hiliteTextColor;
-	_hiliteSpotColor = params.hiliteSpotColor;
-	_disableBoxColor = params.disableBoxColor;
-	_disableTextColor = params.disableTextColor;
-	_disableSpotColor = params.disableSpotColor;
-	_disableOutlineColor = params.disableOutlineColor;
-	_lightBevelColor = params.lightBevelColor;
-	_darkBevelColor = params.darkBevelColor;
-	_state = _group->_Register(this);
+	group_ = parent;
+	label_ = new char[GLOW_CSTD::strlen(params.text)+1];
+	GLOW_CSTD::strcpy(label_, params.text);
+	font_ = params.font;
+	labelWidth_ = font_.StringWidth(label_);
+	spacing_ = params.spacing;
+	down_ = false;
+	inside_ = false;
+	boxColor_ = params.boxColor;
+	textColor_ = params.textColor;
+	spotColor_ = params.spotColor;
+	hiliteBoxColor_ = params.hiliteBoxColor;
+	hiliteTextColor_ = params.hiliteTextColor;
+	hiliteSpotColor_ = params.hiliteSpotColor;
+	disableBoxColor_ = params.disableBoxColor;
+	disableTextColor_ = params.disableTextColor;
+	disableSpotColor_ = params.disableSpotColor;
+	disableOutlineColor_ = params.disableOutlineColor;
+	lightBevelColor_ = params.lightBevelColor;
+	darkBevelColor_ = params.darkBevelColor;
+	state_ = group_->Register_(this);
 	
 	RegisterMouseEvents();
 }
@@ -165,8 +165,8 @@ GlowRadioButtonWidget::~GlowRadioButtonWidget()
 {
 	GLOW_DEBUGSCOPE("GlowRadioButtonWidget::~GlowRadioButtonWidget");
 	
-	_group->_UnRegister(this);
-	delete[] _label;
+	group_->UnRegister_(this);
+	delete[] label_;
 }
 
 
@@ -175,10 +175,10 @@ void GlowRadioButtonWidget::SetText(
 {
 	GLOW_DEBUGSCOPE("GlowRadioButtonWidget::SetText");
 	
-	delete[] _label;
-	_label = new char[GLOW_CSTD::strlen(text)+1];
-	GLOW_CSTD::strcpy(_label, text);
-	_labelWidth = _font.StringWidth(_label);
+	delete[] label_;
+	label_ = new char[GLOW_CSTD::strlen(text)+1];
+	GLOW_CSTD::strcpy(label_, text);
+	labelWidth_ = font_.StringWidth(label_);
 	Refresh();
 }
 
@@ -196,7 +196,7 @@ GlowWidget::AutoPackError GlowRadioButtonWidget::OnAutoPack(
 	GLOW_DEBUGSCOPE("GlowRadioButtonWidget::OnAutoPack");
 	
 	int vnew = Height();
-	int preferred = _font.Leading() + 1;
+	int preferred = font_.Leading() + 1;
 	if (vSize != unspecifiedSize && vSize < preferred)
 	{
 		return vAutoPackError;
@@ -211,7 +211,7 @@ GlowWidget::AutoPackError GlowRadioButtonWidget::OnAutoPack(
 	}
 	
 	int hnew = Width();
-	preferred = _labelWidth+_spacing+vnew+1;
+	preferred = labelWidth_+spacing_+vnew+1;
 	if (hSize != unspecifiedSize && hSize < preferred)
 	{
 		return hAutoPackError;
@@ -233,7 +233,7 @@ GlowWidget::AutoPackError GlowRadioButtonWidget::OnAutoPack(
 
 void GlowRadioButtonWidget::CropWidth()
 {
-	int width = _labelWidth + _spacing + Height() + 1;
+	int width = labelWidth_ + spacing_ + Height() + 1;
 	if (width < Width())
 	{
 		Reshape(width, Height());
@@ -254,31 +254,31 @@ void GlowRadioButtonWidget::OnWidgetPaint()
 	// Draw box
 	if (IsActive())
 	{
-		if (_down && _inside)
+		if (down_ && inside_)
 		{
-			_hiliteBoxColor.Apply();
+			hiliteBoxColor_.Apply();
 		}
 		else
 		{
-			_boxColor.Apply();
+			boxColor_.Apply();
 		}
 	}
 	else
 	{
-		_disableBoxColor.Apply();
+		disableBoxColor_.Apply();
 	}
 	::glRectf(-1.0f, -1.0f, boxRight, 1.0f);
 	
 	// Draw bevels
 	if (IsActive())
 	{
-		if (_down && _inside)
+		if (down_ && inside_)
 		{
-			_darkBevelColor.Apply();
+			darkBevelColor_.Apply();
 		}
 		else
 		{
-			_lightBevelColor.Apply();
+			lightBevelColor_.Apply();
 		}
 		::glBegin(GL_QUAD_STRIP);
 		::glVertex2f(-1.0f, -1.0f);
@@ -288,13 +288,13 @@ void GlowRadioButtonWidget::OnWidgetPaint()
 		::glVertex2f(boxRight, 1.0f);
 		::glVertex2f(boxRight-bevelWidth, 1.0f-bevelHeight);
 		::glEnd();
-		if (_down && _inside)
+		if (down_ && inside_)
 		{
-			_lightBevelColor.Apply();
+			lightBevelColor_.Apply();
 		}
 		else
 		{
-			_darkBevelColor.Apply();
+			darkBevelColor_.Apply();
 		}
 		::glBegin(GL_QUAD_STRIP);
 		::glVertex2f(-1.0f, -1.0f);
@@ -307,7 +307,7 @@ void GlowRadioButtonWidget::OnWidgetPaint()
 	}
 	else
 	{
-		_disableOutlineColor.Apply();
+		disableOutlineColor_.Apply();
 		::glBegin(GL_LINE_LOOP);
 		::glVertex2f(-1.0f, -1.0f);
 		::glVertex2f(-1.0f, 1.0f-etchHeight);
@@ -317,22 +317,22 @@ void GlowRadioButtonWidget::OnWidgetPaint()
 	}
 	
 	// Draw mark
-	if (_state)
+	if (state_)
 	{
 		if (IsActive())
 		{
-			if (_down && _inside)
+			if (down_ && inside_)
 			{
-				_hiliteSpotColor.Apply();
+				hiliteSpotColor_.Apply();
 			}
 			else
 			{
-				_spotColor.Apply();
+				spotColor_.Apply();
 			}
 		}
 		else
 		{
-			_disableSpotColor.Apply();
+			disableSpotColor_.Apply();
 		}
 		float spotInset = float(Height())/float(Width())*0.5f;
 		::glRectf(-1.0f+spotInset, -0.5f, boxRight-spotInset, 0.5f);
@@ -341,25 +341,25 @@ void GlowRadioButtonWidget::OnWidgetPaint()
 	// Text label
 	if (IsActive())
 	{
-		if (_down && _inside)
+		if (down_ && inside_)
 		{
-			_hiliteTextColor.Apply();
+			hiliteTextColor_.Apply();
 		}
 		else
 		{
-			_textColor.Apply();
+			textColor_.Apply();
 		}
 	}
 	else
 	{
-		_disableTextColor.Apply();
+		disableTextColor_.Apply();
 	}
-	::glRasterPos2f(boxRight+float(_spacing*2)/float(Width()),
-		float(_font.Leading()-_font.BaselinePos()*2)/float(Height()));
-	int labellen = GLOW_CSTD::strlen(_label);
+	::glRasterPos2f(boxRight+float(spacing_*2)/float(Width()),
+		float(font_.Leading()-font_.BaselinePos()*2)/float(Height()));
+	int labellen = GLOW_CSTD::strlen(label_);
 	for (int i=0; i<labellen; i++)
 	{
-		::glutBitmapCharacter(_font, _label[i]);
+		::glutBitmapCharacter(font_, label_[i]);
 	}
 }
 
@@ -372,10 +372,10 @@ void GlowRadioButtonWidget::OnWidgetMouseDown(
 {
 	GLOW_DEBUGSCOPE("GlowRadioButtonWidget::OnWidgetMouseDown");
 	
-	_down = true;
-	_inside = true;
-	_button = button;
-	_modifiers = modifiers;
+	down_ = true;
+	inside_ = true;
+	button_ = button;
+	modifiers_ = modifiers;
 	Refresh();
 }
 
@@ -388,13 +388,13 @@ void GlowRadioButtonWidget::OnWidgetMouseUp(
 {
 	GLOW_DEBUGSCOPE("GlowRadioButtonWidget::OnWidgetMouseUp");
 	
-	if (_down)
+	if (down_)
 	{
-		_down = false;
+		down_ = false;
 		Refresh();
-		if (_inside)
+		if (inside_)
 		{
-			_group->OnHit(this, _button, _modifiers);
+			group_->OnHit(this, button_, modifiers_);
 		}
 	}
 }
@@ -407,11 +407,11 @@ void GlowRadioButtonWidget::OnWidgetMouseDrag(
 	GLOW_DEBUGSCOPE("GlowRadioButtonWidget::OnWidgetMouseDrag");
 	
 	bool inside = (x>=0 && y>=0 && x<=Width() && y<=Height());
-	if (inside == !_inside)
+	if (inside == !inside_)
 	{
 		Refresh();
 	}
-	_inside = inside;
+	inside_ = inside;
 }
 
 
@@ -429,10 +429,10 @@ void GlowRadioGroupWidget::Init(
 	GLOW_DEBUGSCOPE("GlowRadioGroupWidget::Init");
 	
 	GlowPanelWidget::Init(root, parent, params);
-	_state = 0;
+	state_ = 0;
 	if (params.receiver != 0)
 	{
-		_sender.Bind(params.receiver);
+		sender_.Bind(params.receiver);
 	}
 }
 
@@ -444,32 +444,32 @@ void GlowRadioGroupWidget::OnHit(
 {
 	GLOW_DEBUGSCOPE("GlowRadioGroupWidget::OnHit");
 	
-	if (widget != _state)
+	if (widget != state_)
 	{
 		GlowRadioButtonMessage message;
 		message.groupWidget = this;
 		message.buttonWidget = widget;
-		message.oldButtonWidget = _state;
+		message.oldButtonWidget = state_;
 		message.mouseButton = mouseButton;
 		message.modifiers = modifiers;
-		_state = widget;
+		state_ = widget;
 		message.oldButtonWidget->SetState(false);
 		message.buttonWidget->SetState(true);
-		_sender.Send(message);
+		sender_.Send(message);
 	}
 }
 
 
-void GlowRadioGroupWidget::_UnRegister(
+void GlowRadioGroupWidget::UnRegister_(
 	GlowRadioButtonWidget* button)
 {
-	if (_state == button)
+	if (state_ == button)
 	{
 		for (GlowComponent* child = FirstChild(); true; child = child->Next())
 		{
 			if (child == 0)
 			{
-				_state = 0;
+				state_ = 0;
 				break;
 			}
 			if (child != button)
@@ -478,8 +478,8 @@ void GlowRadioGroupWidget::_UnRegister(
 					dynamic_cast<GlowRadioButtonWidget*>(child);
 				if (newbutton != 0)
 				{
-					_state = newbutton;
-					_state->SetState(true);
+					state_ = newbutton;
+					state_->SetState(true);
 					break;
 				}
 			}

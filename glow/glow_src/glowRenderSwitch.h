@@ -104,7 +104,7 @@ class GlowRenderSwitch :
 	
 	private:
 	
-		bool _enabled;
+		bool enabled_;
 	
 	protected:
 	

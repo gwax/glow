@@ -72,7 +72,7 @@ GLOW_NAMESPACE_BEGIN
 ===============================================================================
 */
 
-GLOW_STD::map<GlowWidget*, Glow_OldWidgetState> GlowWidget::_notifyList;
+GLOW_STD::map<GlowWidget*, Glow_OldWidgetState> GlowWidget::notifyList_;
 
 
 /*
@@ -153,7 +153,7 @@ void GlowWidget::Init(
 	
 	if (Glow::widgetNotifier_ == 0)
 	{
-		Glow::widgetNotifier_ = GlowWidget::_ExecuteNotify;
+		Glow::widgetNotifier_ = GlowWidget::ExecuteNotify_;
 	}
 	
 	if (parent == 0)
@@ -164,25 +164,25 @@ void GlowWidget::Init(
 	{
 		GlowComponent::Init(parent);
 	}
-	_refcon = params.refcon;
-	_xpos = params.x;
-	_ypos = params.y;
-	_width = params.width;
-	_height = params.height;
-	_clipping = params.clipping;
-	_parentWidget = parent;
-	_root = root;
-	_receivingMouse = false;
-	_receivingKeyboard = false;
-	_hasFocus = false;
-	_refreshEnabled = true;
+	refcon_ = params.refcon;
+	xpos_ = params.x;
+	ypos_ = params.y;
+	width_ = params.width;
+	height_ = params.height;
+	clipping_ = params.clipping;
+	parentWidget_ = parent;
+	root_ = root;
+	receivingMouse_ = false;
+	receivingKeyboard_ = false;
+	hasFocus_ = false;
+	refreshEnabled_ = true;
 	if (parent == 0 || parent->IsVisible())
 	{
-		_visibility = 1;
+		visibility_ = 1;
 	}
 	else
 	{
-		_visibility = 2;
+		visibility_ = 2;
 	}
 	Refresh();
 }
@@ -197,25 +197,25 @@ GlowWidget::~GlowWidget()
 	Refresh();
 	
 	GLOW_STD::map<GlowWidget*, Glow_OldWidgetState>::iterator iter =
-		_notifyList.find(this);
-	if (iter != _notifyList.end())
+		notifyList_.find(this);
+	if (iter != notifyList_.end())
 	{
-		_notifyList.erase(iter);
+		notifyList_.erase(iter);
 	}
 }
 
 
 int GlowWidget::RootPositionX() const
 {
-	return _parentWidget == 0 ?
-		_xpos : _parentWidget->RootPositionX() + _xpos;
+	return parentWidget_ == 0 ?
+		xpos_ : parentWidget_->RootPositionX() + xpos_;
 }
 
 
 int GlowWidget::RootPositionY() const
 {
-	return _parentWidget == 0 ?
-		_ypos : _parentWidget->RootPositionY() + _ypos;
+	return parentWidget_ == 0 ?
+		ypos_ : parentWidget_->RootPositionY() + ypos_;
 }
 
 
@@ -376,15 +376,15 @@ void GlowWidget::OnActivate()
 {
 	GLOW_DEBUGSCOPE("GlowWidget::OnActivate");
 	
-	if (_visibility == 1)
+	if (visibility_ == 1)
 	{
-		if (_receivingMouse)
+		if (receivingMouse_)
 		{
-			_root->_RegisterMouseWidget(this);
+			root_->RegisterMouseWidget_(this);
 		}
-		if (_receivingKeyboard)
+		if (receivingKeyboard_)
 		{
-			_root->_RegisterKeyboardWidget(this);
+			root_->RegisterKeyboardWidget_(this);
 		}
 		Refresh();
 	}
@@ -396,15 +396,15 @@ void GlowWidget::OnDeactivate()
 {
 	GLOW_DEBUGSCOPE("GlowWidget::OnDeactivate");
 	
-	if (_visibility == 1)
+	if (visibility_ == 1)
 	{
-		if (_receivingMouse)
+		if (receivingMouse_)
 		{
-			_root->_UnregisterMouseWidget(this);
+			root_->UnregisterMouseWidget_(this);
 		}
-		if (_receivingKeyboard)
+		if (receivingKeyboard_)
 		{
-			_root->_UnregisterKeyboardWidget(this);
+			root_->UnregisterKeyboardWidget_(this);
 		}
 		Refresh();
 	}
@@ -416,26 +416,26 @@ bool GlowWidget::OnBeginPaint()
 {
 	GLOW_DEBUGSCOPE("GlowWidget::OnBeginPaint");
 	
-	if (_visibility != 1)
+	if (visibility_ != 1)
 	{
 		return false;
 	}
 	::glViewport(
-		RootPositionX(), _root->Subwindow()->Height()-RootPositionY()-_height,
-		_width, _height);
+		RootPositionX(), root_->Subwindow()->Height()-RootPositionY()-height_,
+		width_, height_);
 	::glMatrixMode(GL_MODELVIEW);
 	::glLoadIdentity();
-	if (_clipping)
+	if (clipping_)
 	{
-		::glGetIntegerv(GL_SCISSOR_BOX, _oldScissor);
+		::glGetIntegerv(GL_SCISSOR_BOX, oldScissor_);
 		int x = RootPositionX();
-		if (x < _oldScissor[0]) x = _oldScissor[0];
-		int y = _root->Subwindow()->Height()-Height()-RootPositionY();
-		if (y < _oldScissor[1]) y = _oldScissor[1];
+		if (x < oldScissor_[0]) x = oldScissor_[0];
+		int y = root_->Subwindow()->Height()-Height()-RootPositionY();
+		if (y < oldScissor_[1]) y = oldScissor_[1];
 		int w = Width();
-		if (x+w>_oldScissor[0]+_oldScissor[2]) w = _oldScissor[0]+_oldScissor[2]-x;
+		if (x+w>oldScissor_[0]+oldScissor_[2]) w = oldScissor_[0]+oldScissor_[2]-x;
 		int h = Height();
-		if (y+h>_oldScissor[1]+_oldScissor[3]) h = _oldScissor[1]+_oldScissor[3]-y;
+		if (y+h>oldScissor_[1]+oldScissor_[3]) h = oldScissor_[1]+oldScissor_[3]-y;
 		::glScissor(x, y, w, h);
 	}
 	OnWidgetPaint();
@@ -447,69 +447,69 @@ void GlowWidget::OnEndPaint()
 {
 	GLOW_DEBUGSCOPE("GlowWidget::OnEndPaint");
 	
-	if (_clipping && _visibility == 1)
+	if (clipping_ && visibility_ == 1)
 	{
-		::glScissor(_oldScissor[0], _oldScissor[1], _oldScissor[2], _oldScissor[3]);
+		::glScissor(oldScissor_[0], oldScissor_[1], oldScissor_[2], oldScissor_[3]);
 	}
 }
 
 
-void GlowWidget::_ExecuteNotify()
+void GlowWidget::ExecuteNotify_()
 {
-	GLOW_DEBUGSCOPE("GlowWidget::_ExecuteNotify");
+	GLOW_DEBUGSCOPE("GlowWidget::ExecuteNotify_");
 	
 	for (GLOW_STD::map<GlowWidget*, Glow_OldWidgetState>::iterator iter =
-		_notifyList.begin(); iter != _notifyList.end(); ++iter)
+		notifyList_.begin(); iter != notifyList_.end(); ++iter)
 	{
-		(*iter).first->_NotifyOne((*iter).second);
+		(*iter).first->NotifyOne_((*iter).second);
 	}
-	_notifyList.clear();
+	notifyList_.clear();
 }
 
 
-void GlowWidget::_BroadcastNotifyList()
+void GlowWidget::BroadcastNotifyList_()
 {
-	GLOW_DEBUGSCOPE("GlowWidget::_BroadcastNotifyList");
+	GLOW_DEBUGSCOPE("GlowWidget::BroadcastNotifyList_");
 	
-	_AddToNotifyList();
+	AddToNotifyList_();
 	for (GlowComponent* child = FirstChild(); child != 0; child = child->Next())
 	{
 		GlowWidget* childWidget = dynamic_cast<GlowWidget*>(child);
 		if (childWidget != 0)
 		{
-			childWidget->_BroadcastNotifyList();
+			childWidget->BroadcastNotifyList_();
 		}
 	}
 }
 
 
-void GlowWidget::_AddToNotifyList()
+void GlowWidget::AddToNotifyList_()
 {
-	GLOW_DEBUGSCOPE("GlowWidget::_AddToNotifyList");
+	GLOW_DEBUGSCOPE("GlowWidget::AddToNotifyList_");
 	
 	GLOW_STD::map<GlowWidget*, Glow_OldWidgetState>::iterator iter =
-		_notifyList.find(this);
-	if (iter == _notifyList.end())
+		notifyList_.find(this);
+	if (iter == notifyList_.end())
 	{
-		_notifyList.insert(
+		notifyList_.insert(
 			GLOW_STD::pair<GlowWidget* const, Glow_OldWidgetState>(this,
-				Glow_OldWidgetState(_visibility==1, _hasFocus, _width, _height,
+				Glow_OldWidgetState(visibility_==1, hasFocus_, width_, height_,
 					RootPositionX(), RootPositionY())));
 	}
 }
 
 
-void GlowWidget::_NotifyOne(
+void GlowWidget::NotifyOne_(
 	const Glow_OldWidgetState& oldState)
 {
-	GLOW_DEBUGSCOPE("GlowWidget::_NotifyOne");
+	GLOW_DEBUGSCOPE("GlowWidget::NotifyOne_");
 	
 	if (!oldState.visible && IsVisible())
 	{
 		OnWidgetVisible();
 	}
-	if (oldState.width != _width ||
-		oldState.height != _height)
+	if (oldState.width != width_ ||
+		oldState.height != height_)
 	{
 		OnWidgetReshape();
 	}
@@ -533,22 +533,22 @@ void GlowWidget::_NotifyOne(
 }
 
 
-void GlowWidget::_BroadcastMask(
+void GlowWidget::BroadcastMask_(
 	bool unmasking)
 {
-	if (unmasking && _visibility == 2)
+	if (unmasking && visibility_ == 2)
 	{
-		_AddToNotifyList();
-		_visibility = 1;
+		AddToNotifyList_();
+		visibility_ = 1;
 		if (IsActive())
 		{
-			if (_receivingMouse)
+			if (receivingMouse_)
 			{
-				_root->_RegisterMouseWidget(this);
+				root_->RegisterMouseWidget_(this);
 			}
-			if (_receivingKeyboard)
+			if (receivingKeyboard_)
 			{
-				_root->_RegisterKeyboardWidget(this);
+				root_->RegisterKeyboardWidget_(this);
 			}
 		}
 		for (GlowComponent* child = FirstChild(); child != 0; child = child->Next())
@@ -556,23 +556,23 @@ void GlowWidget::_BroadcastMask(
 			GlowWidget* childWidget = dynamic_cast<GlowWidget*>(child);
 			if (childWidget != 0)
 			{
-				childWidget->_BroadcastMask(true);
+				childWidget->BroadcastMask_(true);
 			}
 		}
 	}
-	else if (!unmasking && _visibility == 1)
+	else if (!unmasking && visibility_ == 1)
 	{
-		_AddToNotifyList();
-		_visibility = 2;
+		AddToNotifyList_();
+		visibility_ = 2;
 		if (IsActive())
 		{
-			if (_receivingMouse)
+			if (receivingMouse_)
 			{
-				_root->_UnregisterMouseWidget(this);
+				root_->UnregisterMouseWidget_(this);
 			}
-			if (_receivingKeyboard)
+			if (receivingKeyboard_)
 			{
-				_root->_UnregisterKeyboardWidget(this);
+				root_->UnregisterKeyboardWidget_(this);
 			}
 		}
 		for (GlowComponent* child = FirstChild(); child != 0; child = child->Next())
@@ -580,7 +580,7 @@ void GlowWidget::_BroadcastMask(
 			GlowWidget* childWidget = dynamic_cast<GlowWidget*>(child);
 			if (childWidget != 0)
 			{
-				childWidget->_BroadcastMask(false);
+				childWidget->BroadcastMask_(false);
 			}
 		}
 	}
@@ -591,21 +591,21 @@ void GlowWidget::Show()
 {
 	GLOW_DEBUGSCOPE("GlowWidget::Show");
 	
-	if (_visibility == 0)
+	if (visibility_ == 0)
 	{
-		if (_parentWidget==0 || _parentWidget->IsVisible())
+		if (parentWidget_==0 || parentWidget_->IsVisible())
 		{
-			_AddToNotifyList();
-			_visibility = 1;
+			AddToNotifyList_();
+			visibility_ = 1;
 			if (IsActive())
 			{
-				if (_receivingMouse)
+				if (receivingMouse_)
 				{
-					_root->_RegisterMouseWidget(this);
+					root_->RegisterMouseWidget_(this);
 				}
-				if (_receivingKeyboard)
+				if (receivingKeyboard_)
 				{
-					_root->_RegisterKeyboardWidget(this);
+					root_->RegisterKeyboardWidget_(this);
 				}
 			}
 			for (GlowComponent* child = FirstChild(); child != 0; child = child->Next())
@@ -613,14 +613,14 @@ void GlowWidget::Show()
 				GlowWidget* childWidget = dynamic_cast<GlowWidget*>(child);
 				if (childWidget != 0)
 				{
-					childWidget->_BroadcastMask(true);
+					childWidget->BroadcastMask_(true);
 				}
 			}
 			Refresh();
 		}
 		else
 		{
-			_visibility = 2;
+			visibility_ = 2;
 		}
 	}
 }
@@ -630,19 +630,19 @@ void GlowWidget::Hide()
 {
 	GLOW_DEBUGSCOPE("GlowWidget::Hide");
 	
-	if (_visibility == 1)
+	if (visibility_ == 1)
 	{
-		_AddToNotifyList();
-		_visibility = 0;
+		AddToNotifyList_();
+		visibility_ = 0;
 		if (IsActive())
 		{
-			if (_receivingMouse)
+			if (receivingMouse_)
 			{
-				_root->_UnregisterMouseWidget(this);
+				root_->UnregisterMouseWidget_(this);
 			}
-			if (_receivingKeyboard)
+			if (receivingKeyboard_)
 			{
-				_root->_UnregisterKeyboardWidget(this);
+				root_->UnregisterKeyboardWidget_(this);
 			}
 		}
 		for (GlowComponent* child = FirstChild(); child != 0; child = child->Next())
@@ -650,14 +650,14 @@ void GlowWidget::Hide()
 			GlowWidget* childWidget = dynamic_cast<GlowWidget*>(child);
 			if (childWidget != 0)
 			{
-				childWidget->_BroadcastMask(false);
+				childWidget->BroadcastMask_(false);
 			}
 		}
 		Refresh();
 	}
-	else if (_visibility == 2)
+	else if (visibility_ == 2)
 	{
-		_visibility = 0;
+		visibility_ = 0;
 	}
 }
 
@@ -753,12 +753,12 @@ void GlowWidgetRoot::Init(
 {
 	GLOW_DEBUGSCOPE("GlowWidgetRoot::Init");
 	
-	_subwindow = subwindow;
-	_backColor = backColor;
-	_curKeyboardFocus = _keyboardWidgets.end();
-	_leftButton = 0;
-	_middleButton = 0;
-	_rightButton = 0;
+	subwindow_ = subwindow;
+	backColor_ = backColor;
+	curKeyboardFocus_ = keyboardWidgets_.end();
+	leftButton_ = 0;
+	middleButton_ = 0;
+	rightButton_ = 0;
 }
 
 
@@ -767,11 +767,11 @@ GlowWidgetRoot::~GlowWidgetRoot()
 	GLOW_DEBUGSCOPE("GlowWidgetRoot::~GlowWidgetRoot");
 	
 	GLOW_STD::list<GlowWidget*>::iterator iter;
-	while ((iter = _mouseWidgets.begin()) != _mouseWidgets.end())
+	while ((iter = mouseWidgets_.begin()) != mouseWidgets_.end())
 	{
 		(*iter)->UnregisterMouseEvents();
 	}
-	while ((iter = _keyboardWidgets.begin()) != _keyboardWidgets.end())
+	while ((iter = keyboardWidgets_.begin()) != keyboardWidgets_.end())
 	{
 		(*iter)->UnregisterKeyboardEvents();
 	}
@@ -785,25 +785,25 @@ void GlowWidgetRoot::SetKeyboardFocus(
 	
 	if (widget == 0)
 	{
-		if (_curKeyboardFocus != _keyboardWidgets.end())
+		if (curKeyboardFocus_ != keyboardWidgets_.end())
 		{
-			(*_curKeyboardFocus)->_SetHasKeyboardFocus(false);
-			_curKeyboardFocus = _keyboardWidgets.end();
+			(*curKeyboardFocus_)->SetHasKeyboardFocus_(false);
+			curKeyboardFocus_ = keyboardWidgets_.end();
 		}
 	}
 	else
 	{
 		GLOW_STD::list<GlowWidget*>::iterator iter = GLOW_STD::find(
-			_keyboardWidgets.begin(), _keyboardWidgets.end(), widget);
-		GLOW_DEBUG(iter == _keyboardWidgets.end(), "Illegal keyboard focus");
-		if (iter != _curKeyboardFocus)
+			keyboardWidgets_.begin(), keyboardWidgets_.end(), widget);
+		GLOW_DEBUG(iter == keyboardWidgets_.end(), "Illegal keyboard focus");
+		if (iter != curKeyboardFocus_)
 		{
-			if (_curKeyboardFocus != _keyboardWidgets.end())
+			if (curKeyboardFocus_ != keyboardWidgets_.end())
 			{
-				(*_curKeyboardFocus)->_SetHasKeyboardFocus(false);
+				(*curKeyboardFocus_)->SetHasKeyboardFocus_(false);
 			}
-			widget->_SetHasKeyboardFocus(true);
-			_curKeyboardFocus = iter;
+			widget->SetHasKeyboardFocus_(true);
+			curKeyboardFocus_ = iter;
 		}
 	}
 }
@@ -813,18 +813,18 @@ void GlowWidgetRoot::AdvanceKeyboardFocus()
 {
 	GLOW_DEBUGSCOPE("GlowWidgetRoot::AdvanceKeyboardFocus");
 	
-	if (_curKeyboardFocus != _keyboardWidgets.end())
+	if (curKeyboardFocus_ != keyboardWidgets_.end())
 	{
-		(*_curKeyboardFocus)->_SetHasKeyboardFocus(false);
-		++_curKeyboardFocus;
+		(*curKeyboardFocus_)->SetHasKeyboardFocus_(false);
+		++curKeyboardFocus_;
 	}
-	if (_curKeyboardFocus == _keyboardWidgets.end())
+	if (curKeyboardFocus_ == keyboardWidgets_.end())
 	{
-		_curKeyboardFocus = _keyboardWidgets.begin();
+		curKeyboardFocus_ = keyboardWidgets_.begin();
 	}
-	if (_curKeyboardFocus != _keyboardWidgets.end())
+	if (curKeyboardFocus_ != keyboardWidgets_.end())
 	{
-		(*_curKeyboardFocus)->_SetHasKeyboardFocus(true);
+		(*curKeyboardFocus_)->SetHasKeyboardFocus_(true);
 	}
 }
 
@@ -833,8 +833,8 @@ GlowWidget* GlowWidgetRoot::FindWidget(
 	int& x,
 	int& y)
 {
-	for (GLOW_STD::list<GlowWidget*>::iterator iter = _mouseWidgets.begin();
-		iter != _mouseWidgets.end(); ++iter)
+	for (GLOW_STD::list<GlowWidget*>::iterator iter = mouseWidgets_.begin();
+		iter != mouseWidgets_.end(); ++iter)
 	{
 		GlowWidget* widget = (*iter);
 		int xmin = widget->RootPositionX();
@@ -864,15 +864,15 @@ void GlowWidgetRoot::WRMouseDown(
 	{
 		if (button == Glow::leftButton)
 		{
-			_leftButton = widget;
+			leftButton_ = widget;
 		}
 		else if (button == Glow::middleButton)
 		{
-			_middleButton = widget;
+			middleButton_ = widget;
 		}
 		else //if (button == Glow::rightButton)
 		{
-			_rightButton = widget;
+			rightButton_ = widget;
 		}
 		widget->OnWidgetMouseDown(button, x, y, modifiers);
 	}
@@ -890,18 +890,18 @@ void GlowWidgetRoot::WRMouseUp(
 	GlowWidget* widget = 0;
 	if (button == Glow::leftButton)
 	{
-		widget = _leftButton;
-		_leftButton = 0;
+		widget = leftButton_;
+		leftButton_ = 0;
 	}
 	else if (button == Glow::middleButton)
 	{
-		widget = _middleButton;
-		_middleButton = 0;
+		widget = middleButton_;
+		middleButton_ = 0;
 	}
 	else if (button == Glow::rightButton)
 	{
-		widget = _rightButton;
-		_rightButton = 0;
+		widget = rightButton_;
+		rightButton_ = 0;
 	}
 	if (widget != 0)
 	{
@@ -917,23 +917,23 @@ void GlowWidgetRoot::WRMouseDrag(
 {
 	GLOW_DEBUGSCOPE("GlowWidgetRoot::WRMouseDrag");
 	
-	if (_leftButton != 0)
+	if (leftButton_ != 0)
 	{
-		int xmin = _leftButton->RootPositionX();
-		int ymin = _leftButton->RootPositionY();
-		_leftButton->OnWidgetMouseDrag(x-xmin, y-ymin);
+		int xmin = leftButton_->RootPositionX();
+		int ymin = leftButton_->RootPositionY();
+		leftButton_->OnWidgetMouseDrag(x-xmin, y-ymin);
 	}
-	if (_middleButton != 0 && _middleButton != _leftButton)
+	if (middleButton_ != 0 && middleButton_ != leftButton_)
 	{
-		int xmin = _middleButton->RootPositionX();
-		int ymin = _middleButton->RootPositionY();
-		_middleButton->OnWidgetMouseDrag(x-xmin, y-ymin);
+		int xmin = middleButton_->RootPositionX();
+		int ymin = middleButton_->RootPositionY();
+		middleButton_->OnWidgetMouseDrag(x-xmin, y-ymin);
 	}
-	if (_rightButton != 0 && _rightButton != _leftButton && _rightButton != _middleButton)
+	if (rightButton_ != 0 && rightButton_ != leftButton_ && rightButton_ != middleButton_)
 	{
-		int xmin = _rightButton->RootPositionX();
-		int ymin = _rightButton->RootPositionY();
-		_rightButton->OnWidgetMouseDrag(x-xmin, y-ymin);
+		int xmin = rightButton_->RootPositionX();
+		int ymin = rightButton_->RootPositionY();
+		rightButton_->OnWidgetMouseDrag(x-xmin, y-ymin);
 	}
 }
 
@@ -952,11 +952,11 @@ void GlowWidgetRoot::WRKeyboard(
 	filterData.x = x;
 	filterData.y = y;
 	filterData.modifiers = modifiers;
-	_keyboardFilters.Send(filterData);
-	if (filterData._continue &&
-		filterData.root->_curKeyboardFocus != _keyboardWidgets.end())
+	keyboardFilters_.Send(filterData);
+	if (filterData.continue_ &&
+		filterData.root->curKeyboardFocus_ != keyboardWidgets_.end())
 	{
-		GlowWidget* widget = *(filterData.root->_curKeyboardFocus);
+		GlowWidget* widget = *(filterData.root->curKeyboardFocus_);
 		widget->OnWidgetKeyboard(filterData.key,
 			filterData.x-widget->RootPositionX(),
 			filterData.y-widget->RootPositionY(), filterData.modifiers);
@@ -968,14 +968,14 @@ bool GlowWidgetRoot::WRBeginPaint()
 {
 	GLOW_DEBUGSCOPE("GlowWidgetRoot::WRBeginPaint");
 	
-	::glViewport(0, 0, _subwindow->Width(), _subwindow->Height());
-	::glClearColor(float(_backColor[0])/255.0f, float(_backColor[1])/255.0f,
-		float(_backColor[2])/255.0f, 0.0f);
+	::glViewport(0, 0, subwindow_->Width(), subwindow_->Height());
+	::glClearColor(float(backColor_[0])/255.0f, float(backColor_[1])/255.0f,
+		float(backColor_[2])/255.0f, 0.0f);
 	::glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	::glMatrixMode(GL_MODELVIEW);
 	::glLoadIdentity();
 	::glEnable(GL_SCISSOR_TEST);
-	::glScissor(0, 0, _subwindow->Width(), _subwindow->Height());
+	::glScissor(0, 0, subwindow_->Width(), subwindow_->Height());
 	return true;
 }
 
@@ -986,46 +986,46 @@ void GlowWidgetRoot::WREndPaint()
 }
 
 
-void GlowWidgetRoot::_UnregisterMouseWidget(
+void GlowWidgetRoot::UnregisterMouseWidget_(
 	GlowWidget* widget)
 {
-	_mouseWidgets.remove(widget);
-	if (_leftButton == widget)
+	mouseWidgets_.remove(widget);
+	if (leftButton_ == widget)
 	{
-		_leftButton = 0;
+		leftButton_ = 0;
 	}
-	if (_middleButton == widget)
+	if (middleButton_ == widget)
 	{
-		_middleButton = 0;
+		middleButton_ = 0;
 	}
-	if (_rightButton == widget)
+	if (rightButton_ == widget)
 	{
-		_rightButton = 0;
+		rightButton_ = 0;
 	}
 }
 
 
-void GlowWidgetRoot::_UnregisterKeyboardWidget(
+void GlowWidgetRoot::UnregisterKeyboardWidget_(
 	GlowWidget* widget)
 {
-	if (_curKeyboardFocus != _keyboardWidgets.end() && widget == *_curKeyboardFocus)
+	if (curKeyboardFocus_ != keyboardWidgets_.end() && widget == *curKeyboardFocus_)
 	{
-		widget->_SetHasKeyboardFocus(false);
-		++_curKeyboardFocus;
-		if (_curKeyboardFocus == _keyboardWidgets.end())
+		widget->SetHasKeyboardFocus_(false);
+		++curKeyboardFocus_;
+		if (curKeyboardFocus_ == keyboardWidgets_.end())
 		{
-			_curKeyboardFocus = _keyboardWidgets.begin();
+			curKeyboardFocus_ = keyboardWidgets_.begin();
 		}
-		if (widget == *_curKeyboardFocus)
+		if (widget == *curKeyboardFocus_)
 		{
-			_curKeyboardFocus = _keyboardWidgets.end();
+			curKeyboardFocus_ = keyboardWidgets_.end();
 		}
-		if (_curKeyboardFocus != _keyboardWidgets.end())
+		if (curKeyboardFocus_ != keyboardWidgets_.end())
 		{
-			(*_curKeyboardFocus)->_SetHasKeyboardFocus(true);
+			(*curKeyboardFocus_)->SetHasKeyboardFocus_(true);
 		}
 	}
-	_keyboardWidgets.remove(widget);
+	keyboardWidgets_.remove(widget);
 }
 
 
@@ -1038,9 +1038,9 @@ void GlowWidgetRoot::_UnregisterKeyboardWidget(
 void GlowWidgetKeyboardFilter::OnMessage(
 	GlowWidgetKeyboardData& message)
 {
-	if (message._continue)
+	if (message.continue_)
 	{
-		message._continue = OnFilter(message);
+		message.continue_ = OnFilter(message);
 	}
 }
 

@@ -65,7 +65,7 @@ inline GlowRenderSwitch::GlowRenderSwitch(
 	GlowComponent* parent) :
 GlowComponent(parent)
 {
-	_enabled = true;
+	enabled_ = true;
 }
 
 
@@ -78,20 +78,20 @@ inline void GlowRenderSwitch::Init(
 	GlowComponent* parent)
 {
 	GlowComponent::Init(parent);
-	_enabled = true;
+	enabled_ = true;
 }
 
 
 inline void GlowRenderSwitch::Enable()
 {
-	_enabled = true;
+	enabled_ = true;
 	ParentWindow()->Refresh();
 }
 
 
 inline void GlowRenderSwitch::Disable()
 {
-	_enabled = false;
+	enabled_ = false;
 	ParentWindow()->Refresh();
 }
 
@@ -99,14 +99,14 @@ inline void GlowRenderSwitch::Disable()
 inline void GlowRenderSwitch::SetEnabled(
 	bool enabled)
 {
-	_enabled = enabled;
+	enabled_ = enabled;
 	ParentWindow()->Refresh();
 }
 
 
 inline bool GlowRenderSwitch::IsEnabled() const
 {
-	return _enabled;
+	return enabled_;
 }
 
 

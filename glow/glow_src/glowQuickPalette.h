@@ -236,7 +236,7 @@ class GlowQuickPalette
 	
 	protected:
 	
-		GlowQuickPanelWidget* _panel;
+		GlowQuickPanelWidget* panel_;
 	
 	protected:
 	
@@ -299,12 +299,12 @@ class GlowQuickPanelWidget :
 	
 	private:
 	
-		GlowLabelWidget* _label;
-		Arrangement _arrangement;
-		Alignment _alignment;
-		int _spacing;
-		int _hmargin;
-		int _vmargin;
+		GlowLabelWidget* label_;
+		Arrangement arrangement_;
+		Alignment alignment_;
+		int spacing_;
+		int hmargin_;
+		int vmargin_;
 };
 
 
@@ -434,8 +434,8 @@ class GlowQuickRadioGroupWidget :
 	
 	private:
 	
-		GlowQuickPalette::Arrangement _arrangement;
-		int _spacing;
+		GlowQuickPalette::Arrangement arrangement_;
+		int spacing_;
 };
 
 

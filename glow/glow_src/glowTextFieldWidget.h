@@ -102,7 +102,7 @@ class Glow_TextField_BlinkTask :
 	
 	private:
 	
-		GlowTextFieldWidget* _field;
+		GlowTextFieldWidget* field_;
 };
 
 
@@ -251,11 +251,11 @@ class GlowTextFieldWidget :
 			GlowWidget* parent,
 			const GlowTextFieldParams& params);
 		
-		void _CheckAutoScroll();
+		void CheckAutoScroll();
 	
 	protected:
 	
-		GlowTextData _data;
+		GlowTextData data_;
 	
 	
 	//-------------------------------------------------------------------------
@@ -308,38 +308,38 @@ class GlowTextFieldWidget :
 	
 	private:
 	
-		void _HandleAutoScrollTimer();
+		void HandleAutoScrollTimer_();
 	
 	private:
 	
-		GlowFont _font;
-		int _hpos;
-		Style _style;
-		int _blinkInterval;
-		int _autoScrollInterval;
-		int _inset;
-		int _caretInset;
-		int _dragStart;
-		int _dragEnd;
-		int _dragX;
-		bool _blink;
-		bool _toggleAutoScroll;
-		Glow_TextField_BlinkTask _blinkTask;
+		GlowFont font_;
+		int hpos_;
+		Style style_;
+		int blinkInterval_;
+		int autoScrollInterval_;
+		int inset_;
+		int caretInset_;
+		int dragStart_;
+		int dragEnd_;
+		int dragX_;
+		bool blink_;
+		bool toggleAutoScroll_;
+		Glow_TextField_BlinkTask blinkTask_;
 		
-		GlowColor _backColor;
-		GlowColor _caretColor;
-		GlowColor _textColor;
-		GlowColor _focusBackColor;
-		GlowColor _focusTextColor;
-		GlowColor _focusCaretColor;
-		GlowColor _hiliteBackColor;
-		GlowColor _hiliteTextColor;
-		GlowColor _disableBackColor;
-		GlowColor _disableCaretColor;
-		GlowColor _disableTextColor;
-		GlowColor _disableOutlineColor;
-		GlowColor _lightBevelColor;
-		GlowColor _darkBevelColor;
+		GlowColor backColor_;
+		GlowColor caretColor_;
+		GlowColor textColor_;
+		GlowColor focusBackColor_;
+		GlowColor focusTextColor_;
+		GlowColor focusCaretColor_;
+		GlowColor hiliteBackColor_;
+		GlowColor hiliteTextColor_;
+		GlowColor disableBackColor_;
+		GlowColor disableCaretColor_;
+		GlowColor disableTextColor_;
+		GlowColor disableOutlineColor_;
+		GlowColor lightBevelColor_;
+		GlowColor darkBevelColor_;
 };
 
 
@@ -427,8 +427,8 @@ class GlowHiddenTextFieldWidget :
 	
 	private:
 	
-		GLOW_STD::string _hiddenData;
-		char _hideCharacter;
+		GLOW_STD::string hiddenData_;
+		char hideCharacter_;
 };
 
 

@@ -190,29 +190,29 @@ class GlowRadioButtonWidget :
 	
 	private:
 	
-		GlowRadioGroupWidget* _group;
-		bool _state;
-		char* _label;
-		GlowFont _font;
-		bool _down;
-		bool _inside;
-		Glow::MouseButton _button;
-		Glow::Modifiers _modifiers;
-		int _labelWidth;
-		int _spacing;
+		GlowRadioGroupWidget* group_;
+		bool state_;
+		char* label_;
+		GlowFont font_;
+		bool down_;
+		bool inside_;
+		Glow::MouseButton button_;
+		Glow::Modifiers modifiers_;
+		int labelWidth_;
+		int spacing_;
 		
-		GlowColor _boxColor;
-		GlowColor _textColor;
-		GlowColor _spotColor;
-		GlowColor _hiliteBoxColor;
-		GlowColor _hiliteTextColor;
-		GlowColor _hiliteSpotColor;
-		GlowColor _disableBoxColor;
-		GlowColor _disableTextColor;
-		GlowColor _disableSpotColor;
-		GlowColor _disableOutlineColor;
-		GlowColor _lightBevelColor;
-		GlowColor _darkBevelColor;
+		GlowColor boxColor_;
+		GlowColor textColor_;
+		GlowColor spotColor_;
+		GlowColor hiliteBoxColor_;
+		GlowColor hiliteTextColor_;
+		GlowColor hiliteSpotColor_;
+		GlowColor disableBoxColor_;
+		GlowColor disableTextColor_;
+		GlowColor disableSpotColor_;
+		GlowColor disableOutlineColor_;
+		GlowColor lightBevelColor_;
+		GlowColor darkBevelColor_;
 	
 	private:
 	
@@ -310,14 +310,14 @@ class GlowRadioGroupWidget :
 	
 	private:
 	
-		GlowRadioButtonWidget* _state;
-		TSender<const GlowRadioButtonMessage&> _sender;
+		GlowRadioButtonWidget* state_;
+		TSender<const GlowRadioButtonMessage&> sender_;
 	
 	private:
 	
-		inline bool _Register(
+		inline bool Register_(
 			GlowRadioButtonWidget* button);
-		void _UnRegister(
+		void UnRegister_(
 			GlowRadioButtonWidget* button);
 };
 

@@ -79,120 +79,120 @@ inline GlowRadioButtonWidget::GlowRadioButtonWidget(
 
 inline const char* GlowRadioButtonWidget::GetText() const
 {
-	return _label;
+	return label_;
 }
 
 
 inline GlowFont GlowRadioButtonWidget::GetFont() const
 {
-	return _font;
+	return font_;
 }
 
 
 inline void GlowRadioButtonWidget::SetFont(
 	GlowFont font)
 {
-	_font = font;
+	font_ = font;
 	Refresh();
 }
 
 
 inline int GlowRadioButtonWidget::GetSpacing() const
 {
-	return _spacing;
+	return spacing_;
 }
 
 
 inline void GlowRadioButtonWidget::SetSpacing(
 	int spacing)
 {
-	_spacing = spacing;
+	spacing_ = spacing;
 	Refresh();
 }
 
 
 inline bool GlowRadioButtonWidget::GetState() const
 {
-	return _state;
+	return state_;
 }
 
 
 inline GlowColor GlowRadioButtonWidget::GetBoxColor() const
 {
-	return _boxColor;
+	return boxColor_;
 }
 
 
 inline GlowColor GlowRadioButtonWidget::GetTextColor() const
 {
-	return _textColor;
+	return textColor_;
 }
 
 
 inline GlowColor GlowRadioButtonWidget::GetSpotColor() const
 {
-	return _spotColor;
+	return spotColor_;
 }
 
 
 inline GlowColor GlowRadioButtonWidget::GetHiliteBoxColor() const
 {
-	return _hiliteBoxColor;
+	return hiliteBoxColor_;
 }
 
 
 inline GlowColor GlowRadioButtonWidget::GetHiliteTextColor() const
 {
-	return _hiliteTextColor;
+	return hiliteTextColor_;
 }
 
 
 inline GlowColor GlowRadioButtonWidget::GetHiliteSpotColor() const
 {
-	return _hiliteSpotColor;
+	return hiliteSpotColor_;
 }
 
 
 inline GlowColor GlowRadioButtonWidget::GetDisableBoxColor() const
 {
-	return _disableBoxColor;
+	return disableBoxColor_;
 }
 
 
 inline GlowColor GlowRadioButtonWidget::GetDisableTextColor() const
 {
-	return _disableTextColor;
+	return disableTextColor_;
 }
 
 
 inline GlowColor GlowRadioButtonWidget::GetDisableSpotColor() const
 {
-	return _disableSpotColor;
+	return disableSpotColor_;
 }
 
 
 inline GlowColor GlowRadioButtonWidget::GetDisableOutlineColor() const
 {
-	return _disableOutlineColor;
+	return disableOutlineColor_;
 }
 
 
 inline GlowColor GlowRadioButtonWidget::GetLightBevelColor() const
 {
-	return _lightBevelColor;
+	return lightBevelColor_;
 }
 
 
 inline GlowColor GlowRadioButtonWidget::GetDarkBevelColor() const
 {
-	return _darkBevelColor;
+	return darkBevelColor_;
 }
 
 
 inline void GlowRadioButtonWidget::SetBoxColor(
 	GlowColor c)
 {
-	_boxColor = c;
+	boxColor_ = c;
 	Refresh();
 }
 
@@ -200,7 +200,7 @@ inline void GlowRadioButtonWidget::SetBoxColor(
 inline void GlowRadioButtonWidget::SetTextColor(
 	GlowColor c)
 {
-	_textColor = c;
+	textColor_ = c;
 	Refresh();
 }
 
@@ -208,7 +208,7 @@ inline void GlowRadioButtonWidget::SetTextColor(
 inline void GlowRadioButtonWidget::SetSpotColor(
 	GlowColor c)
 {
-	_spotColor = c;
+	spotColor_ = c;
 	Refresh();
 }
 
@@ -216,7 +216,7 @@ inline void GlowRadioButtonWidget::SetSpotColor(
 inline void GlowRadioButtonWidget::SetHiliteBoxColor(
 	GlowColor c)
 {
-	_hiliteBoxColor = c;
+	hiliteBoxColor_ = c;
 	Refresh();
 }
 
@@ -224,7 +224,7 @@ inline void GlowRadioButtonWidget::SetHiliteBoxColor(
 inline void GlowRadioButtonWidget::SetHiliteTextColor(
 	GlowColor c)
 {
-	_hiliteTextColor = c;
+	hiliteTextColor_ = c;
 	Refresh();
 }
 
@@ -232,7 +232,7 @@ inline void GlowRadioButtonWidget::SetHiliteTextColor(
 inline void GlowRadioButtonWidget::SetHiliteSpotColor(
 	GlowColor c)
 {
-	_hiliteSpotColor = c;
+	hiliteSpotColor_ = c;
 	Refresh();
 }
 
@@ -240,7 +240,7 @@ inline void GlowRadioButtonWidget::SetHiliteSpotColor(
 inline void GlowRadioButtonWidget::SetDisableBoxColor(
 	GlowColor c)
 {
-	_disableBoxColor = c;
+	disableBoxColor_ = c;
 	Refresh();
 }
 
@@ -248,7 +248,7 @@ inline void GlowRadioButtonWidget::SetDisableBoxColor(
 inline void GlowRadioButtonWidget::SetDisableTextColor(
 	GlowColor c)
 {
-	_disableTextColor = c;
+	disableTextColor_ = c;
 	Refresh();
 }
 
@@ -256,7 +256,7 @@ inline void GlowRadioButtonWidget::SetDisableTextColor(
 inline void GlowRadioButtonWidget::SetDisableSpotColor(
 	GlowColor c)
 {
-	_disableSpotColor = c;
+	disableSpotColor_ = c;
 	Refresh();
 }
 
@@ -264,7 +264,7 @@ inline void GlowRadioButtonWidget::SetDisableSpotColor(
 inline void GlowRadioButtonWidget::SetDisableOutlineColor(
 	GlowColor c)
 {
-	_disableOutlineColor = c;
+	disableOutlineColor_ = c;
 	Refresh();
 }
 
@@ -272,7 +272,7 @@ inline void GlowRadioButtonWidget::SetDisableOutlineColor(
 inline void GlowRadioButtonWidget::SetLightBevelColor(
 	GlowColor c)
 {
-	_lightBevelColor = c;
+	lightBevelColor_ = c;
 	Refresh();
 }
 
@@ -280,7 +280,7 @@ inline void GlowRadioButtonWidget::SetLightBevelColor(
 inline void GlowRadioButtonWidget::SetDarkBevelColor(
 	GlowColor c)
 {
-	_darkBevelColor = c;
+	darkBevelColor_ = c;
 	Refresh();
 }
 
@@ -288,9 +288,9 @@ inline void GlowRadioButtonWidget::SetDarkBevelColor(
 inline void GlowRadioButtonWidget::SetState(
 	bool state)
 {
-	if (state != _state)
+	if (state != state_)
 	{
-		_state = state;
+		state_ = state;
 		Refresh();
 	}
 }
@@ -344,33 +344,33 @@ inline void GlowRadioGroupWidget::SetState(
 {
 	GLOW_DEBUGSCOPE("GlowRadioGroupWidget::SetState");
 	
-	if (button != _state)
+	if (button != state_)
 	{
 		button->SetState(true);
-		_state->SetState(false);
-		_state = button;
+		state_->SetState(false);
+		state_ = button;
 	}
 }
 
 
 inline GlowRadioButtonWidget* GlowRadioGroupWidget::GetState() const
 {
-	return _state;
+	return state_;
 }
 
 
 inline TSender<const GlowRadioButtonMessage&>& GlowRadioGroupWidget::Notifier()
 {
-	return _sender;
+	return sender_;
 }
 
 
-inline bool GlowRadioGroupWidget::_Register(
+inline bool GlowRadioGroupWidget::Register_(
 	GlowRadioButtonWidget* button)
 {
-	if (_state == 0)
+	if (state_ == 0)
 	{
-		_state = button;
+		state_ = button;
 		return true;
 	}
 	return false;

@@ -204,10 +204,10 @@ class GlowMessageWindow :
 	
 	private:
 	
-		TSender<const GlowMessageWindowMessage&> _sender;
-		GLOW_STD::vector<GlowPushButtonWidget*> _buttons;
-		GlowWidgetMapToPushButtonFilter* _enterFilter;
-		GlowWidgetMapToPushButtonFilter* _escapeFilter;
+		TSender<const GlowMessageWindowMessage&> sender_;
+		GLOW_STD::vector<GlowPushButtonWidget*> buttons_;
+		GlowWidgetMapToPushButtonFilter* enterFilter_;
+		GlowWidgetMapToPushButtonFilter* escapeFilter_;
 };
 
 

@@ -103,55 +103,55 @@ inline void GlowLabelWidget::Init(
 
 inline const char* GlowLabelWidget::GetText() const
 {
-	return _text;
+	return text_;
 }
 
 
 inline GlowFont GlowLabelWidget::GetFont() const
 {
-	return _font;
+	return font_;
 }
 
 
 inline void GlowLabelWidget::SetFont(
 	GlowFont font)
 {
-	_font = font;
-	_RecalcText();
+	font_ = font;
+	RecalcText_();
 	Refresh();
 }
 
 
 inline bool GlowLabelWidget::IsOpaque() const
 {
-	return _opaque;
+	return opaque_;
 }
 
 
 inline void GlowLabelWidget::SetOpaque(
 	bool opaque)
 {
-	_opaque = opaque;
+	opaque_ = opaque;
 	Refresh();
 }
 
 
 inline int GlowLabelWidget::GetHIndent() const
 {
-	return _hIndent;
+	return hIndent_;
 }
 
 
 inline int GlowLabelWidget::GetVIndent() const
 {
-	return _vIndent;
+	return vIndent_;
 }
 
 
 inline void GlowLabelWidget::SetHIndent(
 	int indent)
 {
-	_hIndent = indent;
+	hIndent_ = indent;
 	Refresh();
 }
 
@@ -159,33 +159,33 @@ inline void GlowLabelWidget::SetHIndent(
 inline void GlowLabelWidget::SetVIndent(
 	int indent)
 {
-	_vIndent = indent;
+	vIndent_ = indent;
 	Refresh();
 }
 
 
 inline GlowColor GlowLabelWidget::GetBackColor() const
 {
-	return _backColor;
+	return backColor_;
 }
 
 
 inline GlowColor GlowLabelWidget::GetTextColor() const
 {
-	return _textColor;
+	return textColor_;
 }
 
 
 inline GlowColor GlowLabelWidget::GetDisableTextColor() const
 {
-	return _disableTextColor;
+	return disableTextColor_;
 }
 
 
 inline void GlowLabelWidget::SetBackColor(
 	GlowColor c)
 {
-	_backColor = c;
+	backColor_ = c;
 	Refresh();
 }
 
@@ -193,7 +193,7 @@ inline void GlowLabelWidget::SetBackColor(
 inline void GlowLabelWidget::SetTextColor(
 	GlowColor c)
 {
-	_textColor = c;
+	textColor_ = c;
 	Refresh();
 }
 
@@ -201,7 +201,7 @@ inline void GlowLabelWidget::SetTextColor(
 inline void GlowLabelWidget::SetDisableTextColor(
 	GlowColor c)
 {
-	_disableTextColor = c;
+	disableTextColor_ = c;
 	Refresh();
 }
 
@@ -210,8 +210,8 @@ inline void GlowLabelWidget::FindPreferredSize(
 	int& preferredWidth,
 	int& preferredHeight)
 {
-	preferredWidth = _maxLineWidth+GetHIndent()*2;
-	preferredHeight = _textHeight+GetVIndent()*2;
+	preferredWidth = maxLineWidth_+GetHIndent()*2;
+	preferredHeight = textHeight_+GetVIndent()*2;
 }
 
 
@@ -237,70 +237,70 @@ GlowLabelWidget(parent, params)
 
 inline GlowColor GlowWidgetLabelHelper::GetLabelTextColor() const
 {
-	return _label->GetTextColor();
+	return label_->GetTextColor();
 }
 
 
 inline void GlowWidgetLabelHelper::SetLabelTextColor(
 	GlowColor c)
 {
-	_label->SetTextColor(c);
+	label_->SetTextColor(c);
 }
 
 
 inline GlowColor GlowWidgetLabelHelper::GetLabelDisableTextColor() const
 {
-	return _label->GetDisableTextColor();
+	return label_->GetDisableTextColor();
 }
 
 
 inline void GlowWidgetLabelHelper::SetLabelDisableTextColor(
 	GlowColor c)
 {
-	_label->SetDisableTextColor(c);
+	label_->SetDisableTextColor(c);
 }
 
 
 inline const char* GlowWidgetLabelHelper::GetLabelText() const
 {
-	return _label->GetText();
+	return label_->GetText();
 }
 
 
 inline void GlowWidgetLabelHelper::SetLabelText(
 	const char* text)
 {
-	_label->SetText(text);
+	label_->SetText(text);
 	RepositionLabel();
 }
 
 
 inline GlowFont GlowWidgetLabelHelper::GetLabelFont() const
 {
-	return _label->GetFont();
+	return label_->GetFont();
 }
 
 
 inline void GlowWidgetLabelHelper::SetLabelFont(
 	GlowFont font)
 {
-	_label->SetFont(font);
+	label_->SetFont(font);
 	RepositionLabel();
 }
 
 
 inline int GlowWidgetLabelHelper::GetLabelSpacing() const
 {
-	return _labelSpacing;
+	return labelSpacing_;
 }
 
 
 inline void GlowWidgetLabelHelper::SetLabelSpacing(
 	int spacing)
 {
-	if (spacing != _labelSpacing)
+	if (spacing != labelSpacing_)
 	{
-		_labelSpacing = spacing;
+		labelSpacing_ = spacing;
 		RepositionLabel();
 	}
 }
@@ -308,16 +308,16 @@ inline void GlowWidgetLabelHelper::SetLabelSpacing(
 
 inline GlowWidgetLabelHelper::LabelPosition GlowWidgetLabelHelper::GetLabelPosition() const
 {
-	return _labelPosition;
+	return labelPosition_;
 }
 
 
 inline void GlowWidgetLabelHelper::SetLabelPosition(
 	LabelPosition position)
 {
-	if (position != _labelPosition)
+	if (position != labelPosition_)
 	{
-		_labelPosition = position;
+		labelPosition_ = position;
 		RepositionLabel();
 	}
 }
@@ -325,16 +325,16 @@ inline void GlowWidgetLabelHelper::SetLabelPosition(
 
 inline int GlowWidgetLabelHelper::GetLabelWidth() const
 {
-	return _labelWidth;
+	return labelWidth_;
 }
 
 
 inline void GlowWidgetLabelHelper::SetLabelWidth(
 	int width)
 {
-	if (width != _labelWidth)
+	if (width != labelWidth_)
 	{
-		_labelWidth = width;
+		labelWidth_ = width;
 		RepositionLabel();
 	}
 }
@@ -342,16 +342,16 @@ inline void GlowWidgetLabelHelper::SetLabelWidth(
 
 inline int GlowWidgetLabelHelper::GetLabelHeight() const
 {
-	return _labelHeight;
+	return labelHeight_;
 }
 
 
 inline void GlowWidgetLabelHelper::SetLabelHeight(
 	int height)
 {
-	if (height != _labelHeight)
+	if (height != labelHeight_)
 	{
-		_labelHeight = height;
+		labelHeight_ = height;
 		RepositionLabel();
 	}
 }
@@ -359,7 +359,7 @@ inline void GlowWidgetLabelHelper::SetLabelHeight(
 
 inline GlowWidgetLabelWidget* GlowWidgetLabelHelper::Label() const
 {
-	return _label;
+	return label_;
 }
 
 

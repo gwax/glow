@@ -144,9 +144,9 @@ disableLabelColor(0.3f, 0.3f, 0.3f)
 
 void Glow_TextField_BlinkTask::Task()
 {
-	_field->_blink = !_field->_blink;
-	_field->Refresh();
-	Schedule(_field->_blinkInterval);
+	field_->blink_ = !field_->blink_;
+	field_->Refresh();
+	Schedule(field_->blinkInterval_);
 }
 
 
@@ -177,27 +177,27 @@ class Glow_TextField_AutoScrollTimer :
 	
 	private:
 	
-		GlowTextFieldWidget* _field;
+		GlowTextFieldWidget* field_;
 };
 
 
 inline Glow_TextField_AutoScrollTimer::Glow_TextField_AutoScrollTimer()
 {
-	_field = 0;
+	field_ = 0;
 }
 
 
 inline void Glow_TextField_AutoScrollTimer::SetTextField(
 	GlowTextFieldWidget* field)
 {
-	_field = field;
+	field_ = field;
 }
 
 
 inline void Glow_TextField_AutoScrollTimer::ForceRemove(
 	GlowTextFieldWidget* field)
 {
-	if (_field == field)
+	if (field_ == field)
 	{
 		Glow::UnregisterTimer(_autoScrollTimerID);
 	}
@@ -207,7 +207,7 @@ inline void Glow_TextField_AutoScrollTimer::ForceRemove(
 void Glow_TextField_AutoScrollTimer::OnMessage(
 	const GlowTimerMessage& message)
 {
-	_field->_HandleAutoScrollTimer();
+	field_->HandleAutoScrollTimer_();
 }
 
 
@@ -229,37 +229,37 @@ void GlowTextFieldWidget::Init(
 	GLOW_DEBUGSCOPE("GlowTextFieldWidget::Init");
 	
 	GlowWidget::Init(root, parent, params);
-	_style = params.style;
+	style_ = params.style;
 	if (params.initialText != 0)
 	{
-		_data.assign(params.initialText);
+		data_.assign(params.initialText);
 	}
-	_font = params.font;
-	_hpos = 0;
-	_dragStart = params.selectionStart;
-	_dragEnd = params.selectionEnd;
-	_data.SetSelection(_dragStart, _dragEnd);
-	_blinkInterval = params.blinkInterval;
-	_autoScrollInterval = params.autoScrollInterval;
-	_inset = params.inset;
-	_caretInset = params.caretInset;
-	_backColor = params.backColor;
-	_caretColor = params.caretColor;
-	_textColor = params.textColor;
-	_focusBackColor = params.focusBackColor;
-	_focusTextColor = params.focusTextColor;
-	_focusCaretColor = params.focusCaretColor;
-	_hiliteBackColor = params.hiliteBackColor;
-	_hiliteTextColor = params.hiliteTextColor;
-	_disableBackColor = params.disableBackColor;
-	_disableTextColor = params.disableTextColor;
-	_disableCaretColor = params.disableCaretColor;
-	_disableOutlineColor = params.disableOutlineColor;
-	_lightBevelColor = params.lightBevelColor;
-	_darkBevelColor = params.darkBevelColor;
-	_blink = true;
-	_toggleAutoScroll = false;
-	_blinkTask.Init(this);
+	font_ = params.font;
+	hpos_ = 0;
+	dragStart_ = params.selectionStart;
+	dragEnd_ = params.selectionEnd;
+	data_.SetSelection(dragStart_, dragEnd_);
+	blinkInterval_ = params.blinkInterval;
+	autoScrollInterval_ = params.autoScrollInterval;
+	inset_ = params.inset;
+	caretInset_ = params.caretInset;
+	backColor_ = params.backColor;
+	caretColor_ = params.caretColor;
+	textColor_ = params.textColor;
+	focusBackColor_ = params.focusBackColor;
+	focusTextColor_ = params.focusTextColor;
+	focusCaretColor_ = params.focusCaretColor;
+	hiliteBackColor_ = params.hiliteBackColor;
+	hiliteTextColor_ = params.hiliteTextColor;
+	disableBackColor_ = params.disableBackColor;
+	disableTextColor_ = params.disableTextColor;
+	disableCaretColor_ = params.disableCaretColor;
+	disableOutlineColor_ = params.disableOutlineColor;
+	lightBevelColor_ = params.lightBevelColor;
+	darkBevelColor_ = params.darkBevelColor;
+	blink_ = true;
+	toggleAutoScroll_ = false;
+	blinkTask_.Init(this);
 	
 	RegisterMouseEvents();
 	RegisterKeyboardEvents();
@@ -281,15 +281,15 @@ void GlowTextFieldWidget::OnWidgetPaint()
 	// Backing
 	if (!IsActive())
 	{
-		_disableBackColor.Apply();
+		disableBackColor_.Apply();
 	}
 	else if (HasKeyboardFocus())
 	{
-		_focusBackColor.Apply();
+		focusBackColor_.Apply();
 	}
 	else
 	{
-		_backColor.Apply();
+		backColor_.Apply();
 	}
 	::glRectf(-1.0f, -1.0f, 1.0f, 1.0f);
 	
@@ -300,16 +300,16 @@ void GlowTextFieldWidget::OnWidgetPaint()
 	float etchWidth = float(2)/float(Width());
 	if (IsActive())
 	{
-		if (_style == etchedStyle)
+		if (style_ == etchedStyle)
 		{
-			_lightBevelColor.Apply();
+			lightBevelColor_.Apply();
 			::glBegin(GL_LINE_LOOP);
 			::glVertex2f(-1.0f+etchWidth, -1.0f);
 			::glVertex2f(-1.0f+etchWidth, 1.0f-etchHeight-etchHeight);
 			::glVertex2f(1.0f-etchWidth, 1.0f-etchHeight-etchHeight);
 			::glVertex2f(1.0f-etchWidth, -1.0f);
 			::glEnd();
-			_darkBevelColor.Apply();
+			darkBevelColor_.Apply();
 			::glBegin(GL_LINE_LOOP);
 			::glVertex2f(-1.0f, -1.0f+etchHeight);
 			::glVertex2f(-1.0f, 1.0f-etchHeight);
@@ -317,15 +317,15 @@ void GlowTextFieldWidget::OnWidgetPaint()
 			::glVertex2f(1.0f-etchWidth-etchWidth, -1.0f+etchHeight);
 			::glEnd();
 		}
-		else if (_style == raisedStyle || _style == loweredStyle)
+		else if (style_ == raisedStyle || style_ == loweredStyle)
 		{
-			if (_style == raisedStyle)
+			if (style_ == raisedStyle)
 			{
-				_lightBevelColor.Apply();
+				lightBevelColor_.Apply();
 			}
 			else
 			{
-				_darkBevelColor.Apply();
+				darkBevelColor_.Apply();
 			}
 			::glBegin(GL_QUAD_STRIP);
 			::glVertex2f(-1.0f, -1.0f);
@@ -336,13 +336,13 @@ void GlowTextFieldWidget::OnWidgetPaint()
 			::glVertex2f(1.0f-bevelWidth, 1.0f-bevelHeight);
 			::glEnd();
 
-			if (_style == raisedStyle)
+			if (style_ == raisedStyle)
 			{
-				_darkBevelColor.Apply();
+				darkBevelColor_.Apply();
 			}
 			else
 			{
-				_lightBevelColor.Apply();
+				lightBevelColor_.Apply();
 			}
 			::glBegin(GL_QUAD_STRIP);
 			::glVertex2f(-1.0f, -1.0f);
@@ -356,7 +356,7 @@ void GlowTextFieldWidget::OnWidgetPaint()
 	}
 	else
 	{
-		_disableOutlineColor.Apply();
+		disableOutlineColor_.Apply();
 		::glBegin(GL_LINE_LOOP);
 		::glVertex2f(-1.0f, -1.0f);
 		::glVertex2f(-1.0f, 1.0f-etchHeight);
@@ -368,87 +368,87 @@ void GlowTextFieldWidget::OnWidgetPaint()
 	// Everything else gets scissored
 	GLint oldScissor[4];
 	::glGetIntegerv(GL_SCISSOR_BOX, oldScissor);
-	::glScissor(RootPositionX()+_inset,
-		Root()->Subwindow()->Height()-Height()-RootPositionY()+_inset,
-		Width()-_inset-_inset, Height()-_inset-_inset);
+	::glScissor(RootPositionX()+inset_,
+		Root()->Subwindow()->Height()-Height()-RootPositionY()+inset_,
+		Width()-inset_-inset_, Height()-inset_-inset_);
 	
 	// Highlight backing
-	if (_data.SelectionLength() > 0 && HasKeyboardFocus())
+	if (data_.SelectionLength() > 0 && HasKeyboardFocus())
 	{
-		_hiliteBackColor.Apply();
+		hiliteBackColor_.Apply();
 		float left = 0;
 		float top = 0;
 		float right = 0;
 		float bottom = 0;
-		NormalizeCoordinates(_inset-_hpos+
-			_data.PixelPosOf(_font, _data.SelectionStart(), 0),
-			_inset, left, top);
-		NormalizeCoordinates(_inset-_hpos+
-			_data.PixelPosOf(_font, _data.SelectionEnd(), 0),
-			_inset+_font.Leading(), right, bottom);
+		NormalizeCoordinates(inset_-hpos_+
+			data_.PixelPosOf(font_, data_.SelectionStart(), 0),
+			inset_, left, top);
+		NormalizeCoordinates(inset_-hpos_+
+			data_.PixelPosOf(font_, data_.SelectionEnd(), 0),
+			inset_+font_.Leading(), right, bottom);
 		::glRectf(left, bottom, right, top);
 	}
 	
 	// Text
 	if (!IsActive())
 	{
-		_disableTextColor.Apply();
+		disableTextColor_.Apply();
 	}
 	else if (HasKeyboardFocus())
 	{
-		_focusTextColor.Apply();
+		focusTextColor_.Apply();
 	}
 	else
 	{
-		_textColor.Apply();
+		textColor_.Apply();
 	}
 	int startpos = 0;
 	int endpos = 0;
 	int pixoffset = 0;
-	_data.CalcLineDrawInfo(_font, 0, _hpos, Width()-_inset-_inset,
+	data_.CalcLineDrawInfo(font_, 0, hpos_, Width()-inset_-inset_,
 		startpos, endpos, pixoffset);
-	const char* dat = _data.data();
-	while (pixoffset > _inset)
+	const char* dat = data_.data();
+	while (pixoffset > inset_)
 	{
-		pixoffset -= ::glutBitmapWidth(_font, dat[startpos]);
+		pixoffset -= ::glutBitmapWidth(font_, dat[startpos]);
 		++startpos;
 	}
 	float x = 0;
 	float y = 0;
-	NormalizeCoordinates(_inset-pixoffset,
-		_inset+_font.BaselinePos(), x, y);
+	NormalizeCoordinates(inset_-pixoffset,
+		inset_+font_.BaselinePos(), x, y);
 	::glRasterPos2f(x, y);
 	for (int i=startpos; i<endpos; i++)
 	{
-		::glutBitmapCharacter(_font, dat[i]);
+		::glutBitmapCharacter(font_, dat[i]);
 	}
 	
 	// Insertion caret
 	// Special scissoring
-	if (_blink || !HasKeyboardFocus() || !IsActive())
+	if (blink_ || !HasKeyboardFocus() || !IsActive())
 	{
-		::glScissor(RootPositionX()+_caretInset,
-			Root()->Subwindow()->Height()-Height()-RootPositionY()+_caretInset,
-			Width()-_caretInset-_caretInset, Height()-_caretInset-_caretInset);
+		::glScissor(RootPositionX()+caretInset_,
+			Root()->Subwindow()->Height()-Height()-RootPositionY()+caretInset_,
+			Width()-caretInset_-caretInset_, Height()-caretInset_-caretInset_);
 		if (!IsActive())
 		{
-			_disableCaretColor.Apply();
+			disableCaretColor_.Apply();
 		}
 		else if (HasKeyboardFocus())
 		{
-			_focusCaretColor.Apply();
+			focusCaretColor_.Apply();
 		}
 		else
 		{
-			_caretColor.Apply();
+			caretColor_.Apply();
 		}
 		float horiz = 0;
 		float top = 0;
 		float bottom = 0;
-		NormalizeCoordinates(_inset-_hpos+_data.PixelPosOf(_font, _dragEnd, 0),
-			_inset, horiz, top);
-		NormalizeCoordinates(_inset-_hpos+_data.PixelPosOf(_font, _dragEnd, 0),
-			_inset+_font.Leading(), horiz, bottom);
+		NormalizeCoordinates(inset_-hpos_+data_.PixelPosOf(font_, dragEnd_, 0),
+			inset_, horiz, top);
+		NormalizeCoordinates(inset_-hpos_+data_.PixelPosOf(font_, dragEnd_, 0),
+			inset_+font_.Leading(), horiz, bottom);
 		float hBump = float(2)/float(Width());
 		float vBump = float(2)/float(Height());
 		::glBegin(GL_LINES);
@@ -465,21 +465,21 @@ void GlowTextFieldWidget::OnWidgetPaint()
 	::glScissor(oldScissor[0], oldScissor[1], oldScissor[2], oldScissor[3]);
 	
 	// Activate autoscroll timer
-	if (_toggleAutoScroll)
+	if (toggleAutoScroll_)
 	{
-		_toggleAutoScroll = false;
+		toggleAutoScroll_ = false;
 		_autoScrollTimer->SetTextField(this);
-		_autoScrollTimerID = Glow::RegisterTimer(_autoScrollInterval, _autoScrollTimer);
+		_autoScrollTimerID = Glow::RegisterTimer(autoScrollInterval_, _autoScrollTimer);
 	}
 }
 
 
-void GlowTextFieldWidget::_HandleAutoScrollTimer()
+void GlowTextFieldWidget::HandleAutoScrollTimer_()
 {
-	_dragEnd = _data.AtPixelPos(_font, 0, _dragX-_inset+_hpos);
-	_data.SetSelection(_dragStart, _dragEnd);
-	_CheckAutoScroll();
-	_toggleAutoScroll = true;
+	dragEnd_ = data_.AtPixelPos(font_, 0, dragX_-inset_+hpos_);
+	data_.SetSelection(dragStart_, dragEnd_);
+	CheckAutoScroll();
+	toggleAutoScroll_ = true;
 	Refresh();
 }
 
@@ -488,7 +488,7 @@ void GlowTextFieldWidget::OnGotKeyboardFocus()
 {
 	GLOW_DEBUGSCOPE("GlowTextFieldWidget::OnGotKeyboardFocus");
 	
-	_blinkTask.Schedule(_blinkInterval);
+	blinkTask_.Schedule(blinkInterval_);
 }
 
 
@@ -496,7 +496,7 @@ void GlowTextFieldWidget::OnLostKeyboardFocus()
 {
 	GLOW_DEBUGSCOPE("GlowTextFieldWidget::OnLostKeyboardFocus");
 	
-	_blinkTask.Unschedule();
+	blinkTask_.Unschedule();
 }
 
 
@@ -512,19 +512,19 @@ void GlowTextFieldWidget::OnWidgetMouseDown(
 	{
 		GrabKeyboardFocus();
 	}
-	_dragX = x;
+	dragX_ = x;
 	if (modifiers & Glow::shiftModifier)
 	{
-		_dragEnd = _data.AtPixelPos(_font, 0, x-_inset+_hpos);
-		_data.SetSelection(_dragStart, _dragEnd);
+		dragEnd_ = data_.AtPixelPos(font_, 0, x-inset_+hpos_);
+		data_.SetSelection(dragStart_, dragEnd_);
 	}
 	else
 	{
-		_dragStart = _dragEnd = _data.AtPixelPos(_font, 0, x-_inset+_hpos);
-		_data.SetSelection(_dragStart);
+		dragStart_ = dragEnd_ = data_.AtPixelPos(font_, 0, x-inset_+hpos_);
+		data_.SetSelection(dragStart_);
 	}
-	_CheckAutoScroll();
-	_toggleAutoScroll = true;
+	CheckAutoScroll();
+	toggleAutoScroll_ = true;
 	Refresh();
 }
 
@@ -537,11 +537,11 @@ void GlowTextFieldWidget::OnWidgetMouseUp(
 {
 	GLOW_DEBUGSCOPE("GlowTextFieldWidget::OnWidgetMouseUp");
 	
-	_dragEnd = _data.AtPixelPos(_font, 0, x-_inset+_hpos);
-	_data.SetSelection(_dragStart, _dragEnd);
-	_CheckAutoScroll();
+	dragEnd_ = data_.AtPixelPos(font_, 0, x-inset_+hpos_);
+	data_.SetSelection(dragStart_, dragEnd_);
+	CheckAutoScroll();
 	Glow::UnregisterTimer(_autoScrollTimerID);
-	_toggleAutoScroll = false;
+	toggleAutoScroll_ = false;
 	Refresh();
 }
 
@@ -552,9 +552,9 @@ void GlowTextFieldWidget::OnWidgetMouseDrag(
 {
 	GLOW_DEBUGSCOPE("GlowTextFieldWidget::OnWidgetMouseDrag");
 	
-	_dragX = x;
-	_dragEnd = _data.AtPixelPos(_font, 0, x-_inset+_hpos);
-	_data.SetSelection(_dragStart, _dragEnd);
+	dragX_ = x;
+	dragEnd_ = data_.AtPixelPos(font_, 0, x-inset_+hpos_);
+	data_.SetSelection(dragStart_, dragEnd_);
 	Refresh();
 }
 
@@ -569,52 +569,52 @@ void GlowTextFieldWidget::OnWidgetKeyboard(
 	
 	if (key >= Glow::specialKeyOffset)
 	{
-		if (key == Glow::leftArrowKey && _dragEnd > 0)
+		if (key == Glow::leftArrowKey && dragEnd_ > 0)
 		{
 			if (modifiers & Glow::shiftModifier)
 			{
-				--_dragEnd;
-				_data.SetSelection(_dragStart, _dragEnd);
+				--dragEnd_;
+				data_.SetSelection(dragStart_, dragEnd_);
 			}
 			else
 			{
-				_dragStart = _dragEnd = _dragEnd-1;
-				_data.SetSelection(_dragStart);
+				dragStart_ = dragEnd_ = dragEnd_-1;
+				data_.SetSelection(dragStart_);
 			}
-			_CheckAutoScroll();
+			CheckAutoScroll();
 			Refresh();
 		}
-		else if (key == Glow::rightArrowKey && _dragEnd < int(_data.size()))
+		else if (key == Glow::rightArrowKey && dragEnd_ < int(data_.size()))
 		{
 			if (modifiers & Glow::shiftModifier)
 			{
-				++_dragEnd;
-				_data.SetSelection(_dragStart, _dragEnd);
+				++dragEnd_;
+				data_.SetSelection(dragStart_, dragEnd_);
 			}
 			else
 			{
-				_dragStart = _dragEnd = _dragEnd+1;
-				_data.SetSelection(_dragStart);
+				dragStart_ = dragEnd_ = dragEnd_+1;
+				data_.SetSelection(dragStart_);
 			}
-			_CheckAutoScroll();
+			CheckAutoScroll();
 			Refresh();
 		}
 	}
 	else if (key == Glow::backspaceKey || key == Glow::deleteKey)
 	{
-		if (_data.SelectionLength() > 0)
+		if (data_.SelectionLength() > 0)
 		{
-			_data.DeleteSelection();
-			_dragStart = _dragEnd = _data.SelectionStart();
-			_CheckAutoScroll();
+			data_.DeleteSelection();
+			dragStart_ = dragEnd_ = data_.SelectionStart();
+			CheckAutoScroll();
 			Refresh();
 		}
-		else if (_data.SelectionStart() > 0)
+		else if (data_.SelectionStart() > 0)
 		{
-			_dragStart = _dragEnd = _data.SelectionStart()-1;
-			_data.SetSelection(_dragStart);
-			_data.erase(_dragStart, 1);
-			_CheckAutoScroll();
+			dragStart_ = dragEnd_ = data_.SelectionStart()-1;
+			data_.SetSelection(dragStart_);
+			data_.erase(dragStart_, 1);
+			CheckAutoScroll();
 			Refresh();
 		}
 	}
@@ -625,10 +625,10 @@ void GlowTextFieldWidget::OnWidgetKeyboard(
 	}
 	else if (key >= 32)
 	{
-		_data.ReplaceSelectionWith((unsigned char)key);
-		_data.SetSelection(_data.SelectionEnd(), _data.SelectionEnd());
-		_dragStart = _dragEnd = _data.SelectionEnd();
-		_CheckAutoScroll();
+		data_.ReplaceSelectionWith((unsigned char)key);
+		data_.SetSelection(data_.SelectionEnd(), data_.SelectionEnd());
+		dragStart_ = dragEnd_ = data_.SelectionEnd();
+		CheckAutoScroll();
 		Refresh();
 	}
 }
@@ -657,7 +657,7 @@ GlowWidget::AutoPackError GlowTextFieldWidget::OnAutoPack(
 	}
 	
 	int vnew = Height();
-	int preferred = _font.Leading()+_inset+_inset;
+	int preferred = font_.Leading()+inset_+inset_;
 	if (vSize != unspecifiedSize && vSize < preferred)
 	{
 		return vAutoPackError;
@@ -677,16 +677,16 @@ GlowWidget::AutoPackError GlowTextFieldWidget::OnAutoPack(
 }
 
 
-void GlowTextFieldWidget::_CheckAutoScroll()
+void GlowTextFieldWidget::CheckAutoScroll()
 {
-	int pos = _data.PixelPosOf(_font, _dragEnd, 0);
-	if (pos < _hpos)
+	int pos = data_.PixelPosOf(font_, dragEnd_, 0);
+	if (pos < hpos_)
 	{
-		_hpos = pos;
+		hpos_ = pos;
 	}
-	else if (pos > _hpos+Width()-_inset-_inset)
+	else if (pos > hpos_+Width()-inset_-inset_)
 	{
-		_hpos = pos-Width()+_inset+_inset;
+		hpos_ = pos-Width()+inset_+inset_;
 	}
 }
 
@@ -709,22 +709,22 @@ void GlowHiddenTextFieldWidget::Init(
 	
 	if (params.initialText != 0)
 	{
-		_hiddenData.assign(params.initialText);
-		_data.assign(_hiddenData.size(), hideCharacter);
+		hiddenData_.assign(params.initialText);
+		data_.assign(hiddenData_.size(), hideCharacter);
 	}
 	
-	_hideCharacter = hideCharacter;
+	hideCharacter_ = hideCharacter;
 }
 
 
 void GlowHiddenTextFieldWidget::SetHideCharacter(
 	char hc)
 {
-	if (hc != _hideCharacter)
+	if (hc != hideCharacter_)
 	{
-		_hideCharacter = hc;
-		_data.assign(_data.size(), hc);
-		_CheckAutoScroll();
+		hideCharacter_ = hc;
+		data_.assign(data_.size(), hc);
+		CheckAutoScroll();
 		Refresh();
 	}
 }
@@ -740,9 +740,9 @@ void GlowHiddenTextFieldWidget::OnWidgetKeyboard(
 	
 	if (key >= 32 && key < Glow::specialKeyOffset)
 	{
-		_hiddenData.replace(_data.SelectionStart(),
-			_data.SelectionEnd()-_data.SelectionStart(), 1, (unsigned char)key);
-		GlowTextFieldWidget::OnWidgetKeyboard(Glow::KeyCode(_hideCharacter), x, y, modifiers);
+		hiddenData_.replace(data_.SelectionStart(),
+			data_.SelectionEnd()-data_.SelectionStart(), 1, (unsigned char)key);
+		GlowTextFieldWidget::OnWidgetKeyboard(Glow::KeyCode(hideCharacter_), x, y, modifiers);
 	}
 	else
 	{

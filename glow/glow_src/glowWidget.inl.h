@@ -138,11 +138,11 @@ inline void GlowWidget::Move(
 {
 	GLOW_DEBUGSCOPE("GlowWidget::Move");
 	
-	if (_xpos != x || _ypos != y)
+	if (xpos_ != x || ypos_ != y)
 	{
-		_BroadcastNotifyList();
-		_xpos = x;
-		_ypos = y;
+		BroadcastNotifyList_();
+		xpos_ = x;
+		ypos_ = y;
 		Refresh();
 	}
 }
@@ -154,11 +154,11 @@ inline void GlowWidget::Reshape(
 {
 	GLOW_DEBUGSCOPE("GlowWidget::Reshape");
 	
-	if (_width != width || _height != height)
+	if (width_ != width || height_ != height)
 	{
-		_BroadcastNotifyList();
-		_width = width;
-		_height = height;
+		BroadcastNotifyList_();
+		width_ = width;
+		height_ = height;
 		Refresh();
 	}
 }
@@ -207,88 +207,88 @@ inline GlowWidget::AutoPackError GlowWidget::AutoReshape(
 
 inline int GlowWidget::Width() const
 {
-	return _width;
+	return width_;
 }
 
 
 inline int GlowWidget::Height() const
 {
-	return _height;
+	return height_;
 }
 
 
 inline int GlowWidget::PositionX() const
 {
-	return _xpos;
+	return xpos_;
 }
 
 
 inline int GlowWidget::PositionY() const
 {
-	return _ypos;
+	return ypos_;
 }
 
 
 inline int GlowWidget::GlobalPositionX() const
 {
-	return RootPositionX() + _root->Subwindow()->GlobalPositionX();
+	return RootPositionX() + root_->Subwindow()->GlobalPositionX();
 }
 
 
 inline int GlowWidget::GlobalPositionY() const
 {
-	return RootPositionY() + _root->Subwindow()->GlobalPositionY();
+	return RootPositionY() + root_->Subwindow()->GlobalPositionY();
 }
 
 
 inline GlowWidgetRoot* GlowWidget::Root() const
 {
-	return _root;
+	return root_;
 }
 
 
 inline bool GlowWidget::IsClipping() const
 {
-	return _clipping;
+	return clipping_;
 }
 
 
 inline void GlowWidget::SetClipping(
 	bool clipping)
 {
-	_clipping = clipping;
+	clipping_ = clipping;
 	Refresh();
 }
 
 
 inline long GlowWidget::GetRefCon() const
 {
-	return _refcon;
+	return refcon_;
 }
 
 
 inline void GlowWidget::SetRefCon(
 	long refcon)
 {
-	_refcon = refcon;
+	refcon_ = refcon;
 }
 
 
 inline bool GlowWidget::IsVisible() const
 {
-	return _visibility == 1;
+	return visibility_ == 1;
 }
 
 
 inline bool GlowWidget::IsVisibleMasked() const
 {
-	return _visibility == 2;
+	return visibility_ == 2;
 }
 
 
 inline bool GlowWidget::IsInvisible() const
 {
-	return _visibility == 0;
+	return visibility_ == 0;
 }
 
 
@@ -296,11 +296,11 @@ inline void GlowWidget::RegisterMouseEvents()
 {
 	GLOW_DEBUGSCOPE("GlowWidget::RegisterMouseEvents");
 	
-	if (!_receivingMouse && IsActive() && _visibility == 1)
+	if (!receivingMouse_ && IsActive() && visibility_ == 1)
 	{
-		_root->_RegisterMouseWidget(this);
+		root_->RegisterMouseWidget_(this);
 	}
-	_receivingMouse = true;
+	receivingMouse_ = true;
 }
 
 
@@ -308,11 +308,11 @@ inline void GlowWidget::RegisterKeyboardEvents()
 {
 	GLOW_DEBUGSCOPE("GlowWidget::RegisterKeyboardEvents");
 	
-	if (!_receivingKeyboard && IsActive() && _visibility == 1)
+	if (!receivingKeyboard_ && IsActive() && visibility_ == 1)
 	{
-		_root->_RegisterKeyboardWidget(this);
+		root_->RegisterKeyboardWidget_(this);
 	}
-	_receivingKeyboard = true;
+	receivingKeyboard_ = true;
 }
 
 
@@ -320,11 +320,11 @@ inline void GlowWidget::UnregisterMouseEvents()
 {
 	GLOW_DEBUGSCOPE("GlowWidget::UnregisterMouseEvents");
 	
-	if (_receivingMouse && IsActive() && _visibility == 1)
+	if (receivingMouse_ && IsActive() && visibility_ == 1)
 	{
-		_root->_UnregisterMouseWidget(this);
+		root_->UnregisterMouseWidget_(this);
 	}
-	_receivingMouse = false;
+	receivingMouse_ = false;
 }
 
 
@@ -332,11 +332,11 @@ inline void GlowWidget::UnregisterKeyboardEvents()
 {
 	GLOW_DEBUGSCOPE("GlowWidget::UnregisterKeyboardEvents");
 	
-	if (_receivingKeyboard && IsActive() && _visibility == 1)
+	if (receivingKeyboard_ && IsActive() && visibility_ == 1)
 	{
-		_root->_UnregisterKeyboardWidget(this);
+		root_->UnregisterKeyboardWidget_(this);
 	}
-	_receivingKeyboard = false;
+	receivingKeyboard_ = false;
 }
 
 
@@ -344,11 +344,11 @@ inline void GlowWidget::GrabKeyboardFocus()
 {
 	GLOW_DEBUGSCOPE("GlowWidget::GrabKeyboardFocus");
 	GLOW_DEBUG(!IsActive(), "Grab focus on deactivated widget");
-	GLOW_DEBUG(_visibility!=1, "Grab focus on invisible widget");
-	GLOW_DEBUG(!_receivingKeyboard, "Grab focus on non-keyboard widget");
-	if (!_hasFocus)
+	GLOW_DEBUG(visibility_!=1, "Grab focus on invisible widget");
+	GLOW_DEBUG(!receivingKeyboard_, "Grab focus on non-keyboard widget");
+	if (!hasFocus_)
 	{
-		_root->SetKeyboardFocus(this);
+		root_->SetKeyboardFocus(this);
 	}
 }
 
@@ -357,53 +357,53 @@ inline void GlowWidget::RelinquishKeyboardFocus()
 {
 	GLOW_DEBUGSCOPE("GlowWidget::RelinquishKeyboardFocus");
 	GLOW_DEBUG(!IsActive(), "Relinquish focus on deactivated widget");
-	GLOW_DEBUG(_visibility!=1, "Relinquish focus on invisible widget");
-	GLOW_DEBUG(!_receivingKeyboard, "Relinquish focus on non-keyboard widget");
-	if (_hasFocus)
+	GLOW_DEBUG(visibility_!=1, "Relinquish focus on invisible widget");
+	GLOW_DEBUG(!receivingKeyboard_, "Relinquish focus on non-keyboard widget");
+	if (hasFocus_)
 	{
-		_root->AdvanceKeyboardFocus();
+		root_->AdvanceKeyboardFocus();
 	}
 }
 
 
 inline bool GlowWidget::HasKeyboardFocus() const
 {
-	return _hasFocus;
+	return hasFocus_;
 }
 
 
 inline void GlowWidget::Refresh()
 {
 	GLOW_DEBUGSCOPE("GlowWidget::Refresh");
-	if (_refreshEnabled)
+	if (refreshEnabled_)
 	{
-		_root->Subwindow()->Refresh();
+		root_->Subwindow()->Refresh();
 	}
 }
 
 
 inline bool GlowWidget::IsRefreshEnabled() const
 {
-	return _refreshEnabled;
+	return refreshEnabled_;
 }
 
 
 inline void GlowWidget::SetRefreshEnabled(
 	bool enabled)
 {
-	_refreshEnabled = enabled;
+	refreshEnabled_ = enabled;
 }
 
 
-inline void GlowWidget::_SetHasKeyboardFocus(
+inline void GlowWidget::SetHasKeyboardFocus_(
 	bool val)
 {
-	GLOW_DEBUGSCOPE("GlowWidget::_SetHasKeyboardFocus");
-	if (_hasFocus != val)
+	GLOW_DEBUGSCOPE("GlowWidget::SetHasKeyboardFocus_");
+	if (hasFocus_ != val)
 	{
-		_AddToNotifyList();
+		AddToNotifyList_();
 		Refresh();
-		_hasFocus = val;
+		hasFocus_ = val;
 	}
 }
 
@@ -414,8 +414,8 @@ inline void GlowWidget::NormalizeCoordinates(
 	GLfloat& xn,
 	GLfloat& yn) const
 {
-	xn = GLfloat(x)*2.0f/GLfloat(_width)-1.0f;
-	yn = 1.0f-GLfloat(y)*2.0f/GLfloat(_height);
+	xn = GLfloat(x)*2.0f/GLfloat(width_)-1.0f;
+	yn = 1.0f-GLfloat(y)*2.0f/GLfloat(height_);
 }
 
 
@@ -432,42 +432,42 @@ inline GlowWidgetRoot::GlowWidgetRoot()
 
 inline GlowWidget* GlowWidgetRoot::GetKeyboardFocus()
 {
-	return (_curKeyboardFocus == _keyboardWidgets.end()) ?
-		0 : (*_curKeyboardFocus);
+	return (curKeyboardFocus_ == keyboardWidgets_.end()) ?
+		0 : (*curKeyboardFocus_);
 }
 
 
 inline GlowColor GlowWidgetRoot::GetBackColor() const
 {
-	return _backColor;
+	return backColor_;
 }
 
 
 inline void GlowWidgetRoot::SetBackColor(
 	GlowColor c)
 {
-	_backColor = c;
-	_subwindow->Refresh();
+	backColor_ = c;
+	subwindow_->Refresh();
 }
 
 
-inline void GlowWidgetRoot::_RegisterMouseWidget(
+inline void GlowWidgetRoot::RegisterMouseWidget_(
 	GlowWidget* widget)
 {
-	_mouseWidgets.push_front(widget);
+	mouseWidgets_.push_front(widget);
 }
 
 
-inline void GlowWidgetRoot::_RegisterKeyboardWidget(
+inline void GlowWidgetRoot::RegisterKeyboardWidget_(
 	GlowWidget* widget)
 {
-	_keyboardWidgets.push_front(widget);
+	keyboardWidgets_.push_front(widget);
 }
 
 
 inline GlowSubwindow* GlowWidgetRoot::Subwindow() const
 {
-	return _subwindow;
+	return subwindow_;
 }
 
 
@@ -479,29 +479,29 @@ inline GlowSubwindow* GlowWidgetRoot::Subwindow() const
 
 inline void GlowWidgetRoot::UnregisterAllFilters()
 {
-	_keyboardFilters.UnbindAll();
+	keyboardFilters_.UnbindAll();
 }
 
 
 inline unsigned int GlowWidgetRoot::NumRegisteredFilters() const
 {
-	return _keyboardFilters.NumReceivers();
+	return keyboardFilters_.NumReceivers();
 }
 
 
 inline bool GlowWidgetRoot::IsFilterRegistered(
 	GlowWidgetKeyboardFilter* filter) const
 {
-	return _keyboardFilters.IsBoundTo(filter);
+	return keyboardFilters_.IsBoundTo(filter);
 }
 
 
 inline void GlowWidgetRoot::RegisterFilter(
 	GlowWidgetKeyboardFilter* filter)
 {
-	if (!_keyboardFilters.IsBoundTo(filter))
+	if (!keyboardFilters_.IsBoundTo(filter))
 	{
-		_keyboardFilters.Bind(filter);
+		keyboardFilters_.Bind(filter);
 	}
 }
 
@@ -509,9 +509,9 @@ inline void GlowWidgetRoot::RegisterFilter(
 inline void GlowWidgetRoot::UnregisterFilter(
 	GlowWidgetKeyboardFilter* filter)
 {
-	if (_keyboardFilters.IsBoundTo(filter))
+	if (keyboardFilters_.IsBoundTo(filter))
 	{
-		_keyboardFilters.Unbind(filter);
+		keyboardFilters_.Unbind(filter);
 	}
 }
 
@@ -524,7 +524,7 @@ inline void GlowWidgetRoot::UnregisterFilter(
 
 inline GlowWidgetKeyboardData::GlowWidgetKeyboardData()
 {
-	_continue = true;
+	continue_ = true;
 }
 
 

@@ -63,7 +63,7 @@ GLOW_NAMESPACE_BEGIN
 
 inline GlowQuickPalette::GlowQuickPalette()
 {
-	_panel = 0;
+	panel_ = 0;
 }
 
 
@@ -80,79 +80,79 @@ inline GlowQuickPanelWidget* GlowQuickPalette::AddArrangingPanel(
 	int inset)
 {
 	return AddPanel(GlowPanelWidget::plainStyle, 0, arrangement, alignment, spacing,
-		(_panel->_arrangement == vertical) ? inset : 0,
-		(_panel->_arrangement == horizontal) ? inset : 0);
+		(panel_->arrangement_ == vertical) ? inset : 0,
+		(panel_->arrangement_ == horizontal) ? inset : 0);
 }
 
 
 inline GlowQuickPalette::Arrangement GlowQuickPalette::GetArrangement() const
 {
-	return _panel->_arrangement;
+	return panel_->arrangement_;
 }
 
 
 inline GlowQuickPalette::Alignment GlowQuickPalette::GetAlignment() const
 {
-	return _panel->_alignment;
+	return panel_->alignment_;
 }
 
 
 inline int GlowQuickPalette::GetSpacing() const
 {
-	return _panel->_spacing;
+	return panel_->spacing_;
 }
 
 
 inline int GlowQuickPalette::GetHMargin() const
 {
-	return _panel->_hmargin;
+	return panel_->hmargin_;
 }
 
 
 inline int GlowQuickPalette::GetVMargin() const
 {
-	return _panel->_vmargin;
+	return panel_->vmargin_;
 }
 
 
 inline void GlowQuickPalette::SetArrangement(
 	Arrangement value)
 {
-	_panel->_arrangement = value;
+	panel_->arrangement_ = value;
 }
 
 
 inline void GlowQuickPalette::SetAlignment(
 	Alignment value)
 {
-	_panel->_alignment = value;
+	panel_->alignment_ = value;
 }
 
 
 inline void GlowQuickPalette::SetSpacing(
 	int value)
 {
-	_panel->_spacing = value;
+	panel_->spacing_ = value;
 }
 
 
 inline void GlowQuickPalette::SetHMargin(
 	int value)
 {
-	_panel->_hmargin = value;
+	panel_->hmargin_ = value;
 }
 
 
 inline void GlowQuickPalette::SetVMargin(
 	int value)
 {
-	_panel->_vmargin = value;
+	panel_->vmargin_ = value;
 }
 
 
 inline GlowQuickPanelWidget* GlowQuickPalette::QuickPaletteRoot() const
 {
-	return _panel;
+	return panel_;
 }
 
 
