@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+
+<head>
+
+<title>
+GLOW Reference
+</title>
+
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<h2>
+Compiler compatibility
+</h2>
+
+<hr size=2>
+
+<p>
+<table cellpadding=0 cellspacing=3><tr>
+<td valign=top>
+<a href="index.html"><image src="../graphics/revert.gif" border=0></a>
+</td>
+<td valign=top>
+<a href="index.html">Back to<br>Table of contents</a>
+</td>
+</tr></table>
+</p>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>Introduction</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+The GLOW Toolkit requires a C++ compiler that is ANSI/ISO compliant, or nearly so. I have successfully built GLOW programs using MIPSPro 7.3 under IRIX, Metrowerks Codewarrior under MacOS and Windows, and gcc 2.95 under Linux. Information on building GLOW programs using these tools follows on this page. Other compilers and development systems may also be able to build GLOW programs, but you may need to set certain flags depending on the level of ANSI compatibility. For more information, see the page on <a href="symbols.html">preprocessor symbols</a>.
+</p>
+
+</blockquote>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>MIPSPro 7.3</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+The MIPSPro 7.3 C++ compiler for IRIX is able to compile GLOW with a small amount of effort. The main issue is compatibility with <tt>namespace std</tt> and the new header naming scheme. In particular the new-style C header names are not provided in the development system. To work around this, wrapper headers are present in the source distribution of GLOW in the folder "Compat-SGI". You should install these headers or otherwise include the folder in an <tt>-I</tt> directive to the compiler.
+</p>
+
+<p>
+To compile GLOW, you also need to pass the following flags to <tt>CC</tt>:
+</p>
+
+<p>
+<tt>-LANG:std</tt>
+</p>
+<blockquote>
+This is necessary to activate certain features of ANSI C++. GLOW will not compile successfully unless this option is specified.
+</blockquote>
+
+<p>
+<tt>-no_auto_include</tt>
+</p>
+<blockquote>
+This is not strictly necessary for successful compilation, but you should use it to prevent linker warnings about duplicate definitions of <tt>Sender_Base</tt> and <tt>Receiver_Base</tt>. The flag prevents the compiler from attempting to automatically include <tt>glowMessage.cpp</tt> whenever <tt>glowMessage.h</tt> is included. (MIPSPro appears to do this as a hack to simulate the effect of the unimplemented C++ <tt>export</tt> keyword. I find it a distasteful hack and a nuisance.)
+</blockquote>
+
+<p>
+<tt>-woff 1209,1424,3201</tt>
+</p>
+<blockquote>
+I recommend turning off these warnings because they're a nuisance. 3201 flags unused parameters, which are common in C++ code, particularly in virtual methods. 1424 flags templates parameters that are not used in declaring the argument types of a function template, which seems to happen often in the standard libraries. 1209 flags "<tt>while(true)</tt>" and "<tt>if(true)</tt>" which are used occasionally in GLOW's code and in debugging code.
+</blockquote>
+</p>
+
+<p>
+<tt>-DGLOW_COMPAT_INTERNALUSINGSTD -DGLOW_COMPAT_NOSTDNAMESPACE</tt>
+</p>
+<blockquote>
+These are necessary for succesful compilation. They cause GLOW to work around the fact that MIPSPro does not put the standard C library into <tt>namespace std</tt>.
+</blockquote>
+</p>
+
+<p>
+Versions of the MIPSPro C++ compiler prior to 7.3 probably cannot compile GLOW. Later versions may require fewer hacks.
+</p>
+
+</blockquote>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>gcc 2.95</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+Recent versions of gcc are getting close to being ANSI C++ compliant. The primary issues as of version 2.95 are the state of the iostreams library; however, GLOW doesn't need to make extensive use of iostreams, so gcc shouldn't have much trouble compiling GLOW.
+</p>
+
+</blockquote>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>Metrowerks Codewarrior Pro 5</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+Codewarrior Pro 5 is very close to being ANSI C++ compliant and should not require any hacks. The primary issue you'll face is creating a project file. My suggestion for doing this is to start with one of the GLUT example programs, and modify its project file. This will give you the right libraries to use. Then, make sure all the ANSI C++ features (such as RTTI, bool, and so forth) are turned on in the C++ language panel. Finally, you'll need to remember to add the appropriate GLOW modules to your program when you build it. For the tutorials, you can determine which modules a program needs by looking at the provided Makefile. You can't use the Makefile directly with Codewarrior (its Makefile importer doesn't support some of the gnu-make features) but you can determine which GLOW modules need to be added to your project by looking at the definition of the variable "GLOWMODULES".
+</p>
+
+</blockquote>
+
+<hr size=2>
+
+<p>
+<table cellpadding=0 cellspacing=3><tr>
+<td valign=top>
+<a href="index.html"><image src="../graphics/revert.gif" border=0></a>
+</td>
+<td valign=top>
+<a href="index.html">Back to<br>Table of contents</a>
+</td>
+</tr></table>
+</p>
+
+<hr size=2>
+
+<p>
+<address>
+<a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
+(<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
+<br>
+Last updated 13 March 2000
+</address>
+
+
+</body>
+
+</html>

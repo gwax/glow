@@ -1,0 +1,818 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+
+<head>
+
+<title>
+GLOW Reference
+</title>
+
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<h2>
+class GlowQuickPanelWidget
+</h2>
+
+
+<hr size=2>
+
+<p>
+<table cellpadding=0 cellspacing=3><tr>
+<td valign=top>
+<a href="index.html"><image src="../graphics/revert.gif" border=0></a>
+</td>
+<td valign=top>
+<a href="index.html">Back to<br>Table of contents</a>
+</td>
+</tr></table>
+</p>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>General information</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+<b>
+type: class
+<br>
+inherits: <tt><a href="GlowPanelWidget.html">GlowPanelWidget</a></tt>
+<br>
+module: <tt><a href="M_glowQuickPalette.html">glowQuickPalette</a></tt>
+</b>
+</p>
+<p>
+<tt>GlowQuickPanelWidget</tt> is a panel that may enclose other widgets.
+</p>
+<p>
+<tt>GlowQuickPanelWidget</tt> is a panel widget designed to contain more widgets created using the QuickPalette interface. You cannot construct this object directly, but must use the appropriate Add method in <tt><a href="GlowQuickPaletteWindow.html">GlowQuickPaletteWindow</a></tt>,  <tt><a href="GlowQuickPaletteSubwindow.html">GlowQuickPaletteSubwindow</a></tt> or <tt>GlowQuickPanelWidget</tt>.
+</p>
+<p>
+GLOW programs that use the QuickPalette interface can use this class to create widget panels and gain more control over widget arrangement.
+</p>
+
+</blockquote>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>Constants</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+
+<p>
+<b>General settings constant</b>
+<br>
+Use this constant to specify using the parent's setting.
+</p>
+
+<blockquote>
+
+<tt>static const int <b>parentSetting</b></tt>
+	
+</blockquote>
+
+
+<p>
+<b>Arrangement constants</b>
+<br>
+These constants specify whether to arrange the widgets horizontally or vertically.
+</p>
+
+<blockquote>
+
+<tt>static const int <b>vertical</b></tt>
+<br>
+<tt>static const int <b>horizontal</b></tt>
+	
+</blockquote>
+
+
+<p>
+<b>Alignment constants</b>
+<br>
+These constants specify how to align widgets in this palette.
+</p>
+
+<blockquote>
+
+<tt>static const int <b>alignTop</b></tt>
+<br>
+<tt>static const int <b>alignBottom</b></tt>
+<br>
+<tt>static const int <b>alignLeft</b></tt>
+<br>
+<tt>static const int <b>alignRight</b></tt>
+<br>
+<tt>static const int <b>alignCenter</b></tt>
+<br>
+<tt>static const int <b>alignExpand</b></tt>
+
+</blockquote>
+
+
+<p>
+<b>Inherited constants</b>
+<br>
+These constants are inherited from <tt><a href="GlowPanelWidget.html">GlowPanelWidget</a></tt>.
+</p>
+
+<blockquote>
+
+<tt>static const int <b>transparentStyle</b></tt>
+<br>
+<tt>static const int <b>plainStyle</b></tt>
+<br>
+<tt>static const int <b>etchedStyle</b></tt>
+<br>
+<tt>static const int <b>raisedStyle</b></tt>
+<br>
+<tt>static const int <b>loweredStyle</b></tt>
+
+</blockquote>
+
+
+<p>
+<b>Inherited constants</b>
+<br>
+These constants are inherited from <tt><a href="GlowWidget.html">GlowWidget</a></tt>.
+</p>
+
+<blockquote>
+
+<p>
+<tt>static const int <b>noAutoPackError</b></tt>
+<br>
+<tt>static const int <b>hAutoPackError</b></tt>
+<br>
+<tt>static const int <b>vAutoPackError</b></tt>
+</p>
+
+<p>
+<tt>static const int <b>unspecifiedSize</b></tt>
+<br>
+<tt>static const int <b>noReshape</b></tt>
+<br>
+<tt>static const int <b>preferredSize</b></tt>
+<br>
+<tt>static const int <b>expandPreferredSize</b></tt>
+<br>
+<tt>static const int <b>forcedSize</b></tt>
+</p>
+
+<p>
+<tt>static const int <b>unspecifiedPos</b></tt>
+<br>
+<tt>static const int <b>noMove</b></tt>
+<br>
+<tt>static const int <b>leftPos</b></tt>
+<br>
+<tt>static const int <b>rightPos</b></tt>
+<br>
+<tt>static const int <b>topPos</b></tt>
+<br>
+<tt>static const int <b>bottomPos</b></tt>
+<br>
+<tt>static const int <b>centerPos</b></tt>
+</p>
+
+</blockquote>
+
+</blockquote>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>Methods</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+
+<p>
+<b>Widget creation methods</b>
+<br>
+These methods may be used to add widgets to the panel.
+</p>
+
+<blockquote>
+
+<p>
+<tt><a href="GlowQuickPanelWidget.html">GlowQuickPanelWidget</a>* <b>AddPanel</b>(int style = <a href="GlowQuickPanelWidget.html">GlowQuickPanelWidget</a>::plainStyle, const char* label = 0, int arrangement = parentSetting, int alignment = parentSetting, int spacing = parentSetting, int hmargin = parentSetting, int vmargin = parentSetting)</tt>
+</p>
+<blockquote>
+Adds a panel to the panel, with options specified by the given params. <tt>style</tt> denotes the border drawing style for the panel. <tt>label</tt> gives a label to the panel, or pass the null pointer for no label. <tt>arrangement</tt> specifies whether widgets in the new panel should be arranged vertically in a column or horizontally in a row. <tt>alignment</tt> denotes the alignment of widgets in the new panel. <tt>spacing</tt> denotes the spacing in pixels between widgets in the new panel. <tt>hmargin</tt> and <tt>vmargin</tt> denote the spacing between the pixels and the new panel border. The method returns a pointer to a <a href="GlowQuickPanelWidget.html">GlowQuickPanelWidget</a>, a panel that may in turn be filled using the QuickPalette interface.
+</blockquote>
+
+<p>
+<tt><a href="GlowQuickPanelWidget.html">GlowQuickPanelWidget</a>* <b>AddArrangingPanel</b>(int arrangement = parentSetting, int alignment = parentSetting, int spacing = parentSetting, int inset = 0)</tt>
+</p>
+<blockquote>
+Adds an arranging panel to the panel, with options specified by the given params. This kind of panel is meant to be used to arrange widgets in a palette; as such, it always has no border or label, and the margin in the direction of the parent's arrangement is zero. <tt>arrangement</tt> specifies whether widgets in the new panel should be arranged vertically in a column or horizontally in a row. <tt>alignment</tt> denotes the alignment of widgets in the new panel. <tt>spacing</tt> denotes the spacing in pixels between widgets in the new panel. <tt>inset</tt> gives a value in pixels to "indent" the panel; the margin orthogonal to the parent arrangement is set to this value. The method returns a pointer to a <a href="GlowQuickPanelWidget.html">GlowQuickPanelWidget</a>, a panel that may in turn be filled using the QuickPalette interface. This method has the same effect as calling <tt>AddPanel()</tt> with a style of <a href="GlowQuickPanelWidget.html">GlowQuickPanelWidget</a>::plainStyle, no label, and a margin of 0.
+</blockquote>
+
+<p>
+<tt><a href="GlowPanelWidget.html">GlowPanelWidget</a>* <b>AddFixedPanel</b>(int width, int height, int style = <a href="GlowPanelWidget.html">GlowPanelWidget</a>::plainStyle)</tt>
+</p>
+<blockquote>
+Adds a fixed-size panel to the panel, with options specified by the given params. This kind of panel cannot be filled using the QuickPalette interface. <tt>width</tt> and <tt>height</tt> give the size for the new panel. <tt>style</tt> denotes the border drawing style for the panel.
+</blockquote>
+
+<p>
+<tt><a href="GlowSeparatorWidget.html">GlowSeparatorWidget</a>* <b>AddSeparator</b>(int style = <a href="GlowSeparatorWidget.html">GlowSeparatorWidget</a>::valleyStyle)</tt>
+</p>
+<blockquote>
+Adds a separator to the panel. <tt>style</tt> denotes the drawing style for the separator.
+</blockquote>
+
+<p>
+<tt><a href="GlowPushButtonWidget.html">GlowPushButtonWidget</a>* <b>AddPushButton</b>(const char* label, <a href="GlowPushButtonReceiver.html">GlowPushButtonReceiver</a>* receiver = 0)</tt>
+</p>
+<blockquote>
+Adds a pushbutton to the panel. <tt>label</tt> gives the text label for the pushbutton. <tt>receiver</tt> provides a receiver to receive events from the new pushbutton, or pass the null pointer if you do not want to bind a receiver.
+</blockquote>
+
+<p>
+<tt><a href="GlowMenuButtonWidget.html">GlowMenuButtonWidget</a>* <b>AddMenuButton</b>(const char* label, <a href="GlowMenu.html">GlowMenu</a>* menu, int icon = <a href="GlowMenuButtonWidget.html">GlowMenuButtonWidget</a>::menuIcon)</tt>
+</p>
+<blockquote>
+Adds a menu button to the panel. <tt>label</tt> gives the text label for the menu button. <tt>menu</tt> gives a menu to attach to the button. <tt>icon</tt> gives the kind of icon to use for the menu button.
+</blockquote>
+
+<p>
+<tt><a href="GlowLabeledPopupMenuWidget.html">GlowLabeledPopupMenuWidget</a>* <b>AddPopupMenu</b>(const char* label, <a href="GlowPopupMenuReceiver.html">GlowPopupMenuReceiver</a>* receiver = 0)</tt>
+</p>
+<blockquote>
+Adds a labeled popup menu to the panel. <tt>label</tt> gives the text label for the popup menu. <tt>receiver</tt> provides a receiver to receive events from the new popup menu, or pass the null pointer if you do not want to bind a receiver.
+</blockquote>
+
+<p>
+<tt><a href="GlowCheckBoxWidget.html">GlowCheckBoxWidget</a>* <b>AddCheckBox</b>(const char* label, int initialValue = <a href="GlowCheckBoxWidget.html">GlowCheckBoxWidget</a>::off, <a href="GlowCheckBoxReceiver.html">GlowCheckBoxReceiver</a>* receiver = 0)</tt>
+</p>
+<blockquote>
+Adds a checkbox to the panel. <tt>label</tt> gives the text label for the checkbox. <tt>initialValue</tt> gives the initial value for the checkbox. <tt>receiver</tt> provides a receiver to receive events from the new checkbox, or pass the null pointer if you do not want to bind a receiver.
+</blockquote>
+
+<p>
+<tt><a href="GlowQuickRadioGroupWidget.html">GlowQuickRadioGroupWidget</a>* <b>AddRadioGroup</b>(int arrangement = <a href="GlowQuickRadioGroupWidget.html">GlowQuickRadioGroupWidget</a>::vertical, int spacing = 3, <a href="GlowRadioButtonReceiver.html">GlowRadioButtonReceiver</a>* receiver = 0)</tt>
+</p>
+<blockquote>
+Adds a radio group to the panel. <tt>arrangement</tt> gives the arrangement (vertical or horizontal) for the radio group. <tt>spacing</tt> gives the pixel spacing between radio buttons. <tt>receiver</tt> provides a receiver to receive events from the new radio group, or pass the null pointer if you do not want to bind a receiver. The method returns a pointer to a <a href="GlowQuickRadioGroupWidget.html">GlowQuickRadioGroupWidget</a>, a radio group that may be filled with radio buttons using the QuickPalette interface.
+</blockquote>
+
+<p>
+<tt><a href="GlowLabeledSliderWidget.html">GlowLabeledSliderWidget</a>* <b>AddSlider</b>(float min, float max, float initial, int options = <a href="GlowSliderWidget.html">GlowSliderWidget</a>::defaultOptions, int numTicks = 2, const char* valueLabel = 0, const char* label = 0, <a href="GlowSliderReceiver.html">GlowSliderReceiver</a>* receiver = 0)</tt>
+</p>
+<blockquote>
+Adds a labeled slider widget to the panel. <tt>min</tt>, <tt>max</tt> and <tt>initial</tt> specify the range and initial value for the slider. <tt>options</tt> gives options for the slider. <tt>numTicks</tt> gives the number of tick marks to draw. <tt>valueLabel</tt> specifies a <tt>printf</tt> pattern for labeling the minimum and maximum values. <tt>label</tt> specifies a <tt>printf</tt> pattern for the main label. <tt>receiver</tt> provides a receiver to receive events from the new slider, or pass the null pointer if you do not want to bind a receiver.
+</blockquote>
+
+<p>
+<tt><a href="GlowScrollBarWidget.html">GlowScrollBarWidget</a>* <b>AddSlider</b>(long min, long max, long span, long initialTop, <a href="GlowScrollBarReceiver.html">GlowScrollBarReceiver</a>* receiver = 0)</tt>
+</p>
+<blockquote>
+Adds a scroll bar widget to the panel. <tt>min</tt>, <tt>max</tt>, <tt>span</tt> and <tt>initialTop</tt> specify the range, indicator span and initial value for the scroll bar. <tt>receiver</tt> provides a receiver to receive events from the new scroll bar, or pass the null pointer if you do not want to bind a receiver.
+</blockquote>
+
+<p>
+<tt><a href="GlowLabeledTextFieldWidget.html">GlowLabeledTextFieldWidget</a>* <b>AddTextField</b>(int width, const char* text = "", const char* label = 0)</tt>
+</p>
+<blockquote>
+Adds a text field widget to the panel. <tt>width</tt> specifies the width for the text field in pixels. <tt>text</tt> gives the initial text value for the field. <tt>label</tt> specifies a label for the text field, or pass the null pointer for no label.
+</blockquote>
+
+<p>
+<tt><a href="GlowLabeledHiddenTextField.html">GlowLabeledHiddenTextFieldWidget</a>* <b>AddHiddenTextField</b>(int width, const char* text = "", char hideCharacter = '#', const char* label = 0)</tt>
+</p>
+<blockquote>
+Adds a hidden-input text field widget to the panel. <tt>width</tt> specifies the width for the text field in pixels. <tt>text</tt> gives the initial text value for the field. <tt>hideCharacter</tt> gives a character to use to hide the real input. <tt>label</tt> specifies a label for the text field, or pass the null pointer for no label.
+</blockquote>
+
+<p>
+<tt><a href="GlowLabelWidget.html">GlowLabelWidget</a>* <b>AddLabel</b>(const char* text)</tt>
+</p>
+<blockquote>
+Adds a static label to the panel. <tt>text</tt> gives the text to draw.
+</blockquote>
+
+</blockquote>
+
+
+<p>
+<b>Packing and arrangement methods</b>
+<br>
+These methods may be used to alter packing parameters.
+</p>
+
+<blockquote>
+
+<p>
+<tt>int <b>GetArrangement</b>() const</tt>
+</p>
+<blockquote>
+Returns the current arrangement setting (<tt>vertical</tt> or <tt>horizontal</tt>).
+</blockquote>
+
+<p>
+<tt>void <b>SetArrangement</b>(int value)</tt>
+</p>
+<blockquote>
+Sets the current arrangement setting (<tt>vertical</tt> or <tt>horizontal</tt>).
+</blockquote>
+
+<p>
+<tt>int <b>GetAlignment</b>() const</tt>
+</p>
+<blockquote>
+Returns the current alignment setting.
+</blockquote>
+
+<p>
+<tt>void <b>SetAlignment</b>(int value)</tt>
+</p>
+<blockquote>
+Sets the current alignment setting.
+</blockquote>
+
+<p>
+<tt>int <b>GetSpacing</b>() const</tt>
+</p>
+<blockquote>
+Returns the current element spacing setting in pixels.
+</blockquote>
+
+<p>
+<tt>void <b>SetSpacing</b>(int value)</tt>
+</p>
+<blockquote>
+Sets the current element spacing setting in pixels.
+</blockquote>
+
+<p>
+<tt>int <b>GetHMargin</b>() const</tt>
+</p>
+<blockquote>
+Returns the current horizontal margin setting in pixels.
+</blockquote>
+
+<p>
+<tt>int <b>GetVMargin</b>() const</tt>
+</p>
+<blockquote>
+Returns the current vertical margin setting in pixels.
+</blockquote>
+
+<p>
+<tt>void <b>SetHMargin</b>(int value)</tt>
+</p>
+<blockquote>
+Sets the current horizontal margin setting in pixels.
+</blockquote>
+
+<p>
+<tt>void <b>SetVMargin</b>(int value)</tt>
+</p>
+<blockquote>
+Sets the current vertical margin setting in pixels.
+</blockquote>
+
+</blockquote>
+
+
+<p>
+<b>Inherited methods</b>
+<br>
+These methods are inherited from <tt><a href="GlowPanelWidget.html">GlowPanelWidget</a></tt>.
+</p>
+
+<blockquote>
+
+<p>
+<tt>int <b>GetStyle</b>(void) const</tt>
+</p>
+
+<p>
+<tt>void <b>SetStyle</b>(int style)</tt>
+</p>
+
+<p>
+<tt><a href="GlowColor.html">GlowColor</a> <b>GetBackColor</b>(void) const</tt>
+</p>
+
+<p>
+<tt>void <b>SetBackColor</b>(<a href="GlowColor.html">GlowColor</a> c)</tt>
+</p>
+
+<p>
+<tt><a href="GlowColor.html">GlowColor</a> <b>GetLightBevelColor</b>(void) const</tt>
+</p>
+
+<p>
+<tt>void <b>SetLightBevelColor</b>(<a href="GlowColor.html">GlowColor</a> c)</tt>
+</p>
+
+<p>
+<tt><a href="GlowColor.html">GlowColor</a> <b>GetDarkBevelColor</b>(void) const</tt>
+</p>
+
+<p>
+<tt>void <b>SetDarkBevelColor</b>(<a href="GlowColor.html">GlowColor</a> c)</tt>
+</p>
+
+</blockquote>
+
+
+<p>
+<b>Inherited methods</b>
+<br>
+These methods are inherited from <tt><a href="GlowWidget.html">GlowWidget</a></tt>.
+</p>
+
+<blockquote>
+
+<p>
+<tt>void <b>Move</b>(int x, int y)</tt>
+</p>
+
+<p>
+<tt>int <b>PositionX</b>(void) const</tt>
+</p>
+
+<p>
+<tt>int <b>PositionY</b>(void) const</tt>
+</p>
+
+<p>
+<tt>int <b>RootPositionX</b>(void) const</tt>
+</p>
+
+<p>
+<tt>int <b>RootPositionY</b>(void) const</tt>
+</p>
+
+<p>
+<tt>int <b>GlobalPositionX</b>(void) const</tt>
+</p>
+
+<p>
+<tt>int <b>GlobalPositionY</b>(void) const</tt>
+</p>
+
+<p>
+<tt>void <b>Reshape</b>(int width, int height)</tt>
+</p>
+
+<p>
+<tt>int <b>Width</b>(void) const</tt>
+</p>
+
+<p>
+<tt>int <b>Height</b>(void) const</tt>
+</p>
+
+<p>
+<tt>int <b>AutoPack</b>(int leftLimit, int rightLimit, int topLimit, int bottomLimit, int hOption, int vOption, int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
+<br>
+<tt>int <b>AutoPack</b>(int leftLimit, int rightLimit, int topLimit, int bottomLimit, int hOption, int vOption)</tt>
+</p>
+
+<p>
+<tt>int <b>AutoReshape</b>(int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
+<br>
+<tt>int <b>AutoReshape</b>()</tt>
+</p>
+
+<p>
+<tt>void <b>Hide</b>(void)</tt>
+</p>
+
+<p>
+<tt>void <b>Show</b>(void)</tt>
+</p>
+
+<p>
+<tt>bool <b>IsVisible</b>(void) const</tt>
+</p>
+
+<p>
+<tt>bool <b>IsInvisible</b>(void) const</tt>
+</p>
+
+<p>
+<tt>bool <b>IsVisibleMasked</b>(void) const</tt>
+</p>
+
+<p>
+<tt>void <b>Refresh</b>(void)</tt>
+</p>
+
+<p>
+<tt>void <b>SetRefreshEnabled</b>(bool enabled)</tt>
+</p>
+
+<p>
+<tt>bool <b>IsRefreshEnabled</b>(void) const</tt>
+</p>
+
+<p>
+<tt>void <b>SetClipping</b>(bool clip)</tt>
+</p>
+
+<p>
+<tt>bool <b>IsClipping</b>(void)</tt>
+</p>
+
+<p>
+<tt>void <b>GrabKeyboardFocus</b>(void)</tt>
+</p>
+<blockquote>
+Panel widgets should not attempt to grab the keyboard focus unless a subclass makes use of keyboard events.
+</blockquote>
+
+<p>
+<tt>void <b>RelinquishKeyboardFocus</b>(void)</tt>
+</p>
+
+<p>
+<tt>bool <b>HasKeyboardFocus</b>(void)</tt>
+</p>
+
+<p>
+<tt><a href="GlowWidgetRoot.html">GlowWidgetRoot</a>* <b>Root</b>(void)</tt>
+</p>
+
+<p>
+<tt>void <b>SetRefCon</b>(long refcon)</tt>
+</p>
+
+<p>
+<tt>long <b>GetRefCon</b>(void)</tt>
+</p>
+
+</blockquote>
+
+
+<p>
+<b>Inherited methods</b>
+<br>
+These methods are inherited from <tt><a href="GlowComponent.html">GlowComponent</a></tt>.
+</p>
+
+<blockquote>
+
+<p>
+<tt><a href="GlowComponent.html">GlowComponent</a>* <b>Parent</b>(void) const</tt>
+</p>
+
+<p>
+<tt><a href="GlowSubwindow.html">GlowSubwindow</a>* <b>WhichWindow</b>(void)</tt>
+</p>
+
+<p>
+<tt><a href="GlowSubwindow.html">GlowSubwindow</a>* <b>ParentWindow</b>(void) const</tt>
+</p>
+
+<p>
+<tt><a href="GlowWindow.html">GlowWindow</a>* <b>ToplevelWindow</b>(void)</tt>
+</p>
+
+<p>
+<tt>bool <b>IsToplevel</b>(void) const</tt>
+</p>
+
+<p>
+<tt>int <b>NumChildren</b>(void)</tt>
+</p>
+
+<p>
+<tt>ChildIterator <b>BeginChildren</b>(void)</tt>
+</p>
+
+<p>
+<tt>ConstChildIterator <b>BeginChildren</b>(void) const</tt>
+</p>
+
+<p>
+<tt>ChildIterator <b>EndChildren</b>(void)</tt>
+</p>
+
+<p>
+<tt>ConstChildIterator <b>EndChildren</b>(void) const</tt>
+</p>
+
+<p>
+<tt>void <b>KillChildren</b>(void)</tt>
+</p>
+
+<p>
+<tt>void <b>Activate</b>(void)</tt>
+</p>
+
+<p>
+<tt>void <b>Deactivate</b>(void)</tt>
+</p>
+
+<p>
+<tt>bool <b>IsActive</b>(void)</tt>
+</p>
+
+<p>
+<tt>bool <b>IsInactive</b>(void)</tt>
+</p>
+
+<p>
+<tt>bool <b>IsActiveStandby</b>(void)</tt>
+</p>
+
+</blockquote>
+
+</blockquote>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>Protected methods for subclasses</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+<b>Inherited methods</b>
+<br>
+These methods are inherited from <tt><a href="GlowWidget.html">GlowWidget</a></tt>.
+</p>
+
+<blockquote>
+
+<p>
+<tt>void <b>NormalizeCoordinates</b>(int x, int y, GLfloat& xn, GLfloat& yn) const</tt>
+</p>
+
+<p>
+<tt>void <b>RegisterMouseEvents</b>(void)</tt>
+</p>
+
+<p>
+<tt>void <b>RegisterKeyboardEvents</b>(void)</tt>
+</p>
+
+<p>
+<tt>void <b>UnegisterMouseEvents</b>(void)</tt>
+</p>
+
+<p>
+<tt>void <b>UnregisterKeyboardEvents</b>(void)</tt>
+</p>
+
+</blockquote>
+
+</blockquote>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>Overrideable methods</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+<b>Inherited methods</b>
+<br>
+These methods are inherited from <tt><a href="GlowWidget.html">GlowWidget</a></tt>. <tt>GlowQuickPanel</tt> overrides most of these to provide the proper behavior for a panel that arranges its children according to the QuickPalette interface. You should normally never need to override any of them again.
+</p>
+
+<blockquote>
+
+<p>
+<tt>virtual void <b>OnWidgetPaint</b>(void)</tt>
+</p>
+
+<p>
+<tt>virtual void <b>OnWidgetMouseDown</b>(int button, int x, int y, int modifiers)</tt>
+</p>
+
+<p>
+<tt>virtual void <b>OnWidgetMouseUp</b>(int button, int x, int y, int modifiers)</tt>
+</p>
+
+<p>
+<tt>virtual void <b>OnWidgetMouseDrag</b>(int x, int y)</tt>
+</p>
+
+<p>
+<tt>virtual void <b>OnWidgetKeyboard</b>(int key, int modifiers, int x, int y)</tt>
+</p>
+
+<p>
+<tt>virtual void <b>OnWidgetMove</b>(int x, int y)</tt>
+</p>
+
+<p>
+<tt>virtual void <b>OnWidgetReshape</b>(int width, int height)</tt>
+</p>
+
+<p>
+<tt>virtual void <b>OnWidgetInvisible</b>(void)</tt>
+</p>
+
+<p>
+<tt>virtual void <b>OnWidgetVisible</b>(void)</tt>
+</p>
+
+<p>
+<tt>virtual void <b>OnWidgetDeactivate</b>(void)</tt>
+</p>
+
+<p>
+<tt>virtual void <b>OnWidgetActivate</b>(void)</tt>
+</p>
+
+<p>
+<tt>virtual void <b>OnGotKeyboardFocus</b>(void)</tt>
+</p>
+
+<p>
+<tt>virtual void <b>OnLostKeyboardFocus</b>(void)</tt>
+</p>
+
+<p>
+<tt>virtual void <b>OnAutoPack</b>(int hSize, int vSize, int hOption, int vOption, int& leftMargin, int& rightMargin, int& topMargin, int& bottomMargin)</tt>
+</p>
+<blockquote>
+<tt>GlowQuickPanelWidget</tt> implements this method to pack a panel, including arranging all its children, according to the QuickPanel specifications. You should not override it.
+</blockquote>
+
+</blockquote>
+
+
+<p>
+<b>Inherited methods</b>
+<br>
+These methods are inherited from <tt><a href="GlowComponent.html">GlowComponent</a></tt>, but are used by <tt><a href="GlowWidget.html">GlowWidget</a></tt> and should not be overridden again.
+</p>
+
+<blockquote>
+
+<p>
+<tt>virtual void <b>OnActivate</b>(void)</tt>
+</p>
+
+<p>
+<tt>virtual void <b>OnDeactivate</b>(void)</tt>
+</p>
+
+<p>
+<tt>virtual void <b>OnBeginPaint</b>(void)</tt>
+</p>
+
+<p>
+<tt>virtual void <b>OnEndPaint</b>(void)</tt>
+</p>
+
+</blockquote>
+
+</blockquote>
+
+
+<hr size=2>
+
+<p>
+<table cellpadding=0 cellspacing=3><tr>
+<td valign=top>
+<a href="index.html"><image src="../graphics/revert.gif" border=0></a>
+</td>
+<td valign=top>
+<a href="index.html">Back to<br>Table of contents</a>
+</td>
+</tr></table>
+</p>
+
+
+<hr size=2>
+
+<p>
+<address>
+<a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
+(<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
+<br>
+Last updated 13 March 2000
+</address>
+
+
+</body>
+
+</html>

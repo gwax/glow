@@ -1,0 +1,213 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+
+<head>
+
+<title>
+GLOW Reference
+</title>
+
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<h2>
+class GlowWidgetWindowParams
+</h2>
+
+<hr size=2>
+
+<p>
+<table cellpadding=0 cellspacing=3><tr>
+<td valign=top>
+<a href="index.html"><image src="../graphics/revert.gif" border=0></a>
+</td>
+<td valign=top>
+<a href="index.html">Back to<br>Table of contents</a>
+</td>
+</tr></table>
+</p>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>General information</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+<b>
+type: struct
+<br>
+inherits: <tt><a href="GlowWindowParams.html">GlowWindowParams</a></tt>
+<br>
+module: <tt><a href="M_glowWidget.html">glowWidget</a></tt>
+</b>
+</p>
+<p>
+<tt>GlowWidgetWindowParams</tt> encloses parameters for construction of a <tt><a href="GlowWidgetWindow.html">GlowWidgetWindow</a></tt>.
+</p>
+<p>
+GLOW programs which create widgets in toplevel windows may use this class.
+</p>
+
+</blockquote>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>Data</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+<b>Subwindow parameter data</b>
+<br>
+These fields are inherited from <tt><a href="GlowWindowParams.html">GlowWindowParams</a></tt>. Note that one of the fiels has a different default.
+</p>
+
+<blockquote>
+
+<dl>
+<dt>
+<tt>const char* <b>title</b></tt>
+<dd>
+Title for the window. Initial default is "".
+<dt>
+<tt>const char* <b>iconTitle</b></tt>
+<dd>
+Title for the window when iconified. If set to 0, the icon title will be set to the same as the window title. Initial default is 0.
+<dt>
+<tt>int <b>width</b></tt>
+<dd>
+Width of the window. Initial default is 100.
+<dt>
+<tt>int <b>height</b></tt>
+<dd>
+Height of the window. Initial default is 100.
+<dt>
+<tt>int <b>x</b></tt>
+<dd>
+X location of the upper left of the window, in pixel coordinates of the screen. Initial default is <tt><a href="GlowWindow.html">GlowWindow</a>::autoPosition</tt>.
+<dt>
+<tt>int <b>y</b></tt>
+<dd>
+Y location of the upper left of the window, in pixel coordinates of the screen. Initial default is <tt><a href="GlowWindow.html">GlowWindow</a>::autoPosition</tt>.
+<dt>
+<tt>int <b>eventMask</b></tt>
+<dd>
+Active event mask for the window. Initial default is <tt><a href="Glow.html">Glow</a>::mouseEvents | <a href="Glow.html">Glow</a>::dragEvents | <a href="Glow.html">Glow</a>::keyboardEvents</tt>.
+<dt>
+<tt>int <b>inactiveEventMask</b></tt>
+<dd>
+Inactive event mask for the window. Initial default is <tt><a href="Glow.html">Glow</a>::noEvents</tt>.
+<dt>
+<tt>int <b>mode</b></tt>
+<dd>
+Buffer mode for the window. Initial default is <tt><a href="Glow.html">Glow</a>::rgbBuffer | <a href="Glow.html">Glow</a>::doubleBuffer</tt>.
+</dl>
+
+</blockquote>
+
+
+<p>
+<b>Widget root parameters</b>
+</p>
+
+<blockquote>
+
+<dl>
+<dt>
+<tt><a href="GlowColor.html">GlowColor</a> <b>backColor</b></tt>
+<dd>
+Background color for the widget root. Initial default is a light gray.
+</dl>
+
+</blockquote>
+
+</blockquote>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>Static Data</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+<b>Defaults</b>
+</p>
+
+<blockquote>
+
+<dl>
+<dt>
+<tt>static GlowWidgetWindowParams <b>defaults</b></tt>
+<dd>
+Default parameters. These are copied every time a new <tt>GlowWidgetWindowParams</tt> is constructed.
+</dl>
+
+</blockquote>
+
+</blockquote>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>Methods</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+<b>Constructor</b>
+</p>
+
+<blockquote>
+
+<p>
+<tt><b>GlowWidgetWindowParams</b>(void)</tt>
+</p>
+<blockquote>
+Constructs a new parameter block, copying <tt>defaults</tt>
+</blockquote>
+
+</blockquote>
+
+</blockquote>
+
+<hr size=2>
+
+<p>
+<table cellpadding=0 cellspacing=3><tr>
+<td valign=top>
+<a href="index.html"><image src="../graphics/revert.gif" border=0></a>
+</td>
+<td valign=top>
+<a href="index.html">Back to<br>Table of contents</a>
+</td>
+</tr></table>
+</p>
+
+<hr size=2>
+
+<p>
+<address>
+<a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
+(<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
+<br>
+Last updated 13 March 2000
+</address>
+
+
+</body>
+
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+
+<head>
+
+<title>
+GLOW Reference
+</title>
+
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<h2>
+class GlowTextFieldWindowParams
+</h2>
+
+<hr size=2>
+
+<p>
+<table cellpadding=0 cellspacing=3><tr>
+<td valign=top>
+<a href="index.html"><image src="../graphics/revert.gif" border=0></a>
+</td>
+<td valign=top>
+<a href="index.html">Back to<br>Table of contents</a>
+</td>
+</tr></table>
+</p>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>General information</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+<b>
+type: struct
+<br>
+inherits: (none)
+<br>
+module: <tt><a href="M_glowTextFieldWindow.html">glowTextFieldWindow</a></tt>
+</b>
+</p>
+<p>
+<tt>GlowTextFieldWindowParams</tt> encloses parameters for construction of a <tt><a href="GlowTextFieldWindow.html">GlowTextFieldWindow</a></tt>.
+</p>
+<p>
+GLOW programs that use text field windows will need to use <tt>GlowTextFieldWindowParams</tt>.
+</p>
+
+</blockquote>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>Data</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+<b>Parameter data</b>
+</p>
+
+<blockquote>
+
+<dl>
+<dt>
+<tt>const char* <b>windowTitle</b></tt>
+<dd>
+Title for the window. Initial default is "Enter text".
+<dt>
+<tt>int <b>x</b></tt>
+<dd>
+X location of the upper left of the window, in pixel coordinates of the screen. Initial default is <tt><a href="GlowWindow.html">GlowWindow</a>::autoPosition</tt>.
+<dt>
+<tt>int <b>y</b></tt>
+<dd>
+Y location of the upper left of the window, in pixel coordinates of the screen. Initial default is <tt><a href="GlowWindow.html">GlowWindow</a>::autoPosition</tt>.
+<dt>
+<tt>int <b>fieldWidth</b></tt>
+<dd>
+Width of the text field in pixels. Initial default is 100.
+<dt>
+<tt>int <b>fieldHideCharacter</b></tt>
+<dd>
+Character to use to hide the field's true input, or 0 for no hiding. Initial default is 0.
+<dt>
+<tt>const char* <b>labelText</b></tt>
+<dd>
+The text field label. Include newline characters to specify a multi-line message. Initial default is the empty string "".
+<dt>
+<tt>const char* <b>fieldText</b></tt>
+<dd>
+Initial text field value. Initial default is the empty string "".
+<dt>
+<tt><a href="GlowFont.html">GlowFont</a> <b>labelFont</b></tt>
+<dd>
+Font for the field label. Initial default is <tt><a href="GlowFont.html">GlowFont</a>::helvetica12</tt>.
+<dt>
+<tt><a href="GlowFont.html">GlowFont</a> <b>fieldFont</b></tt>
+<dd>
+Font for the text field. Initial default is <tt><a href="GlowFont.html">GlowFont</a>::helvetica12</tt>.
+<dt>
+<tt><a href="GlowFont.html">GlowFont</a> <b>buttonFont</b></tt>
+<dd>
+Font for the buttons. Initial default is <tt><a href="GlowFont.html">GlowFont</a>::helvetica12</tt>.
+<dt>
+<tt>const char* <b>buttonLabels</b></tt>
+<dd>
+Labels for the buttons, tab-delimited. Initial default is "OK" (denoting a single button with that label).
+<dt>
+<tt>int <b>windowSpacing</b></tt>
+<dd>
+Spacing between elements in the window. Initial default is 20.
+<dt>
+<tt><a href="GlowTextFieldWindowReceive.html">GlowTextFieldWindowReceiver</a>* <b>receiver</b></tt>
+<dd>
+Receiver to receive events for this window, or the null pointer for no event reporting. You can still add or remove receivers later. Initial default is null.
+</dl>
+
+
+</blockquote>
+
+<p>
+<b>Color data</b>
+</p>
+
+<blockquote>
+
+<tt><a href="GlowColor.html">GlowColor</a> <b>backColor</b></tt>
+<br>
+<tt><a href="GlowColor.html">GlowColor</a> <b>labelColor</b></tt>
+<br>
+<tt><a href="GlowColor.html">GlowColor</a> <b>fieldBackColor</b></tt>
+<br>
+<tt><a href="GlowColor.html">GlowColor</a> <b>fieldHiliteBackColor</b></tt>
+<br>
+<tt><a href="GlowColor.html">GlowColor</a> <b>fieldTextColor</b></tt>
+<br>
+<tt><a href="GlowColor.html">GlowColor</a> <b>fieldHiliteTextColor</b></tt>
+<br>
+<tt><a href="GlowColor.html">GlowColor</a> <b>fieldCaretColor</b></tt>
+
+</blockquote>
+
+
+</blockquote>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>Static Data</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+<b>Defaults</b>
+</p>
+
+<blockquote>
+
+<dl>
+<dt>
+<tt>static GlowTextFieldWindowParams <b>defaults</b></tt>
+<dd>
+Default parameters. These are copied every time a new GlowTextFieldWindowParams is constructed.
+</dl>
+
+</blockquote>
+
+</blockquote>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>Methods</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+<b>Constructor</b>
+</p>
+
+<blockquote>
+
+<p>
+<tt><b>GlowTextFieldWindowParams</b>(void)</tt>
+</p>
+<blockquote>
+Constructs a new parameter block, copying <tt>defaults</tt>
+</blockquote>
+
+</blockquote>
+
+</blockquote>
+
+<hr size=2>
+
+<p>
+<table cellpadding=0 cellspacing=3><tr>
+<td valign=top>
+<a href="index.html"><image src="../graphics/revert.gif" border=0></a>
+</td>
+<td valign=top>
+<a href="index.html">Back to<br>Table of contents</a>
+</td>
+</tr></table>
+</p>
+
+<hr size=2>
+
+<p>
+<address>
+<a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
+(<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
+<br>
+Last updated 13 March 2000
+</address>
+
+
+</body>
+
+</html>

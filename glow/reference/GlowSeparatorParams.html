@@ -1,0 +1,217 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+
+<head>
+
+<title>
+GLOW Reference
+</title>
+
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<h2>
+class GlowSeparatorParams
+</h2>
+
+
+<hr size=2>
+
+<p>
+<table cellpadding=0 cellspacing=3><tr>
+<td valign=top>
+<a href="index.html"><image src="../graphics/revert.gif" border=0></a>
+</td>
+<td valign=top>
+<a href="index.html">Back to<br>Table of contents</a>
+</td>
+</tr></table>
+</p>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>General information</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+<b>
+type: struct
+<br>
+inherits: <tt><a href="GlowWidgetParams.html">GlowWidgetParams</a></tt>
+<br>
+module: <tt><a href="M_glowSeparatorWidget.html">glowSeparatorWidget</a></tt>
+</b>
+</p>
+<p>
+<tt>GlowSeparatorParams</tt> encloses parameters for construction of a <tt><a href="GlowSeparatorWidget.html">GlowSeparatorWidget</a></tt>.
+</p>
+<p>
+GLOW programs which use separators may need to use <tt>GlowSeparatorParams</tt> to construct a separator.
+</p>
+
+</blockquote>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>Data</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+<b>General widget parameter data</b>
+<br>
+These fields are inherited from <tt><a href="GlowWidgetParams.html">GlowWidgetParams</a></tt>. Note that their default values may be different from those of the generic widget params.
+</p>
+
+<blockquote>
+
+<dl>
+<dt>
+<tt>int <b>width</b></tt>
+<dd>
+Width of the widget. Initial default is 100.
+<dt>
+<tt>int <b>height</b></tt>
+<dd>
+Height of the widget. Initial default is 4.
+<dt>
+<tt>int <b>x</b></tt>
+<dd>
+X location of the upper left of the widget, in pixel coordinates of the parent widget. Initial default is 0.
+<dt>
+<tt>int <b>y</b></tt>
+<dd>
+Y location of the upper left of the widget, in pixel coordinates of the parent widget. Initial default is 0.
+<dt>
+<tt>long <b>refcon</b></tt>
+<dd>
+Reference constant for this widget. Initial default 0.
+<dt>
+<tt>bool <b>clipping</b></tt>
+<dd>
+Should the widget clip to its rectangle when drawing children. Initial default is true.
+</dl>
+
+</blockquote>
+
+
+<p>
+<b>Parameter data specific to separator</b>
+</p>
+
+<blockquote>
+
+<dl>
+<dt>
+<tt>int <b>style</b></tt>
+<dd>
+Drawing style. Initial default is <tt><a href="GlowSeparatorWidget.html">GlowSeparatorWidget</a>::valleyStyle</tt>.
+</dl>
+
+</blockquote>
+
+
+<p>
+<b>Color parameter data</b>
+</p>
+
+<blockquote>
+
+<tt><a href="GlowColor.html">GlowColor</a> <b>lightBevelColor</b></tt>
+<br>
+<tt><a href="GlowColor.html">GlowColor</a> <b>darkBevelColor</b></tt>
+
+</blockquote>
+
+</blockquote>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>Static Data</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+<b>Defaults</b>
+</p>
+
+<blockquote>
+
+<dl>
+<dt>
+<tt>static GlowSeparatorParams <b>defaults</b></tt>
+<dd>
+Default parameters. These are copied every time a new <tt>GlowSeparatorParams</tt> is constructed.
+</dl>
+
+</blockquote>
+
+</blockquote>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>Methods</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+<b>Constructor</b>
+</p>
+
+<blockquote>
+
+<p>
+<tt><b>GlowSeparatorParams</b>(void)</tt>
+</p>
+<blockquote>
+Constructs a new parameter block, copying <tt>defaults</tt>
+</blockquote>
+
+</blockquote>
+
+</blockquote>
+
+
+<hr size=2>
+
+<p>
+<table cellpadding=0 cellspacing=3><tr>
+<td valign=top>
+<a href="index.html"><image src="../graphics/revert.gif" border=0></a>
+</td>
+<td valign=top>
+<a href="index.html">Back to<br>Table of contents</a>
+</td>
+</tr></table>
+</p>
+
+
+<hr size=2>
+
+<p>
+<address>
+<a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
+(<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
+<br>
+Last updated 13 March 2000
+</address>
+
+
+</body>
+
+</html>

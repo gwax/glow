@@ -1,0 +1,316 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+
+<head>
+
+<title>
+GLOW Reference
+</title>
+
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<h2>
+class GlowLabeledSliderParams
+</h2>
+
+
+<hr size=2>
+
+<p>
+<table cellpadding=0 cellspacing=3><tr>
+<td valign=top>
+<a href="index.html"><image src="../graphics/revert.gif" border=0></a>
+</td>
+<td valign=top>
+<a href="index.html">Back to<br>Table of contents</a>
+</td>
+</tr></table>
+</p>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>General information</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+<b>
+type: struct
+<br>
+inherits: <tt><a href="GlowSliderParams.html">GlowSliderParams</a></tt>
+<br>
+module: <tt><a href="M_glowSliderWidget.html">glowSliderWidget</a></tt>
+</b>
+</p>
+<p>
+<tt>GlowLabeledSliderParams</tt> encloses parameters for construction of a <tt><a href="GlowLabeledSliderWidget.html">GlowLabeledSliderWidget</a></tt>.
+</p>
+<p>
+GLOW programs which use labeled sliders may need to use <tt>GlowLabeledSliderParams</tt> to construct a labeled slider.
+</p>
+
+</blockquote>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>Data</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+<b>General widget parameter data</b>
+<br>
+These fields are inherited from <tt><a href="GlowWidgetParams.html">GlowWidgetParams</a></tt>. Note that their default values may be different from the generic widget parameters.
+</p>
+
+<blockquote>
+
+<dl>
+<dt>
+<tt>int <b>width</b></tt>
+<dd>
+Width of the widget. Initial default is 130.
+<dt>
+<tt>int <b>height</b></tt>
+<dd>
+Height of the widget. Initial default is 30.
+<dt>
+<tt>int <b>x</b></tt>
+<dd>
+X location of the upper left of the widget, in pixel coordinates of the parent widget. Initial default is 0.
+<dt>
+<tt>int <b>y</b></tt>
+<dd>
+Y location of the upper left of the widget, in pixel coordinates of the parent widget. Initial default is 0.
+<dt>
+<tt>long <b>refcon</b></tt>
+<dd>
+Reference constant for this widget. Initial default 0.
+<dt>
+<tt>bool <b>clipping</b></tt>
+<dd>
+Should the widget clip to its rectangle when drawing children. Initial default is false.
+</dl>
+
+</blockquote>
+
+
+<p>
+<b>Parameter data specific to sliders</b>
+<br>
+These fields are inherited from <tt><a href="GlowSliderParams.html">GlowSliderParams</a></tt>.
+</p>
+
+<blockquote>
+
+<dl>
+<dt>
+<tt>double <b>min</b></tt>
+<dd>
+Initial minimum value. Default is 0.0.
+<dt>
+<tt>double <b>max</b></tt>
+<dd>
+Initial maximum value. Default is 1.0.
+<dt>
+<tt>double <b>initial</b></tt>
+<dd>
+Initial value. Default is 0.0.
+<dt>
+<tt>int <b>numTicks</b></tt>
+<dd>
+Number of tick marks to draw. Initial default is 2.
+<dt>
+<tt><a href="GlowSliderReceiver.html">GlowSliderReceiver</a>* <b>receiver</b></tt>
+<dd>
+Receiver for slider events. Initial default is 0.
+</dl>
+
+</blockquote>
+
+
+<p>
+<b>Color parameter data</b>
+<br>
+These fields are inherited from <tt><a href="GlowSliderParams.html">GlowSliderParams</a></tt>.
+</p>
+
+<blockquote>
+
+<tt><a href="GlowColor.html">GlowColor</a> <b>stripColor</b></tt>
+<br>
+<tt><a href="GlowColor.html">GlowColor</a> <b>indicatorColor</b></tt>
+<br>
+<tt><a href="GlowColor.html">GlowColor</a> <b>tickMarkColor</b></tt>
+<br>
+<tt><a href="GlowColor.html">GlowColor</a> <b>hiliteIndicatorColor</b></tt>
+<br>
+<tt><a href="GlowColor.html">GlowColor</a> <b>disableStripColor</b></tt>
+<br>
+<tt><a href="GlowColor.html">GlowColor</a> <b>disableIndicatorColor</b></tt>
+<br>
+<tt><a href="GlowColor.html">GlowColor</a> <b>disableTickMarkColor</b></tt>
+<br>
+<tt><a href="GlowColor.html">GlowColor</a> <b>disableOutlineColor</b></tt>
+<br>
+<tt><a href="GlowColor.html">GlowColor</a> <b>lightBevelColor</b></tt>
+<br>
+<tt><a href="GlowColor.html">GlowColor</a> <b>darkBevelColor</b></tt>
+
+</blockquote>
+
+<p>
+<b>Parameter data specific to the label</b>
+</p>
+
+<blockquote>
+
+<dl>
+<dt>
+<tt>const char* <b>labelTemplate</b></tt>
+<dd>
+Template text for the main label, or 0 for no label. Initial default is 0.
+<dt>
+<tt><a href="GlowFont.html">GlowFont</a> <b>labelFont</b></tt>
+<dd>
+Font for the main label. Initial default is <tt><a href="GlowFont.html">GlowFont</a>::helvetica12</tt>.
+<dt>
+<tt>int <b>labelPosition</b></tt>
+<dd>
+Position code for the label. Use the constants given in <tt><a href="GlowLabeledSliderWidget.html">GlowLabeledSliderWidget</a></tt>.
+<dt>
+<tt>int <b>labelWidth</b></tt>
+<dd>
+Width of the label in pixels.
+<dt>
+<tt>int <b>labelHeight</b></tt>
+<dd>
+Height of the label in pixels.
+<dt>
+<tt>int <b>labelSpacing</b></tt>
+<dd>
+Spacing between the label and the popup menu box in pixels.
+<dt>
+<tt><a href="GlowColor.html">GlowColor</a> <b>labelColor</b></tt>
+<dd>
+Color of the main label text.
+<dt>
+<tt><a href="GlowColor.html">GlowColor</a> <b>disableLabelColor</b></tt>
+<dd>
+Color of the main label text when the menu is disabled.
+<dt>
+<tt>const char* <b>minmaxTemplate</b></tt>
+<dd>
+Template text for minimum and maximum labels, or 0 for no labels. Initial default is 0.
+<dt>
+<tt><a href="GlowFont.html">GlowFont</a> <b>minmaxFont</b></tt>
+<dd>
+Font for the minimum and maximum labels. Initial default is <tt><a href="GlowFont.html">GlowFont</a>::helvetica12</tt>.
+<dt>
+<tt>int <b>minmaxSize</b></tt>
+<dd>
+Maximum size allocated to minimum and maximum labels. Initial default is 15.
+<dt>
+<tt><a href="GlowColor.html">GlowColor</a> <b>minmaxColor</b></tt>
+<dd>
+Color of the minimum and maximum label text.
+<dt>
+<tt><a href="GlowColor.html">GlowColor</a> <b>disableMinmaxColor</b></tt>
+<dd>
+Color of the minimum and maximum label text when the menu is disabled.
+</dl>
+
+</blockquote>
+
+</blockquote>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>Static Data</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+<b>Defaults</b>
+</p>
+
+<blockquote>
+
+<dl>
+<dt>
+<tt>static GlowLabeledSliderParams <b>defaults</b></tt>
+<dd>
+Default parameters. These are copied every time a new <tt>GlowLabeledSliderParams</tt> is constructed.
+</dl>
+
+</blockquote>
+
+</blockquote>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>Methods</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+<b>Constructor</b>
+</p>
+
+<blockquote>
+
+<p>
+<tt><b>GlowLabeledSliderParams</b>(void)</tt>
+</p>
+<blockquote>
+Constructs a new parameter block, copying <tt>defaults</tt>
+</blockquote>
+
+</blockquote>
+
+</blockquote>
+
+
+<hr size=2>
+
+<p>
+<table cellpadding=0 cellspacing=3><tr>
+<td valign=top>
+<a href="index.html"><image src="../graphics/revert.gif" border=0></a>
+</td>
+<td valign=top>
+<a href="index.html">Back to<br>Table of contents</a>
+</td>
+</tr></table>
+</p>
+
+
+<hr size=2>
+
+<p>
+<address>
+<a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
+(<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
+<br>
+Last updated 13 March 2000
+</address>
+
+
+</body>
+
+</html>

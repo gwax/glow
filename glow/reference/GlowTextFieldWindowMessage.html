@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<html>
+
+<head>
+
+<title>
+GLOW Reference
+</title>
+
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<h2>
+class GlowTextFieldWindowMessage
+</h2>
+
+
+<hr size=2>
+
+<p>
+<table cellpadding=0 cellspacing=3><tr>
+<td valign=top>
+<a href="index.html"><image src="../graphics/revert.gif" border=0></a>
+</td>
+<td valign=top>
+<a href="index.html">Back to<br>Table of contents</a>
+</td>
+</tr></table>
+</p>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>General information</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+<b>
+type: struct
+<br>
+inherits: (none)
+<br>
+module: <tt><a href="M_glowTextFieldWindow.html">glowTextFieldWindow</a></tt>
+</b>
+</p>
+<p>
+<tt>GlowTextFieldWindowMessage</tt> encloses data sent to a <tt><a href="GlowTextFieldWindowReceive.html">GlowTextFieldWindowReceiver</a></tt> to notify it of a button press event in the window.
+</p>
+<p>
+GLOW programs that use text field windows should receive <tt>GlowTextFieldWindowMessage</tt>s to get access to the text data entered.
+</p>
+
+</blockquote>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>Data</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+<b>Event data</b>
+</p>
+
+<blockquote>
+
+<dl>
+<dt>
+<tt><a href="GlowTextFieldWindow.html">GlowTextFieldWindow</a>* <b>window</b></tt>
+<dd>
+The window involved.
+<dt>
+<tt>std::string <b>text</b></tt>
+<dd>
+Value of the text field.
+<dt>
+<tt>int <b>response</b></tt>
+<dd>
+Number of the button pressed.
+<dt>
+<tt>int <b>mouseButton</b></tt>
+<dd>
+The mouse button that was pressed. Uses the constants defined in <a href="Glow.html">Glow</a>.
+<dt>
+<tt>int <b>modifiers</b></tt>
+<dd>
+Keyboard modifiers that were down when the mouse button was pressed.
+</dl>
+
+</blockquote>
+
+</blockquote>
+
+
+<hr size=2>
+
+<p>
+<table cellpadding=0 cellspacing=3><tr>
+<td valign=top>
+<a href="index.html"><image src="../graphics/revert.gif" border=0></a>
+</td>
+<td valign=top>
+<a href="index.html">Back to<br>Table of contents</a>
+</td>
+</tr></table>
+</p>
+
+
+<hr size=2>
+
+<p>
+<address>
+<a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
+(<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
+<br>
+Last updated 13 March 2000
+</address>
+
+
+</body>
+
+</html>
