@@ -94,7 +94,7 @@
 #endif
 
 // Compatibility for missing min and max templates (msvc)
-#if defined(GLOW_COMPAT_NOSTDMINMAX) && !defined(VIRTUOSO_INTERNAL_MINMAXDEFINED)
+#if defined(GLOW_COMPAT_NOSTDMINMAX) && !defined(GLOW_INTERNAL_MINMAXDEFINED)
 	#ifndef GLOW_COMPAT_NOSTDNAMESPACE
 		namespace std {
 	#endif
@@ -107,20 +107,8 @@
 	#ifndef GLOW_COMPAT_NOSTDNAMESPACE
 		}
 	#endif
-	#define VIRTUOSO_INTERNAL_MINMAXDEFINED
+	#define GLOW_INTERNAL_MINMAXDEFINED
 #endif
-
-// Unique release number (doesn't mean anything special)
-#define GLOW_TOOLKIT 10
-
-// Fractional version number
-// e.g. 1.3.11pre4 == 1.031104
-// e.g. 1.3.11     == 1.031199
-#define GLOW_VERSION 1.000099
-
-// API version number
-// 1  == GLOW release 1.0
-#define GLOW_APIVERSION 1
 
 // Internal utility
 #define GLOW_INTERNAL_SETUPENUMBITFIELD(T) \
@@ -128,6 +116,32 @@
 	inline T operator&(T op1, T op2) {return T(int(op1)&int(op2));} \
 	inline T& operator|=(T& op1, T op2) {op1=T(int(op1)|int(op2)); return op1;} \
 	inline T& operator&=(T& op1, T op2) {op1=T(int(op1)&int(op2)); return op1;}
+
+// For MSVC DLL compiling (not yet working)
+#ifdef WIN32
+	#ifdef GLOW_OPTION_DLLEXPORTS
+		#define GLOW_EXTERN _declspec(dllexport)
+	#endif
+	#ifdef GLOW_OPTION_DLLIMPORTS
+		#define GLOW_EXTERN _declspec(dllimport)
+	#endif
+#endif
+#ifndef GLOW_EXTERN
+	#define GLOW_EXTERN
+#endif
+
+// Release number (doesn't mean anything special)
+#define GLOW_TOOLKIT 12
+
+// Fractional version number
+// e.g. 1.3.11pre4 == 1.031104
+// e.g. 1.3.11     == 1.031199
+#define GLOW_VERSION 1.010001
+
+// API version number
+// 1  == GLOW release 1.0
+// 2  == GLOW release 1.2
+#define GLOW_APIVERSION 2
 
 // Establish namespaces so using directive doesn't barf
 GLOW_NAMESPACE_BEGIN

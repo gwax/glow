@@ -369,7 +369,7 @@ class GlowScrollBarMessage
 
 /*
 ===============================================================================
-	STRUCT GlowScrollBarParams
+	CLASS GlowScrollBarParams
 	
 	Scroll bar params
 ===============================================================================

@@ -344,7 +344,7 @@ class GlowRadioButtonMessage
 
 /*
 ===============================================================================
-	STRUCT GlowRadioButtonParams
+	CLASS GlowRadioButtonParams
 	
 	Radio button params
 ===============================================================================
@@ -383,7 +383,7 @@ class GlowRadioButtonParams :
 
 /*
 ===============================================================================
-	STRUCT GlowRadioGroupParams
+	CLASS GlowRadioGroupParams
 	
 	Radio group params
 ===============================================================================

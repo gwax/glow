@@ -175,7 +175,7 @@ class GlowSeparatorWidget :
 
 /*
 ===============================================================================
-	STRUCT GlowSeparatorParams
+	CLASS GlowSeparatorParams
 	
 	Separator params
 ===============================================================================

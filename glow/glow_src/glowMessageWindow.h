@@ -85,12 +85,14 @@ class GlowWidgetMapToPushButtonFilter;
 ===============================================================================
 */
 
-struct GlowMessageWindowMessage
+class GlowMessageWindowMessage
 {
-	GlowMessageWindow* window;
-	int response;
-	Glow::MouseButton mouseButton;
-	Glow::Modifiers modifiers;
+	public:
+	
+		GlowMessageWindow* window;
+		int response;
+		Glow::MouseButton mouseButton;
+		Glow::Modifiers modifiers;
 };
 
 
@@ -99,32 +101,37 @@ typedef TReceiver<const GlowMessageWindowMessage&> GlowMessageWindowReceiver;
 
 /*
 ===============================================================================
-	STRUCT GlowMessageWindowParams
+	CLASS GlowMessageWindowParams
 	
 	Message window params
 ===============================================================================
 */
 
-struct GlowMessageWindowParams
+class GlowMessageWindowParams
 {
-	const char* windowTitle;
-	int x;
-	int y;
-	const char* text;
-	GlowFont textFont;
-	GlowFont buttonFont;
-	const char* buttonLabels;
-	int windowSpacing;
-	int enterButton;
-	int escapeButton;
-	GlowMessageWindowReceiver* receiver;
-	GlowColor backColor;
-	GlowColor textColor;
+	public:
 	
-	static GlowMessageWindowParams defaults;
+		const char* windowTitle;
+		int x;
+		int y;
+		const char* text;
+		GlowFont textFont;
+		GlowFont buttonFont;
+		const char* buttonLabels;
+		int windowSpacing;
+		int enterButton;
+		int escapeButton;
+		GlowMessageWindowReceiver* receiver;
+		GlowColor backColor;
+		GlowColor textColor;
 	
-	GlowMessageWindowParams();
-	GlowMessageWindowParams(bool);
+		static GlowMessageWindowParams defaults;
+	
+		GlowMessageWindowParams();
+	
+	protected:
+	
+		GlowMessageWindowParams(bool);
 };
 
 

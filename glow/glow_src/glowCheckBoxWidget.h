@@ -308,7 +308,7 @@ class GlowCheckBoxMessage
 
 /*
 ===============================================================================
-	STRUCT GlowCheckBoxParams
+	CLASS GlowCheckBoxParams
 	
 	Check box params
 ===============================================================================

@@ -88,7 +88,7 @@ class GlowWidget;
 
 /*
 ===============================================================================
-	STRUCT GlowWidgetParams
+	CLASS GlowWidgetParams
 	
 	Widget params (base)
 ===============================================================================
@@ -115,7 +115,7 @@ class GlowWidgetParams
 
 /*
 ===============================================================================
-	STRUCT GlowWidgetRootParams
+	CLASS GlowWidgetRootParams
 	
 	Widget root params
 ===============================================================================
@@ -140,7 +140,7 @@ class GlowWidgetSubwindowParams :
 
 /*
 ===============================================================================
-	STRUCT GlowWidgetWindowParams
+	CLASS GlowWidgetWindowParams
 	
 	Widget window params
 ===============================================================================

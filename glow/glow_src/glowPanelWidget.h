@@ -181,7 +181,7 @@ class GlowPanelWidget :
 
 /*
 ===============================================================================
-	STRUCT GlowPanelParams
+	CLASS GlowPanelParams
 	
 	Panel widget params
 ===============================================================================

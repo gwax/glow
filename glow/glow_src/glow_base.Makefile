@@ -48,7 +48,8 @@ _ARCH:=$(shell uname -s)
 _FILEOPTS:=$(patsubst .glowmake.%,%,$(wildcard .glowmake.*))
 _DEBUGFILEOPT:=$(filter DEBUG,$(_FILEOPTS))
 _STRIPFILEOPT:=$(filter STRIP,$(_FILEOPTS))
-_OTHERFILEOPTS:=$(filter-out DEBUG STRIP,$(_FILEOPTS))
+_GLOWLIBFILEOPT:=$(filter GLOWLIB,$(_FILEOPTS))
+_OTHERFILEOPTS:=$(filter-out DEBUG STRIP GLOWLIB,$(_FILEOPTS))
 _FIRSTFILEOPT:=$(firstword $(_OTHERFILEOPTS))
 
 ifneq ($(origin PROG_$(_ARCH)),undefined)
@@ -168,7 +169,7 @@ ifneq ($(origin DEBUGCFLAGS_$(_ARCH)),undefined)
 DEBUGCFLAGS:=$(DEBUGCFLAGS_$(_ARCH))
 endif
 ifndef DEBUGCFLAGS
-DEBUGCFLAGS:=-DGLOW_OPTION_DEBUG
+DEBUGCFLAGS:=-g -DGLOW_OPTION_DEBUG
 endif
 DEBUGCFLAGS+=$(foreach _TEMP,$(_OTHERFILEOPTS),$(DEBUGCFLAGS_$(_TEMP)))
 
@@ -225,14 +226,27 @@ dummy:
 	@echo
 endif
 
+ifeq ($(_GLOWLIBFILEOPT),GLOWLIB)
+_OBJS:=$(addsuffix .o,$(MODULES))
+_DEPS:=$(addsuffix .$(DEPSUFFIX),$(MODULES))
+else
 _OBJS:=$(addsuffix .o,$(GLOWMODULES) $(MODULES))
 _DEPS:=$(addsuffix .$(DEPSUFFIX),$(GLOWMODULES) $(MODULES))
+endif
 VPATH=$(SRCDIR):$(GLOWDIR)
 
 $(PROG): $(_OBJS)
 	@echo
 	@echo --- Linker: $@ ---
+ifeq ($(_GLOWLIBFILEOPT),GLOWLIB)
+ifeq ($(_DEBUGFILEOPT),DEBUG)
+	$(LINK) $(LDFLAGS) -o $@ $^ -lglowdebug $(LIBS)
+else
+	$(LINK) $(LDFLAGS) -o $@ $^ -lglow $(LIBS)
+endif
+else
 	$(LINK) $(LDFLAGS) -o $@ $^ $(LIBS)
+endif
 	@echo
 ifeq ($(_STRIPFILEOPT),STRIP)
 	@echo --- Post-linker: $@ ---
@@ -268,6 +282,11 @@ info:
 	@echo GLOW-SOURCE-DIRECTORY: $(GLOWDIR)
 	@echo
 	@echo ARCHITECTURE: $(_ARCH)
+ifeq ($(_GLOWLIBFILEOPT),GLOWLIB)
+	@echo LINKING WITH GLOW LIBRARY
+else
+	@echo COMPILING GLOW SOURCES
+endif
 ifeq ($(_DEBUGFILEOPT),DEBUG)
 	@echo DEBUG VERSION
 else
@@ -320,7 +339,7 @@ cleandeps:
 clean:
 	@echo
 	@echo --- Cleaning: $(PROG) ---
-	rm -f -r $(PROG) *.o *.$(DEPSUFFIX) ii_files
+	rm -f -r $(PROG) *.o *.$(DEPSUFFIX) ii_files so_locations
 	@echo
 	@echo +++ Finished clean +++
 	@echo
@@ -345,14 +364,14 @@ depend:
 %.h:
 	@echo File in dependency missing: $@
 
+IGNOREDEPTARGETS+=info cleanobjs cleandeps clean
+
 ifndef _MISSINGSTUFF
-ifneq ($(MAKECMDGOALS),info)
-ifneq ($(MAKECMDGOALS),cleanobjs)
-ifneq ($(MAKECMDGOALS),cleandeps)
-ifneq ($(MAKECMDGOALS),clean)
+ifeq ($(MAKECMDGOALS),)
 include $(_DEPS)
-endif
-endif
+else
+ifneq ($(filter $(MAKECMDGOALS),$(IGNOREDEPTARGETS)),$(MAKECMDGOALS))
+include $(_DEPS)
 endif
 endif
 endif

@@ -1,6 +1,6 @@
 
 The GLOW Toolkit
-version 1.0.0 (29 June 2000)
+version 1.1.0 (unknown, 2000)
 Copyright (C) 1997-2000  Daniel Azuma
 
 
@@ -13,7 +13,7 @@ CONTENTS
 
    (2) Terms and conditions
 
-   (3) Release notes 1.0.0
+   (3) Release notes 1.1.0
 
    (4) Installing GLOW
 
@@ -76,9 +76,9 @@ RELEASE NOTES
 
 
     The GLOW Toolkit
-    Version 1.0.0 (29 June 2000)
+    Version 1.1.0 (unknown 2000)
 
-    These notes detail the differences between versions 0.9.9 and 1.0.0.
+    These notes detail the differences between versions 1.0.0 and 1.1.0.
     A complete history of publicly released versions can be found on the
     GLOW web site.
 
@@ -86,11 +86,7 @@ RELEASE NOTES
     Features added
     --------------
 
-      Quatf can now be cast to GLfloat*. Why anyone would want to do
-      this I'm not sure, but the feature is now there.
-
-      Added GLOW_APIVERSION symbol and Glow::APIVersion(). A value of 1
-      is returned for version 1.0.0 of The GLOW Toolkit.
+      (none)
 
 
     Features changed
@@ -102,22 +98,13 @@ RELEASE NOTES
     Bugs fixed
     ----------
 
-      Glow::PopModalWindow() crashed if no windows were modal. Fixed.
-
-      Lessons 7 and 8 didn't build under MSVC. Fixed.
-
-      Mat4f was missing the cast to GLfloat* operator. Fixed.
-
-      A couple of minor bugs and broken links were found in the
-      tutorial. Fixed.
+      (none)
 
 
     Internal changes
     ----------------
 
-      Refresh() now uses glutPostWindowRedisplay() if available. Should
-      be a little faster. Other window-related methods also try to avoid
-      calling glutSetWindow().
+      (none)
 
 
     Known issues

@@ -691,7 +691,7 @@ class GlowComponent
 
 /*
 ===============================================================================
-	STRUCT GlowMenuMessage
+	CLASS GlowMenuMessage
 
 	Message sent on menu hit
 ===============================================================================

@@ -88,13 +88,15 @@ class GlowWidgetMapToPushButtonFilter;
 ===============================================================================
 */
 
-struct GlowTextFieldWindowMessage
+class GlowTextFieldWindowMessage
 {
-	GlowTextFieldWindow* window;
-	GLOW_STD::string text;
-	int response;
-	Glow::MouseButton mouseButton;
-	Glow::Modifiers modifiers;
+	public:
+	
+		GlowTextFieldWindow* window;
+		GLOW_STD::string text;
+		int response;
+		Glow::MouseButton mouseButton;
+		Glow::Modifiers modifiers;
 };
 
 
@@ -103,41 +105,46 @@ typedef TReceiver<const GlowTextFieldWindowMessage&> GlowTextFieldWindowReceiver
 
 /*
 ===============================================================================
-	STRUCT GlowTextFieldWindowParams
+	CLASS GlowTextFieldWindowParams
 	
 	Text field window params
 ===============================================================================
 */
 
-struct GlowTextFieldWindowParams
+class GlowTextFieldWindowParams
 {
-	const char* windowTitle;
-	int x;
-	int y;
-	const char* labelText;
-	GlowFont labelFont;
-	const char* fieldText;
-	GlowFont fieldFont;
-	int fieldWidth;
-	char fieldHideCharacter;
-	GlowFont buttonFont;
-	const char* buttonLabels;
-	int windowSpacing;
-	int enterButton;
-	int escapeButton;
-	GlowTextFieldWindowReceiver* receiver;
-	GlowColor backColor;
-	GlowColor labelColor;
-	GlowColor fieldBackColor;
-	GlowColor fieldHiliteBackColor;
-	GlowColor fieldTextColor;
-	GlowColor fieldHiliteTextColor;
-	GlowColor fieldCaretColor;
+	public:
 	
-	static GlowTextFieldWindowParams defaults;
+		const char* windowTitle;
+		int x;
+		int y;
+		const char* labelText;
+		GlowFont labelFont;
+		const char* fieldText;
+		GlowFont fieldFont;
+		int fieldWidth;
+		char fieldHideCharacter;
+		GlowFont buttonFont;
+		const char* buttonLabels;
+		int windowSpacing;
+		int enterButton;
+		int escapeButton;
+		GlowTextFieldWindowReceiver* receiver;
+		GlowColor backColor;
+		GlowColor labelColor;
+		GlowColor fieldBackColor;
+		GlowColor fieldHiliteBackColor;
+		GlowColor fieldTextColor;
+		GlowColor fieldHiliteTextColor;
+		GlowColor fieldCaretColor;
 	
-	GlowTextFieldWindowParams();
-	GlowTextFieldWindowParams(bool);
+		static GlowTextFieldWindowParams defaults;
+	
+		GlowTextFieldWindowParams();
+	
+	protected:
+	
+		GlowTextFieldWindowParams(bool);
 };
 
 

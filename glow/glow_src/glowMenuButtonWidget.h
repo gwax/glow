@@ -491,7 +491,7 @@ class GlowPopupMenuMessage
 
 /*
 ===============================================================================
-	STRUCT GlowMenuButtonParams
+	CLASS GlowMenuButtonParams
 	
 	Menu button params
 ===============================================================================
@@ -532,7 +532,7 @@ class GlowMenuButtonParams :
 
 /*
 ===============================================================================
-	STRUCT GlowPopupMenuParams
+	CLASS GlowPopupMenuParams
 	
 	Popup menu params
 ===============================================================================
@@ -574,7 +574,7 @@ class GlowPopupMenuParams :
 
 /*
 ===============================================================================
-	STRUCT GlowLabeledPopupMenuParams
+	CLASS GlowLabeledPopupMenuParams
 	
 	Labeled popup menu params
 ===============================================================================

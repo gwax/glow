@@ -434,7 +434,7 @@ class GlowLabeledSliderWidget :
 
 /*
 ===============================================================================
-	STRUCT GlowSliderParams
+	CLASS GlowSliderParams
 	
 	Slider params
 ===============================================================================
@@ -474,7 +474,7 @@ class GlowSliderParams :
 
 /*
 ===============================================================================
-	STRUCT GlowLabeledSliderParams
+	CLASS GlowLabeledSliderParams
 	
 	Slider label params
 ===============================================================================

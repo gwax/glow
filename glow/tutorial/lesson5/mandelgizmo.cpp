@@ -196,6 +196,7 @@ GlowComponent(parent)
 
 MandelGizmoComponent::~MandelGizmoComponent()
 {
+	GLOW_DEBUGSCOPE("MandelGizmoComponent::~MandelGizmoComponent");
 	// Done with texture object
 	::glDeleteTextures(1, &_texObject);
 }

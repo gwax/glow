@@ -347,7 +347,7 @@ class GlowPushButtonMessage
 
 /*
 ===============================================================================
-	STRUCT GlowPushButtonParams
+	CLASS GlowPushButtonParams
 	
 	Pushbutton params
 ===============================================================================

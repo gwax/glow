@@ -48,15 +48,16 @@ DEPFLAGS=-MM
 DEPFLAGS_IRIX=-M
 
   # Default CFLAGS and LDFLAGS for Linux/gcc.
-CFLAGS=-O2 -Wall \
+CFLAGS=-Wall \
 	-DGLOW_PLATFORM_LINUX \
 	-DGLOW_PLATFORM_LITTLEENDIAN
+DEBUGCFLAGS=-O2 -DNODEBUG
 LDFLAGS=-L/usr/X11R6/lib
 
   # Specialization for IRIX
   # the Compat-SGI directory is added here with -I. You don't need this
   # directive if you install the headers in your /usr/include/CC.
-CFLAGS_IRIX=-O2 -fullwarn -no_auto_include \
+CFLAGS_IRIX=-fullwarn -no_auto_include \
 	-LANG:std \
 	-woff 1209,3201,1424,1375 \
 	-OPT:Olimit=0 \

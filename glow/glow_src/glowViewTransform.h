@@ -81,7 +81,7 @@ class GlowTransformData;
 
 /*
 ===============================================================================
-	STRUCT GlowViewTransformParams
+	CLASS GlowViewTransformParams
 
 	View transform params
 ===============================================================================
@@ -108,7 +108,7 @@ class GlowViewTransformParams
 
 /*
 ===============================================================================
-	STRUCT GlowViewManipulatorParams
+	CLASS GlowViewManipulatorParams
 
 	View manip params
 ===============================================================================

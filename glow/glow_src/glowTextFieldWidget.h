@@ -565,7 +565,7 @@ class GlowLabeledHiddenTextFieldWidget :
 
 /*
 ===============================================================================
-	STRUCT GlowTextFieldParams
+	CLASS GlowTextFieldParams
 	
 	Editable text field params
 ===============================================================================
@@ -612,7 +612,7 @@ class GlowTextFieldParams :
 
 /*
 ===============================================================================
-	STRUCT GlowLabeledTextFieldParams
+	CLASS GlowLabeledTextFieldParams
 	
 	Labeled text field params
 ===============================================================================

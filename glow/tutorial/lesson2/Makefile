@@ -28,12 +28,13 @@ LIBS_IRIX=-lCio -lglut -lX11 -lXmu -lXext -lGL -lGLU -lm
 DEPFLAGS=-MM
 DEPFLAGS_IRIX=-M
 
-CFLAGS=-O2 -Wall \
+CFLAGS=-Wall \
 	-DGLOW_PLATFORM_LINUX \
 	-DGLOW_PLATFORM_LITTLEENDIAN
+DEBUGCFLAGS=-O2 -DNODEBUG
 LDFLAGS=-L/usr/X11R6/lib
 
-CFLAGS_IRIX=-O2 -fullwarn -no_auto_include \
+CFLAGS_IRIX=-fullwarn -no_auto_include \
 	-LANG:std \
 	-woff 1209,3201,1424,1375 \
 	-OPT:Olimit=0 \
