@@ -371,6 +371,19 @@ class GlowColorImage :
 			unsigned int height,
 			GlowColor defelem = GlowColor());
 		
+		// I/O information
+		typedef unsigned char ChannelType;
+		inline unsigned int NumChannels() const;
+		inline ChannelType GetChannel(
+			unsigned int x,
+			unsigned int y,
+			unsigned int c) const;
+		inline void SetChannel(
+			unsigned int x,
+			unsigned int y,
+			unsigned int c,
+			ChannelType data);
+		
 		// OpenGL integration
 		void ReadFromBuffer(
 			int x,
@@ -394,6 +407,19 @@ class GlowUcharImage :
 			unsigned int width,
 			unsigned int height,
 			unsigned char defelem = 0);
+		
+		// I/O information
+		typedef unsigned char ChannelType;
+		inline unsigned int NumChannels() const;
+		inline ChannelType GetChannel(
+			unsigned int x,
+			unsigned int y,
+			unsigned int c) const;
+		inline void SetChannel(
+			unsigned int x,
+			unsigned int y,
+			unsigned int c,
+			ChannelType data);
 		
 		// OpenGL integration
 		void ReadFromBuffer(
@@ -420,6 +446,19 @@ class GlowGLfloatImage :
 			unsigned int width,
 			unsigned int height,
 			GLfloat defelem = 0.0f);
+		
+		// I/O information
+		typedef float ChannelType;
+		inline unsigned int NumChannels() const;
+		inline ChannelType GetChannel(
+			unsigned int x,
+			unsigned int y,
+			unsigned int c) const;
+		inline void SetChannel(
+			unsigned int x,
+			unsigned int y,
+			unsigned int c,
+			ChannelType data);
 		
 		// OpenGL integration
 		void ReadFromBuffer(

@@ -425,6 +425,31 @@ GlowImage<GlowColor>(width, height, defelem)
 }
 
 
+inline unsigned int GlowColorImage::NumChannels() const
+{
+	return 4;
+}
+
+
+inline unsigned char GlowColorImage::GetChannel(
+	unsigned int x,
+	unsigned int y,
+	unsigned int c) const
+{
+	return At(x, y)[c];
+}
+
+
+inline unsigned char GlowColorImage::SetChannel(
+	unsigned int x,
+	unsigned int y,
+	unsigned int c,
+	unsigned char data)
+{
+	return At(x, y)[c] = data;
+}
+
+
 // GlowUcharImage
 
 inline GlowUcharImage::GlowUcharImage()
@@ -448,6 +473,31 @@ GlowImage<unsigned char>(width, height, defelem)
 }
 
 
+inline unsigned int GlowUcharImage::NumChannels() const
+{
+	return 1;
+}
+
+
+inline unsigned char GlowUcharImage::GetChannel(
+	unsigned int x,
+	unsigned int y,
+	unsigned int c) const
+{
+	return At(x, y);
+}
+
+
+inline unsigned char GlowUcharImage::SetChannel(
+	unsigned int x,
+	unsigned int y,
+	unsigned int c,
+	unsigned char data)
+{
+	return At(x, y) = data;
+}
+
+
 // GlowGLfloatImage
 
 inline GlowGLfloatImage::GlowGLfloatImage()
@@ -468,6 +518,31 @@ inline GlowGLfloatImage::GlowGLfloatImage(
 	GLfloat defelem) :
 GlowImage<GLfloat>(width, height, defelem)
 {
+}
+
+
+inline unsigned int GlowGLfloatImage::NumChannels() const
+{
+	return 1;
+}
+
+
+inline GLfloat GlowGLfloatImage::GetChannel(
+	unsigned int x,
+	unsigned int y,
+	unsigned int c) const
+{
+	return At(x, y);
+}
+
+
+inline unsigned char GlowGLfloatImage::SetChannel(
+	unsigned int x,
+	unsigned int y,
+	unsigned int c,
+	GLfloat data)
+{
+	return At(x, y) = data;
 }
 
 
