@@ -115,17 +115,17 @@ static DrawCircle innerCircle(0.95);	// smaller, inner circle
 //
 class CheckerboardTexture {
 private:
-	GLuint _textureID;					// texture ID if any
-	int _darkColor;						// color of lines
-	int _lightColor;					// color of background
+	GLuint textureID_;					// texture ID if any
+	int darkColor_;						// color of lines
+	int lightColor_;					// color of background
 private:
-	Init();								// called on first GetID to initialize
+	void Init();						// called on first GetID to initialize
 public:
 	CheckerboardTexture(int dark, int light):
-	  _darkColor(dark),_lightColor(light),_textureID(0) {}
+	  textureID_(0),darkColor_(dark),lightColor_(light) {}
 	GLuint GetID()
-	{	if (_textureID == 0) Init();	// initialize if needed
-		return(_textureID);
+	{	if (textureID_ == 0) Init();	// initialize if needed
+		return(textureID_);
 	}
 };
 //
@@ -136,14 +136,14 @@ public:
 //
 //	Modelled after code in "OpenGL Programming Guide" and GLUI.
 //
-CheckerboardTexture::Init()
+void CheckerboardTexture::Init()
 {	//	Build checkerboard image procedurally.
 	const int kCheckerboardSize = 64;		// typical 64x64 texture
 	unsigned char texture_image[kCheckerboardSize][kCheckerboardSize][3];
 	for(int i=0; i<kCheckerboardSize; i++ ) 
 		for(int j=0; j<kCheckerboardSize; j++ ) {
 		{	bool isdark = ((i&0x8)==0) != ((j&0x8)==0);  
-			char texbyte = isdark ? _darkColor : _lightColor;	// pick texture byte
+			char texbyte = isdark ? darkColor_ : lightColor_;	// pick texture byte
 			texture_image[i][j][0] = texbyte;		// all colors same, thus grey
 			texture_image[i][j][1] = texbyte;
 			texture_image[i][j][2] = texbyte;
@@ -166,8 +166,8 @@ CheckerboardTexture::Init()
 		kCheckerboardSize, 0, GL_RGB, GL_UNSIGNED_BYTE,
 		texture_image );
 	glPopAttrib();									// restore OpenGL state
-	_textureID = textureNames[0];					// set name of new texture
-	if (_textureID == 0) throw("OpenGL/GLOW: unable to create texture.");
+	textureID_ = textureNames[0];					// set name of new texture
+	if (textureID_ == 0) throw("OpenGL/GLOW: unable to create texture.");
 
 }
 //	A checkerboard texture to wrap around the arcball
@@ -182,14 +182,14 @@ class DrawTexturedSphere :
 	public GlowComponent
 {
 	private:
-		GLUquadric* _texturedSphere;			// ID of sphere object
+		GLUquadric* texturedSphere_;			// ID of sphere object
 	public:
 	
 		DrawTexturedSphere(
 			GlowComponent* parent) :
-		GlowComponent(parent),_texturedSphere(0) {}
+		GlowComponent(parent),texturedSphere_(0) {}
 		virtual ~DrawTexturedSphere()			// destructor
-		{	if (_texturedSphere) gluDeleteQuadric(_texturedSphere); 
+		{	if (texturedSphere_) gluDeleteQuadric(texturedSphere_); 
 		}
 	
 	protected:
@@ -201,12 +201,12 @@ class DrawTexturedSphere :
 //
 void DrawTexturedSphere::Init()
 {
-	if (_texturedSphere != 0) return;	// already initialized
-	_texturedSphere = gluNewQuadric();
-	if (!_texturedSphere) throw("OpenGL/GLOW: unable to create sphere.");
-	gluQuadricDrawStyle(_texturedSphere, GLU_FILL);
-    gluQuadricNormals(_texturedSphere, GLU_SMOOTH);
-    gluQuadricTexture(_texturedSphere, true );
+	if (texturedSphere_ != 0) return;	// already initialized
+	texturedSphere_ = gluNewQuadric();
+	if (!texturedSphere_) throw("OpenGL/GLOW: unable to create sphere.");
+	gluQuadricDrawStyle(texturedSphere_, GLU_FILL);
+    gluQuadricNormals(texturedSphere_, GLU_SMOOTH);
+    gluQuadricTexture(texturedSphere_, true );
 }
 
 void DrawTexturedSphere::OnEndPaint()
@@ -218,7 +218,7 @@ void DrawTexturedSphere::OnEndPaint()
 	::glDisable(GL_DEPTH_TEST);
 	::glBindTexture(GL_TEXTURE_2D,darkCheckerboard.GetID());	// use specified texture
 	::glColor3ub(255, 255, 255);			// Color gets modulated by texture
-    ::gluSphere(_texturedSphere, radius, 16, 16);
+    ::gluSphere(texturedSphere_, radius, 16, 16);
 	::glPopAttrib();
 }
 
