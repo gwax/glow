@@ -65,7 +65,7 @@
 // doesn't include it.
 #if defined(_WIN32) || defined(WIN32)
 	#define WIN32_LEAN_AND_MEAN
-	#include "windows.h"
+	#include <windows.h>
 #endif
 
 #include <GL/glut.h>
