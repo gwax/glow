@@ -100,6 +100,19 @@ inline void GlowTextFieldWidget::Init(
 }
 
 
+inline int GlowTextFieldWidget::GetPreferredWidth() const
+{
+	return preferredWidth_;
+}
+
+
+inline void GlowTextFieldWidget::SetPreferredWidth(
+	int width)
+{
+	preferredWidth_ = width;
+}
+
+
 inline GlowTextFieldWidget::Style GlowTextFieldWidget::GetStyle() const
 {
 	return style_;

@@ -100,6 +100,41 @@ inline void GlowTextAreaWidget::Init(
 }
 
 
+inline int GlowTextAreaWidget::GetPreferredWidth() const
+{
+	return preferredWidth_;
+}
+
+
+inline int GlowTextAreaWidget::GetPreferredHeight() const
+{
+	return preferredHeight_;
+}
+
+
+inline void GlowTextAreaWidget::SetPreferredWidth(
+	int width)
+{
+	preferredWidth_ = width;
+}
+
+
+inline void GlowTextAreaWidget::SetPreferredHeight(
+	int height)
+{
+	preferredHeight_ = height;
+}
+
+
+inline void GlowTextAreaWidget::SetPrefferedSize(
+	int width,
+	int height)
+{
+	preferredWidth_ = width;
+	preferredHeight_ = height;
+}
+
+
 inline GlowTextAreaWidget::Style GlowTextAreaWidget::GetStyle() const
 {
 	return style_;
@@ -149,6 +184,12 @@ inline void GlowTextAreaWidget::SetAutoScrollInterval(
 inline bool GlowTextAreaWidget::IsWrapping() const
 {
 	return wrapping_;
+}
+
+
+inline bool GlowTextAreaWidget::IsUsingScrollBars() const
+{
+	return usingScrollBars_;
 }
 
 

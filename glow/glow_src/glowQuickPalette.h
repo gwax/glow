@@ -94,6 +94,9 @@
 #ifndef GLOW_TEXTFIELDWIDGET__H
 	#include "glowTextFieldWidget.h"
 #endif
+#ifndef GLOW_TEXTAREAWIDGET__H
+	#include "glowTextAreaWidget.h"
+#endif
 
 
 GLOW_INTERNAL_USINGSTD
@@ -210,6 +213,13 @@ class GlowQuickPalette
 			const char* text = "",
 			char hideCharacter = '#',
 			const char* label = 0);
+		GlowTextAreaWidget* AddTextArea(
+			int width,
+			int height,
+			GlowTextAreaWidget::Interaction interaction,
+			bool useScrollBars,
+			bool wrap,
+			const char* text = "");
 		GlowLabelWidget* AddLabel(
 			const char* text);
 		

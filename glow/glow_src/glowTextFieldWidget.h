@@ -158,6 +158,10 @@ class GlowTextFieldWidget :
 	
 	public:
 	
+		inline void SetPreferredWidth(
+			int width);
+		inline int GetPreferredWidth() const;
+		
 		inline void SetStyle(
 			Style style);
 		inline Style GetStyle() const;
@@ -314,6 +318,7 @@ class GlowTextFieldWidget :
 	
 	private:
 	
+		int preferredWidth_;
 		GlowFont font_;
 		int hpos_;
 		Style style_;

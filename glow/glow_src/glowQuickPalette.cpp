@@ -533,6 +533,34 @@ GlowLabeledHiddenTextFieldWidget* GlowQuickPalette::AddHiddenTextField(
 }
 
 
+GlowTextAreaWidget* GlowQuickPalette::AddTextArea(
+	int width,
+	int height,
+	GlowTextAreaWidget::Interaction interaction,
+	bool useScrollBars,
+	bool wrap,
+	const char* text)
+{
+	GLOW_DEBUGSCOPE("GlowQuickPanelWidget::AddTextArea");
+	
+	GlowTextAreaParams params;
+	params.x = params.y = 0;
+	params.width = width;
+	params.height = height;
+	params.initialText = text;
+	params.interaction = interaction;
+	params.useScrollBars = useScrollBars;
+	params.wrapping = wrap;
+	GlowTextAreaWidget* ret = new GlowTextAreaWidget(panel_, params);
+	if (panel_->Root()->GetKeyboardFocus() == 0 &&
+		interaction == GlowTextAreaWidget::editableInteraction)
+	{
+		ret->GrabKeyboardFocus();
+	}
+	return ret;
+}
+
+
 GlowLabelWidget* GlowQuickPalette::AddLabel(
 	const char* text)
 {

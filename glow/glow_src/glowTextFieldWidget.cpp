@@ -230,6 +230,7 @@ void GlowTextFieldWidget::Init(
 {
 	GLOW_DEBUGSCOPE("GlowTextFieldWidget::Init");
 	
+	preferredWidth_ = params.width;
 	GlowWidget::Init(root, parent, params);
 	style_ = params.style;
 	if (params.initialText != 0)
@@ -648,16 +649,27 @@ GlowWidget::AutoPackError GlowTextFieldWidget::OnAutoPack(
 {
 	GLOW_DEBUGSCOPE("GlowTextFieldWidget::OnAutoPack");
 	
+	// Behavior:
+	// Enforces a hard minimum of width of '0' and font leading, plus the
+	// inset margin.
+	// For width, forcedSize and expandPreferredSize both attempt to set to
+	// given size. preferredSize attempts to set to min(given, preferred)
+	// For height, attempts to set to preferred size unless forced.
+	
 	int hnew = Width();
-	if (hSize != unspecifiedSize && hSize < hnew)
+	if (hOption != noReshape)
 	{
-		return hAutoPackError;
+		if (hOption == forcedSize || hOption == expandPreferredSize ||
+			(hSize != unspecifiedSize && hSize < hnew))
+		{
+			hnew = hSize;
+		}
+		else
+		{
+			hnew = preferredWidth_;
+		}
 	}
-	if (hOption == forcedSize || hOption == expandPreferredSize)
-	{
-		hnew = hSize;
-	}
-	if (hSize < ::glutBitmapWidth(font_, '0')+inset_+inset_)
+	if (hnew < ::glutBitmapWidth(font_, '0')+inset_+inset_)
 	{
 		return hAutoPackError;
 	}

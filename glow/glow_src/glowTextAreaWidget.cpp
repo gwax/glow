@@ -113,7 +113,8 @@ darkBevelColor(0.3f, 0.3f, 0.3f)
 	caretInset = 2;
 	tabLength = 0;
 	wrapping = true;
-	scrollBarWidth = 0;
+	useScrollBars = false;
+	scrollBarWidth = 15;
 	interaction = GlowTextAreaWidget::editableInteraction;
 }
 
@@ -253,6 +254,8 @@ void GlowTextAreaWidget::Init(
 {
 	GLOW_DEBUGSCOPE("GlowTextAreaWidget::Init");
 	
+	preferredWidth_ = params.width;
+	preferredHeight_ = params.height;
 	GlowWidget::Init(root, parent, params);
 	style_ = params.style;
 	if (params.initialText != 0)
@@ -290,8 +293,9 @@ void GlowTextAreaWidget::Init(
 	data_.RecalcLineBreaks(font_, wrapping_ ? params.width-inset_-inset_ : 0);
 	interaction_ = params.interaction;
 	miscReceiver_ = new Glow_TextArea_MiscReceiver(this);
-	scrollBarWidth_ = GLOW_STD::max(0, params.scrollBarWidth);
-	if (scrollBarWidth_ > 0)
+	scrollBarWidth_ = GLOW_STD::max(4, params.scrollBarWidth);
+	usingScrollBars_ = params.useScrollBars;
+	if (usingScrollBars_)
 	{
 		GlowScrollBarParams params;
 		params.x = Width();
@@ -798,15 +802,23 @@ void GlowTextAreaWidget::OnWidgetKeyboard(
 }
 
 
-void GlowTextAreaWidget::OnWidgetReshape(
-	int width,
-	int height)
+void GlowTextAreaWidget::OnWidgetReshape()
 {
 	GLOW_DEBUGSCOPE("GlowTextAreaWidget::OnWidgetReshape");
 	
 	RecalcLineBreaks();
 	CheckAutoScroll();
 	UpdateScrollBars(true);
+	if (usingScrollBars_)
+	{
+		vScrollBar_->Move(Width(), 0);
+		vScrollBar_->Reshape(scrollBarWidth_, Height());
+		if (!wrapping_)
+		{
+			hScrollBar_->Move(0, Height());
+			hScrollBar_->Reshape(Width(), scrollBarWidth_);
+		}
+	}
 	Refresh();
 }
 
@@ -826,18 +838,32 @@ GlowWidget::AutoPackError GlowTextAreaWidget::OnAutoPack(
 	// Behavior:
 	// Enforces a hard minimum of width of '0' and font leading, plus the
 	// inset margin.
-	// Preferred size is current size.
-	// Does not allow changes unless using forcedSize
+	// forcedSize and expandPreferredSize both attempt to set to
+	// given size. preferredSize attempts to set to min(given, preferred)
+	
+	if (usingScrollBars_)
+	{
+		hSize -= scrollBarWidth_;
+		rightMargin = scrollBarWidth_;
+		if (!wrapping_)
+		{
+			vSize -= scrollBarWidth_;
+			bottomMargin = scrollBarWidth_;
+		}
+	}
 	
 	int hnew = Width();
-	if ((hOption == preferredSize || hOption == expandPreferredSize) &&
-		hSize != unspecifiedSize && hnew > hSize)
+	if (hOption != noReshape)
 	{
-		return hAutoPackError;
-	}
-	else if (hOption == forcedSize)
-	{
-		hnew = hSize;
+		if (hOption == forcedSize || hOption == expandPreferredSize ||
+			(hSize != unspecifiedSize && hSize < hnew))
+		{
+			hnew = hSize;
+		}
+		else
+		{
+			hnew = preferredWidth_;
+		}
 	}
 	if (hnew < ::glutBitmapWidth(font_, '0')+inset_+inset_)
 	{
@@ -845,14 +871,17 @@ GlowWidget::AutoPackError GlowTextAreaWidget::OnAutoPack(
 	}
 	
 	int vnew = Height();
-	if ((vOption == preferredSize || vOption == expandPreferredSize) &&
-		vSize != unspecifiedSize && vnew > hSize)
+	if (vOption != noReshape)
 	{
-		return vAutoPackError;
-	}
-	else if (vOption == forcedSize)
-	{
-		vnew = vSize;
+		if (vOption == forcedSize || vOption == expandPreferredSize ||
+			(vSize != unspecifiedSize && vSize < vnew))
+		{
+			vnew = vSize;
+		}
+		else
+		{
+			vnew = preferredHeight_;
+		}
 	}
 	if (vnew < font_.Leading()+inset_+inset_)
 	{
@@ -904,7 +933,7 @@ void GlowTextAreaWidget::SetWrapping(
 			delete hScrollBar_;
 			hScrollBar_ = 0;
 		}
-		else
+		else if (usingScrollBars_)
 		{
 			GlowScrollBarParams params;
 			params.x = 0;
@@ -989,23 +1018,20 @@ void GlowTextAreaWidget::SetInteractionType(
 }
 
 
-void GlowTextAreaWidget::SetScrollBarWidth(
-	int width)
+void GlowTextAreaWidget::SetUsingScrollBars(
+	bool use)
 {
-	GLOW_DEBUGSCOPE("GlowTextAreaWidget::SetScrollBarWidth");
+	GLOW_DEBUGSCOPE("GlowTextAreaWidget::SetUsingScrollBars");
 	
-	if (width > 0) width = 0;
-	if (width != scrollBarWidth_)
+	if (usingScrollBars_ && !use)
 	{
-		if (width == 0 && scrollBarWidth_ != 0)
-		{
-			delete hScrollBar_;
-			delete vScrollBar_;
-			hScrollBar_ = 0;
-			vScrollBar_ = 0;
-		}
-		else if (width != 0 && scrollBarWidth_ == 0)
-		{
+		delete hScrollBar_;
+		delete vScrollBar_;
+		hScrollBar_ = 0;
+		vScrollBar_ = 0;
+	}
+	else if (!usingScrollBars_ && use)
+	{
 		GlowScrollBarParams params;
 		params.x = Width();
 		params.y = 0;
@@ -1035,16 +1061,26 @@ void GlowTextAreaWidget::SetScrollBarWidth(
 			params.pageStep = Width()-inset_-inset_;
 			hScrollBar_ = new GlowScrollBarWidget(this, params);
 		}
-		}
-		else
+	}
+}
+
+
+void GlowTextAreaWidget::SetScrollBarWidth(
+	int width)
+{
+	GLOW_DEBUGSCOPE("GlowTextAreaWidget::SetScrollBarWidth");
+	
+	if (width < 4) width = 4;
+	
+	if (usingScrollBars_ && width != scrollBarWidth_)
+	{
+		vScrollBar_->Reshape(width, vScrollBar_->Height());
+		if (!wrapping_)
 		{
-			vScrollBar_->Reshape(scrollBarWidth_, vScrollBar_->Height());
-			if (!wrapping_)
-			{
-				hScrollBar_->Reshape(hScrollBar_->Width(), scrollBarWidth_);
-			}
+			hScrollBar_->Reshape(hScrollBar_->Width(), width);
 		}
 	}
+	scrollBarWidth_ = width;
 }
 
 
@@ -1075,7 +1111,7 @@ void GlowTextAreaWidget::CheckAutoScroll()
 	{
 		vpos_ = pos+font_.Leading()-Height()+inset_+inset_;
 	}
-	if (scrollBarWidth_ != 0)
+	if (usingScrollBars_)
 	{
 		vScrollBar_->SetTopValue(vpos_);
 	}
@@ -1089,7 +1125,7 @@ void GlowTextAreaWidget::CheckAutoScroll()
 	{
 		hpos_ = pos-Width()+inset_+inset_;
 	}
-	if (scrollBarWidth_ != 0 && !wrapping_)
+	if (usingScrollBars_ && !wrapping_)
 	{
 		hScrollBar_->SetTopValue(hpos_);
 	}
@@ -1100,7 +1136,7 @@ void GlowTextAreaWidget::UpdateScrollBars(
 	bool resizing)
 {
 	GLOW_DEBUGSCOPE("GlowTextAreaWidget::UpdateScrollBars");
-	if (scrollBarWidth_ != 0)
+	if (usingScrollBars_)
 	{
 		if (resizing)
 		{

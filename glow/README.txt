@@ -86,7 +86,10 @@ RELEASE NOTES
     Features added
     --------------
 
-      (none)
+      GlowTextFieldWidget and GlowTextAreaWidget now allow you to set
+      the "preferred size" used by autopack.
+
+      GlowTextAreaWidget now appears in QuickPalette.
 
 
     Features changed
@@ -107,6 +110,12 @@ RELEASE NOTES
       prefixing all its internal includes of glut.h with an include of
       windows.h if WIN32 or _WIN32 is set. All this because Microsoft
       refuses to support OpenGL correctly... aargh!)  Also in 1.0.3.
+
+      GlowTextFieldWidget's autopack was broken. Fixed.
+
+      GlowTextAreaWidget's autopack was also very broken. Fixed.
+
+      GlowTextAreaWidget::SetScrollBarWidth was broken. Fixed.
 
 
     Internal changes

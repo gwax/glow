@@ -136,6 +136,16 @@ class GlowTextAreaWidget :
 	
 	public:
 	
+		inline int GetPreferredWidth() const;
+		inline int GetPreferredHeight() const;
+		inline void SetPreferredWidth(
+			int width);
+		inline void SetPreferredHeight(
+			int height);
+		inline void SetPrefferedSize(
+			int width,
+			int height);
+		
 		inline void SetStyle(
 			Style style);
 		inline Style GetStyle() const;
@@ -155,6 +165,10 @@ class GlowTextAreaWidget :
 		inline bool IsWrapping() const;
 		void SetWrapping(
 			bool wrapping);
+		
+		inline bool IsUsingScrollBars() const;
+		void SetUsingScrollBars(
+			bool use);
 		
 		inline int GetScrollBarWidth() const;
 		void SetScrollBarWidth(
@@ -309,9 +323,7 @@ class GlowTextAreaWidget :
 		virtual void OnGotKeyboardFocus();
 		virtual void OnLostKeyboardFocus();
 		
-		virtual void OnWidgetReshape(
-			int width,
-			int height);
+		virtual void OnWidgetReshape();
 	
 	private:
 	
@@ -319,6 +331,8 @@ class GlowTextAreaWidget :
 	
 	private:
 	
+		int preferredWidth_;
+		int preferredHeight_;
 		GlowFont font_;
 		int hpos_;
 		int vpos_;
@@ -336,6 +350,7 @@ class GlowTextAreaWidget :
 		bool toggleAutoScroll_;
 		Glow_TextArea_MiscReceiver* miscReceiver_;
 		bool wrapping_;
+		bool usingScrollBars_;
 		GlowScrollBarWidget* hScrollBar_;
 		GlowScrollBarWidget* vScrollBar_;
 		int scrollBarWidth_;
@@ -382,6 +397,7 @@ class GlowTextAreaParams :
 		int caretInset;
 		int tabLength;
 		bool wrapping;
+		bool useScrollBars;
 		int scrollBarWidth;
 		GlowTextAreaWidget::Interaction interaction;
 		GlowColor backColor;
