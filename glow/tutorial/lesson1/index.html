@@ -149,7 +149,7 @@ GlowWindow("Mandelglow", GlowWindow::autoPosition, GlowWindow::autoPosition,
 Note, though, the very beginning of the constructor. It calls the constructor of its superclass, <tt>GlowWindow</tt>. This constructor sets up the window itself. The parameters are as follows: window title, x-position, y-position, window width, window height, type of frame buffer to use, and events to report. For the position parameters, note the use of the constant <tt>GlowWindow::autoPosition</tt>, which causes the window manager to position the window automatically according to its preferred heuristics. Width and height are taken from the width and height of the actual data. We aren't going to respond to any events for now, so we pass <tt>Glow::noEvents</tt> for the event mask (though that will change later). And finally, we'll use an RGB color buffer, double-buffered for the frame buffer. You can find the constants used in the last two parameters in the class <tt>Glow</tt>.
 </p>
 <p>
-Calling the constructor for <tt>GlowWindow</tt> automatically creates a toplevel GLUT window, with a single function call. You don't need to call all the GLUT functions describing the window, and you don't need to provide callbacks-- GLOW does that automatically. Pretty slick!
+Calling the constructor for <tt>GlowWindow</tt> automatically creates a toplevel GLUT window, with a single function call. You don't need to call all the GLUT functions describing the window, and you don't need to provide callbacks-- GLOW does that automatically.
 </p>
 
 <p>

@@ -192,33 +192,77 @@ void GlowMouseFilter::OnMessage(
 ===============================================================================
 */
 
+// Map window IDs to GlowSubwindow*s
 GLOW_STD::map<int, GlowSubwindow*> Glow::_windowRegistry;
+// Map menu IDs to GlowMenu*s
 GLOW_STD::map<int, GlowMenu*> Glow::_menuRegistry;
 
+// List of components to activate in deferred activation
 GLOW_STD::map<GlowComponent*, bool> Glow::_activateNotifyList;
+// List of components to close in deferred delete (bool is unused)
 GLOW_STD::map<GlowComponent*, bool> Glow::_closeList;
+// Special pointer to a function to call during deferred event time
+// used by widget system to implement deferred widget events
 void (*Glow::_widgetNotifier)() = 0;
+// Each subwindow contains a local clock value, and there's this global
+// clock here that gets incremented before every event handler. If local
+// clock == global clock, then the subwindow's data members contain the
+// correct position. If !=, the subwindow needs to update its knowledge
+// of position by querying glutGet.
+// This rather convoluted system is necessary to maintain the semantics
+// of GLOW state querying in the face of GLUT deferred execution. After
+// calling Move(), the GLOW state should reflect the new position (the
+// local clock is updated and the data members are set to the new pos
+// even though glutGet() would still return the old values.)
+// If the window is moved by the user, the local clock will be inc'd
+// at the beginning of the next event handling cycle, so GLOW knows that
+// it is possible the cached data member values are stale.
 unsigned long Glow::_clock = 0;
 
+// Subwindow that spawned the current menu. Set if a menu is down.
 GlowSubwindow* Glow::_menuWindow = 0;
+// Coordinates of the click that spawned the current menu.
 int Glow::_menuXClick = -1;
 int Glow::_menuYClick = -1;
+// Is a menu down?
 bool Glow::_menuInUse = false;
 
+// Modal window stack
 GLOW_STD::vector<GlowWindow*> Glow::_modalWindows;
 
+// Sender for idle events
 TSender<const GlowIdleMessage&> Glow::_idleSender;
+// List of senders for timer events. Maps Timer IDs to senders.
 GLOW_STD::map<int, TSender<const GlowTimerMessage&>*> Glow::_timerSenders;
+// The next timer ID that will be assigned.
 int Glow::_nextTimerID = 1;
 
+// Special idle function receiver implementing GLUT-style idle func
 Glow_IdleFuncReceiver* Glow::_idleFuncReceiver = 0;
+// GLUT-style menu status function pointer
 void (*Glow::_userMenuStatusFunc)(int status, int x, int y) = 0;
 
+// Global filters for mouse and keyboard events
 TSender<GlowMouseData&> Glow::_mouseFilters;
 TSender<GlowKeyboardData&> Glow::_keyboardFilters;
 
+// Number of toplevel windows in existence
 int Glow::_numToplevelWindows = 0;
+// If true, GLOW will automatically quit when the last toplevel window
+// is deleted.
 bool Glow::_autoQuitting = false;
+
+// GLUT seems to have a bug that sometimes causes windows to be "locked
+// out" of the worklist (i.e. unable to receive events.) It often happens
+// when you re-post a redisplay event from within the same window's
+// display callback. This option causes GLOW to defer such re-postings
+// until the next event.
+#ifdef GLOW_OPTION_GLUTREDISPLAYFIX
+// Window ID currently in display callback, or 0 for not displaying
+int Glow::_curDisplayWindow = 0;
+// Window ID for which we should repost redisplay, or 0 for none.
+int Glow::_refreshMe = 0;
+#endif
 
 
 /*
@@ -302,6 +346,7 @@ void Glow::_RemoveWindow(
 			}
 		}
 		_windowRegistry.erase(iter);
+		// Auto-quit
 		if (_autoQuitting && _windowRegistry.empty())
 		{
 			GLOW_CSTD::exit(0);
@@ -352,10 +397,15 @@ void Glow::RegisterIdle(
 {
 	GLOW_DEBUGSCOPE("Glow::RegisterIdle");
 	
+	// Bind to this receiver if it's not already
 	if (!_idleSender.IsBoundTo(idle))
 	{
 		_idleSender.Bind(idle);
+#ifdef GLOW_OPTION_GLUTREDISPLAYFIX
+		if (_idleSender.NumReceivers() == 1 && _refreshMe == 0)
+#else
 		if (_idleSender.NumReceivers() == 1)
+#endif
 		{
 			::glutIdleFunc(_IdleFunc);
 		}
@@ -368,10 +418,15 @@ void Glow::UnregisterIdle(
 {
 	GLOW_DEBUGSCOPE("Glow::UnregisterIdle");
 	
+	// Unbind this receiver if it's bound
 	if (_idleSender.IsBoundTo(idle))
 	{
 		_idleSender.Unbind(idle);
+#ifdef GLOW_OPTION_GLUTREDISPLAYFIX
+		if (_idleSender.NumReceivers() == 0 && _refreshMe == 0)
+#else
 		if (_idleSender.NumReceivers() == 0)
+#endif
 		{
 			::glutIdleFunc(0);
 		}
@@ -384,8 +439,10 @@ void Glow::SetIdleFunc(
 {
 	GLOW_DEBUGSCOPE("Glow::SetIdleFunc");
 	
+	// GLOW version of glutIdleFunc. 
 	if (func == 0)
 	{
+		// Unregister the GLUT-style idle function receiver
 		if (_idleFuncReceiver != 0)
 		{
 			UnregisterIdle(_idleFuncReceiver);
@@ -395,11 +452,13 @@ void Glow::SetIdleFunc(
 	}
 	else
 	{
+		// Set the function pointer if the receiver is already registered
 		if (_idleFuncReceiver != 0)
 		{
 			_idleFuncReceiver->_funcPtr = func;
 		}
 		else
+		// Otherwise register a GLUT-style idle function receiver
 		{
 			_idleFuncReceiver = new Glow_IdleFuncReceiver(func);
 			RegisterIdle(_idleFuncReceiver);
@@ -420,15 +479,18 @@ int Glow::RegisterTimer(
 {
 	GLOW_DEBUGSCOPE("Glow::RegisterTimer");
 	
+	// Get the next available timer ID.
 	int timerID = _nextTimerID;
 	while (_timerSenders.find(timerID) != _timerSenders.end() || timerID == 0)
 	{
 		++timerID;
 	}
 	_nextTimerID = timerID + 1;
+	// Create a sender for this timer
 	TSender<const GlowTimerMessage&>* sender = new TSender<const GlowTimerMessage&>;
 	sender->Bind(timer);
 	_timerSenders[timerID] = sender;
+	// Register timer event
 	::glutTimerFunc(msecs, _TimerFunc, timerID);
 	return timerID;
 }
@@ -439,6 +501,12 @@ void Glow::UnregisterTimer(
 {
 	GLOW_DEBUGSCOPE("Glow::UnregisterTimer");
 	
+	// Find the timer sender with this id. Delete it if it exists.
+	// The timer function will still be called, but it will notice that
+	// this id no longer exists, and it will ignore the callback.
+	// This will, of course, fail if the id gets reused. However, I don't
+	// think anyone will be scheduling 4 billion timers in that short
+	// a space of time.
 	GLOW_STD::map<int, TSender<const GlowTimerMessage&>*>::iterator iter = _timerSenders.find(id);
 	if (iter != _timerSenders.end())
 	{
@@ -460,15 +528,20 @@ void Glow::_TimerFunc(
 	GLOW_DEBUGSCOPE("Glow::_TimerFunc");
 	
 	++_clock;
+#ifdef GLOW_OPTION_GLUTREDISPLAYFIX
+	_RaiseDeferredRefresh();
+#endif
+	// Which timer was invoked?
 	GLOW_STD::map<int, TSender<const GlowTimerMessage&>*>::iterator iter = _timerSenders.find(id);
 	if (iter != _timerSenders.end())
 	{
+		// Remove the timer sender, and send the message.
 		TSender<const GlowTimerMessage&>* sender = (*iter).second;
 		_timerSenders.erase(iter);
 		sender->Send(GlowTimerMessage(id));
 		delete sender;
+		_ExecuteDeferred();
 	}
-	_ExecuteDeferred();
 }
 
 
@@ -477,13 +550,26 @@ void Glow::_DisplayFunc()
 	GLOW_DEBUGSCOPE("Glow::_DisplayFunc");
 	
 	++_clock;
+	// Paint the window
+#ifdef GLOW_OPTION_GLUTREDISPLAYFIX
+	_curDisplayWindow = ::glutGetWindow();
+	if (_curDisplayWindow != _refreshMe)
+	{
+		_RaiseDeferredRefresh();
+	}
+	GlowSubwindow* window = ResolveWindow(_curDisplayWindow);
+#else
 	GlowSubwindow* window = ResolveWindow(::glutGetWindow());
+#endif
 	if (window != 0)
 	{
 		window->Paint();
 		window->_FinishRender();
+		_ExecuteDeferred();
 	}
-	_ExecuteDeferred();
+#ifdef GLOW_OPTION_GLUTREDISPLAYFIX
+	_curDisplayWindow = 0;
+#endif
 }
 
 
@@ -494,14 +580,18 @@ void Glow::_ReshapeFunc(
 	GLOW_DEBUGSCOPE("Glow::_ReshapeFunc");
 	
 	++_clock;
+#ifdef GLOW_OPTION_GLUTREDISPLAYFIX
+	_RaiseDeferredRefresh();
+#endif
+	// Find the window, set the width and height, and handle the event
 	GlowSubwindow* window = ResolveWindow(::glutGetWindow());
 	if (window != 0)
 	{
 		window->_width = width;
 		window->_height = height;
 		window->OnReshape(width, height);
+		_ExecuteDeferred();
 	}
-	_ExecuteDeferred();
 }
 
 
@@ -513,9 +603,14 @@ void Glow::_KeyboardFunc(
 	GLOW_DEBUGSCOPE("Glow::_KeyboardFunc");
 	
 	++_clock;
+#ifdef GLOW_OPTION_GLUTREDISPLAYFIX
+	_RaiseDeferredRefresh();
+#endif
+	// Find the window
 	GlowSubwindow* window = ResolveWindow(::glutGetWindow());
 	if (window != 0)
 	{
+		// Send the event through the global keyboard filters
 		GlowKeyboardData filterData;
 		filterData.subwindow = window;
 		filterData.key = KeyCode(key);
@@ -523,6 +618,7 @@ void Glow::_KeyboardFunc(
 		filterData.y = y;
 		filterData.modifiers = Modifiers(::glutGetModifiers());
 		_keyboardFilters.Send(filterData);
+		// If the event wasn't consumed, send it to the event handler
 		if (filterData._continue)
 		{
 			filterData.subwindow->OnKeyboard(filterData.key,
@@ -542,9 +638,14 @@ void Glow::_MouseFunc(
 	GLOW_DEBUGSCOPE("Glow::_MouseFunc");
 	
 	++_clock;
+#ifdef GLOW_OPTION_GLUTREDISPLAYFIX
+	_RaiseDeferredRefresh();
+#endif
+	// Find the window
 	GlowSubwindow* window = ResolveWindow(::glutGetWindow());
 	if (window != 0)
 	{
+		// Send the event through the global mouse filters
 		GlowMouseData filterData;
 		filterData.subwindow = window;
 		filterData.type = (state == GLUT_DOWN) ?
@@ -554,6 +655,7 @@ void Glow::_MouseFunc(
 		filterData.y = y;
 		filterData.modifiers = Modifiers(::glutGetModifiers());
 		_mouseFilters.Send(filterData);
+		// If the event wasn't consumed, send it to the event handler
 		if (filterData._continue)
 		{
 			if (filterData.type == GlowMouseData::mouseDown)
@@ -579,6 +681,10 @@ void Glow::_MotionFunc(
 	GLOW_DEBUGSCOPE("Glow::_MotionFunc");
 	
 	++_clock;
+#ifdef GLOW_OPTION_GLUTREDISPLAYFIX
+	_RaiseDeferredRefresh();
+#endif
+	// Find the window and invoke event handler
 	GlowSubwindow* window = ResolveWindow(::glutGetWindow());
 	if (window != 0)
 	{
@@ -595,6 +701,10 @@ void Glow::_PassiveMotionFunc(
 	GLOW_DEBUGSCOPE("Glow::_PassiveMotionFunc");
 	
 	++_clock;
+#ifdef GLOW_OPTION_GLUTREDISPLAYFIX
+	_RaiseDeferredRefresh();
+#endif
+	// Find the window and invoke event handler
 	GlowSubwindow* window = ResolveWindow(::glutGetWindow());
 	if (window != 0)
 	{
@@ -610,6 +720,10 @@ void Glow::_VisibilityFunc(
 	GLOW_DEBUGSCOPE("Glow::_VisibilityFunc");
 	
 	++_clock;
+#ifdef GLOW_OPTION_GLUTREDISPLAYFIX
+	_RaiseDeferredRefresh();
+#endif
+	// Find the window and invoke event handler
 	GlowSubwindow* window = ResolveWindow(::glutGetWindow());
 	if (window != 0)
 	{
@@ -632,6 +746,10 @@ void Glow::_EntryFunc(
 	GLOW_DEBUGSCOPE("Glow::_EntryFunc");
 	
 	++_clock;
+#ifdef GLOW_OPTION_GLUTREDISPLAYFIX
+	_RaiseDeferredRefresh();
+#endif
+	// Find the window and invoke event handler
 	GlowSubwindow* window = ResolveWindow(::glutGetWindow());
 	if (window != 0)
 	{
@@ -656,9 +774,14 @@ void Glow::_SpecialFunc(
 	GLOW_DEBUGSCOPE("Glow::_SpecialFunc");
 	
 	++_clock;
+#ifdef GLOW_OPTION_GLUTREDISPLAYFIX
+	_RaiseDeferredRefresh();
+#endif
+	// Find the window
 	GlowSubwindow* window = ResolveWindow(::glutGetWindow());
 	if (window != 0)
 	{
+		// Send the event through the global keyboard filters
 		GlowKeyboardData filterData;
 		filterData.subwindow = window;
 		filterData.key = KeyCode(key+Glow::specialKeyOffset);
@@ -666,6 +789,7 @@ void Glow::_SpecialFunc(
 		filterData.y = y;
 		filterData.modifiers = Modifiers(::glutGetModifiers());
 		_keyboardFilters.Send(filterData);
+		// If the event wasn't consumed, send it to the event handler
 		if (filterData._continue)
 		{
 			filterData.subwindow->OnKeyboard(filterData.key,
@@ -684,12 +808,17 @@ void Glow::_MenuStatusFunc(
 	GLOW_DEBUGSCOPE("Glow::_MenuStatusFunc");
 	
 	++_clock;
+#ifdef GLOW_OPTION_GLUTREDISPLAYFIX
+	_RaiseDeferredRefresh();
+#endif
+	// Give GLUT-style function a chance to handle the event
 	if (_userMenuStatusFunc != 0)
 	{
 		_userMenuStatusFunc(status, x, y);
 	}
 	if (status == GLUT_MENU_IN_USE)
 	{
+		// Menu-down event
 		_menuWindow = ResolveWindow(::glutGetWindow());
 		_menuXClick = x;
 		_menuYClick = y;
@@ -701,6 +830,7 @@ void Glow::_MenuStatusFunc(
 	}
 	else if (status == GLUT_MENU_NOT_IN_USE)
 	{
+		// Menu-up event
 		if (_menuWindow != 0)
 		{
 			_menuWindow->OnMenuUp();
@@ -717,6 +847,10 @@ void Glow::_MenuFunc(
 	GLOW_DEBUGSCOPE("Glow::_MenuFunc");
 	
 	++_clock;
+#ifdef GLOW_OPTION_GLUTREDISPLAYFIX
+	_RaiseDeferredRefresh();
+#endif
+	// Find the menu and invoke event handler
 	GlowMenu* menu = ResolveMenu(::glutGetMenu());
 	if (menu != 0)
 	{
@@ -731,6 +865,10 @@ void Glow::_IdleFunc()
 	GLOW_DEBUGSCOPE("Glow::_IdleFunc");
 	
 	++_clock;
+#ifdef GLOW_OPTION_GLUTREDISPLAYFIX
+	_RaiseDeferredRefresh();
+#endif
+	// Invoke idle event handlers
 	_idleSender.Send(GlowIdleMessage());
 	_ExecuteDeferred();
 }
@@ -775,6 +913,22 @@ void Glow::_ExecuteDeferred()
 }
 
 
+#ifdef GLOW_OPTION_GLUTREDISPLAYFIX
+void Glow::_RaiseDeferredRefresh()
+{
+	if (_refreshMe != 0)
+	{
+		RefreshGlutWindow(_refreshMe);
+		_refreshMe = 0;
+		if (_idleSender.NumReceivers() == 0)
+		{
+			::glutIdleFunc(0);
+		}
+	}
+}
+#endif
+
+
 /*
 ===============================================================================
 	Modal window management
@@ -788,6 +942,9 @@ void Glow::PushModalWindow(
 	
 	if (_modalWindows.empty())
 	{
+		// This is the first modal window
+		// Go through and deactivate all toplevel windows except the one
+		// to be made modal
 		for (_WindowRegistryIterator iter = _windowRegistry.begin();
 			iter != _windowRegistry.end(); iter++)
 		{
@@ -800,9 +957,12 @@ void Glow::PushModalWindow(
 	}
 	else
 	{
+		// There's a modal window already. Deactivate that one and
+		// activate the new modal window
 		_modalWindows.back()->_BroadcastStandby(false, false);
 		wind->_BroadcastStandby(true, false);
 	}
+	// push window onto stack, and bring to front
 	_modalWindows.push_back(wind);
 	wind->Raise();
 }
@@ -812,25 +972,33 @@ void Glow::PopModalWindow()
 {
 	GLOW_DEBUGSCOPE("Glow::PopModalWindow");
 	
-	GlowWindow* wind = _modalWindows.back();
-	_modalWindows.pop_back();
-	if (_modalWindows.empty())
+	// Make sure there's a modal window.
+	if (!_modalWindows.empty())
 	{
-		for (_WindowRegistryIterator iter = _windowRegistry.begin();
-			iter != _windowRegistry.end(); iter++)
+		// pop modal window off stack
+		GlowWindow* wind = _modalWindows.back();
+		_modalWindows.pop_back();
+		if (_modalWindows.empty())
 		{
-			GlowSubwindow* subwind = (*iter).second;
-			if (subwind->IsTopLevel() && subwind != wind)
+			// This was the last modal window. Reactivate windows
+			for (_WindowRegistryIterator iter = _windowRegistry.begin();
+				iter != _windowRegistry.end(); iter++)
 			{
-				subwind->_BroadcastStandby(true, false);
+				GlowSubwindow* subwind = (*iter).second;
+				if (subwind->IsTopLevel() && subwind != wind)
+				{
+					subwind->_BroadcastStandby(true, false);
+				}
 			}
 		}
-	}
-	else
-	{
-		wind->_BroadcastStandby(false, false);
-		_modalWindows.back()->_BroadcastStandby(true, false);
-		_modalWindows.back()->Raise();
+		else
+		{
+			// There are more windows on the stack
+			// Deactivate popped window and reactivate next modal window
+			wind->_BroadcastStandby(false, false);
+			_modalWindows.back()->_BroadcastStandby(true, false);
+			_modalWindows.back()->Raise();
+		}
 	}
 }
 
@@ -846,6 +1014,9 @@ bool Glow::IsExtensionSupported(
 {
 	GLOW_DEBUGSCOPE("Glow::IsExtensionSupported");
 	
+	// If there's no window, there's no OpenGL context.
+	// We'll also provide a default behavior: for no windows we return false.
+	// If there's just no current window, we'll use the first one registered.
 	if (::glutGetWindow() == 0)
 	{
 		GLOW_DEBUG(_windowRegistry.empty(),
@@ -853,6 +1024,9 @@ bool Glow::IsExtensionSupported(
 		if (_windowRegistry.empty()) return false;
 		::glutSetWindow((*(_windowRegistry.begin())).first);
 	}
+	
+	// Need to copy the string because glutExtensionSupported wants a
+	// non-const pointer.
 	char* buf = new char[GLOW_CSTD::strlen(extensionName)+1];
 	GLOW_CSTD::strcpy(buf, extensionName);
 	bool ret = (::glutExtensionSupported(buf) != 0);
@@ -866,6 +1040,7 @@ bool Glow::IsBufferTypeSupported(
 {
 	GLOW_DEBUGSCOPE("Glow::IsBufferTypeSupported");
 	
+	// Test GLUT_DISPLAY_MODE_POSSIBLE. Preserve the old mode.
 	int oldMode = ::glutGet(GLenum(GLUT_INIT_DISPLAY_MODE));
 	::glutInitDisplayMode(mode);
 	bool ret = (::glutGet(GLenum(GLUT_DISPLAY_MODE_POSSIBLE)) != 0);
@@ -879,13 +1054,44 @@ void Glow::RefreshGlutWindow(
 {
 	GLOW_DEBUGSCOPE("Glow::RefreshGlutWindow");
 	
-	int saveWind = ::glutGetWindow();
-	::glutSetWindow(id);
-	::glutPostRedisplay();
-	if (saveWind != 0)
+#ifdef GLOW_OPTION_GLUTREDISPLAYFIX
+	if (_curDisplayWindow == id)
 	{
-		::glutSetWindow(saveWind);
+		// Workaround for apparent GLUT bug that affects re-posting refresh events
+		// from within a display function. Instead, we defer posting the refresh
+		// until the next event handled. (We register an idle event to make sure
+		// another event is raised.)
+		if (_refreshMe == 0)
+		{
+			_refreshMe = id;
+			if (_idleSender.NumReceivers() == 0)
+			{
+				::glutIdleFunc(_IdleFunc);
+			}
+		}
 	}
+	else
+	{
+#endif
+#if (GLUT_API_VERSION >= 4 || GLUT_XLIB_IMPLEMENTATION >= 11)
+		// According to the GLUT spec, this version is optimized by
+		// not requiring an OpenGL context switch.
+		::glutPostWindowRedisplay(id);
+#else
+		int saveWind = ::glutGetWindow();
+		if (saveWind != id)
+		{
+			::glutSetWindow(id);
+		}
+		::glutPostRedisplay();
+		if (saveWind != 0 && saveWind != id)
+		{
+			::glutSetWindow(saveWind);
+		}
+#endif
+#ifdef GLOW_OPTION_GLUTREDISPLAYFIX
+	}
+#endif
 }
 
 
@@ -1195,9 +1401,9 @@ void GlowSubwindow::Init(
 {
 	GLOW_DEBUGSCOPE("GlowSubwindow::Init");
 	
-	GLOW_DEBUG(params.width < parentWindowSize || params.width == 0,
+	GLOW_DEBUG(params.width != parentWindowSize && params.width <= 0,
 		"Subwindow width too small");
-	GLOW_DEBUG(params.height < parentWindowSize || params.height == 0,
+	GLOW_DEBUG(params.height != parentWindowSize && params.height <= 0,
 		"Subwindow height too small");
 	
 	GlowComponent::Init(parent);
@@ -1243,9 +1449,9 @@ void GlowSubwindow::Init(
 {
 	GLOW_DEBUGSCOPE("GlowSubwindow::Init");
 	
-	GLOW_DEBUG(width < parentWindowSize || width == 0,
+	GLOW_DEBUG(width != parentWindowSize && width <= 0,
 		"Subwindow width too small");
-	GLOW_DEBUG(height < parentWindowSize || height == 0,
+	GLOW_DEBUG(height != parentWindowSize && height <= 0,
 		"Subwindow height too small");
 	
 	GlowComponent::Init(parent);
@@ -1497,9 +1703,12 @@ void GlowSubwindow::SetEventMask(
 	if (IsActive())
 	{
 		int saveWind = ::glutGetWindow();
-		::glutSetWindow(_windowNum);
+		if (saveWind != _windowNum)
+		{
+			::glutSetWindow(_windowNum);
+		}
 		_RegisterCallbacks(eventMask);
-		if (saveWind != 0)
+		if (saveWind != 0 && saveWind != _windowNum)
 		{
 			::glutSetWindow(saveWind);
 		}
@@ -1516,9 +1725,12 @@ void GlowSubwindow::SetInactiveEventMask(
 	if (!IsActive())
 	{
 		int saveWind = ::glutGetWindow();
-		::glutSetWindow(_windowNum);
+		if (saveWind != _windowNum)
+		{
+			::glutSetWindow(_windowNum);
+		}
 		_RegisterCallbacks(eventMask);
-		if (saveWind != 0)
+		if (saveWind != 0 && saveWind != _windowNum)
 		{
 			::glutSetWindow(saveWind);
 		}
@@ -1543,9 +1755,12 @@ void GlowSubwindow::Move(
 	}
 	
 	int saveWind = ::glutGetWindow();
-	::glutSetWindow(_windowNum);
+	if (saveWind != _windowNum)
+	{
+		::glutSetWindow(_windowNum);
+	}
 	::glutPositionWindow(x, y);
-	if (saveWind != 0)
+	if (saveWind != 0 && saveWind != _windowNum)
 	{
 		::glutSetWindow(saveWind);
 	}
@@ -1565,9 +1780,12 @@ void GlowSubwindow::Reshape(
 	_height = height;
 	
 	int saveWind = ::glutGetWindow();
-	::glutSetWindow(_windowNum);
+	if (saveWind != _windowNum)
+	{
+		::glutSetWindow(_windowNum);
+	}
 	::glutReshapeWindow(width, height);
-	if (saveWind != 0)
+	if (saveWind != 0 && saveWind != _windowNum)
 	{
 		::glutSetWindow(saveWind);
 	}
@@ -1579,9 +1797,12 @@ void GlowSubwindow::Raise()
 	GLOW_DEBUGSCOPE("GlowSubwindow::Raise");
 	
 	int saveWind = ::glutGetWindow();
-	::glutSetWindow(_windowNum);
+	if (saveWind != _windowNum)
+	{
+		::glutSetWindow(_windowNum);
+	}
 	::glutPopWindow();
-	if (saveWind != 0)
+	if (saveWind != 0 && saveWind != _windowNum)
 	{
 		::glutSetWindow(saveWind);
 	}
@@ -1593,9 +1814,12 @@ void GlowSubwindow::Lower()
 	GLOW_DEBUGSCOPE("GlowSubwindow::Lower");
 	
 	int saveWind = ::glutGetWindow();
-	::glutSetWindow(_windowNum);
+	if (saveWind != _windowNum)
+	{
+		::glutSetWindow(_windowNum);
+	}
 	::glutPushWindow();
-	if (saveWind != 0)
+	if (saveWind != 0 && saveWind != _windowNum)
 	{
 		::glutSetWindow(saveWind);
 	}
@@ -1607,9 +1831,12 @@ void GlowSubwindow::Show()
 	GLOW_DEBUGSCOPE("GlowSubwindow::Show");
 	
 	int saveWind = ::glutGetWindow();
-	::glutSetWindow(_windowNum);
+	if (saveWind != _windowNum)
+	{
+		::glutSetWindow(_windowNum);
+	}
 	::glutShowWindow();
-	if (saveWind != 0)
+	if (saveWind != 0 && saveWind != _windowNum)
 	{
 		::glutSetWindow(saveWind);
 	}
@@ -1621,9 +1848,12 @@ void GlowSubwindow::Hide()
 	GLOW_DEBUGSCOPE("GlowSubwindow::Hide");
 	
 	int saveWind = ::glutGetWindow();
-	::glutSetWindow(_windowNum);
+	if (saveWind != _windowNum)
+	{
+		::glutSetWindow(_windowNum);
+	}
 	::glutHideWindow();
-	if (saveWind != 0)
+	if (saveWind != 0 && saveWind != _windowNum)
 	{
 		::glutSetWindow(saveWind);
 	}
@@ -1637,9 +1867,12 @@ void GlowSubwindow::SetCursor(
 	
 	_saveCursor = cursor;
 	int saveWind = ::glutGetWindow();
-	::glutSetWindow(_windowNum);
+	if (saveWind != _windowNum)
+	{
+		::glutSetWindow(_windowNum);
+	}
 	::glutSetCursor(cursor);
-	if (saveWind != 0)
+	if (saveWind != 0 && saveWind != _windowNum)
 	{
 		::glutSetWindow(saveWind);
 	}
@@ -1670,15 +1903,21 @@ void GlowSubwindow::SetMenu(
 			(!IsActive() && (_inactiveEventMask & Glow::menuEvents) != 0))
 		{
 			int saveWind = ::glutGetWindow();
+			if (saveWind != _windowNum)
+			{
+				::glutSetWindow(_windowNum);
+			}
 			int saveMenu = ::glutGetMenu();
-			::glutSetWindow(_windowNum);
-			::glutSetMenu(menu->_menuNum);
+			if (saveMenu != menu->_menuNum)
+			{
+				::glutSetMenu(menu->_menuNum);
+			}
 			::glutAttachMenu(button);
-			if (saveWind != 0)
+			if (saveWind != 0 && saveWind != _windowNum)
 			{
 				::glutSetWindow(saveWind);
 			}
-			if (saveMenu != 0)
+			if (saveMenu != 0 && saveMenu != menu->_menuNum)
 			{
 				::glutSetMenu(saveMenu);
 			}
@@ -1687,9 +1926,12 @@ void GlowSubwindow::SetMenu(
 	else
 	{
 		int saveWind = ::glutGetWindow();
-		::glutSetWindow(_windowNum);
+		if (saveWind != _windowNum)
+		{
+			::glutSetWindow(_windowNum);
+		}
 		::glutDetachMenu(button);
-		if (saveWind != 0)
+		if (saveWind != 0 && saveWind != _windowNum)
 		{
 			::glutSetWindow(saveWind);
 		}
@@ -1704,9 +1946,12 @@ int GlowSubwindow::GlutInfo(
 	
 	int ret;
 	int saveWind = ::glutGetWindow();
-	::glutSetWindow(_windowNum);
+	if (saveWind != _windowNum)
+	{
+		::glutSetWindow(_windowNum);
+	}
 	ret = ::glutGet(key);
-	if (saveWind != 0)
+	if (saveWind != 0 && saveWind != _windowNum)
 	{
 		::glutSetWindow(saveWind);
 	}
@@ -1717,27 +1962,24 @@ int GlowSubwindow::GlutInfo(
 void GlowSubwindow::_EventsForActivation(
 	bool activating)
 {
+	int saveWind = ::glutGetWindow();
+	if (saveWind != _windowNum)
+	{
+		::glutSetWindow(_windowNum);
+	}
 	if (activating)
 	{
-		int saveWind = ::glutGetWindow();
-		::glutSetWindow(_windowNum);
 		::glutSetCursor(_saveCursor);
 		_RegisterCallbacks(_eventMask);
-		if (saveWind != 0)
-		{
-			::glutSetWindow(saveWind);
-		}
 	}
 	else
 	{
-		int saveWind = ::glutGetWindow();
-		::glutSetWindow(_windowNum);
 		::glutSetCursor(GLUT_CURSOR_INHERIT);
 		_RegisterCallbacks(_inactiveEventMask);
-		if (saveWind != 0)
-		{
-			::glutSetWindow(saveWind);
-		}
+	}
+	if (saveWind != 0 && saveWind != _windowNum)
+	{
+		::glutSetWindow(saveWind);
 	}
 	Refresh();
 }
@@ -1854,9 +2096,12 @@ void GlowWindow::Maximize()
 	GLOW_DEBUGSCOPE("GlowWindow::Maximize");
 	
 	int saveWind = ::glutGetWindow();
-	::glutSetWindow(_windowNum);
+	if (saveWind != _windowNum)
+	{
+		::glutSetWindow(_windowNum);
+	}
 	::glutFullScreen();
-	if (saveWind != 0)
+	if (saveWind != 0 && saveWind != _windowNum)
 	{
 		::glutSetWindow(saveWind);
 	}
@@ -1868,9 +2113,12 @@ void GlowWindow::Iconify()
 	GLOW_DEBUGSCOPE("GlowWindow::Iconify");
 	
 	int saveWind = ::glutGetWindow();
-	::glutSetWindow(_windowNum);
+	if (saveWind != _windowNum)
+	{
+		::glutSetWindow(_windowNum);
+	}
 	::glutIconifyWindow();
-	if (saveWind != 0)
+	if (saveWind != 0 && saveWind != _windowNum)
 	{
 		::glutSetWindow(saveWind);
 	}
@@ -1885,12 +2133,15 @@ void GlowWindow::SetTitle(
 	GLOW_ASSERT(name != 0);
 	
 	int saveWind = ::glutGetWindow();
-	::glutSetWindow(_windowNum);
+	if (saveWind != _windowNum)
+	{
+		::glutSetWindow(_windowNum);
+	}
 	delete[] _title;
 	_title = new char[GLOW_CSTD::strlen(name)+1];
 	GLOW_CSTD::strcpy(_title, name);
 	::glutSetWindowTitle(_title);
-	if (saveWind != 0)
+	if (saveWind != 0 && saveWind != _windowNum)
 	{
 		::glutSetWindow(saveWind);
 	}
@@ -1905,12 +2156,15 @@ void GlowWindow::SetIconTitle(
 	GLOW_ASSERT(name != 0);
 	
 	int saveWind = ::glutGetWindow();
-	::glutSetWindow(_windowNum);
+	if (saveWind != _windowNum)
+	{
+		::glutSetWindow(_windowNum);
+	}
 	delete[] _iconTitle;
 	_iconTitle = new char[GLOW_CSTD::strlen(name)+1];
 	GLOW_CSTD::strcpy(_iconTitle, name);
 	::glutSetIconTitle(_iconTitle);
-	if (saveWind != 0)
+	if (saveWind != 0 && saveWind != _windowNum)
 	{
 		::glutSetWindow(saveWind);
 	}

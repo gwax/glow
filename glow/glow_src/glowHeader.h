@@ -110,11 +110,13 @@
 	#define VIRTUOSO_INTERNAL_MINMAXDEFINED
 #endif
 
-// Integral release number (0.9.5 == 3)
-#define GLOW_TOOLKIT 8
+// Unique release number (doesn't mean anything special)
+#define GLOW_TOOLKIT 10
 
 // Fractional version number
-#define GLOW_VERSION 0.992
+// e.g. 1.3.11pre4 == 1.031104
+// e.g. 1.3.11     == 1.031199
+#define GLOW_VERSION 1.000099
 
 // Internal utility
 #define GLOW_INTERNAL_SETUPENUMBITFIELD(T) \

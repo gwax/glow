@@ -370,7 +370,7 @@ Starts the GLOW main loop. Should be called once after all program initializatio
 <tt>static double <b>Version</b>(void)</tt>
 </p>
 <blockquote>
-Returns the version of GLOW currently in use. This value is also defined by the constant GLOW_VERSION.
+Returns the version of GLOW currently in use. This value is also defined by the constant <tt>GLOW_VERSION</tt>. The value is of the form <tt>a.bbccdd</tt> where <tt>a</tt> is the major release number, <tt>b</tt> is the major revision number, <tt>c</tt> is the minor revision number and <tt>d</tt> is the prerelease number (99 for final). Hence, version 1.3.11pre4 would show up as 1.031104. This is a non-inline method, so you can test that the headers match up with the library at runtime by comparing <tt>GLOW_VERSION</tt> with the value returned by <tt>Version()</tt>.
 </blockquote>
 
 </blockquote>
@@ -554,7 +554,7 @@ Pushes the given window onto the modal window stack, deactivating all other wind
 <tt>static void <b>PopModalWindow</b>(void)</tt>
 </p>
 <blockquote>
-Pops the topmost window off the modal window stack. If this results in the stack being empty, GLOW reactivates other toplevel windows. Otherwise, the next window in the stack is made the focused window.
+Pops the topmost window off the modal window stack. If this results in the stack being empty, GLOW reactivates other toplevel windows. Otherwise, the next window in the stack is made the focused window. Has no effect if there are no modal windows.
 </blockquote>
 
 <p>

@@ -1,8 +1,7 @@
 
 The GLOW Toolkit
-version 0.9.92 (22 June 2000)
+version 1.0.0 (29 June 2000)
 Copyright (C) 1997-2000  Daniel Azuma
-All rights reserved worldwide
 
 
 ==============================================================================
@@ -14,7 +13,7 @@ CONTENTS
 
    (2) Terms and conditions
 
-   (3) Release notes 0.9.92
+   (3) Release notes 1.0.0
 
    (4) Installing GLOW
 
@@ -77,9 +76,9 @@ RELEASE NOTES
 
 
     The GLOW Toolkit
-    Version 0.9.92 (22 June 2000)
+    Version 1.0.0 (29 June 2000)
 
-    These notes detail the differences between versions 0.9.9 and 0.9.92.
+    These notes detail the differences between versions 0.9.9 and 1.0.0.
     A complete history of publicly released versions can be found on the
     GLOW web site.
 
@@ -90,7 +89,8 @@ RELEASE NOTES
     Features added
     --------------
 
-      Quatf can now be cast to GLfloat*.
+      Quatf can now be cast to GLfloat*. Why anyone would want to do
+      this I'm not sure, but the feature is now there.
 
 
     Features changed
@@ -102,21 +102,33 @@ RELEASE NOTES
     Bugs fixed
     ----------
 
+      Glow::PopModalWindow() crashed if no windows were modal. Fixed.
+
       Lessons 7 and 8 didn't build under MSVC. Fixed.
 
       Mat4f was missing the cast to GLfloat* operator. Fixed.
 
-      A couple of minor bugs were found in the tutorial. Fixed.
+      A couple of minor bugs and broken links were found in the
+      tutorial. Fixed.
 
 
     Internal changes
     ----------------
 
-      (none)
+      Refresh() now uses glutPostWindowRedisplay() if available. Should
+      be a little faster. A number of other window-related methods also
+      try to avoid calling glutSetWindow().
 
 
     Known issues
     ------------
+
+      Under certain conditions (often aggravated by reposting redisplay
+      events while in the display callback), GLUT could lose track of
+      some of its windows. I confirmed this as a bug in GLUT. There is
+      no known complete workaround, but GLOW now provides an optional
+      partial workaround that can be activated by defining the symbol
+      GLOW_OPTION_GLUTREDISPLAYFIX.
 
       Because of the continuing incomplete state of GLUT in the Mac OS
       OpenGL SDK, many features of GLOW are still unusable on the Mac.
@@ -154,7 +166,9 @@ INSTALLING GLOW
 
     You may also want to build a library archive or shared library of
     GLOW. I leave it up to the reader to figure out how to do this,
-    since I just use it in its source code form myself.
+    since I just use it in its source code form myself. Future releases
+    of GLOW will include a Makefile and configure script for building
+    static and shared libraries.
 
 
 ==============================================================================

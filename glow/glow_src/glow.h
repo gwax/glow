@@ -409,6 +409,12 @@ class Glow
 		// Toplevel window counter
 		static int _numToplevelWindows;
 		static bool _autoQuitting;
+		
+		// Workaround for GLUT redisplay bug
+#ifdef GLOW_OPTION_GLUTREDISPLAYFIX
+		static int _curDisplayWindow;
+		static int _refreshMe;
+#endif
 	
 	private:
 	
@@ -465,6 +471,9 @@ class Glow
 		
 		// Deferred execution
 		static void _ExecuteDeferred();
+#ifdef GLOW_OPTION_GLUTREDISPLAYFIX
+		static void _RaiseDeferredRefresh();
+#endif
 };
 
 GLOW_INTERNAL_SETUPENUMBITFIELD(Glow::EventMask)
