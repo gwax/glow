@@ -380,8 +380,7 @@ inline bool GlowRadioGroupWidget::_Register(
 }
 
 
-/*		23 May 2000 -- DA -- Version 0.9.8 update
-
+/*
 ===============================================================================
 */
 

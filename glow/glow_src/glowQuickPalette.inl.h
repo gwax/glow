@@ -159,8 +159,7 @@ inline GlowQuickPanelWidget* GlowQuickPalette::QuickPaletteRoot() const
 }
 
 
-/*		23 May 2000 -- DA -- Version 0.9.8 update
-
+/*
 ===============================================================================
 */
 

@@ -112,24 +112,10 @@ These methods essentially just call the corresponding methods on the current tra
 <blockquote>
 
 <p>
-<tt>void <b>Set</b>(GLfloat scale, const Quatf& rot, const Vec3f& trans)</tt>
+<tt>void <b>Set</b>(const Vec3f& trans, const Quatf& rot, GLfloat scale)</tt>
 </p>
 <blockquote>
 Sets the current transform.
-</blockquote>
-
-<p>
-<tt>void <b>SetScale</b>(GLfloat scale)</tt>
-</p>
-<blockquote>
-Sets the current scale factor on the transform data.
-</blockquote>
-
-<p>
-<tt>void <b>SetRotation</b>(const Quatf& rot)</tt>
-</p>
-<blockquote>
-Sets the current rotation quaternion on the transform data.
 </blockquote>
 
 <p>
@@ -140,24 +126,24 @@ Sets the current translation vector on the transform data.
 </blockquote>
 
 <p>
+<tt>void <b>SetRotation</b>(const Quatf& rot)</tt>
+</p>
+<blockquote>
+Sets the current rotation quaternion on the transform data.
+</blockquote>
+
+<p>
+<tt>void <b>SetScale</b>(GLfloat scale)</tt>
+</p>
+<blockquote>
+Sets the current scale factor on the transform data.
+</blockquote>
+
+<p>
 <tt>void <b>SetIdentity</b>(void)</tt>
 </p>
 <blockquote>
 Sets the transform data to the identity transform.
-</blockquote>
-
-<p>
-<tt>void <b>AddScale</b>(GLfloat scale)</tt>
-</p>
-<blockquote>
-Adds the given scale factor to the transform data.
-</blockquote>
-
-<p>
-<tt>void <b>AddRotation</b>(const Quatf& rot)</tt>
-</p>
-<blockquote>
-Adds the given rotation quaternion to the transform data.
 </blockquote>
 
 <p>
@@ -168,10 +154,24 @@ Adds the given translation vector to the transform data.
 </blockquote>
 
 <p>
-<tt>GLfloat <b>GetScale</b>(void) const</tt>
+<tt>void <b>AddRotation</b>(const Quatf& rot)</tt>
 </p>
 <blockquote>
-Returns the current scale factor of the transform data.
+Adds the given rotation quaternion to the transform data.
+</blockquote>
+
+<p>
+<tt>void <b>AddScale</b>(GLfloat scale)</tt>
+</p>
+<blockquote>
+Adds the given scale factor to the transform data.
+</blockquote>
+
+<p>
+<tt>const Vec3f& <b>GetTranslation</b>(void) const</tt>
+</p>
+<blockquote>
+Returns the current translation vector of the transform data.
 </blockquote>
 
 <p>
@@ -182,10 +182,10 @@ Returns the current rotation quaternion of the transform data.
 </blockquote>
 
 <p>
-<tt>const Vec3f& <b>GetTranslation</b>(void) const</tt>
+<tt>GLfloat <b>GetScale</b>(void) const</tt>
 </p>
 <blockquote>
-Returns the current translation vector of the transform data.
+Returns the current scale factor of the transform data.
 </blockquote>
 
 <p>

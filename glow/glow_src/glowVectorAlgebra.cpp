@@ -79,6 +79,7 @@ GLOW_NAMESPACE_BEGIN
 
 const double Math::pi = 3.1415926535897932384626433832795;
 const double Math::twopi = 3.1415926535897932384626433832795*2.0;
+const double Math::halfpi = 3.1415926535897932384626433832795*0.5;
 const double Math::radiansToDegrees = 180.0/3.1415926535897932384626433832795;
 const double Math::degreesToRadians = 3.1415926535897932384626433832795/180.0;
 
@@ -130,12 +131,27 @@ const Mat4f Mat4f::operator*(
 	GLfloat op2) const
 {
 	Mat4f result;
-	short i, j;
 	
-	for (j=0; j<4; j++)
-	for (i=0; i<4; i++)
+	for (short j=0; j<4; j++)
+	for (short i=0; i<4; i++)
 	{
 		result._vals[i][j] = _vals[i][j] * op2;
+	}
+	
+	return result;
+}
+
+
+const Mat4f operator*(
+	GLfloat op1,
+	const Mat4f& op2)
+{
+	Mat4f result;
+	
+	for (short j=0; j<4; j++)
+	for (short i=0; i<4; i++)
+	{
+		result.SetVal(i, j, op1 * op2.GetVal(i, j));
 	}
 	
 	return result;
@@ -146,12 +162,25 @@ const Mat4f Mat4f::operator/(
 	GLfloat op2) const
 {
 	Mat4f result;
-	short i, j;
 	
-	for (j=0; j<4; j++)
-	for (i=0; i<4; i++)
+	for (short j=0; j<4; j++)
+	for (short i=0; i<4; i++)
 	{
 		result._vals[i][j] = _vals[i][j] / op2;
+	}
+	
+	return result;
+}
+
+
+const Mat4f Mat4f::operator-() const
+{
+	Mat4f result;
+	
+	for (short j=0; j<4; j++)
+	for (short i=0; i<4; i++)
+	{
+		result._vals[i][j] = -_vals[i][j];
 	}
 	
 	return result;
@@ -162,16 +191,16 @@ const Mat4f Mat4f::operator/(
 // Matrix inverse by Gauss-Jordan elimination
 //-----------------------------------------------------------------------------
 
-Mat4f& Mat4f::SetInverse(
-	Mat4f& res) const
+void Mat4f::SetInverse(
+	const Mat4f& orig)
 {
-	Mat4f temp = *this;
+	Mat4f temp = orig;
 	int i, j;
 	GLfloat fac;
 	GLfloat pivot, pivot2;
 	int pivrow;
 	
-	res.SetIdentity();
+	SetIdentity();
 	for (j=0; j<4; j++)
 	{
 		// Find largest pivot
@@ -190,21 +219,21 @@ Mat4f& Mat4f::SetInverse(
 		// Check for singular matrix
 		if (pivot == GLfloat(0))
 		{
-			res.SetZero();
-			return res;
+			SetZero();
+			return;
 		}
 		
 		// Get pivot into jth row
 		if (pivrow != j)
 		{
 			temp._GJSwapRows(pivrow, j);
-			res._GJSwapRows(pivrow, j);
+			_GJSwapRows(pivrow, j);
 		}
 		
 		// Turn the pivot into 1
 		fac = GLfloat(1)/temp._vals[j][j];
 		temp._GJScaleRow(j, fac);
-		res._GJScaleRow(j, fac);
+		_GJScaleRow(j, fac);
 		
 		// Zero out this element in other rows
 		for (i=0; i<4; i++)
@@ -213,19 +242,17 @@ Mat4f& Mat4f::SetInverse(
 			{
 				fac = -(temp._vals[j][i]);
 				temp._GJAddToRow(j, fac, i);
-				res._GJAddToRow(j, fac, i);
+				_GJAddToRow(j, fac, i);
 			}
 		}
 	}
-	
-	return res;
 }
 
 
 const Mat4f Mat4f::Inverse() const
 {
 	Mat4f res;
-	SetInverse(res);
+	res.SetInverse(*this);
 	return res;
 }
 
@@ -234,16 +261,14 @@ const Mat4f Mat4f::Inverse() const
 // Matrix cofactors
 //-----------------------------------------------------------------------------
 
-Mat4f& Mat4f::SetCofactors(
-	Mat4f& res) const
+void Mat4f::SetCofactors(
+	const Mat4f& orig)
 {
 	for (int j=0; j<4; j++)
 	for (int i=0; i<4; i++)
 	{
-		res._vals[i][j] = _CofactorElem(i, j);
+		_vals[i][j] = orig._CofactorElem(i, j);
 	}
-	
-	return res;
 }
 
 
@@ -282,16 +307,14 @@ GLfloat Mat4f::Determinant() const
 // Matrix transpose
 //-----------------------------------------------------------------------------
 
-Mat4f& Mat4f::SetTranspose(
-	Mat4f& res) const
+void Mat4f::SetTranspose(
+	const Mat4f& orig)
 {
 	for (int j=0; j<4; j++)
 	for (int i=0; i<4; i++)
 	{
-		res._vals[i][j] = _vals[j][i];
+		_vals[i][j] = orig._vals[j][i];
 	}
-	
-	return res;
 }
 
 
@@ -761,8 +784,7 @@ GLOW_STD::istream& operator>>(
 #endif
 
 
-/*		23 May 2000 -- DA -- Version 0.9.8 update
-
+/*
 ===============================================================================
 */
 

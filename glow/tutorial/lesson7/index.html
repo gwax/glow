@@ -159,7 +159,7 @@ and the calculator will display the answer, 5. With an RPN calculator, you press
 [2] [enter] [3] [+]
 </blockquote>
 <p>
-and the calculator will display the answer, 5. There are actually a number of advantages to using this style of working with a calculator, and many people find that the RPN notation is more efficient than the standard notation. The sidebar "About Reverse Polish Notation" gives some more information about this notation and how it can be used.
+and the calculator will display the answer, 5. There are actually a number of advantages to using this style of working with a calculator, and many people find that the RPN notation is more efficient than the notation used in common calculators. The sidebar "About Reverse Polish Notation" gives some more information about RPN and how it can be used.
 </p>
 <p>
 We won't take a close look at how the actual RPN evaluation engine is implemented, because it isn't really important for the purposes of this tutorial. I've written a class <tt>CalcEngine</tt> that we can use as a black box for now. It is implemented in the files <tt>calcengine.h</tt> and <tt>calcengine.cpp</tt>. All we need to know for now is how to use this class. It implements pretty much the entire calculator, minus the user interface. When a button is pressed, we need to call the <tt>Button()</tt> method, and pass it either the digit that was pressed, or one of the constants defined in the <tt>CalcEngine::Button</tt> enumeration, denoting one of the other buttons. We can determine what value should be displayed by calling the methods <tt>Display()</tt> or <tt>Value()</tt>.

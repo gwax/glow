@@ -152,6 +152,13 @@ inline void Vec3f::SetZero()
 }
 
 
+inline bool Vec3f::IsZero() const
+{
+	return (_vals[0] == GLfloat(0) && _vals[1] == GLfloat(0) &&
+		_vals[2] == GLfloat(0));
+}
+
+
 //-----------------------------------------------------------------------------
 // Vector individual accessors
 //-----------------------------------------------------------------------------
@@ -487,12 +494,6 @@ inline const Vec3f Vec3f::Normalized() const
 }
 
 
-inline bool Vec3f::IsZero() const
-{
-	return (_vals[0]==0.0f && _vals[1]==0.0f && _vals[2]==0.0f);
-}
-
-
 inline void Vec3f::Normalize()
 {
 	GLfloat norm = GLOW_CSTD::sqrt(_vals[0]*_vals[0]+_vals[1]*_vals[1]+_vals[2]*_vals[2]);
@@ -563,6 +564,31 @@ inline GLOW_STD::ostream& operator<<(
 inline Mat4f::Mat4f()
 {
 	SetIdentity();
+}
+
+
+inline Mat4f::Mat4f(
+	GLfloat a, GLfloat b, GLfloat c, GLfloat d,
+	GLfloat e, GLfloat f, GLfloat g, GLfloat h,
+	GLfloat i, GLfloat j, GLfloat k, GLfloat l,
+	GLfloat m, GLfloat n, GLfloat o, GLfloat p)
+{
+	_vals[0][0] = a;
+	_vals[1][0] = b;
+	_vals[2][0] = c;
+	_vals[3][0] = d;
+	_vals[0][1] = e;
+	_vals[1][1] = f;
+	_vals[2][1] = g;
+	_vals[3][1] = h;
+	_vals[0][2] = i;
+	_vals[1][2] = j;
+	_vals[2][2] = k;
+	_vals[3][2] = l;
+	_vals[0][3] = m;
+	_vals[1][3] = n;
+	_vals[2][3] = o;
+	_vals[3][3] = p;
 }
 
 
@@ -689,6 +715,19 @@ inline void Mat4f::SetZero()
 	{
 		_vals[i][j] = 0;
 	}
+}
+
+
+inline bool Mat4f::IsIdentity() const
+{
+	for (short j=0; j<4; j++)
+	for (short i=0; i<4; i++)
+	{
+		if ((i != j && _vals[i][j] != 0) ||
+			(i == j && _vals[i][j] != GLfloat(1)))
+				return false;
+	}
+	return true;
 }
 
 
@@ -857,10 +896,42 @@ inline GLfloat Mat4f::_CofactorElem(
 
 
 //-----------------------------------------------------------------------------
+// Comparisons
+//-----------------------------------------------------------------------------
+
+inline bool Mat4f::operator==(
+	const Mat4f& op2) const
+{
+	for (short j=0; j<4; j++)
+	for (short i=0; i<4; i++)
+	{
+		if (_vals[i][j] != op2._vals[i][j])
+			return false;
+	}
+	
+	return true;
+}
+
+
+inline bool Mat4f::operator!=(
+	const Mat4f& op2) const
+{
+	for (short j=0; j<4; j++)
+	for (short i=0; i<4; i++)
+	{
+		if (_vals[i][j] != op2._vals[i][j])
+			return true;
+	}
+	
+	return false;
+}
+
+
+//-----------------------------------------------------------------------------
 // Self-multiplication and division by a scalar
 //-----------------------------------------------------------------------------
 
-inline Mat4f &Mat4f::operator*=(
+inline Mat4f& Mat4f::operator*=(
 	GLfloat op2)
 {
 	for (short j=0; j<4; j++)
@@ -873,7 +944,7 @@ inline Mat4f &Mat4f::operator*=(
 }
 
 
-inline Mat4f &Mat4f::operator/=(
+inline Mat4f& Mat4f::operator/=(
 	GLfloat op2)
 {
 	for (short j=0; j<4; j++)
@@ -1040,6 +1111,17 @@ inline Quatf& Quatf::operator=(
 	_vals[1] = vals[1];
 	_vals[2] = vals[2];
 	_vals[3] = vals[3];
+	return *this;
+}
+
+
+inline Quatf& Quatf::operator=(
+	const Vec3f& vec)
+{
+	_vals[0] = 0.0f;
+	_vals[1] = vec.GetX();
+	_vals[2] = vec.GetY();
+	_vals[3] = vec.GetZ();
 	return *this;
 }
 
@@ -1403,6 +1485,14 @@ inline const Quatf Quatf::operator*(
 }
 
 
+inline const Quatf operator*(
+	GLfloat op1,
+	const Quatf& op2)
+{
+	return Quatf(op1*op2.GetW(), op1*op2.GetX(), op1*op2.GetY(), op1*op2.GetZ());
+}
+
+
 inline const Quatf Quatf::operator/(
 	GLfloat op2) const
 {
@@ -1486,10 +1576,7 @@ inline GLfloat Quatf::operator*(
 }
 
 
-
-
-/*		23 May 2000 -- DA -- Version 0.9.8 update
-
+/*
 ===============================================================================
 */
 

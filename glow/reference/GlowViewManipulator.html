@@ -154,13 +154,6 @@ The destructor for <tt>GlowViewManipulator</tt> also recursively deletes the com
 <blockquote>
 
 <p>
-<tt>void <b>BeginScaleDrag</b>(GLfloat xn, GLfloat yn) const</tt>
-</p>
-<blockquote>
-Begins scale dragging. Generally you should call this in response to a mouse down event. <tt>xn</tt> and <tt>yn</tt> denote the mouse coordinates in OpenGL coordinates (i.e. -1.0 to 1.0, with y increasing moving up).
-</blockquote>
-
-<p>
 <tt>void <b>BeginTranslationDrag</b>(GLfloat xn, GLfloat yn) const</tt>
 </p>
 <blockquote>
@@ -172,6 +165,13 @@ Begins translation dragging. Generally you should call this in response to a mou
 </p>
 <blockquote>
 Begins rotation dragging. Generally you should call this in response to a mouse down event. <tt>xn</tt> and <tt>yn</tt> denote the mouse coordinates in OpenGL coordinates (i.e. -1.0 to 1.0, with y increasing moving up).
+</blockquote>
+
+<p>
+<tt>void <b>BeginScaleDrag</b>(GLfloat xn, GLfloat yn) const</tt>
+</p>
+<blockquote>
+Begins scale dragging. Generally you should call this in response to a mouse down event. <tt>xn</tt> and <tt>yn</tt> denote the mouse coordinates in OpenGL coordinates (i.e. -1.0 to 1.0, with y increasing moving up).
 </blockquote>
 
 <p>
@@ -254,17 +254,17 @@ Sets the manipulator spinnable or not spinnable.
 </blockquote>
 
 <p>
-<tt>float <b>GetScaleThrottle</b>(void) const</tt>
+<tt>float <b>GetTranslationThrottle</b>(void) const</tt>
 </p>
 <blockquote>
-Returns the current scale throttle.
+Returns the current translation throttle.
 </blockquote>
 
 <p>
-<tt>void <b>SetScaleThrottle</b>(float throttle)</tt>
+<tt>void <b>SetTranslationThrottle</b>(float throttle)</tt>
 </p>
 <blockquote>
-Sets the scale throttle.
+Sets the translation throttle.
 </blockquote>
 
 <p>
@@ -282,17 +282,17 @@ Sets the rotation throttle.
 </blockquote>
 
 <p>
-<tt>float <b>GetTranslationThrottle</b>(void) const</tt>
+<tt>float <b>GetScaleThrottle</b>(void) const</tt>
 </p>
 <blockquote>
-Returns the current translation throttle.
+Returns the current scale throttle.
 </blockquote>
 
 <p>
-<tt>void <b>SetTranslationThrottle</b>(float throttle)</tt>
+<tt>void <b>SetScaleThrottle</b>(float throttle)</tt>
 </p>
 <blockquote>
-Sets the translation throttle.
+Sets the scale throttle.
 </blockquote>
 
 <p>
@@ -335,15 +335,7 @@ These methods are inherited from <tt><a href="GlowViewTransform.html">GlowViewTr
 <blockquote>
 
 <p>
-<tt>void <b>Set</b>(GLfloat scale, const Quatf& rot, const Vec3f& trans)</tt>
-</p>
-
-<p>
-<tt>void <b>SetScale</b>(GLfloat scale)</tt>
-</p>
-
-<p>
-<tt>void <b>SetRotation</b>(const Quatf& rot)</tt>
+<tt>void <b>Set</b>(const Vec3f& trans, const Quatf& rot, GLfloat scale)</tt>
 </p>
 
 <p>
@@ -351,15 +343,15 @@ These methods are inherited from <tt><a href="GlowViewTransform.html">GlowViewTr
 </p>
 
 <p>
+<tt>void <b>SetRotation</b>(const Quatf& rot)</tt>
+</p>
+
+<p>
+<tt>void <b>SetScale</b>(GLfloat scale)</tt>
+</p>
+
+<p>
 <tt>void <b>SetIdentity</b>(void)</tt>
-</p>
-
-<p>
-<tt>void <b>AddScale</b>(GLfloat scale)</tt>
-</p>
-
-<p>
-<tt>void <b>AddRotation</b>(const Quatf& rot)</tt>
 </p>
 
 <p>
@@ -367,7 +359,15 @@ These methods are inherited from <tt><a href="GlowViewTransform.html">GlowViewTr
 </p>
 
 <p>
-<tt>GLfloat <b>GetScale</b>(void) const</tt>
+<tt>void <b>AddRotation</b>(const Quatf& rot)</tt>
+</p>
+
+<p>
+<tt>void <b>AddScale</b>(GLfloat scale)</tt>
+</p>
+
+<p>
+<tt>const Vec3f& <b>GetTranslation</b>(void) const</tt>
 </p>
 
 <p>
@@ -375,7 +375,7 @@ These methods are inherited from <tt><a href="GlowViewTransform.html">GlowViewTr
 </p>
 
 <p>
-<tt>const Vec3f& <b>GetTranslation</b>(void) const</tt>
+<tt>GLfloat <b>GetScale</b>(void) const</tt>
 </p>
 
 <p>

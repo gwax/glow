@@ -122,6 +122,7 @@ class Math
 		// Constants
 		static const double pi;
 		static const double twopi;
+		static const double halfpi;
 		static const double radiansToDegrees;
 		static const double degreesToRadians;
 	
@@ -177,6 +178,7 @@ class Vec3f
 		inline void Set(
 			const GLfloat* vals);
 		inline void SetZero();
+		inline bool IsZero() const;
 		
 		// Direct member access
 		
@@ -261,7 +263,6 @@ class Vec3f
 		
 		// Miscellaneous operations
 		
-		inline bool IsZero() const;
 		inline GLfloat Norm() const;
 		inline GLfloat NormSquared() const;
 		inline const Vec3f Normalized() const;
@@ -336,6 +337,11 @@ class Mat4f
 		
 		inline Mat4f();
 		inline Mat4f(
+			GLfloat a, GLfloat b, GLfloat c, GLfloat d,
+			GLfloat e, GLfloat f, GLfloat g, GLfloat h,
+			GLfloat i, GLfloat j, GLfloat k, GLfloat l,
+			GLfloat m, GLfloat n, GLfloat o, GLfloat p);
+		inline Mat4f(
 			const GLfloat* array);
 		inline Mat4f(
 			const Mat4f& m);
@@ -355,17 +361,18 @@ class Mat4f
 			GLfloat i, GLfloat j, GLfloat k, GLfloat l,
 			GLfloat m, GLfloat n, GLfloat o, GLfloat p);
 		inline void SetVal(
-			short a,
-			short b,
+			short row,
+			short col,
 			GLfloat val);
 		inline GLfloat GetVal(
-			short a,
-			short b) const;
+			short row,
+			short col) const;
 		
 		// Special values
 		
 		inline void SetIdentity();
 		inline void SetZero();
+		inline bool IsIdentity() const;
 		inline bool IsZero() const;
 		
 		// Transforms
@@ -404,6 +411,11 @@ class Mat4f
 		
 		// Operations
 		
+		inline bool operator==(
+			const Mat4f& op2) const;
+		inline bool operator!=(
+			const Mat4f& op2) const;
+		
 		const Mat4f operator*(
 			GLfloat op2) const;
 		const Mat4f operator/(
@@ -413,17 +425,16 @@ class Mat4f
 		inline Mat4f& operator/=(
 			GLfloat op2);
 		
-		Mat4f& SetInverse(
-			Mat4f& res) const;
+		const Mat4f operator-() const;
+		
+		void SetInverse(
+			const Mat4f& original);
 		const Mat4f Inverse() const;
-		Mat4f& SetTranspose(
-			Mat4f& res) const;
+		void SetTranspose(
+			const Mat4f& original);
 		const Mat4f Transpose() const;
-		Mat4f& SetInverseTranspose(
-			Mat4f& res) const;
-		const Mat4f InverseTranspose() const;
-		Mat4f& SetCofactors(
-			Mat4f& res) const;
+		void SetCofactors(
+			const Mat4f& original);
 		const Mat4f Cofactors() const;
 		GLfloat Determinant() const;
 		
@@ -491,6 +502,13 @@ class Mat4f
 ===============================================================================
 */
 
+// Binary operator
+
+const Mat4f operator*(
+	GLfloat op1,
+	const Mat4f& op2);
+
+
 // Matrix i/o operators
 
 #ifndef GLOW_OPTION_NOIOSTREAMS
@@ -548,6 +566,8 @@ class Quatf
 			const Quatf& q);
 		inline Quatf& operator=(
 			const GLfloat* vals);
+		inline Quatf& operator=(
+			const Vec3f& vec);
 		
 		// Setters
 		
@@ -599,6 +619,7 @@ class Quatf
 		// Special values
 		
 		inline void SetIdentity();
+		inline bool IsIdentity();
 		inline void SetZero();
 		inline bool IsZero() const;
 		
@@ -639,6 +660,11 @@ class Quatf
 		inline const Quatf Normalized() const;
 		
 		// Operators
+		
+		inline bool operator==(
+			const Quatf& q) const;
+		inline bool operator!=(
+			const Quatf& q) const;
 		
 		inline const Quatf operator-() const;
 		
@@ -687,6 +713,13 @@ class Quatf
 ===============================================================================
 */
 
+// Binary operator
+
+inline const Quatf operator*(
+	GLfloat op1,
+	const Quatf& op2);
+
+
 // Quaternion i/o
 
 #ifndef GLOW_OPTION_NOIOSTREAMS
@@ -703,8 +736,7 @@ GLOW_STD::istream& operator>>(
 
 
 
-/*		23 May 2000 -- DA -- Version 0.9.8 update
-
+/*
 ===============================================================================
 */
 

@@ -148,6 +148,9 @@ RELEASE NOTES
 
       Multiple bugs and broken links in the reference fixed.
 
+      The reference didn't document the classes in glowVectorAlgebra.
+      Fixed.
+
       Tutorial lesson 7 said the wrong thing about the return value for
       event filters. Fixed.
 
