@@ -204,18 +204,18 @@ GlowWidget::AutoPackError GlowLabelWidget::OnAutoPack(
 	int& bottomMargin)
 {
 	GLOW_DEBUGSCOPE("GlowLabelWidget::OnAutoPack");
-	
+
 	int hnew = Width();
 	int preferred = _maxLineWidth+_hIndent+_hIndent;
 	if (hSize != unspecifiedSize && hSize < preferred)
 	{
 		return hAutoPackError;
 	}
-	if (hOption == forcedSize)
+	if (hOption == forcedSize || hOption == expandPreferredSize)
 	{
 		hnew = hSize;
 	}
-	else if (hOption == preferredSize || hOption == expandPreferredSize)
+	else if (hOption == preferredSize)
 	{
 		hnew = preferred;
 	}
@@ -226,11 +226,11 @@ GlowWidget::AutoPackError GlowLabelWidget::OnAutoPack(
 	{
 		return vAutoPackError;
 	}
-	if (vOption == forcedSize)
+	if (vOption == forcedSize || vOption == expandPreferredSize)
 	{
 		vnew = vSize;
 	}
-	else if (vOption == expandPreferredSize || vOption == preferredSize)
+	else if (vOption == preferredSize)
 	{
 		vnew = preferred;
 	}
@@ -314,11 +314,11 @@ GlowWidget::AutoPackError GlowWidgetLabelWidget::OnAutoPack(
 			pwidth = hSize;
 		}
 	}
-	if (hOption == forcedSize)
+	if (hOption == forcedSize || hOption == expandPreferredSize)
 	{
 		hnew = hSize;
 	}
-	else if (hOption == preferredSize || hOption == expandPreferredSize)
+	else if (hOption == preferredSize)
 	{
 		hnew = pwidth;
 	}
@@ -335,11 +335,11 @@ GlowWidget::AutoPackError GlowWidgetLabelWidget::OnAutoPack(
 			pheight = vSize;
 		}
 	}
-	if (vOption == forcedSize)
+	if (vOption == forcedSize || vOption == expandPreferredSize)
 	{
 		vnew = vSize;
 	}
-	else if (vOption == expandPreferredSize || vOption == preferredSize)
+	else if (vOption == preferredSize)
 	{
 		vnew = pheight;
 	}

@@ -197,6 +197,13 @@ GlowWidget::~GlowWidget()
 	UnregisterMouseEvents();
 	UnregisterKeyboardEvents();
 	Refresh();
+	
+	GLOW_STD::map<GlowWidget*, Glow_OldWidgetState>::iterator iter =
+		_notifyList.find(this);
+	if (iter != _notifyList.end())
+	{
+		_notifyList.erase(iter);
+	}
 }
 
 

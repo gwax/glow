@@ -152,7 +152,7 @@ void GlowSliderWidget::Init(
 {
 	GLOW_DEBUGSCOPE("GlowSliderWidget::Init");
 	
-	GLOW_DEBUG(params.max <= params.min, "max <= min while constructing GlowSlider");
+	GLOW_DEBUG(params.max < params.min, "max < min while constructing GlowSlider");
 	GlowWidget::Init(root, parent, params);
 	_dragging = false;
 	_type = params.options;
@@ -422,200 +422,203 @@ void GlowSliderWidget::OnWidgetPaint()
 	::glLineWidth(1);
 	
 	// Draw indicator
-	float indicPos;
-	if ((_type & logarithmic) != 0)
+	if (_max > _min)
 	{
-		indicPos = GLOW_CSTD::log(_value/_min)/GLOW_CSTD::log(_max/_min);
-	}
-	else
-	{
-		indicPos = (_value-_min)/(_max-_min);
-	}
-	indicPos = indicRadius-1.0f+indicPos*
-		(pseudoWidth-pseudoHeight)/pseudoWidth*2.0f;
-	if (_numTicks > 0)
-	{
-		// With ticks (pentagons)
-		if (!IsActive())
+		float indicPos;
+		if ((_type & logarithmic) != 0)
 		{
-			_disableIndicatorColor.Apply();
-		}
-		else if (_dragging)
-		{
-			_hiliteIndicatorColor.Apply();
+			indicPos = GLOW_CSTD::log(_value/_min)/GLOW_CSTD::log(_max/_min);
 		}
 		else
 		{
-			_indicatorColor.Apply();
+			indicPos = (_value-_min)/(_max-_min);
 		}
-		::glBegin(GL_POLYGON);
-		::glVertex2f(indicPos, -0.5f);
-		::glVertex2f(indicPos-indicRadius, 0.0f);
-		::glVertex2f(indicPos-indicRadius, 1.0f);
-		::glVertex2f(indicPos+indicRadius, 1.0f);
-		::glVertex2f(indicPos+indicRadius, 0.0f);
-		::glEnd();
-		
-		if (IsActive())
+		indicPos = indicRadius-1.0f+indicPos*
+			(pseudoWidth-pseudoHeight)/pseudoWidth*2.0f;
+		if (_numTicks > 0)
 		{
-			// Bottom (crooked) bevel
-			_BottomBevelColor();
-			::glBegin(GL_QUAD_STRIP);
-			::glVertex2f(indicPos-indicRadius, 0.0f);
-			::glVertex2f(indicPos-indicRadius+bevelWidth, bevelHeight);
+			// With ticks (pentagons)
+			if (!IsActive())
+			{
+				_disableIndicatorColor.Apply();
+			}
+			else if (_dragging)
+			{
+				_hiliteIndicatorColor.Apply();
+			}
+			else
+			{
+				_indicatorColor.Apply();
+			}
+			::glBegin(GL_POLYGON);
 			::glVertex2f(indicPos, -0.5f);
-			::glVertex2f(indicPos, -0.5f+6.0f/pseudoHeight);
-			::glVertex2f(indicPos+indicRadius, 0.0f);
-			::glVertex2f(indicPos+indicRadius-bevelWidth, bevelHeight);
-			::glEnd();
-			
-			// Left bevel
-			_LeftBevelColor();
-			::glBegin(GL_QUADS);
 			::glVertex2f(indicPos-indicRadius, 0.0f);
-			::glVertex2f(indicPos-indicRadius+bevelWidth, bevelHeight);
-			::glVertex2f(indicPos-indicRadius+bevelWidth, 1.0f-bevelHeight);
 			::glVertex2f(indicPos-indicRadius, 1.0f);
-			::glEnd();
-			
-			// Top bevel
-			_TopBevelColor();
-			::glBegin(GL_QUADS);
-			::glVertex2f(indicPos-indicRadius, 1.0f);
-			::glVertex2f(indicPos-indicRadius+bevelWidth, 1.0f-bevelHeight);
-			::glVertex2f(indicPos+indicRadius-bevelWidth, 1.0f-bevelHeight);
 			::glVertex2f(indicPos+indicRadius, 1.0f);
-			::glEnd();
-			
-			// Right bevel
-			_RightBevelColor();
-			::glBegin(GL_QUADS);
 			::glVertex2f(indicPos+indicRadius, 0.0f);
-			::glVertex2f(indicPos+indicRadius-bevelWidth, bevelHeight);
-			::glVertex2f(indicPos+indicRadius-bevelWidth, 1.0f-bevelHeight);
-			::glVertex2f(indicPos+indicRadius, 1.0f);
 			::glEnd();
 			
-			// Ridges
-			float ridgeTop = 1.0f-bevelHeight*2.0f;
-			float ridgeBottom = -0.5f+bevelHeight*3.0f;
-			_LeftBevelColor();
-			::glBegin(GL_LINES);
-			::glVertex2f(indicPos-float(7)/pseudoWidth, ridgeBottom);
-			::glVertex2f(indicPos-float(7)/pseudoWidth, ridgeTop);
-			::glVertex2f(indicPos-float(1)/pseudoWidth, ridgeBottom);
-			::glVertex2f(indicPos-float(1)/pseudoWidth, ridgeTop);
-			::glVertex2f(indicPos+float(5)/pseudoWidth, ridgeBottom);
-			::glVertex2f(indicPos+float(5)/pseudoWidth, ridgeTop);
-			::glEnd();
-			_RightBevelColor();
-			::glBegin(GL_LINES);
-			::glVertex2f(indicPos-float(5)/pseudoWidth, ridgeBottom);
-			::glVertex2f(indicPos-float(5)/pseudoWidth, ridgeTop);
-			::glVertex2f(indicPos+float(1)/pseudoWidth, ridgeBottom);
-			::glVertex2f(indicPos+float(1)/pseudoWidth, ridgeTop);
-			::glVertex2f(indicPos+float(7)/pseudoWidth, ridgeBottom);
-			::glVertex2f(indicPos+float(7)/pseudoWidth, ridgeTop);
-			::glEnd();
+			if (IsActive())
+			{
+				// Bottom (crooked) bevel
+				_BottomBevelColor();
+				::glBegin(GL_QUAD_STRIP);
+				::glVertex2f(indicPos-indicRadius, 0.0f);
+				::glVertex2f(indicPos-indicRadius+bevelWidth, bevelHeight);
+				::glVertex2f(indicPos, -0.5f);
+				::glVertex2f(indicPos, -0.5f+6.0f/pseudoHeight);
+				::glVertex2f(indicPos+indicRadius, 0.0f);
+				::glVertex2f(indicPos+indicRadius-bevelWidth, bevelHeight);
+				::glEnd();
+				
+				// Left bevel
+				_LeftBevelColor();
+				::glBegin(GL_QUADS);
+				::glVertex2f(indicPos-indicRadius, 0.0f);
+				::glVertex2f(indicPos-indicRadius+bevelWidth, bevelHeight);
+				::glVertex2f(indicPos-indicRadius+bevelWidth, 1.0f-bevelHeight);
+				::glVertex2f(indicPos-indicRadius, 1.0f);
+				::glEnd();
+				
+				// Top bevel
+				_TopBevelColor();
+				::glBegin(GL_QUADS);
+				::glVertex2f(indicPos-indicRadius, 1.0f);
+				::glVertex2f(indicPos-indicRadius+bevelWidth, 1.0f-bevelHeight);
+				::glVertex2f(indicPos+indicRadius-bevelWidth, 1.0f-bevelHeight);
+				::glVertex2f(indicPos+indicRadius, 1.0f);
+				::glEnd();
+				
+				// Right bevel
+				_RightBevelColor();
+				::glBegin(GL_QUADS);
+				::glVertex2f(indicPos+indicRadius, 0.0f);
+				::glVertex2f(indicPos+indicRadius-bevelWidth, bevelHeight);
+				::glVertex2f(indicPos+indicRadius-bevelWidth, 1.0f-bevelHeight);
+				::glVertex2f(indicPos+indicRadius, 1.0f);
+				::glEnd();
+				
+				// Ridges
+				float ridgeTop = 1.0f-bevelHeight*2.0f;
+				float ridgeBottom = -0.5f+bevelHeight*3.0f;
+				_LeftBevelColor();
+				::glBegin(GL_LINES);
+				::glVertex2f(indicPos-float(7)/pseudoWidth, ridgeBottom);
+				::glVertex2f(indicPos-float(7)/pseudoWidth, ridgeTop);
+				::glVertex2f(indicPos-float(1)/pseudoWidth, ridgeBottom);
+				::glVertex2f(indicPos-float(1)/pseudoWidth, ridgeTop);
+				::glVertex2f(indicPos+float(5)/pseudoWidth, ridgeBottom);
+				::glVertex2f(indicPos+float(5)/pseudoWidth, ridgeTop);
+				::glEnd();
+				_RightBevelColor();
+				::glBegin(GL_LINES);
+				::glVertex2f(indicPos-float(5)/pseudoWidth, ridgeBottom);
+				::glVertex2f(indicPos-float(5)/pseudoWidth, ridgeTop);
+				::glVertex2f(indicPos+float(1)/pseudoWidth, ridgeBottom);
+				::glVertex2f(indicPos+float(1)/pseudoWidth, ridgeTop);
+				::glVertex2f(indicPos+float(7)/pseudoWidth, ridgeBottom);
+				::glVertex2f(indicPos+float(7)/pseudoWidth, ridgeTop);
+				::glEnd();
+			}
+			else
+			{
+				_disableOutlineColor.Apply();
+				::glBegin(GL_LINE_LOOP);
+				::glVertex2f(indicPos, -0.5f);
+				::glVertex2f(indicPos-indicRadius+pixelWidth, 0.0f);
+				::glVertex2f(indicPos-indicRadius+pixelWidth, 1.0f-pixelHeight);
+				::glVertex2f(indicPos+indicRadius-pixelWidth, 1.0f-pixelHeight);
+				::glVertex2f(indicPos+indicRadius-pixelWidth, 0.0f);
+				::glEnd();
+			}
 		}
 		else
 		{
-			_disableOutlineColor.Apply();
-			::glBegin(GL_LINE_LOOP);
-			::glVertex2f(indicPos, -0.5f);
-			::glVertex2f(indicPos-indicRadius+pixelWidth, 0.0f);
-			::glVertex2f(indicPos-indicRadius+pixelWidth, 1.0f-pixelHeight);
-			::glVertex2f(indicPos+indicRadius-pixelWidth, 1.0f-pixelHeight);
-			::glVertex2f(indicPos+indicRadius-pixelWidth, 0.0f);
-			::glEnd();
-		}
-	}
-	else
-	{
-		// No ticks (rects)
-		if (!IsActive())
-		{
-			_disableIndicatorColor.Apply();
-		}
-		else if (_dragging)
-		{
-			_hiliteIndicatorColor.Apply();
-		}
-		else
-		{
-			_indicatorColor.Apply();
-		}
-		::glRectf(indicPos-indicRadius, -1.0f, indicPos+indicRadius, 1.0f);
-		
-		if (IsActive())
-		{
-			// Bottom bevel
-			_BottomBevelColor();
-			::glBegin(GL_QUADS);
-			::glVertex2f(indicPos-indicRadius, -1.0);
-			::glVertex2f(indicPos-indicRadius+bevelWidth, -1.0+bevelHeight);
-			::glVertex2f(indicPos+indicRadius-bevelWidth, -1.0+bevelHeight);
-			::glVertex2f(indicPos+indicRadius, -1.0);
-			::glEnd();
+			// No ticks (rects)
+			if (!IsActive())
+			{
+				_disableIndicatorColor.Apply();
+			}
+			else if (_dragging)
+			{
+				_hiliteIndicatorColor.Apply();
+			}
+			else
+			{
+				_indicatorColor.Apply();
+			}
+			::glRectf(indicPos-indicRadius, -1.0f, indicPos+indicRadius, 1.0f);
 			
-			// Left bevel
-			_LeftBevelColor();
-			::glBegin(GL_QUADS);
-			::glVertex2f(indicPos-indicRadius, -1.0);
-			::glVertex2f(indicPos-indicRadius+bevelWidth, -1.0+bevelHeight);
-			::glVertex2f(indicPos-indicRadius+bevelWidth, 1.0-bevelHeight);
-			::glVertex2f(indicPos-indicRadius, 1.0);
-			::glEnd();
-			
-			// Top bevel
-			_TopBevelColor();
-			::glBegin(GL_QUADS);
-			::glVertex2f(indicPos-indicRadius, 1.0);
-			::glVertex2f(indicPos-indicRadius+bevelWidth, 1.0-bevelHeight);
-			::glVertex2f(indicPos+indicRadius-bevelWidth, 1.0-bevelHeight);
-			::glVertex2f(indicPos+indicRadius, 1.0);
-			::glEnd();
-			
-			// Right bevel
-			_RightBevelColor();
-			::glBegin(GL_QUADS);
-			::glVertex2f(indicPos+indicRadius, -1.0);
-			::glVertex2f(indicPos+indicRadius-bevelWidth, -1.0+bevelHeight);
-			::glVertex2f(indicPos+indicRadius-bevelWidth, 1.0-bevelHeight);
-			::glVertex2f(indicPos+indicRadius, 1.0);
-			::glEnd();
-			
-			// Ridges
-			float ridgeTop = 1.0-bevelHeight*2.0;
-			float ridgeBottom = -1.0+bevelHeight*2.0;
-			_LeftBevelColor();
-			::glBegin(GL_LINES);
-			::glVertex2f(indicPos-float(7)/pseudoWidth, ridgeBottom);
-			::glVertex2f(indicPos-float(7)/pseudoWidth, ridgeTop);
-			::glVertex2f(indicPos-float(1)/pseudoWidth, ridgeBottom);
-			::glVertex2f(indicPos-float(1)/pseudoWidth, ridgeTop);
-			::glVertex2f(indicPos+float(5)/pseudoWidth, ridgeBottom);
-			::glVertex2f(indicPos+float(5)/pseudoWidth, ridgeTop);
-			::glEnd();
-			_RightBevelColor();
-			::glBegin(GL_LINES);
-			::glVertex2f(indicPos-float(5)/pseudoWidth, ridgeBottom);
-			::glVertex2f(indicPos-float(5)/pseudoWidth, ridgeTop);
-			::glVertex2f(indicPos+float(1)/pseudoWidth, ridgeBottom);
-			::glVertex2f(indicPos+float(1)/pseudoWidth, ridgeTop);
-			::glVertex2f(indicPos+float(7)/pseudoWidth, ridgeBottom);
-			::glVertex2f(indicPos+float(7)/pseudoWidth, ridgeTop);
-			::glEnd();
-		}
-		else
-		{
-			_disableOutlineColor.Apply();
-			::glBegin(GL_LINE_LOOP);
-			::glVertex2f(indicPos-indicRadius, -1.0f);
-			::glVertex2f(indicPos-indicRadius, 1.0f);
-			::glVertex2f(indicPos+indicRadius, 1.0f);
-			::glVertex2f(indicPos+indicRadius, -1.0f);
-			::glEnd();
+			if (IsActive())
+			{
+				// Bottom bevel
+				_BottomBevelColor();
+				::glBegin(GL_QUADS);
+				::glVertex2f(indicPos-indicRadius, -1.0);
+				::glVertex2f(indicPos-indicRadius+bevelWidth, -1.0+bevelHeight);
+				::glVertex2f(indicPos+indicRadius-bevelWidth, -1.0+bevelHeight);
+				::glVertex2f(indicPos+indicRadius, -1.0);
+				::glEnd();
+				
+				// Left bevel
+				_LeftBevelColor();
+				::glBegin(GL_QUADS);
+				::glVertex2f(indicPos-indicRadius, -1.0);
+				::glVertex2f(indicPos-indicRadius+bevelWidth, -1.0+bevelHeight);
+				::glVertex2f(indicPos-indicRadius+bevelWidth, 1.0-bevelHeight);
+				::glVertex2f(indicPos-indicRadius, 1.0);
+				::glEnd();
+				
+				// Top bevel
+				_TopBevelColor();
+				::glBegin(GL_QUADS);
+				::glVertex2f(indicPos-indicRadius, 1.0);
+				::glVertex2f(indicPos-indicRadius+bevelWidth, 1.0-bevelHeight);
+				::glVertex2f(indicPos+indicRadius-bevelWidth, 1.0-bevelHeight);
+				::glVertex2f(indicPos+indicRadius, 1.0);
+				::glEnd();
+				
+				// Right bevel
+				_RightBevelColor();
+				::glBegin(GL_QUADS);
+				::glVertex2f(indicPos+indicRadius, -1.0);
+				::glVertex2f(indicPos+indicRadius-bevelWidth, -1.0+bevelHeight);
+				::glVertex2f(indicPos+indicRadius-bevelWidth, 1.0-bevelHeight);
+				::glVertex2f(indicPos+indicRadius, 1.0);
+				::glEnd();
+				
+				// Ridges
+				float ridgeTop = 1.0-bevelHeight*2.0;
+				float ridgeBottom = -1.0+bevelHeight*2.0;
+				_LeftBevelColor();
+				::glBegin(GL_LINES);
+				::glVertex2f(indicPos-float(7)/pseudoWidth, ridgeBottom);
+				::glVertex2f(indicPos-float(7)/pseudoWidth, ridgeTop);
+				::glVertex2f(indicPos-float(1)/pseudoWidth, ridgeBottom);
+				::glVertex2f(indicPos-float(1)/pseudoWidth, ridgeTop);
+				::glVertex2f(indicPos+float(5)/pseudoWidth, ridgeBottom);
+				::glVertex2f(indicPos+float(5)/pseudoWidth, ridgeTop);
+				::glEnd();
+				_RightBevelColor();
+				::glBegin(GL_LINES);
+				::glVertex2f(indicPos-float(5)/pseudoWidth, ridgeBottom);
+				::glVertex2f(indicPos-float(5)/pseudoWidth, ridgeTop);
+				::glVertex2f(indicPos+float(1)/pseudoWidth, ridgeBottom);
+				::glVertex2f(indicPos+float(1)/pseudoWidth, ridgeTop);
+				::glVertex2f(indicPos+float(7)/pseudoWidth, ridgeBottom);
+				::glVertex2f(indicPos+float(7)/pseudoWidth, ridgeTop);
+				::glEnd();
+			}
+			else
+			{
+				_disableOutlineColor.Apply();
+				::glBegin(GL_LINE_LOOP);
+				::glVertex2f(indicPos-indicRadius, -1.0f);
+				::glVertex2f(indicPos-indicRadius, 1.0f);
+				::glVertex2f(indicPos+indicRadius, 1.0f);
+				::glVertex2f(indicPos+indicRadius, -1.0f);
+				::glEnd();
+			}
 		}
 	}
 }
@@ -629,44 +632,47 @@ void GlowSliderWidget::OnWidgetMouseDown(
 {
 	GLOW_DEBUGSCOPE("GlowSliderWidget::OnWidgetMouseDown");
 	
-	int indicRadius, indicPos;
-	float valRatio;
-	if ((_type & logarithmic) != 0)
+	if (_max > _min)
 	{
-		valRatio = GLOW_CSTD::log(_value/_min)/GLOW_CSTD::log(_max/_min);
-	}
-	else
-	{
-		valRatio = (_value-_min)/(_max-_min);
-	}
-	if ((_type & decreasing) != 0)
-	{
-		valRatio = 1.0f-valRatio;
-	}
-	if (Width() > Height())
-	{
-		indicRadius = Height()/2;
-		indicPos = indicRadius+static_cast<int>(float(Width()-2*indicRadius)*valRatio);
-		if (x > indicPos-indicRadius && x < indicPos+indicRadius)
+		int indicRadius, indicPos;
+		float valRatio;
+		if ((_type & logarithmic) != 0)
 		{
-			_xoffset = indicPos-x;
-			_yoffset = 0;
-			_dragging = true;
-			_modifiers = modifiers;
-			Refresh();
+			valRatio = GLOW_CSTD::log(_value/_min)/GLOW_CSTD::log(_max/_min);
 		}
-	}
-	else
-	{
-		indicRadius = Width()/2;
-		indicPos = indicRadius+static_cast<int>(float(Height()-2*indicRadius)*valRatio);
-		if (y > indicPos-indicRadius && y < indicPos+indicRadius)
+		else
 		{
-			_xoffset = 0;
-			_yoffset = indicPos-y;
-			_dragging = true;
-			_modifiers = modifiers;
-			Refresh();
+			valRatio = (_value-_min)/(_max-_min);
+		}
+		if ((_type & decreasing) != 0)
+		{
+			valRatio = 1.0f-valRatio;
+		}
+		if (Width() > Height())
+		{
+			indicRadius = Height()/2;
+			indicPos = indicRadius+static_cast<int>(float(Width()-2*indicRadius)*valRatio);
+			if (x > indicPos-indicRadius && x < indicPos+indicRadius)
+			{
+				_xoffset = indicPos-x;
+				_yoffset = 0;
+				_dragging = true;
+				_modifiers = modifiers;
+				Refresh();
+			}
+		}
+		else
+		{
+			indicRadius = Width()/2;
+			indicPos = indicRadius+static_cast<int>(float(Height()-2*indicRadius)*valRatio);
+			if (y > indicPos-indicRadius && y < indicPos+indicRadius)
+			{
+				_xoffset = 0;
+				_yoffset = indicPos-y;
+				_dragging = true;
+				_modifiers = modifiers;
+				Refresh();
+			}
 		}
 	}
 }
@@ -851,7 +857,7 @@ void GlowLabeledSliderWidget::RepositionLabel()
 				-leftMinmax-_labelSpacing,
 				(Height()-_labelHeight)/2,
 				(Height()+_labelHeight)/2,
-				preferredSize | rightPos, preferredSize | centerPos);
+				expandPreferredSize | rightPos, expandPreferredSize | centerPos);
 			break;
 		case rightLabelPosition:
 			_label->AutoPack(
@@ -859,7 +865,7 @@ void GlowLabeledSliderWidget::RepositionLabel()
 				rightMinmax+_labelSpacing+_labelWidth,
 				(Height()-_labelHeight)/2,
 				(Height()+_labelHeight)/2,
-				preferredSize | leftPos, preferredSize | centerPos);
+				expandPreferredSize | leftPos, expandPreferredSize | centerPos);
 			break;
 		case topLabelPosition:
 			_label->AutoPack(
@@ -867,7 +873,7 @@ void GlowLabeledSliderWidget::RepositionLabel()
 				(Width()+_labelWidth)/2,
 				-topMinmax-_labelHeight-_labelSpacing,
 				-topMinmax-_labelSpacing,
-				preferredSize | centerPos, preferredSize | bottomPos);
+				expandPreferredSize | centerPos, expandPreferredSize | bottomPos);
 			break;
 		case bottomLabelPosition:
 			_label->AutoPack(
@@ -875,7 +881,7 @@ void GlowLabeledSliderWidget::RepositionLabel()
 				(Width()+_labelWidth)/2,
 				bottomMinmax+_labelSpacing,
 				bottomMinmax+_labelSpacing+_labelHeight,
-				preferredSize | centerPos, preferredSize | topPos);
+				expandPreferredSize | centerPos, expandPreferredSize | topPos);
 			break;
 	}
 }

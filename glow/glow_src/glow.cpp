@@ -217,6 +217,8 @@ Glow_IdleFuncReceiver* Glow::_idleFuncReceiver = 0;
 TSender<GlowMouseData&> Glow::_mouseFilters;
 TSender<GlowKeyboardData&> Glow::_keyboardFilters;
 
+int Glow::_numToplevelWindows = 0;
+
 
 /*
 ===============================================================================
@@ -255,6 +257,10 @@ void Glow::_AddWindow(
 	GlowSubwindow* window,
 	int windowNum)
 {
+	if (dynamic_cast<GlowWindow*>(window) != 0)
+	{
+		++_numToplevelWindows;
+	}
 	_windowRegistry.insert(_WindowRegistryEntry(windowNum, window));
 }
 
@@ -266,10 +272,15 @@ void Glow::_RemoveWindow(
 	_WindowRegistryIterator iter = _windowRegistry.find(windowNum);
 	if (iter != _windowRegistry.end())
 	{
+		// Update numToplevelWindows
+		GlowSubwindow* wind = (*iter).second;
+		if (dynamic_cast<GlowWindow*>(wind) != 0)
+		{
+			--_numToplevelWindows;
+		}
 		// Are there modal windows?
 		if (!_modalWindows.empty())
 		{
-			GlowSubwindow* wind = (*iter).second;
 			// Is window to remove the current top modal window?
 			if (wind == _modalWindows.back())
 			{
@@ -464,7 +475,7 @@ void Glow::_DisplayFunc()
 	GlowSubwindow* window = ResolveWindow(::glutGetWindow());
 	if (window != 0)
 	{
-		window->_BroadcastPaint();
+		window->Paint();
 		window->_FinishRender();
 	}
 	_ExecuteDeferred();
@@ -982,9 +993,9 @@ void GlowComponent::_RemoveChild(
 }
 
 
-void GlowComponent::_BroadcastPaint()
+void GlowComponent::Paint()
 {
-	GLOW_DEBUGSCOPE("GlowComponent::_BroadcastPaint");
+	GLOW_DEBUGSCOPE("GlowComponent::Paint");
 	
 	if (OnBeginPaint())
 	{
@@ -992,7 +1003,7 @@ void GlowComponent::_BroadcastPaint()
 		{
 			if (dynamic_cast<GlowSubwindow*>(child) == 0)
 			{
-				(child)->_BroadcastPaint();
+				(child)->Paint();
 			}
 		}
 	}

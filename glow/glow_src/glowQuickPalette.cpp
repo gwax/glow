@@ -610,7 +610,7 @@ GlowWidget::AutoPackError GlowQuickPanelWidget::OnAutoPack(
 	{
 		// Get next widget
 		GlowWidget* widget = dynamic_cast<GlowWidget*>(child);
-		if (widget == 0)
+		if (widget == 0 || !widget->IsVisible())
 		{
 			continue;
 		}
@@ -717,7 +717,7 @@ GlowWidget::AutoPackError GlowQuickPanelWidget::OnAutoPack(
 	for (GlowComponent* child = FirstChild(); child != 0; child = child->Next(), ++i)
 	{
 		GlowWidget* widget = dynamic_cast<GlowWidget*>(child);
-		if (widget == 0 || widget == _label)
+		if (widget == 0 || widget == _label || !widget->IsVisible())
 		{
 			continue;
 		}

@@ -1,6 +1,6 @@
 
 The GLOW Toolkit
-version 0.9.7 (1 May 2000)
+version 0.9.8 (22 May 2000)
 Copyright (C) 1997-2000  Daniel Azuma
 All rights reserved worldwide
 
@@ -14,7 +14,7 @@ CONTENTS
 
    (2) Terms and conditions
 
-   (3) Release notes 0.9.7
+   (3) Release notes 0.9.8
 
    (4) Installing GLOW
 
@@ -77,22 +77,30 @@ RELEASE NOTES
 
 
     The GLOW Toolkit
-    Version 0.9.7 (1 May 2000)
+    Version 0.9.8 (22 May 2000)
 
-    These notes detail the differences between versions 0.9.6 and 0.9.7.
+    These notes detail the differences between versions 0.9.7 and 0.9.8.
     A complete history of publicly released versions can be found on the
     GLOW web site.
 
-    This release of GLOW focused on final locking down of the API and
-    writing lessons 6 and 7 in the tutorial.
+    This release of GLOW focused on bug fixes and completing lesson 8 in
+    the tutorial.
 
 
     Features added
     --------------
 
-      Added Glow::RefreshGlutWindow().
+      Added Glow::NumToplevelWindows().
 
-      Added GlowQuickPalette::QuickPaletteRoot().
+      Added GlowComponent::Paint().
+
+      GlowSliderWidget can now handle maximum == minimum. In that case,
+      the indicator is not drawn and does not respond to mouse clicks.
+
+      Added IsSpinning(), StartSpinning(), StopSpinning and StepSpin()
+      to GlowViewTransform and GlowViewManipulator.
+
+      Added Glow::SetMenuStatusFunc();
 
 
     Features changed
@@ -104,13 +112,20 @@ RELEASE NOTES
     Bugs fixed
     ----------
 
-      Vector algebra class operators now tend to return const objects
-      for better optimization and error checking.
+      GlowLabelWidget's autopack wasn't honoring expandPreferredSize,
+      which caused labeled widgets (esp. sliders) to pack incorrectly
+      in certain cases. Fixed.
 
-      A bunch of reference fixes.
+      GlowWidget's destructor wasn't removing the widget from the widget
+      notification list, which sometimes led to a crash. Fixed.
 
-      Apparently, some GL extension names are too long for the buffer
-      that Glow::IsExtensionSupported() allocates. Fixed.
+      GlowQuickPalette wasn't honoring widget visibility, resulting in
+      holes in palettes with invisible widgets. Fixed.
+
+      Multiple bugs and broken links in the reference fixed.
+
+      Tutorial lesson 7 said the wrong thing about the return value for
+      event filters. Fixed.
 
 
     Internal changes

@@ -156,7 +156,7 @@ RPN calculators, like those manufactured by HP, work in this way. As you can see
 and the calculator will display the answer, 5. With an RPN calculator, you press the "enter" key to separate the operands, and when you press the plus key, it evalulates the expression immediately.
 </p>
 <blockquote>
-[2] [enter] [3] +
+[2] [enter] [3] [+]
 </blockquote>
 <p>
 and the calculator will display the answer, 5. There are actually a number of advantages to using this style of working with a calculator, and many people find that the RPN notation is more efficient than the standard notation. The sidebar "About Reverse Polish Notation" gives some more information about this notation and how it can be used.
@@ -598,7 +598,7 @@ Our receiver class inherits from <tt>GlowWidgetKeyboardFilter</tt>. Widget keybo
 <pre>bool GlowWidgetKeyboardFilter::OnFilter(GlowWidgetKeyboardData& data)</pre>
 </blockquote>
 <p>
-The method is called whenever a keyboard event is detected in the widget root, but before it is passed on to the widget currently holding the keyboard focus. The filter can handle the event if it wants, or even change the event by changing the event data referenced by the parameter. If the method returns <tt>false</tt>, the (possibly modified) event is handled normally by the widget root by passing it on to the widget currently holding the keyboard focus. However, if the filter method returns <tt>true</tt>, the event is consumed and not reported normally.
+The method is called whenever a keyboard event is detected in the widget root, but before it is passed on to the widget currently holding the keyboard focus. The filter can handle the event if it wants, or even change the event by changing the event data referenced by the parameter. If the method returns <tt>true</tt>, the (possibly modified) event is handled normally by the widget root by passing it on to the widget currently holding the keyboard focus. However, if the filter method returns <tt>false</tt>, the event is consumed and not reported normally.
 </p>
 <p>
 In our case, we implement the filter to detect keystrokes that our calculator can understand:
@@ -615,7 +615,7 @@ In our case, we implement the filter to detect keystrokes that our calculator ca
 ...</pre>
 </blockquote>
 <p>
-The filter returns true, indicating that we've handled the event, and it should not be reported to any widgets.
+The filter returns false, indicating that we've handled the event, and it should not be reported to any widgets.
 </p>
 <p>
 In addition to event filters attached to a widget root, you can also install general event filters that filter ALL mouse and keyboard events as soon as GLOW detects them. Global event filters subclass <tt>GlowMouseFilter</tt> or <tt>GlowKeyboardFilter</tt>, and are installed using the function <tt>Glow::RegisterFilter()</tt>. Global filters are run first. Therefore, if a keyboard event occurs and is destined for a widget: first, any installed global keyboard filters are run on it, then any keyboard filters associated with that widget root are run on it. Finally, if none of those filters consumed the event, it is reported to the widget.
@@ -714,7 +714,7 @@ This has been a complicated lesson that has covered a lot of features and techni
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 1 May 2000
+Last updated 9 May 2000
 </address>
 
 

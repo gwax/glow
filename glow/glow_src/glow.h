@@ -204,9 +204,13 @@ class Glow
 		
 		// Special key constants
 		//typedef int KeyCode;
-		
 		enum KeyCode
 		{
+			backspaceKey = 8,
+			tabKey = 9,
+			enterKey = 13,
+			escapeKey = 27,
+			deleteKey = 127,
 			specialKeyOffset = 256,
 			f1Key = specialKeyOffset+GLUT_KEY_F1,
 			f2Key = specialKeyOffset+GLUT_KEY_F2,
@@ -228,12 +232,7 @@ class Glow
 			pageDownKey = specialKeyOffset+GLUT_KEY_PAGE_DOWN,
 			homeKey = specialKeyOffset+GLUT_KEY_HOME,
 			endKey = specialKeyOffset+GLUT_KEY_END,
-			insertKey = specialKeyOffset+GLUT_KEY_INSERT,
-			backspaceKey = 8,
-			tabKey = 9,
-			enterKey = 13,
-			escapeKey = 27,
-			deleteKey = 127
+			insertKey = specialKeyOffset+GLUT_KEY_INSERT
 		};
 	
 	public:
@@ -342,6 +341,7 @@ class Glow
 		static bool IsBufferTypeSupported(
 			BufferType mode);
 		inline static int NumMouseButtons();
+		inline static int NumToplevelWindows();
 	
 	
 	//-------------------------------------------------------------------------
@@ -397,6 +397,9 @@ class Glow
 		// Event filter senders
 		static TSender<GlowMouseData&> _mouseFilters;
 		static TSender<GlowKeyboardData&> _keyboardFilters;
+		
+		// Misc state
+		static int _numToplevelWindows;
 	
 	private:
 	
@@ -621,6 +624,8 @@ class GlowComponent
 		inline bool IsActive() const;
 		inline bool IsActiveStandby() const;
 		inline bool IsInactive() const;
+		
+		void Paint();
 	
 	
 	//-------------------------------------------------------------------------
@@ -659,7 +664,6 @@ class GlowComponent
 		void _RemoveChild(
 			GlowComponent* child);
 		
-		void _BroadcastPaint();
 		void _BroadcastStandby(
 			bool activating,
 			bool first);

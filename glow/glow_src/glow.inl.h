@@ -358,6 +358,12 @@ inline int Glow::GetMilliseconds()
 }
 
 
+inline int Glow::NumToplevelWindows()
+{
+	return _numToplevelWindows;
+}
+
+
 /*
 ===============================================================================
 	Inline methods for GlowComponent

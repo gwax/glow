@@ -171,7 +171,7 @@ GlowWidget::AutoPackError GlowPushButtonWidget::OnAutoPack(
 	
 	int hnew = Width();
 	int preferred = _labelWidth + 20;
-	if (hSize != unspecifiedSize && hSize < preferred)
+	if (hSize != unspecifiedSize && hSize < preferred-10)
 	{
 		return hAutoPackError;
 	}
@@ -186,7 +186,7 @@ GlowWidget::AutoPackError GlowPushButtonWidget::OnAutoPack(
 	
 	int vnew = Height();
 	preferred = _font.Leading() + 12;
-	if (vSize != unspecifiedSize && vSize < preferred)
+	if (vSize != unspecifiedSize && vSize < preferred-4)
 	{
 		return vAutoPackError;
 	}
@@ -194,7 +194,7 @@ GlowWidget::AutoPackError GlowPushButtonWidget::OnAutoPack(
 	{
 		vnew = vSize;
 	}
-	else if (vOption == expandPreferredSize || vOption == preferredSize)
+	else if (vOption == preferredSize || vOption == expandPreferredSize)
 	{
 		vnew = preferred;
 	}

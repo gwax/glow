@@ -181,7 +181,7 @@ GlowWidget::AutoPackError GlowStickyButtonWidget::OnAutoPack(
 	
 	int hnew = Width();
 	int preferred = _labelWidth + 20;
-	if (hSize != unspecifiedSize && hSize < preferred)
+	if (hSize != unspecifiedSize && hSize < preferred-10)
 	{
 		return hAutoPackError;
 	}
@@ -196,7 +196,7 @@ GlowWidget::AutoPackError GlowStickyButtonWidget::OnAutoPack(
 	
 	int vnew = Height();
 	preferred = _font.Leading() + 12;
-	if (vSize != unspecifiedSize && vSize < preferred)
+	if (vSize != unspecifiedSize && vSize < preferred-4)
 	{
 		return vAutoPackError;
 	}

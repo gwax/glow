@@ -399,6 +399,31 @@ inline void GlowViewTransform::GetGLMatrixf(
 }
 
 
+inline bool GlowViewTransform::IsSpinning() const
+{
+	return _transform->IsSpinning();
+}
+
+
+inline void GlowViewTransform::StopSpinning()
+{
+	_transform->StopSpinning();
+}
+
+
+inline void GlowViewTransform::StartSpinning(
+	const Quatf& spin)
+{
+	_transform->StartSpinning(spin);
+}
+
+
+inline void GlowViewTransform::StepSpin()
+{
+	_transform->StepSpin();
+}
+
+
 inline GlowTransformData* GlowViewTransform::TransformData() const
 {
 	return _transform;

@@ -277,7 +277,7 @@ inline void GlowSliderWidget::SetValue(
 inline void GlowSliderWidget::SetMaximum(
 	double val)
 {
-	GLOW_DEBUG(val <= _min, "max <= min in GlowSliderWidget::SetMaximum");
+	GLOW_DEBUG(val < _min, "max < min in GlowSliderWidget::SetMaximum");
 	_max = val;
 	if (_value > _max) _value = _max;
 	Refresh();
@@ -287,7 +287,7 @@ inline void GlowSliderWidget::SetMaximum(
 inline void GlowSliderWidget::SetMinimum(
 	double val)
 {
-	GLOW_DEBUG(_max <= val, "min >= max in GlowSliderWidget::SetMinimum");
+	GLOW_DEBUG(_max < val, "min > max in GlowSliderWidget::SetMinimum");
 	_min = val;
 	if (_value < _min) _value = _min;
 	Refresh();

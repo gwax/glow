@@ -372,6 +372,12 @@ class GlowViewTransform :
 			GlowViewTransform* transform);
 		void Disconnect();
 		
+		inline bool IsSpinning() const;
+		inline void StartSpinning(
+			const Quatf& spin);
+		inline void StopSpinning();
+		inline void StepSpin();
+		
 		inline void RefreshAllConnected() const;
 	
 	
