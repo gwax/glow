@@ -136,7 +136,7 @@
 // Fractional version number
 // e.g. 1.3.11pre4 == 1.031104
 // e.g. 1.3.11     == 1.031199
-#define GLOW_VERSION 1.010100
+#define GLOW_VERSION 1.010102
 
 // API version number
 // 1  == GLOW release 1.0

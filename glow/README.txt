@@ -1,6 +1,6 @@
 
 The GLOW Toolkit
-version 1.1.1pre0 (unknown, 2000)
+version 1.1.1pre2 (24 July 2000)
 Copyright (C) 1997-2000  Daniel Azuma
 
 
@@ -76,9 +76,9 @@ RELEASE NOTES
 
 
     The GLOW Toolkit
-    Version 1.1.1pre0 (unknown 2000)
+    Version 1.1.1pre2 (24 July 2000)
 
-    These are the differences between versions 1.0.0 and 1.1.1pre0.
+    These are the differences between versions 1.0.0 and 1.1.1pre2.
     A complete history of publicly released versions can be found on the
     GLOW web site.
 
@@ -88,7 +88,7 @@ RELEASE NOTES
 
       Added a makefile for compiling unix shared and static libraries of
       GLOW. Also added support for linking with a GLOW library in the
-      tutorial makefiles.
+      tutorial makefiles. (Also in 1.0.1)
 
       Added a bunch of features that depend on GLUT 4 APIs (currently,
       GLUT 3.7 or later is sufficient). The features listed below that
@@ -119,20 +119,26 @@ RELEASE NOTES
       Added GlowImage template. Added GlowColorImage, GlowUcharImage and
       GlowGLfloatImage classes.
 
+      Added GlowPNMReader and GlowPNMWriter templates. (Available in the
+      glowImageFile module.
+
 
     Features changed
     ----------------
 
       Specifying the DEBUG file-option in the makefile now adds -g by
-      default.
+      default. (Also in 1.0.1)
 
       Cursors should now be specified by enumeration Glow::Cursor.
+
+      gcc now needs GLOW_COMPAT_USEOLDSTREAMPOS defined for successful
+      compilation. The library makefile has been updated accordingly.
 
 
     Bugs fixed
     ----------
 
-      LINK_(uname) didn't work in the makefile. Fixed.
+      LINK_(uname) didn't work in the makefile. Fixed. (Also in 1.0.1)
 
 
     Internal changes
@@ -140,7 +146,7 @@ RELEASE NOTES
 
       Renamed VIRTUOSO_INTERNAL_MINMAXDEFINED (defined in glowHeader.h
       when std::min and std::max are defined while compiling for Win32)
-      to GLOW_INTERNAL_MINMAXDEFINED.
+      to GLOW_INTERNAL_MINMAXDEFINED. (Also in 1.0.1)
 
       Private class members now named with a trailing underscore rather
       than a leading underscore, to conform to current C++ style
@@ -149,23 +155,39 @@ RELEASE NOTES
       A bunch of template-related optimizations (e.g. preincrementing
       iterators, eliminating temporaries) done.
 
-      Removed some unnecessary recursion and virtual methods.
+      Removed some unnecessary recursion and virtual methods. (Replaced
+      with iteration and RTTI.)
 
 
     To-do list
     ----------
 
-      Support for autoconfig
+      Support for autoconfig. This will probably involve, among other
+      things, ditching the current makefile system, as well as ditching
+      the idea of using GLOW as source code.
 
-      Support for game mode (GameGLUT)
+      GlowTextAreaWidget. This will also require that GlowTextData get
+      finished...
 
-      GlowGeneralButtonWidget
+      GlowTabbedPanelWidget class.
 
-      GlowImagePushButtonWidget
+      GlowGeneralButtonWidget hierarchy. Basically a generalized push-
+      button with more flexible event reporting and drawing options.
+      GlowPushButtonWidget will inherit from it, as well as a new
+      GlowImagePushButtonWidget class.
 
-      GlowGeneralListWidget
+      GlowGeneralListWidget hierarchy. GlowTextListWidget will be a
+      major subclass.
 
-      GlowTextListWidget
+      GlowComboBoxWidget class? May use GlowTextListWidget.
+
+      GlowScrollableWindow class? Not sure how to design this.
+
+      Add support for either-or (e.g. tabbed panels) to QuickPalette.
+
+      Add support for text alignment in GlowLabelWidget.
+
+      Add stroke fonts to GlowFont?
 
 
     Known issues
@@ -218,12 +240,26 @@ INSTALLING GLOW
     least the first lesson (lesson 0) of the tutorial. This should give
     you a reasonable idea of how to use GLOW as a source code library.
 
-    You may also want to build a library archive or shared library of
-    GLOW. I leave it up to the reader to figure out the details of how
-    to do this, since I just use it in its source code form myself. But
-    basically, you just need to compile all the *.cpp files and link
-    into a library file. A future release will include a Makefile and
-    configure script for building static and shared libraries.
+    If you want to build a unix shared library for GLOW, I've provided a
+    sample makefile in the glow_src directory. It should work under
+    Linux or IRIX, and will build two shared libraries:
+    libglow.so.1.0.1 and libglowdebug.so.1.0.1. The former is compiled
+    with debugging turned off (i.e. GLOW_OPTION_DEBUG is not defined)
+    and the latter is compiled with debugging on (i.e. GLOW_OPTION_DEBUG
+    is defined.) You should move them into the appropriate directory
+    such as /usr/lib, and you should create appropriate soft links (e.g.
+    libglow.so -> libglow.so.1.0.1 and libglowdebug.so ->
+    libglowdebug.so.1.0.1). You should link with one of those libraries,
+    the one that matches the debug option used to compile your program.
+
+    The Makefile used in the tutorials supports using GLOW either as a
+    library or as source code. The default is source code; however, to
+    change to using GLOW as a precompiled library, add file-option
+    "GLOWLIB" (e.g. create the file ".glowmake.GLOWLIB".) See lesson 0
+    for details.
+
+    I don't think it's currently possible to make a Windows DLL of GLOW
+    because of issues with MSVC++'s template support.
 
 
 ==============================================================================

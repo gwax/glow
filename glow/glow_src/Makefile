@@ -42,6 +42,7 @@ MODULES=\
 	glowAux \
 	glowCheckBoxWidget \
 	glowDebug \
+	glowImageFile \
 	glowLabelWidget \
 	glowMenuButtonWidget \
 	glowMessageWindow \
@@ -78,6 +79,7 @@ DEPFLAGS_Linux=-MM
 DEPFLAGS_IRIX=-M
 
 CFLAGS_Linux=-Wall \
+	-DGLOW_COMPAT_USEOLDSTREAMPOS \
 	-DGLOW_PLATFORM_LINUX \
 	-DGLOW_PLATFORM_LITTLEENDIAN
 NODEBUGCFLAGS_Linux=-O2 -DNODEBUG

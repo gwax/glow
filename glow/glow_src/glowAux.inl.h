@@ -440,13 +440,13 @@ inline unsigned char GlowColorImage::GetChannel(
 }
 
 
-inline unsigned char GlowColorImage::SetChannel(
+inline void GlowColorImage::SetChannel(
 	unsigned int x,
 	unsigned int y,
 	unsigned int c,
 	unsigned char data)
 {
-	return At(x, y)[c] = data;
+	At(x, y)[c] = data;
 }
 
 
@@ -488,13 +488,13 @@ inline unsigned char GlowUcharImage::GetChannel(
 }
 
 
-inline unsigned char GlowUcharImage::SetChannel(
+inline void GlowUcharImage::SetChannel(
 	unsigned int x,
 	unsigned int y,
 	unsigned int c,
 	unsigned char data)
 {
-	return At(x, y) = data;
+	At(x, y) = data;
 }
 
 
@@ -536,13 +536,13 @@ inline GLfloat GlowGLfloatImage::GetChannel(
 }
 
 
-inline unsigned char GlowGLfloatImage::SetChannel(
+inline void GlowGLfloatImage::SetChannel(
 	unsigned int x,
 	unsigned int y,
 	unsigned int c,
 	GLfloat data)
 {
-	return At(x, y) = data;
+	At(x, y) = data;
 }
 
 
