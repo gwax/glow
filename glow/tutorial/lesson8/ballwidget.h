@@ -1,7 +1,7 @@
 /*
 ===============================================================================
 
-	FILE:  mechcontrols.h
+	FILE:  ballwidget.h
 	
 	PROJECT:
 	
@@ -35,11 +35,11 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit tutorial -- version 0.9.8  (23 May 2000)
+		The GLOW Toolkit tutorial -- version 0.9.9  (14 June 2000)
 	
 	CHANGE HISTORY:
 	
-		12 June 2000 -- DA -- Initial CVS checkin
+		14 June 2000 -- DA -- Initial CVS checkin
 
 ===============================================================================
 */

@@ -35,7 +35,7 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 0.9.8  (23 May 2000)
+		The GLOW Toolkit -- version 0.9.9  (14 June 2000)
 	
 	CHANGE HISTORY:
 	
@@ -43,6 +43,7 @@
 		10 April 2000 -- DA -- Version 0.9.6 update
 		1 May 2000 -- DA -- Version 0.9.7 update
 		23 May 2000 -- DA -- Version 0.9.8 update
+		14 June 2000 -- DA -- Version 0.9.9 update
 
 ===============================================================================
 */
@@ -282,7 +283,6 @@ GlowWidget::AutoPackError GlowWidget::AutoPack(
 		leftMargin, rightMargin, topMargin, bottomMargin);
 	if (result != noAutoPackError)
 	{
-//cerr << "result = " << result << endl;
 		return result;
 	}
 	
@@ -359,13 +359,15 @@ GlowWidget::AutoPackError GlowWidget::OnAutoPack(
 {
 	GLOW_DEBUGSCOPE("GlowWidget::OnAutoPack");
 	
-	if ((hSize != unspecifiedSize && hSize < Width()) ||
-		(hOption == forcedSize && hSize != Width()))
+	if (hOption != noReshape &&
+		((hSize != unspecifiedSize && hSize < Width()) ||
+		(hOption == forcedSize && hSize != Width())))
 	{
 		return hAutoPackError;
 	}
-	if ((vSize != unspecifiedSize && vSize < Height()) ||
-		(vOption == forcedSize && vSize != Height()))
+	if (vOption != noReshape &&
+		((vSize != unspecifiedSize && vSize < Height()) ||
+		(vOption == forcedSize && vSize != Height())))
 	{
 		return vAutoPackError;
 	}

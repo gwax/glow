@@ -35,12 +35,13 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit tutorial -- version 0.9.8  (23 May 2000)
+		The GLOW Toolkit tutorial -- version 0.9.9  (14 June 2000)
 	
 	CHANGE HISTORY:
 	
 		1 May 2000 -- DA -- Initial CVS checkin
 		23 May 2000 -- DA -- Version 0.9.8 update
+		14 June 2000 -- DA -- Version 0.9.9 update
 
 ===============================================================================
 */
@@ -226,12 +227,12 @@ void CalcUIReceiver::OnMessage(
 		// Let's put a little easter egg in here!
 		if (message.modifiers & Glow::ctrlModifier)
 		{
-			mparams.text = "GlowCalc version 0.9.8\nby Daniel Azuma\n\n"
+			mparams.text = "GlowCalc\nA GLOW-based RPN calculator\nby Daniel Azuma\n\n"
 				"Down with monopolistic software corporations!";
 		}
 		else
 		{
-			mparams.text = "GlowCalc version 0.9.8\nby Daniel Azuma";
+			mparams.text = "GlowCalc\nA GLOW-based RPN calculator\nby Daniel Azuma";
 		}
 		GlowMessageWindow* messageWind = new GlowMessageWindow(mparams);
 		

@@ -1,6 +1,6 @@
 
 The GLOW Toolkit
-version 0.9.9 (12 June 2000)
+version 0.9.9 (14 June 2000)
 Copyright (C) 1997-2000  Daniel Azuma
 All rights reserved worldwide
 
@@ -77,13 +77,13 @@ RELEASE NOTES
 
 
     The GLOW Toolkit
-    Version 0.9.9 (12 June 2000)
+    Version 0.9.9 (14 June 2000)
 
     These notes detail the differences between versions 0.9.8 and 0.9.9.
     A complete history of publicly released versions can be found on the
     GLOW web site.
 
-    This release of GLOW focused on bug fixes.
+    As of this release of GLOW, the tutorial has been completed.
 
 
     Features added
@@ -101,13 +101,17 @@ RELEASE NOTES
     Bugs fixed
     ----------
 
-      (none)
+      GlowWidget::OnAutoPack() default method didn't properly check
+	  for noReshape option. Fixed.
 
 
     Internal changes
     ----------------
 
-      (none)
+      Removed istream and stl_locale.h from the Compat-SGI folder. They
+      were originally present to eliminate some compiler warnings on
+      MIPSPro, but I removed them to make sure no one replaces newer
+      versions of those headers.
 
 
     Known issues

@@ -1,7 +1,7 @@
 /*
 ===============================================================================
 
-	FILE:  mechcontrols.h
+	FILE:  ballwidget.cpp
 	
 	PROJECT:
 	
@@ -35,11 +35,11 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit tutorial -- version 0.9.8  (23 May 2000)
+		The GLOW Toolkit tutorial -- version 0.9.9  (14 June 2000)
 	
 	CHANGE HISTORY:
 	
-		12 June 2000 -- DA -- Initial CVS checkin
+		14 June 2000 -- DA -- Initial CVS checkin
 
 ===============================================================================
 */
@@ -50,6 +50,10 @@
 	Headers and declarations
 ===============================================================================
 */
+
+#include <algorithm>
+
+using namespace std;
 
 #include "glowViewTransform.h"
 
@@ -81,14 +85,10 @@ class DrawWireSphere :
 
 void DrawWireSphere::OnEndPaint()
 {
-//	GLint vals[4];
 	::glEnable(GL_CULL_FACE);
 	::glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-//	::glGetIntegerv(GL_VIEWPORT, vals);
-//	::glViewport(vals[0]+3, vals[1]+3, vals[2]-6, vals[3]-6);
 	::glColor3ub(0, 255, 255);
 	::glutSolidSphere(1.0, 12, 6);
-//	::glViewport(vals[0], vals[1], vals[2], vals[3]);
 	::glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	::glDisable(GL_CULL_FACE);
 }
@@ -124,8 +124,12 @@ BallWidget::BallWidget(
 }
 
 
+// Override this method to draw the widget
 void BallWidget::OnWidgetPaint()
 {
+	// Here we just clear the widget's rectangle to black.
+	// Since OnWidgetPaint() is called during GlowComponent::OnBeginPaint(),
+	// this clears the rectangle to black, before the trackball is drawn.
 	::glColor3ub(0, 0, 0);
 	::glBegin(GL_QUADS);
 	::glVertex2f(-1.0f, -1.0f);
@@ -136,6 +140,7 @@ void BallWidget::OnWidgetPaint()
 }
 
 
+// Handle mouse down in widget events
 void BallWidget::OnWidgetMouseDown(
 	Glow::MouseButton button,
 	int x,
@@ -156,6 +161,7 @@ void BallWidget::OnWidgetMouseDown(
 }
 
 
+// Handle mouse up in widget events
 void BallWidget::OnWidgetMouseUp(
 	Glow::MouseButton button,
 	int x,
@@ -175,6 +181,7 @@ void BallWidget::OnWidgetMouseUp(
 }
 
 
+// Handle mouse drag in widget events
 void BallWidget::OnWidgetMouseDrag(
 	int x,
 	int y)
@@ -192,15 +199,17 @@ void BallWidget::OnWidgetMouseDrag(
 }
 
 
+// Default method for handling trackball dragged events
 void BallWidget::OnDragged(
 	Glow::MouseButton button,
 	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("BallWidget::OnDragged");
 	
+	// Send event message to receivers
 	BallMessage message;
 	message.widget = this;
-	message.rotation = GetRotation();
+	message.rotation = _manip->GetRotation();
 	message.released = false;
 	message.mouseButton = button;
 	message.modifiers = modifiers;
@@ -208,15 +217,17 @@ void BallWidget::OnDragged(
 }
 
 
+// Default method for handling trackball released events
 void BallWidget::OnReleased(
 	Glow::MouseButton button,
 	Glow::Modifiers modifiers)
 {
 	GLOW_DEBUGSCOPE("BallWidget::OnReleased");
 	
+	// Send event message to receivers
 	BallMessage message;
 	message.widget = this;
-	message.rotation = GetRotation();
+	message.rotation = _manip->GetRotation();
 	message.released = true;
 	message.mouseButton = button;
 	message.modifiers = modifiers;
@@ -224,6 +235,7 @@ void BallWidget::OnReleased(
 }
 
 
+// Automatically resize widget according to constraints
 GlowWidget::AutoPackError BallWidget::OnAutoPack(
 	int hSize,
 	int vSize,
@@ -236,13 +248,30 @@ GlowWidget::AutoPackError BallWidget::OnAutoPack(
 {
 	GLOW_DEBUGSCOPE("BallWidget::OnAutoPack");
 	
-	int hnew = Width();
-	if ((hOption == preferredSize || hOption == expandPreferredSize) &&
-		hSize != unspecifiedSize && hnew > hSize)
+	int hnew;
+	int vnew;
+	
+	// noReshape is kind of like forcedSize for our purposes. We'll
+	// fold the two options into one to make our life easier.
+	if (hOption == noReshape)
+	{
+		hOption = forcedSize;
+		hSize = Width();
+	}
+	if (vOption == noReshape)
+	{
+		vOption = forcedSize;
+		vSize = Height();
+	}
+	
+	// Handle forcedSize first
+	// If forcing different sizes, fail because we want the widget square
+	if (hOption == forcedSize && vOption == forcedSize && hSize != vSize)
 	{
 		return hAutoPackError;
 	}
-	else if (hOption == forcedSize)
+	// Set to the forced size, if it's not too small
+	if (hOption == forcedSize)
 	{
 		if (hSize < 20)
 		{
@@ -250,14 +279,7 @@ GlowWidget::AutoPackError BallWidget::OnAutoPack(
 		}
 		hnew = hSize;
 	}
-	
-	int vnew = Height();
-	if ((vOption == preferredSize || vOption == expandPreferredSize) &&
-		vSize != unspecifiedSize && vnew > vSize)
-	{
-		return vAutoPackError;
-	}
-	else if (vOption == forcedSize)
+	if (vOption == forcedSize)
 	{
 		if (vSize < 20)
 		{
@@ -266,8 +288,79 @@ GlowWidget::AutoPackError BallWidget::OnAutoPack(
 		vnew = vSize;
 	}
 	
+	// Handle preferredSize and expandPreferredSize
+	if (hOption == preferredSize || hOption == expandPreferredSize)
+	{
+		// Make sure the constraint isn't too small
+		if (hSize != unspecifiedSize && hSize < 20)
+		{
+			return hAutoPackError;
+		}
+		// Adjust constraint if vertical size is already forced
+		if (vOption == forcedSize)
+		{
+			// Do vertical forced size and horizontal constraint conflict?
+			if (hSize != unspecifiedSize && hSize < vnew)
+			{
+				return hAutoPackError;
+			}
+			hnew = vnew;
+		}
+		else
+		{
+			// If using expandPreferredSize or constraint is smaller than 100
+			// then set the size to the constraint, otherwise set it to 100.
+			if (hOption == expandPreferredSize ||
+				(hSize != unspecifiedSize && hSize <= 100))
+			{
+				hnew = hSize;
+			}
+			else
+			{
+				hnew = 100;
+			}
+		}
+	}
+	if (vOption == preferredSize || vOption == expandPreferredSize)
+	{
+		if (vSize != unspecifiedSize && vSize < 20)
+		{
+			return vAutoPackError;
+		}
+		if (hOption == forcedSize)
+		{
+			if (vSize != unspecifiedSize && vSize < hnew)
+			{
+				return vAutoPackError;
+			}
+			vnew = hnew;
+		}
+		else
+		{
+			if (vOption == expandPreferredSize ||
+				(vSize != unspecifiedSize && vSize <= 100))
+			{
+				vnew = vSize;
+			}
+			else
+			{
+				vnew = 100;
+			}
+		}
+	}
+	
+	// Handle one more case: neither vertical nor horizontal were forced,
+	// but they evaluated to different sizes. To make it square, pick the
+	// smaller size
+	if (hnew != vnew)
+	{
+		hnew = vnew = min(hnew, vnew);
+	}
+	
+	// Resize widget
 	Reshape(hnew, vnew);
 	
+	// Done!
 	return noAutoPackError;
 }
 

@@ -133,10 +133,6 @@ int shoulder1 = 0, shoulder2 = 0, shoulder3 = 0, shoulder4 = 0, lat1 = 20, lat2 
   heel2 = 0, hip11 = 0, hip12 = 10, hip21 = 0, hip22 = 10, fire = 0, solid_part = 0,
   anim = 0, turn = 0, turn1 = 0, lightturn = 0, lightturn1 = 0;
 
-// FOR GLOW: Better view and light rotation system
-float ball0 = 0, ball1 = 1, ball2 = 0, ball3 = 0,
-  lightball0 = 0, lightball1 = 1, lightball2 = 0, lightball3 = 0;
-
 int windowID;   // FOR GLOW: Keep track of drawing window ID
 
 float elevation = 0.0, mydistance = 0.0, frame = 3.0
@@ -1068,8 +1064,6 @@ lighting(void)
   {0.0, 0.0, 2.0, 1.0};
 
 #ifdef MOVE_LIGHT
-  glRotatef(lightball0, lightball1,
-     lightball2, lightball3);          // FOR GLOW: ball rotation
   glRotatef((GLfloat) lightturn1, 1.0, 0.0, 0.0);
   glRotatef((GLfloat) lightturn, 0.0, 1.0, 0.0);
   glRotatef(0.0, 1.0, 0.0, 0.0);
@@ -1205,7 +1199,6 @@ display(void)
   glEnable(GL_DEPTH_TEST);
 
   glPushMatrix();
-  glRotatef(ball0, ball1, ball2, ball3);    // FOR GLOW: ball rotation
   glRotatef((GLfloat) turn, 0.0, 1.0, 0.0);
   glRotatef((GLfloat) turn1, 1.0, 0.0, 0.0);
 #ifdef LIGHT

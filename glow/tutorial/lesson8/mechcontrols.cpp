@@ -35,12 +35,13 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit tutorial -- version 0.9.8  (23 May 2000)
+		The GLOW Toolkit tutorial -- version 0.9.9  (14 June 2000)
 	
 	CHANGE HISTORY:
 	
 		1 May 2000 -- DA -- Initial CVS checkin
 		23 May 2000 -- DA -- Version 0.9.8 update
+		14 June 2000 -- DA -- Version 0.9.9 update
 
 ===============================================================================
 */
@@ -64,9 +65,8 @@
 
 extern int shoulder1, shoulder2, shoulder3, shoulder4, lat1, lat2,
   elbow1, elbow2, pivot, tilt, ankle1, ankle2, heel1,
-  heel2, hip11, hip12, hip21, hip22, solid_part;
-extern float ball0, ball1, ball2, ball3,
-  lightball0, lightball1, lightball2, lightball3;  // Lesson 8
+  heel2, hip11, hip12, hip21, hip22, solid_part,
+  turn, turn1, lightturn, lightturn1;
 extern void FireCannon(void);
 extern void animation(void);
 
@@ -369,25 +369,47 @@ void MechControls::OnMessage(
 {
 	GLOW_DEBUGSCOPE("MechControls::OnMessage(ball)");
 	
-	GLfloat angle;
-	Vec3f axis;
+	// Project the quaternion onto the latitude/longitude specification
+	// used by glutmech by applying the quaternion to a sample vector,
+	// the forward view (0,0,1), and examining the result
+	Vec3f vec = message.rotation * Vec3f(0, 0, 1);
 	if (message.widget == _viewBall)
 	{
-		// Extract the rotation axis and angle (in radians) and set
-		// the values for glowmech.
-		message.rotation.GetRotation(axis, angle);
-		ball0 = Math::radiansToDegrees * angle;
-		ball1 = axis.X();
-		ball2 = axis.Y();
-		ball3 = axis.Z();
+		GLfloat val = vec.Y();
+		if (val < -1) val = -1;
+		if (val > 1) val = 1;
+		GLfloat theta = asin(val);
+		val = vec.X()/cos(theta);
+		if (val < -1) val = -1;
+		if (val > 1) val = 1;
+		turn1 = -Math::radiansToDegrees * theta;
+		if (vec.Z() > 0)
+		{
+			turn = Math::radiansToDegrees * asin(val);
+		}
+		else
+		{
+			turn = 180 - Math::radiansToDegrees * asin(val);
+		}
 	}
 	else if (message.widget == _lightBall)
 	{
-		message.rotation.GetRotation(axis, angle);
-		lightball0 = Math::radiansToDegrees * angle;
-		lightball1 = axis.X();
-		lightball2 = axis.Y();
-		lightball3 = axis.Z();
+		GLfloat val = vec.X();
+		if (val < -1) val = -1;
+		if (val > 1) val = 1;
+		GLfloat theta = asin(val);
+		val = vec.Y()/cos(theta);
+		if (val < -1) val = -1;
+		if (val > 1) val = 1;
+		lightturn = Math::radiansToDegrees * theta;
+		if (vec.Z() > 0)
+		{
+			lightturn1 = -Math::radiansToDegrees * asin(val);
+		}
+		else
+		{
+			lightturn1 = 180 + Math::radiansToDegrees * asin(val);
+		}
 	}
 	
 	// Redraw scene
