@@ -232,14 +232,18 @@ class TGlowPNMReader :
 	
 	private:
 	
+		typedef typename ImageClass::ChannelType ChannelType;
+	
+	private:
+	
 		void Set1Channels_(
-			typename ImageClass::ChannelType elem,
+			ChannelType elem,
 			unsigned int i,
 			unsigned int j);
 		void Set3Channels_(
-			typename ImageClass::ChannelType elem1,
-			typename ImageClass::ChannelType elem2,
-			typename ImageClass::ChannelType elem3,
+			ChannelType elem1,
+			ChannelType elem2,
+			ChannelType elem3,
 			unsigned int i,
 			unsigned int j);
 	

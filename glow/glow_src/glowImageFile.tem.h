@@ -70,7 +70,7 @@ GLOW_NAMESPACE_BEGIN
 
 template <class ImageClass>
 void TGlowPNMReader<ImageClass>::Set1Channels_(
-	typename ImageClass::ChannelType elem,
+	ChannelType elem,
 	unsigned int i,
 	unsigned int j)
 {
@@ -96,9 +96,9 @@ void TGlowPNMReader<ImageClass>::Set1Channels_(
 
 template <class ImageClass>
 void TGlowPNMReader<ImageClass>::Set3Channels_(
-	typename ImageClass::ChannelType elem1,
-	typename ImageClass::ChannelType elem2,
-	typename ImageClass::ChannelType elem3,
+	ChannelType elem1,
+	ChannelType elem2,
+	ChannelType elem3,
 	unsigned int i,
 	unsigned int j)
 {
