@@ -379,7 +379,10 @@ void GlowDismissPushButtonWidget::OnHit(
 	GLOW_DEBUGSCOPE("GlowDismissPushButtonWidget::OnHit");
 	
 	GlowPushButtonWidget::OnHit(button, modifiers);
-	_todismiss->Close();
+	if (_todismiss)
+	{
+		_todismiss->Close();
+	}
 }
 
 

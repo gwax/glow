@@ -115,6 +115,12 @@ inline bool Glow::IsMenuInUse()
 }
 
 
+inline int Glow::NumMouseButtons()
+{
+	return ::glutDeviceGet(GLenum(GLUT_NUM_MOUSE_BUTTONS));
+}
+
+
 /*
 -------------------------------------------------------------------------------
 	Modal window methods
@@ -359,6 +365,7 @@ inline int Glow::GetMilliseconds()
 
 inline GlowComponent::GlowComponent()
 {
+	_parent = 0;
 }
 
 
@@ -369,17 +376,15 @@ inline GlowComponent::GlowComponent(
 }
 
 
-inline void GlowComponent::_AddChild(
-	GlowComponent* child)
+inline GlowComponent* GlowComponent::Next() const
 {
-	_children.push_back(child);
+	return _next;
 }
 
 
-inline void GlowComponent::_RemoveChild(
-	GlowComponent* child)
+inline GlowComponent* GlowComponent::Prev() const
 {
-	_children.remove(child);
+	return _prev;
 }
 
 
@@ -410,31 +415,19 @@ inline bool GlowComponent::IsTopLevel() const
 
 inline int GlowComponent::NumChildren() const
 {
-	return _children.size();
+	return _numChildren;
 }
 
 
-inline GlowComponent::ChildIterator GlowComponent::BeginChildren()
+inline GlowComponent* GlowComponent::FirstChild() const
 {
-	return _children.begin();
+	return _firstChild;
 }
 
 
-inline GlowComponent::ChildIterator GlowComponent::EndChildren()
+inline GlowComponent* GlowComponent::LastChild() const
 {
-	return _children.end();
-}
-
-
-inline GlowComponent::ConstChildIterator GlowComponent::BeginChildren() const
-{
-	return _children.begin();
-}
-
-
-inline GlowComponent::ConstChildIterator GlowComponent::EndChildren() const
-{
-	return _children.end();
+	return _lastChild;
 }
 
 
@@ -630,6 +623,12 @@ inline Glow::EventMask GlowSubwindow::GetEventMask() const
 inline Glow::EventMask GlowSubwindow::GetInactiveEventMask() const
 {
 	return _inactiveEventMask;
+}
+
+
+inline Glow::BufferType GlowSubwindow::GetBufferType() const
+{
+	return _bufferType;
 }
 
 

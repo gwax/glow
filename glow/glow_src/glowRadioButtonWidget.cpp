@@ -466,18 +466,23 @@ void GlowRadioGroupWidget::_UnRegister(
 {
 	if (_state == button)
 	{
-		for (GlowComponent::ChildIterator iter = BeginChildren(); true; iter++)
+		for (GlowComponent* child = FirstChild(); true; child = child->Next())
 		{
-			if (iter == EndChildren())
+			if (child == 0)
 			{
 				_state = 0;
 				break;
 			}
-			if (*iter != button)
+			if (child != button)
 			{
-				_state = static_cast<GlowRadioButtonWidget*>(*iter);
-				_state->SetState(true);
-				break;
+				GlowRadioButtonWidget* newbutton =
+					dynamic_cast<GlowRadioButtonWidget*>(child);
+				if (newbutton != 0)
+				{
+					_state = newbutton;
+					_state->SetState(true);
+					break;
+				}
 			}
 		}
 	}

@@ -126,11 +126,12 @@ RELEASE NOTES
     Features added
     --------------
 
-      Added GlowWidgetRoot::FindWidget().
+      Added Glow::IsExtensionSupported(), Glow::IsBufferTypeSupported()
+	  and Glow::NumMouseButtons().
 
-      Added GlowPushButtonWidget::Hit(), GlowStickyButtonWidget::Hit(),
-	  GlowCheckBoxWidget::ToggleState() and GlowCheckBoxWidget::Hit()
-	  and GlowStickyButtonWidget::ToggleState().
+      Added GlowSubwindow::BufferType().
+
+      Added GlowQuickPalette::AddDismissPushButton().
 
       Added mouse and keyboard event filtering to Glow, and keyboard
 	  filtering to GlowWidgetRoot.
@@ -142,11 +143,22 @@ RELEASE NOTES
       GlowMessageWindow and GlowTextFieldWindow can now automatically
 	  map return and escape keypresses to buttons.
 
+      Added GlowWidgetRoot::FindWidget().
+
+      Added GlowPushButtonWidget::Hit(), GlowStickyButtonWidget::Hit(),
+	  GlowCheckBoxWidget::ToggleState() and GlowCheckBoxWidget::Hit()
+	  and GlowStickyButtonWidget::ToggleState().
+
+      Added GlowDismissPushButtonWidget::SetToDismiss() and
+	  GlowDismissPushButtonWidget::GetToDismiss().
+
       Added SetIdentity() method to GlowTransformData, GlowViewTransform
       and GlowViewManipulator.
 
       Added ReceiverTracker class for tracking and automatic deletion
 	  of receivers. Added GlowReceiverTrackerComponent.
+
+      Added GlowComponent::ReorderChild().
 
       Implemented a few additional hacks to get MSVC compatibility.
 
@@ -167,6 +179,10 @@ RELEASE NOTES
       GlowTransformData, GlowViewTransform and GlowViewManipulator.
 
       Renamed GlowViewManipulator::State() to GetState().
+
+      Implemented a different API for iterating over child components.
+      Components are now directly members of a linked list and have
+      next and prev pointers that can be accessed.
 
       Implemented a better system for handling compilers that put the
       C++ standard library in namespace std but the C library in the

@@ -63,7 +63,7 @@ Lesson 0: Installing GLOW
 <blockquote>
 
 <p>
-This lesson covers the basics of installing GLOW and building a program using GLOW. It is geared primarily towards users of a unix-based operating system such as <a href="www.linux.org">Linux</a> or <a href="www.sgi.com">SGI</a> IRIX, but an experienced user should be able to glean enough information to install on a Macintosh, Windows PC, or other type of workstation. The goal of this lesson is to install the GLOW source on your machine, and to successfully compile and run a simple GLOW-based program.
+This lesson covers the basics of installing GLOW and building a program using GLOW. It is geared primarily towards users of a unix-based operating system such as <a href="http://www.linux.org">Linux</a> or <a href="http://www.sgi.com">SGI</a> IRIX, but an experienced user should be able to glean enough information to install on a Macintosh, Windows PC, or other type of workstation. The goal of this lesson is to install the GLOW source on your machine, and to successfully compile and run a simple GLOW-based program.
 </p>
 
 </blockquote>
@@ -79,20 +79,23 @@ This lesson covers the basics of installing GLOW and building a program using GL
 
 <h3>System requirements</h3>
 <p>
-GLOW's main system requirement is a good, up-to-date C++ compiler. Specifically, it should adequately support the November 1997 ANSI/ISO standard for C++, including such features as exceptions, namespacees, STL, member templates, new iostream libraries, new casting operators, RTTI, and new keywords such as bool, typename, explicit and mutable. As of the end of 1999, most compilers are still lacking in a few areas, so GLOW does provide facilities for getting around a few of the common omissions in compiler technology. In general, you should try to have the most recent version of your compiler installed.
+GLOW's main system requirement is a good, up-to-date C++ compiler. Specifically, it should adequately support the November 1997 ANSI/ISO standard for C++, including such features as exceptions, namespacees, STL, new casting operators, RTTI, and new keywords such as bool, typename, explicit and mutable. As of the end of 1999, most compilers are still lacking in a few areas, so GLOW does provide facilities for getting around a few of the common omissions in compiler technology. In general, you should try to have the most recent version of your compiler installed.
 </p>
 <p>
 I've successfully built GLOW with the following compilers:
 </p>
 <ul>
 <li>
-MIPSPro C++ 7.3 (<a href="www.sgi.com">SGI</a> IRIX)
+<a href="http://www.gnu.org">GNU</a> CC (gcc) 2.95 (Unix)
 </li>
 <li>
-<a href="www.metrowerks.com">Metrowerks</a> Codewarrior Pro 5 (Macintosh, Windows, Linux, Solaris)
+MIPSPro C++ 7.3 (<a href="http://www.sgi.com">SGI</a> IRIX)
 </li>
 <li>
-<a href="www.gnu.org">GNU</a> CC (gcc) 2.95 (Unix)
+<a href="http://www.metrowerks.com">Metrowerks</a> Codewarrior Pro 5 (Macintosh, Windows, Linux, Solaris)
+</li>
+<li>
+<a href="http://www.microsoft.com">Microsoft</a> Visual C++ 6.0 (Windows)
 </li>
 </ul>
 <p>
@@ -120,6 +123,15 @@ MISPPro 7.3 is missing some of the standard C++ headers, particularly the new-st
 </p>
 </blockquote>
 
+<h3>If you're using an IDE...</h3>
+<p>
+...such as Metrowerks Codewarrior or Microsoft Visual C++, then some of the information in this tutorial won't apply to you. However, you should still attempt to compile lesson 0 with your compiler, and make sure you know what compiler switches and libraries are necessary. The compiler section of the reference gives some hints on getting those two development systems to work.
+</p>
+
+<p>
+<image src="../../graphics/arrowbullet.gif" border=0 width=25 height=9 alt="Link to">Reference: <b><a href="../../reference/compiler.html">Compiler compatibility</a></b>
+</p>
+
 </blockquote>
 
 
@@ -132,7 +144,7 @@ MISPPro 7.3 is missing some of the standard C++ headers, particularly the new-st
 <blockquote>
 
 <p>
-I provide a makefile for each program in this series of lessons. You do not need to use these makefiles if you don't want to-- they're just my personal makefiles-- and indeed if you are using an IDE such as Codewarrior, you'll need to set up a project instead. The makefiles are designed to work on IRIX/MIPSPro and Linux/gcc, but they shouldn't be difficult to adapt to other unix systems. The only caveat is that they require a recent version of GNU-make, which you can download from the software section of the <a href="www.gnu.org">GNU home page</a> if you don't have it. I recommend version 3.77 or later.
+I provide a makefile for each program in this series of lessons. You do not need to use these makefiles if you don't want to-- they're just my personal makefiles-- and indeed if you are using an IDE such as Codewarrior or Microsoft Visual Dev Studio, you'll need to set up a project instead. The makefiles are designed to work on IRIX/MIPSPro and Linux/gcc, but they shouldn't be difficult to adapt to other unix systems. The only caveat is that they require a recent version of GNU-make, which you can download from the software section of the <a href="http://www.gnu.org">GNU home page</a> if you don't have it. I recommend version 3.77 or later.
 </p>
 <p>
 The makefiles provided with each lesson contain only a description of the program, the locations of the files needed, and the compile options. The actual "meat" of the makefile is in the file "<tt>glow_base.Makefile</tt>", which is located in the <tt>glow_src</tt> directory. The provided makefiles include this file automatically.
@@ -249,7 +261,7 @@ Now that you've successfully built a GLOW program, we can start looking at how t
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 10 April 2000
 </address>
 
 

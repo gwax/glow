@@ -60,38 +60,6 @@ All GLOW programs must make use of components at one time or another. Normally, 
 
 <p>
 <table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
-<font size="+1"><b>Types</b></font>
-</td></tr></table>
-</p>
-
-<blockquote>
-
-<p>
-<b>Iterators</b>
-</p>
-
-<blockquote>
-
-<p>
-<tt>typename <b>ChildIterator</b></tt>
-</p>
-<blockquote>
-An iterator useful for iterating over this components children in the hierarchy. This is a BidirectionalIterator. Furthermore, manipulating the list of children does not invalidate iterators unless you delete the child referenced by an iterator.
-</blockquote>
-<p>
-<tt>typename <b>ConstChildIterator</b></tt>
-</p>
-<blockquote>
-An iterator useful for iterating over this components children in the hierarchy.
-</blockquote>
-
-</blockquote>
-
-</blockquote>
-
-
-<p>
-<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
 <font size="+1"><b>Methods</b></font>
 </td></tr></table>
 </p>
@@ -188,6 +156,31 @@ Returns true if and only if this component is at the top of a hierarchy.
 
 
 <p>
+<b>Examining a component's siblings</b>
+<br>
+You can get information on a component's siblings using these methods.
+</p>
+
+<blockquote>
+
+<p>
+<tt>GlowComponent* <b>Next</b>(void) const</tt>
+</p>
+<blockquote>
+Returns a pointer to the next component in its parents children list, or NULL if this is the last component.
+</blockquote>
+
+<p>
+<tt>GlowComponent* <b>Prev</b>(void) const</tt>
+</p>
+<blockquote>
+Returns a pointer to the previous component in its parents children list, or NULL if this is the first component.
+</blockquote>
+
+</blockquote>
+
+
+<p>
 <b>Examining a component's children</b>
 <br>
 You can manipulate a component's children using these methods.
@@ -196,38 +189,31 @@ You can manipulate a component's children using these methods.
 <blockquote>
 
 <p>
-<tt>int <b>NumChildren</b>(void)</tt>
+<tt>int <b>NumChildren</b>(void) const</tt>
 </p>
 <blockquote>
 Returns the number of children under this component.
 </blockquote>
 
 <p>
-<tt>ChildIterator <b>BeginChildren</b>(void)</tt>
+<tt>GlowComponent* <b>FirstChild</b>(void) const</tt>
 </p>
 <blockquote>
-Returns an iterator for manipulating the children of this component in forward order.
+Returns a pointer to the first child component, or NULL if this component has no children.
 </blockquote>
 
 <p>
-<tt>ConstChildIterator <b>BeginChildren</b>(void) const</tt>
+<tt>GlowComponent* <b>LastChild</b>(void) const</tt>
 </p>
 <blockquote>
-Returns an iterator for manipulating the children of this component in forward order.
+Returns a pointer to the last child component, or NULL if this component has no children.
 </blockquote>
 
 <p>
-<tt>ChildIterator <b>EndChildren</b>(void)</tt>
+<tt>void <b>ReorderChild</b>(GlowComponent* child, GlowComponent* pos)</tt>
 </p>
 <blockquote>
-Returns an iterator for the end of the sequence of children.
-</blockquote>
-
-<p>
-<tt>ConstChildIterator <b>EndChildren</b>(void) const</tt>
-</p>
-<blockquote>
-Returns an iterator for the end of the sequence of children.
+Reorders the children, moving the given child immediately before the given position in the child component list. Pass NULL for the position to move the child to the end of the list. Throws an assertion if either component is not a child of this component.
 </blockquote>
 
 <p>

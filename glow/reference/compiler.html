@@ -169,11 +169,11 @@ This works around the fact that the C++ standard libraries that come with MSVC++
 <tt><b>GLOW_COMPAT_BADFORSCOPING</b></tt>
 </p>
 <blockquote>
-This works around the fact that MSVC++ incorrectly scopes variable declared in the parens of a for loop.
+This works around the fact that MSVC++ incorrectly scopes variables declared in the parens of a for loop.
 </blockquote>
 
 <p>
-Finally, if you're compiling in debug mode, you may want to change the debug information settings to something like "line numbers only". Otherwise, because GLOW uses STL pretty heavily, you'll get several hundred warnings that such-and-such a symbol name is longer than 255 characters. You should also expect four warnings to be thrown out of glowViewTransform.inl.h concerning passing the "this" pointer into a member constructor. That warning should be harmless in this case.
+Finally, if you're compiling in debug mode, you may want to change the debug information settings to something like "line numbers only". Otherwise, because GLOW uses STL pretty heavily, you may get several hundred warnings that such-and-such a symbol name is longer than 255 characters. You should also expect four warnings to be thrown out of glowViewTransform.inl.h concerning passing the "this" pointer into a member constructor. That warning should be harmless in this case.
 </p>
 
 

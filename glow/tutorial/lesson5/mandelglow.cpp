@@ -53,6 +53,7 @@
 */
 
 #include <iostream>
+#include <csignal>
 
 using namespace std;
 
@@ -74,7 +75,10 @@ int main(
 	int argc,
 	char **argv)
 {
-	cout << "Mandelglow (lesson 1)" << endl;
+	GLOW_DEBUGSIGNAL(SIGSEGV);
+	GLOW_DEBUGSCOPE("main");
+	
+	cout << "Mandelglow (lesson 5)" << endl;
 	
 	// Initialize GLOW runtime
 	Glow::Init(argc, argv);

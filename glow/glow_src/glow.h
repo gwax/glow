@@ -62,7 +62,6 @@
 
 #include <GL/glut.h>
 #include <map>
-#include <list>
 #include <vector>
 
 #ifndef GLOW_SENDERRECEIVER__H
@@ -252,6 +251,8 @@ class Glow
 		inline static unsigned int NumRegisteredIdle();
 		inline static bool IsIdleRegistered(
 			GlowIdleReceiver* idle);
+		static void SetIdleFunc(
+			void (*func)());
 		
 		// Timer tasks
 		static int RegisterTimer(
@@ -285,9 +286,6 @@ class Glow
 			int windowNum);
 		static GlowMenu* ResolveMenu(
 			int menuNum);
-		
-		// Menu state
-		inline static bool IsMenuInUse();
 		
 		// Modal windows
 		static void PushModalWindow(
@@ -332,9 +330,13 @@ class Glow
 		inline static void SwapBuffers();
 		
 		// Miscellaneous
+		inline static bool IsMenuInUse();
 		inline static int GetMilliseconds();
-		static void SetIdleFunc(
-			void (*func)());
+		static bool IsExtensionSupported(
+			const char* extensionName);
+		static bool IsBufferTypeSupported(
+			BufferType mode);
+		inline static int NumMouseButtons();
 	
 	
 	//-------------------------------------------------------------------------
@@ -583,11 +585,6 @@ class GlowComponent
 	
 	public:
 	
-		typedef GLOW_STD::list<GlowComponent*>::iterator ChildIterator;
-		typedef GLOW_STD::list<GlowComponent*>::const_iterator ConstChildIterator;
-	
-	public:
-	
 		inline GlowComponent(
 			GlowComponent* parent);
 		inline GlowComponent();
@@ -597,6 +594,9 @@ class GlowComponent
 		virtual ~GlowComponent();
 		void Close();
 		
+		inline GlowComponent* Next() const;
+		inline GlowComponent* Prev() const;
+		
 		inline GlowComponent* Parent() const;
 		virtual GlowSubwindow* WhichWindow();
 		inline GlowSubwindow* ParentWindow() const;
@@ -604,10 +604,11 @@ class GlowComponent
 		inline bool IsTopLevel() const;
 		
 		inline int NumChildren() const;
-		inline ChildIterator BeginChildren();
-		inline ChildIterator EndChildren();
-		inline ConstChildIterator BeginChildren() const;
-		inline ConstChildIterator EndChildren() const;
+		inline GlowComponent* FirstChild() const;
+		inline GlowComponent* LastChild() const;
+		void ReorderChild(
+			GlowComponent* child,
+			GlowComponent* before);
 		void KillChildren();
 		
 		void Activate();
@@ -639,14 +640,18 @@ class GlowComponent
 	private:
 	
 		GlowComponent* _parent;
-		GLOW_STD::list<GlowComponent*> _children;
+		GlowComponent* _next;
+		GlowComponent* _prev;
+		int _numChildren;
+		GlowComponent* _firstChild;
+		GlowComponent* _lastChild;
 		short _activeState;
 	
 	private:
 	
-		inline void _AddChild(
+		void _AddChild(
 			GlowComponent* child);
-		inline void _RemoveChild(
+		void _RemoveChild(
 			GlowComponent* child);
 		
 		void _BroadcastPaint();
@@ -790,6 +795,7 @@ class GlowSubwindow :
 		inline Glow::EventMask GetInactiveEventMask() const;
 		void SetInactiveEventMask(
 			Glow::EventMask eventMask);
+		inline Glow::BufferType GetBufferType() const;
 	
 	
 	//-------------------------------------------------------------------------
@@ -846,6 +852,7 @@ class GlowSubwindow :
 		int _windowNum;
 		Glow::EventMask _eventMask;
 		Glow::EventMask _inactiveEventMask;
+		Glow::BufferType _bufferType;
 		int _saveCursor;
 		mutable unsigned long _clock;
 		mutable int _globalXPos;

@@ -269,6 +269,10 @@ class GlowDismissPushButtonWidget :
 			GlowWidgetRoot* root,
 			const GlowPushButtonParams& params,
 			GlowComponent* todismiss);
+		
+		inline GlowComponent* GetToDismiss() const;
+		inline void SetToDismiss(
+			GlowComponent* todismiss);
 	
 	
 	//-------------------------------------------------------------------------

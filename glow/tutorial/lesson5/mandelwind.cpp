@@ -60,6 +60,7 @@ using namespace std;
 
 #include "mandelwind.h"
 #include "mandeldata.h"
+#include "mandelgizmo.h"   // Lesson 5 support
 
 
 /*
@@ -72,18 +73,6 @@ using namespace std;
 const int NO_DRAG = 0;
 const int ZOOM_IN_DRAG = 1;
 const int ZOOM_OUT_DRAG = 2;
-
-// Identifiers for menu items. These constants are reported to the
-// menu receiver so it can identify which item was selected
-// Removed because we aren't using the old menus anymore
-/*
-const int RESETZOOM_ITEM = 0;
-const int QUIT_ITEM = 1;
-const int RED_ITEM = 10;
-const int GREEN_ITEM = 11;
-const int BLUE_ITEM = 12;
-const int MULTI_ITEM = 13;
-*/
 
 
 /*
@@ -100,6 +89,8 @@ GlowWindow("Mandelglow", GlowWindow::autoPosition, GlowWindow::autoPosition,
 	data->Width(), data->Height(), Glow::rgbBuffer | Glow::doubleBuffer,
 	Glow::mouseEvents | Glow::dragEvents | Glow::menuEvents)
 {
+	GLOW_DEBUGSCOPE("MandelWind::MandelWind");
+	
 	// Get data
 	data->SetThreshhold(1000);
 	_data = data;
@@ -113,44 +104,13 @@ GlowWindow("Mandelglow", GlowWindow::autoPosition, GlowWindow::autoPosition,
 	_multiCycleRate = 1.0f;
 	_multiCycleOffset = 0.0f;
 	
-	// We removed the menu material because we aren't using menus anymore
-	
-/*	// Create new menu
-	GlowMenu* menu = new GlowMenu;
-	
-	// Add entries to the menu. Give each item an identifying constant
-	menu->AddEntry("Reset zoom", RESETZOOM_ITEM);
-	menu->AddEntry("Quit", QUIT_ITEM);
-	
-	// Create a submenu
-	GlowMenu* colorMenu = new GlowMenu;
-	colorMenu->AddEntry("Red", RED_ITEM);
-	colorMenu->AddEntry("Green", GREEN_ITEM);
-	colorMenu->AddEntry("Blue", BLUE_ITEM);
-	colorMenu->AddEntry("Multi", MULTI_ITEM);
-	
-	// Attach this submenu to the first menu
-	menu->AddSubmenu("Color", colorMenu);
-	
-	// Mark the first item in the submenu
-	colorMenu->SetItemMark(0, "=> ");
-	
-	// Bind the menu to the right mouse button on our window
-	SetMenu(Glow::rightButton, menu);
-	
-	// Set both menus to notify our receiver when it gets a hit
-	menu->Notifier().Bind(this);
-	colorMenu->Notifier().Bind(this); */
-	
-	// The following is new with lesson 4:
-	
 	// Create a control panel window to go along with this window
 	_controlWindow = new GlowQuickPaletteWindow("Controls");
 	
 	// Add controls
 	// First, we'll put a little blurb at the top of the window
 	_controlWindow->AddLabel(
-		"Mandelglow (lesson 4)\nversion 0.9.6\nby Daniel Azuma");
+		"Mandelglow (lesson 5)\nversion 0.9.6\nby Daniel Azuma");
 	
 	// The next set of controls will be within a panel called "calculation"
 	GlowQuickPanelWidget* panel = _controlWindow->AddPanel(
@@ -205,60 +165,12 @@ GlowWindow("Mandelglow", GlowWindow::autoPosition, GlowWindow::autoPosition,
 	_quitButton = panel->AddPushButton("Quit", this);
 	_saveButton = panel->AddPushButton("Save Image", this);
 	
+	// New button for lesson 5
+	_gizmoButton = panel->AddPushButton("Open Gizmo", this);
+	
 	// Arrange controls and show the control panel window
 	_controlWindow->Pack();
 }
-
-
-// Menu receiver method. This method is called when the MandelWind
-// receives notification that a menu item was selected.
-// Not used anymore as of lesson 4
-
-/*
-void MandelWind::OnMessage(
-	const GlowMenuMessage& message)
-{
-	// Respond based on the identifier given in the message
-	switch (message.code)
-	{
-		case RESETZOOM_ITEM:
-			// Reset the zoom to the starting point
-			ResetZoom();
-			break;
-		
-		case QUIT_ITEM:
-			// Exit the program
-			exit(0);
-			break;
-		
-		case RED_ITEM:
-			// Set the background color to red
-			SetColor(255, 0, 0);
-			// Mark the red item, and unmark the other two items
-			message.menu->UnmarkAllItems();
-			message.menu->SetItemMark(0, "=> ");
-			break;
-		
-		case GREEN_ITEM:
-			SetColor(0, 255, 0);
-			message.menu->UnmarkAllItems();
-			message.menu->SetItemMark(1, "=> ");
-			break;
-		
-		case BLUE_ITEM:
-			SetColor(0, 0, 255);
-			message.menu->UnmarkAllItems();
-			message.menu->SetItemMark(2, "=> ");
-			break;
-		
-		case MULTI_ITEM:
-			SetColor(0, 0, 0);
-			message.menu->UnmarkAllItems();
-			message.menu->SetItemMark(3, "=> ");
-			break;
-	}
-}
-*/
 
 
 // Idle receiver method
@@ -301,6 +213,8 @@ void MandelWind::SetColor(
 
 void MandelWind::OnEndPaint()
 {
+	GLOW_DEBUGSCOPE("MandelWind::OnEndPaint");
+	
 	// Recompute if necessary
 	if (!_data->IsDataValid())
 	{
@@ -343,7 +257,7 @@ void MandelWind::OnEndPaint()
 				_image[i*4] = 0;
 				_image[i*4+1] = 0;
 				_image[i*4+2] = 0;
-				_image[i*4+3] = 0;
+				_image[i*4+3] = 255;
 			}
 			else if (_r != 0 || _g != 0 || _b != 0)
 			{
@@ -351,7 +265,7 @@ void MandelWind::OnEndPaint()
 				_image[i*4] = _r;
 				_image[i*4+1] = _g;
 				_image[i*4+2] = _b;
-				_image[i*4+3] = 0;
+				_image[i*4+3] = 255;
 			}
 			// outside color (multi...)
 			else
@@ -365,21 +279,21 @@ void MandelWind::OnEndPaint()
 					_image[i*4] = int((cycleLength-value)*255.0f/cycleLength);
 					_image[i*4+1] = int(value*255.0f/cycleLength);
 					_image[i*4+2] = 0;
-					_image[i*4+3] = 0;
+					_image[i*4+3] = 255;
 				}
 				else if (value < cycleLength*2.0f)
 				{
 					_image[i*4] = 0;
 					_image[i*4+1] = int((cycleLength*2.0f-value)*255.0f/cycleLength);
 					_image[i*4+2] = int((value-cycleLength)*255.0f/cycleLength);
-					_image[i*4+3] = 0;
+					_image[i*4+3] = 255;
 				}
 				else
 				{
 					_image[i*4] = int((value-cycleLength*2.0f)*255.0f/cycleLength);
 					_image[i*4+1] = 0;
 					_image[i*4+2] = int((cycleLength*3.0f-value)*255.0f/cycleLength);
-					_image[i*4+3] = 0;
+					_image[i*4+3] = 255;
 				}
 			}
 		}
@@ -415,6 +329,8 @@ void MandelWind::OnReshape(
 	int width,
 	int height)
 {
+	GLOW_DEBUGSCOPE("MandelWind::OnReshape");
+	
 	// Update the viewport to specify the entire window
 	::glViewport(0, 0, width, height);
 	_halfdiagonal = sqrt(double(width*width+height*height))*0.5;
@@ -432,6 +348,8 @@ void MandelWind::OnMouseDown(
 	int y,
 	Glow::Modifiers modifiers)
 {
+	GLOW_DEBUGSCOPE("MandelWind::OnMouseDown");
+	
 	// Ignore mousedowns if we're already dragging
 	if (_dragType == NO_DRAG)
 	{
@@ -467,6 +385,8 @@ void MandelWind::OnMouseUp(
 	int y,
 	Glow::Modifiers modifiers)
 {
+	GLOW_DEBUGSCOPE("MandelWind::OnMouseUp");
+	
 	if (_dragType == ZOOM_IN_DRAG)
 	{
 		// for zooming "in"
@@ -501,6 +421,8 @@ void MandelWind::OnMouseDrag(
 	int x,
 	int y)
 {
+	GLOW_DEBUGSCOPE("MandelWind::OnMouseDrag");
+	
 	if (_dragType == ZOOM_IN_DRAG || _dragType == ZOOM_OUT_DRAG)
 	{
 		_ComputeZoomFactor(x, y);
@@ -529,12 +451,12 @@ void MandelWind::_ComputeZoomFactor(
 }
 
 
-// The following code is new in lesson 4...
-
 // Receive pushbutton events
 void MandelWind::OnMessage(
 	const GlowPushButtonMessage& message)
 {
+	GLOW_DEBUGSCOPE("MandelWind::OnMessage(pushbutton)");
+	
 	// Was it the quit button?
 	if (message.widget == _quitButton)
 	{
@@ -555,6 +477,12 @@ void MandelWind::OnMessage(
 			GlowWindow::autoPosition, "Enter file name:", 300, "image.ppm",
 			"OK\tCancel", this);
 	}
+	// Gizmo button? (New with lesson 5)
+	else if (message.widget == _gizmoButton)
+	{
+		// Create a new gizmo window
+		new MandelGizmoWindow(_image, Width(), Height());
+	}
 }
 
 
@@ -562,6 +490,8 @@ void MandelWind::OnMessage(
 void MandelWind::OnMessage(
 	const GlowSliderMessage& message)
 {
+	GLOW_DEBUGSCOPE("MandelWind::OnMessage(slider)");
+	
 	// Was it the multicolor cycle rate slider?
 	if (message.widget == _multiCycleRateSlider)
 	{
@@ -593,6 +523,8 @@ void MandelWind::OnMessage(
 void MandelWind::OnMessage(
 	const GlowCheckBoxMessage& message)
 {
+	GLOW_DEBUGSCOPE("MandelWind::OnMessage(checkbox)");
+	
 	// Only one checkbox was created-- assume it's the background calculation
 	// checkbox
 	_updateInBackground = (message.state == GlowCheckBoxWidget::on);
@@ -603,6 +535,8 @@ void MandelWind::OnMessage(
 void MandelWind::OnMessage(
 	const GlowPopupMenuMessage& message)
 {
+	GLOW_DEBUGSCOPE("MandelWind::OnMessage(popup menu)");
+	
 	// Only one popup menu was created-- assume it's the color scheme menu
 	switch (message.item)
 	{
@@ -642,6 +576,8 @@ void MandelWind::OnMessage(
 void MandelWind::OnMessage(
 	const GlowTextFieldWindowMessage& message)
 {
+	GLOW_DEBUGSCOPE("MandelWind::OnMessage(text field window)");
+	
 	// Only one text field window was created-- assume it's the save dialog
 	
 	// Bail out if the user pressed the cancel button

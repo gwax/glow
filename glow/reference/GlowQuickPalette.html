@@ -177,6 +177,13 @@ Adds a pushbutton to the panel. <tt>label</tt> gives the text label for the push
 </blockquote>
 
 <p>
+<tt><a href="GlowDismissPushButtonWidge.html">GlowDismissPushButtonWidget</a>* <b>AddDismissPushButton</b>(const char* label, <a href="GlowComponent.html">GlowComponent</a>* toDismiss, <a href="GlowPushButtonReceiver.html">GlowPushButtonReceiver</a>* receiver = 0)</tt>
+</p>
+<blockquote>
+Adds a dismiss-pushbutton to the panel. <tt>label</tt> gives the text label for the pushbutton. <tt>toDismiss</tt> specifies the component to dismiss (close) after the button is pressed. <tt>receiver</tt> provides a receiver to receive events from the new pushbutton, or pass the null pointer if you do not want to bind a receiver.
+</blockquote>
+
+<p>
 <tt><a href="GlowMenuButtonWidget.html">GlowMenuButtonWidget</a>* <b>AddMenuButton</b>(const char* label, <a href="GlowMenu.html">GlowMenu</a>* menu, <a href="GlowMenuButtonWidget.html">GlowMenuButtonWidget</a>::IconType icon = <a href="GlowMenuButtonWidget.html">GlowMenuButtonWidget</a>::menuIcon)</tt>
 </p>
 <blockquote>

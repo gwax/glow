@@ -135,11 +135,11 @@ That method, along with many of the methods in <tt>GlowWindow</tt>, is actually 
 </p>
 
 <p>
-<image src="../../graphics/arrowbullet.gif" border=0 width=25 height=9 alt="Link to">Reference: <b><a href="../../reference/GlowWindow.html">class GlowWindow</a></b>
+<image src="../../graphics/arrowbullet.gif" border=0 width=25 height=9 alt="Link to">Reference: <b><a href="../../reference/GlowComponent.html">class GlowComponent</a></b>
 <br>
 <image src="../../graphics/arrowbullet.gif" border=0 width=25 height=9 alt="Link to">Reference: <b><a href="../../reference/GlowSubwindow.html">class GlowSubwindow</a></b>
 <br>
-<image src="../../graphics/arrowbullet.gif" border=0 width=25 height=9 alt="Link to">Reference: <b><a href="../../reference/GlowComponent.html">class GlowComponent</a></b>
+<image src="../../graphics/arrowbullet.gif" border=0 width=25 height=9 alt="Link to">Reference: <b><a href="../../reference/GlowWindow.html">class GlowWindow</a></b>
 </p>
 
 </blockquote>
@@ -160,8 +160,10 @@ The real beauty of the Mandelbrot Set appears when you magnify parts of it. Let'
 Take another look at our class declaration in <tt>mandelwind.h</tt>. You'll see three virtual methods for handling mouse-related events: <tt>OnMouseDown()</tt>, <tt>OnMouseUp()</tt>, and <tt>OnMouseDrag()</tt>.
 </p>
 <blockquote>
-<pre>virtual void OnMouseDown(int button, int x, int y, int modifiers);
-virtual void OnMouseUp(int button, int x, int y, int modifiers);
+<pre>virtual void OnMouseDown(Glow::MouseButton button, int x, int y,
+    Glow::Modifiers modifiers);
+virtual void OnMouseUp(Glow::MouseButton button, int x, int y,
+    Glow::Modifiers modifiers);
 virtual void OnMouseDrag(int x, int y);</pre>
 </blockquote>
 <p>
@@ -219,7 +221,7 @@ GlowWindow("Mandelglow", GlowWindow::autoPosition, GlowWindow::autoPosition,
 All GLOW events are reported via virtual methods, and each method does have a default implementation that simply ignores the event. From a functional point of view, we don't need an event mask. GLOW can call the virtual methods for every event that gets reported, and those that we're not interested in will fall through to the default, do-nothing event handler. However, there is some performance overhead involved with detecting and dispatching an event. The event mask, then, is a hint to GLOW to tell it which events a window is interested in receiving. GLOW uses this information internally to decide which events to listen for and dispatch to the virtual methods of the window object. More technically, the event mask describes which GLUT callbacks should be registered for a particular window.
 </p>
 <p>
-When you're writing a window class for a GLOW program, be sure to pay attention to which events you want to receive. You need to BOTH implement the corresponding virtual method, AND set the appropriate bit in the event mask. If you are debugging a window class and discover that you don't seem to be receiving certain events, the first thing you should check is that your event mask is correct. (Another important thing to check is that you've spelled the names of the virtual methods correctly; that bug gets me quite often.) The constants corresponding to bits in the event mask can be found in class <tt>Glow</tt>.
+When you're writing a window class for a GLOW program, be sure to pay attention to which events you want to receive. You need to implement the corresponding virtual method, AND set the appropriate bit in the event mask. If you are debugging a window class and discover that you don't seem to be receiving certain events, the first thing you should check is that your event mask is correct. (Another important thing to check is that you've spelled the names of the virtual methods correctly; that bug gets me quite often.) The constants corresponding to bits in the event mask can be found in class <tt>Glow</tt>.
 </p>
 
 <p>
@@ -239,9 +241,9 @@ As an example, let's consider our mouse-down handler. When the user presses the 
 </p>
 
 <p>
-<image src="../../graphics/arrowbullet.gif" border=0 width=25 height=9 alt="Link to">Reference: <b><a href="../../reference/GlowWindow.html">class GlowWindow</a></b>
-<br>
 <image src="../../graphics/arrowbullet.gif" border=0 width=25 height=9 alt="Link to">Reference: <b><a href="../../reference/Glow.html">class Glow</a></b>
+<br>
+<image src="../../graphics/arrowbullet.gif" border=0 width=25 height=9 alt="Link to">Reference: <b><a href="../../reference/GlowWindow.html">class GlowWindow</a></b>
 </p>
 
 </blockquote>
@@ -317,7 +319,7 @@ In the next lesson we'll see how to add more user interface features through men
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 7 April 2000
 </address>
 
 

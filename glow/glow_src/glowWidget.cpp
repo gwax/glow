@@ -461,10 +461,9 @@ void GlowWidget::_ExecuteNotify()
 void GlowWidget::_BroadcastNotifyList()
 {
 	_AddToNotifyList();
-	for (GlowComponent::ChildIterator iter = BeginChildren();
-		iter != EndChildren(); ++iter)
+	for (GlowComponent* child = FirstChild(); child != 0; child = child->Next())
 	{
-		GlowWidget* childWidget = dynamic_cast<GlowWidget*>(*iter);
+		GlowWidget* childWidget = dynamic_cast<GlowWidget*>(child);
 		if (childWidget != 0)
 		{
 			childWidget->_BroadcastNotifyList();
@@ -535,10 +534,9 @@ void GlowWidget::_BroadcastMask(
 	{
 		_AddToNotifyList();
 		_visibility = 1;
-		for (GlowComponent::ChildIterator iter = BeginChildren();
-			iter != EndChildren(); ++iter)
+		for (GlowComponent* child = FirstChild(); child != 0; child = child->Next())
 		{
-			GlowWidget* childWidget = dynamic_cast<GlowWidget*>(*iter);
+			GlowWidget* childWidget = dynamic_cast<GlowWidget*>(child);
 			if (childWidget != 0)
 			{
 				childWidget->_BroadcastMask(true);
@@ -549,10 +547,9 @@ void GlowWidget::_BroadcastMask(
 	{
 		_AddToNotifyList();
 		_visibility = 2;
-		for (GlowComponent::ChildIterator iter = BeginChildren();
-			iter != EndChildren(); ++iter)
+		for (GlowComponent* child = FirstChild(); child != 0; child = child->Next())
 		{
-			GlowWidget* childWidget = dynamic_cast<GlowWidget*>(*iter);
+			GlowWidget* childWidget = dynamic_cast<GlowWidget*>(child);
 			if (childWidget != 0)
 			{
 				childWidget->_BroadcastMask(false);
@@ -572,10 +569,9 @@ void GlowWidget::Show()
 		{
 			_AddToNotifyList();
 			_visibility = 1;
-			for (GlowComponent::ChildIterator iter = BeginChildren();
-				iter != EndChildren(); ++iter)
+			for (GlowComponent* child = FirstChild(); child != 0; child = child->Next())
 			{
-				GlowWidget* childWidget = dynamic_cast<GlowWidget*>(*iter);
+				GlowWidget* childWidget = dynamic_cast<GlowWidget*>(child);
 				if (childWidget != 0)
 				{
 					childWidget->_BroadcastMask(true);
@@ -599,10 +595,9 @@ void GlowWidget::Hide()
 	{
 		_AddToNotifyList();
 		_visibility = 0;
-		for (GlowComponent::ChildIterator iter = BeginChildren();
-			iter != EndChildren(); ++iter)
+		for (GlowComponent* child = FirstChild(); child != 0; child = child->Next())
 		{
-			GlowWidget* childWidget = dynamic_cast<GlowWidget*>(*iter);
+			GlowWidget* childWidget = dynamic_cast<GlowWidget*>(child);
 			if (childWidget != 0)
 			{
 				childWidget->_BroadcastMask(false);

@@ -253,6 +253,7 @@ GlowViewTransform::~GlowViewTransform()
 
 bool GlowViewTransform::OnBeginPaint()
 {
+	::glMatrixMode(GL_MODELVIEW);
 	::glPushMatrix();
 	ApplyToGLMatrix();
 	return true;
@@ -261,6 +262,7 @@ bool GlowViewTransform::OnBeginPaint()
 
 void GlowViewTransform::OnEndPaint()
 {
+	::glMatrixMode(GL_MODELVIEW);
 	::glPopMatrix();
 }
 

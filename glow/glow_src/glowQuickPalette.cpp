@@ -199,10 +199,9 @@ GlowWidget::AutoPackError GlowQuickRadioGroupWidget::OnAutoPack(
 	// Pack buttons
 	int position = 0;
 	int size = 0;
-	for (GlowComponent::ChildIterator iter = BeginChildren();
-		iter != EndChildren(); iter++)
+	for (GlowComponent* child = FirstChild(); child != 0; child = child->Next())
 	{
-		GlowRadioButtonWidget* button = dynamic_cast<GlowRadioButtonWidget*>(*iter);
+		GlowRadioButtonWidget* button = dynamic_cast<GlowRadioButtonWidget*>(child);
 		if (button != 0)
 		{
 			if (_arrangement == GlowQuickPalette::horizontal)
@@ -345,6 +344,21 @@ GlowPushButtonWidget* GlowQuickPalette::AddPushButton(
 	params.text = label;
 	params.receiver = receiver;
 	return new GlowPushButtonWidget(_panel, params);
+}
+
+
+GlowDismissPushButtonWidget* GlowQuickPalette::AddDismissPushButton(
+	const char* label,
+	GlowComponent* toDismiss,
+	GlowPushButtonReceiver* receiver)
+{
+	GLOW_DEBUGSCOPE("GlowQuickPanelWidget::AddDismissPushButton");
+	
+	GlowPushButtonParams params;
+	params.x = params.y = 0;
+	params.text = label;
+	params.receiver = receiver;
+	return new GlowDismissPushButtonWidget(_panel, params, toDismiss);
 }
 
 
@@ -591,11 +605,10 @@ GlowWidget::AutoPackError GlowQuickPanelWidget::OnAutoPack(
 	int minWidth = position;
 	
 	// Arrange widgets with default alignment
-	for (GlowComponent::ChildIterator iter = BeginChildren();
-		iter != EndChildren(); ++iter)
+	for (GlowComponent* child = FirstChild(); child != 0; child = child->Next())
 	{
 		// Get next widget
-		GlowWidget* widget = dynamic_cast<GlowWidget*>(*iter);
+		GlowWidget* widget = dynamic_cast<GlowWidget*>(child);
 		if (widget == 0)
 		{
 			continue;
@@ -700,10 +713,9 @@ GlowWidget::AutoPackError GlowQuickPanelWidget::OnAutoPack(
 	
 	// Now align contents
 	int i=0;
-	for (GlowComponent::ChildIterator iter = BeginChildren();
-		iter != EndChildren(); ++iter, ++i)
+	for (GlowComponent* child = FirstChild(); child != 0; child = child->Next(), ++i)
 	{
-		GlowWidget* widget = dynamic_cast<GlowWidget*>(*iter);
+		GlowWidget* widget = dynamic_cast<GlowWidget*>(child);
 		if (widget == 0 || widget == _label)
 		{
 			continue;

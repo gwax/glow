@@ -313,6 +313,19 @@ inline void GlowDismissPushButtonWidget::Init(
 }
 
 
+inline void GlowDismissPushButtonWidget::SetToDismiss(
+	GlowComponent* todismiss)
+{
+	_todismiss = todismiss;
+}
+
+
+inline GlowComponent* GlowDismissPushButtonWidget::GetToDismiss() const
+{
+	return _todismiss;
+}
+
+
 /*
 ===============================================================================
 	Inline methods of GlowWidgetMapToPushButtonFilter

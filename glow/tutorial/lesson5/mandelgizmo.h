@@ -1,7 +1,7 @@
 /*
 ===============================================================================
 
-	FILE:  mandelglow.cpp
+	FILE:  mandelgizmo.h
 	
 	PROJECT:
 	
@@ -9,7 +9,7 @@
 	
 	CONTENTS:
 	
-		Main program
+		Gizmo window
 	
 	PROGRAMMERS:
 	
@@ -39,11 +39,13 @@
 	
 	CHANGE HISTORY:
 	
-		27 March 2000 -- DA -- Initial CVS checkin
-		10 April 2000 -- DA -- Version 0.9.6 update
+		10 April 2000 -- DA -- Initial CVS checkin
 
 ===============================================================================
 */
+
+#ifndef MANDELGIZMO__H
+#define MANDELGIZMO__H
 
 
 /*
@@ -52,41 +54,41 @@
 ===============================================================================
 */
 
-#include <iostream>
-
-using namespace std;
-
 #include "glow.h"
+#include "glowQuickPalette.h"
 
 GLOW_NAMESPACE_USING
-
-#include "mandeldata.h"
-#include "mandelwind.h"
 
 
 /*
 ===============================================================================
-	Entry point
+	Gizmo toplevel window class
 ===============================================================================
 */
 
-int main(
-	int argc,
-	char **argv)
-{
-	cout << "Mandelglow (lesson 1)" << endl;
-	
-	// Initialize GLOW runtime
-	Glow::Init(argc, argv);
-	
-	// Create one window to display one data object
-	new MandelWind(new MandelData);
-	
-	// Enter event loop
-	Glow::MainLoop();
-	
-	// Control actually never gets here, but we'll put this here so
-	// compilers don't complain.
-	return 0;
-}
+class MandelGizmoSubwindow;
 
+class MandelGizmoWindow :
+	public GlowWindow
+{
+	public:
+	
+		MandelGizmoWindow(
+			const unsigned char* image,
+			int width,
+			int height);
+	
+	protected:
+	
+		virtual void OnReshape(
+			int width,
+			int height);
+	
+	private:
+	
+		GlowQuickPaletteSubwindow* _widgetsPanel;
+		MandelGizmoSubwindow* _gizmoPanel;
+};
+
+
+#endif

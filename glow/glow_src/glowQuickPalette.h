@@ -166,6 +166,10 @@ class GlowQuickPalette
 		GlowPushButtonWidget* AddPushButton(
 			const char* label,
 			GlowPushButtonReceiver* receiver = 0);
+		GlowDismissPushButtonWidget* AddDismissPushButton(
+			const char* label,
+			GlowComponent* toDismiss,
+			GlowPushButtonReceiver* receiver = 0);
 		GlowMenuButtonWidget* AddMenuButton(
 			const char* label,
 			GlowMenu* menu,

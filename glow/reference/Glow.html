@@ -217,6 +217,18 @@ Accumulation buffer. Corresponds to <tt>GLUT_ACCUM</tt>.
 <blockquote>
 Double buffer. Corresponds to <tt>GLUT_DOUBLE</tt>.
 </blockquote>
+<p>
+<tt>enum Glow::BufferType <b>stereoBuffer</b></tt>
+</p>
+<blockquote>
+Stereo buffer. Corresponds to <tt>GLUT_STEREO</tt>. Note that this buffer type is not commonly supported. Call <tt>IsBufferTypeSupported()</tt> to check before attempting to create a window with a stereo buffer.
+</blockquote>
+<p>
+<tt>enum Glow::BufferType <b>multisampleBuffer</b></tt>
+</p>
+<blockquote>
+Multisampling buffer. Corresponds to <tt>GLUT_MULTISAMPLE</tt>. Note that this buffer type is not commonly supported. Call <tt>IsBufferTypeSupported()</tt> to check before attempting to create a window with a multisampling  buffer.
+</blockquote>
 
 </blockquote>
 
@@ -587,6 +599,27 @@ Returns true if and only if a menu is currently down. It is not safe to manipula
 </p>
 <blockquote>
 Returns the number of milliseconds since GLOW was initialized.
+</blockquote>
+
+<p>
+<tt>static bool <b>IsExtensionSupported</b>(const char* extensionName)</tt>
+</p>
+<blockquote>
+Determines whether the OpenGL extension with the specified name is supported by the current implementation. This function requires a window to be present; it will throw an assertion otherwise.
+</blockquote>
+
+<p>
+<tt>static bool <b>IsBufferTypeSupported</b>(Glow::BufferType type)</tt>
+</p>
+<blockquote>
+Determines whether the given frame buffer type is supported. If it isn't, you should not attempt to create a window with that buffer type.
+</blockquote>
+
+<p>
+<tt>static int <b>NumMouseButtons</b>(void)</tt>
+</p>
+<blockquote>
+Returns the number of mouse buttons supported by the implementation. If two buttons are supported, they will be Glow::leftButton and Glow::rightButton. If only one button is supported, it will ge Glow::leftButton.
 </blockquote>
 
 </blockquote>

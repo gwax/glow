@@ -816,6 +816,43 @@ void Glow::PopModalWindow()
 
 /*
 ===============================================================================
+	Miscellaneous
+===============================================================================
+*/
+
+bool Glow::IsExtensionSupported(
+	const char* extensionName)
+{
+	GLOW_DEBUGSCOPE("Glow::IsExtensionSupported");
+	
+	if (::glutGetWindow() == 0)
+	{
+		GLOW_DEBUG(_windowRegistry.empty(),
+			"Glow::IsExtensionSupported() called when no windows are open");
+		if (_windowRegistry.empty()) return false;
+		::glutSetWindow((*(_windowRegistry.begin())).first);
+	}
+	char buf[256];
+	GLOW_CSTD::strcpy(buf, extensionName);
+	return ::glutExtensionSupported(buf) != 0;
+}
+
+
+bool Glow::IsBufferTypeSupported(
+	BufferType mode)
+{
+	GLOW_DEBUGSCOPE("Glow::IsBufferTypeSupported");
+	
+	int oldMode = ::glutGet(GLenum(GLUT_INIT_DISPLAY_MODE));
+	::glutInitDisplayMode(mode);
+	bool ret = (::glutGet(GLenum(GLUT_DISPLAY_MODE_POSSIBLE)) != 0);
+	::glutInitDisplayMode(oldMode);
+	return ret;
+}
+
+
+/*
+===============================================================================
 	Methods for GlowComponent
 ===============================================================================
 */
@@ -825,12 +862,15 @@ void GlowComponent::Init(
 {
 	GLOW_DEBUGSCOPE("GlowComponent::Init");
 	
-	_parent = parent;
 	_activeState = 1;
-	if (_parent != 0)
+	_firstChild = _lastChild = 0;
+	_prev = _next = 0;
+	_numChildren = 0;
+	_parent = 0;
+	if (parent != 0)
 	{
-		_parent->_AddChild(this);
-		if (!_parent->IsActive())
+		parent->_AddChild(this);
+		if (!parent->IsActive())
 		{
 			_activeState = 2;
 		}
@@ -875,17 +915,66 @@ void GlowComponent::Close()
 }
 
 
+void GlowComponent::_AddChild(
+	GlowComponent* child)
+{
+	GLOW_DEBUGSCOPE("GlowComponent::_AddChild");
+	GLOW_ASSERT(child->_parent == 0);
+	
+	child->_parent = this;
+	if (_firstChild == 0)
+	{
+		_firstChild = child;
+	}
+	else
+	{
+		_lastChild->_next = child;
+	}
+	child->_prev = _lastChild;
+	child->_next = 0;
+	_lastChild = child;
+	++_numChildren;
+}
+
+
+void GlowComponent::_RemoveChild(
+	GlowComponent* child)
+{
+	GLOW_DEBUGSCOPE("GlowComponent::_RemoveChild");
+	GLOW_ASSERT(child->_parent == this);
+	
+	if (child->_next == 0)
+	{
+		_lastChild = child->_prev;
+	}
+	else
+	{
+		child->_next->_prev = child->_prev;
+	}
+	if (child->_prev == 0)
+	{
+		_firstChild = child->_next;
+	}
+	else
+	{
+		child->_prev->_next = child->_next;
+	}
+	child->_prev = child->_next = child->_parent = 0;
+	--_numChildren;
+}
+
+
 void GlowComponent::_BroadcastPaint()
 {
 	GLOW_DEBUGSCOPE("GlowComponent::_BroadcastPaint");
 	
 	if (OnBeginPaint())
 	{
-		for (ChildIterator iter = _children.begin(); iter != _children.end(); iter++)
+		for (GlowComponent* child = _firstChild; child != 0; child = child->Next())
 		{
-			if (dynamic_cast<GlowSubwindow*>(*iter) == 0)
+			if (dynamic_cast<GlowSubwindow*>(child) == 0)
 			{
-				(*iter)->_BroadcastPaint();
+				(child)->_BroadcastPaint();
 			}
 		}
 	}
@@ -932,9 +1021,9 @@ void GlowComponent::_BroadcastStandby(
 			Glow::_activateNotifyList.insert(
 				GLOW_STD::pair<GlowComponent* const, bool>(this, activating));
 		}
-		for (ChildIterator iter = _children.begin(); iter != _children.end(); iter++)
+		for (GlowComponent* child = _firstChild; child != 0; child = child->Next())
 		{
-			(*iter)->_BroadcastStandby(activating, false);
+			child->_BroadcastStandby(activating, false);
 		}
 		WhichWindow()->Refresh();
 	}
@@ -987,14 +1076,49 @@ GlowWindow* GlowComponent::ToplevelWindow()
 }
 
 
+void GlowComponent::ReorderChild(
+	GlowComponent* child,
+	GlowComponent* before)
+{
+	GLOW_DEBUGSCOPE("GlowComponent::ReorderChild");
+	GLOW_ASSERT(child->Parent() == this);
+	GLOW_ASSERT(before->Parent() == this);
+	
+	if (child == before) return;
+	
+	_RemoveChild(child);
+	if (before == 0)
+	{
+		_AddChild(child);
+	}
+	else if (before == _firstChild)
+	{
+		_firstChild->_prev = child;
+		child->_next = _firstChild;
+		child->_prev = 0;
+		_firstChild = child;
+		child->_parent = this;
+		++_numChildren;
+	}
+	else
+	{
+		child->_next = before;
+		child->_prev = before->_prev;
+		before->_prev = child;
+		child->_prev->_next = child;
+		child->_parent = this;
+		++_numChildren;
+	}
+}
+
+
 void GlowComponent::KillChildren()
 {
 	GLOW_DEBUGSCOPE("GlowComponent::KillChildren");
 	
-	ChildIterator iter;
-	while ((iter = _children.begin()) != _children.end())
+	while (_numChildren > 0)
 	{
-		delete (*iter);
+		delete _firstChild;
 	}
 }
 
@@ -1054,6 +1178,7 @@ void GlowSubwindow::Init(
 		params.x, params.y, _width, _height);
 	_eventMask = params.eventMask;
 	_inactiveEventMask = params.inactiveEventMask;
+	_bufferType = params.mode;
 	_leftMenu = 0;
 	_centerMenu = 0;
 	_rightMenu = 0;
@@ -1101,6 +1226,7 @@ void GlowSubwindow::Init(
 	_height = height;
 	_eventMask = eventMask;
 	_inactiveEventMask = GlowSubwindowParams::defaults.inactiveEventMask;
+	_bufferType = mode;
 	_leftMenu = 0;
 	_centerMenu = 0;
 	_rightMenu = 0;
@@ -1613,6 +1739,7 @@ void GlowWindow::Init(
 	GlowComponent::Init(0);
 	_eventMask = params.eventMask;
 	_inactiveEventMask = params.inactiveEventMask;
+	_bufferType = params.mode;
 	_leftMenu = 0;
 	_centerMenu = 0;
 	_rightMenu = 0;
@@ -1669,6 +1796,7 @@ void GlowWindow::Init(
 	GlowComponent::Init(0);
 	_eventMask = eventMask;
 	_inactiveEventMask = GlowWindowParams::defaults.inactiveEventMask;
+	_bufferType = mode;
 	_leftMenu = 0;
 	_centerMenu = 0;
 	_rightMenu = 0;

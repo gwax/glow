@@ -148,6 +148,50 @@ The destructor for <tt>GlowViewManipulator</tt> also recursively deletes the com
 
 
 <p>
+<b>Control</b>
+</p>
+
+<blockquote>
+
+<p>
+<tt>void <b>BeginScaleDrag</b>(GLfloat xn, GLfloat yn) const</tt>
+</p>
+<blockquote>
+Begins scale dragging. Generally you should call this in response to a mouse down event. <tt>xn</tt> and <tt>yn</tt> denote the mouse coordinates in OpenGL coordinates (i.e. -1.0 to 1.0, with y increasing moving up).
+</blockquote>
+
+<p>
+<tt>void <b>BeginTranslationDrag</b>(GLfloat xn, GLfloat yn) const</tt>
+</p>
+<blockquote>
+Begins translation dragging. Generally you should call this in response to a mouse down event. <tt>xn</tt> and <tt>yn</tt> denote the mouse coordinates in OpenGL coordinates (i.e. -1.0 to 1.0, with y increasing moving up).
+</blockquote>
+
+<p>
+<tt>void <b>BeginRotationDrag</b>(GLfloat xn, GLfloat yn) const</tt>
+</p>
+<blockquote>
+Begins rotation dragging. Generally you should call this in response to a mouse down event. <tt>xn</tt> and <tt>yn</tt> denote the mouse coordinates in OpenGL coordinates (i.e. -1.0 to 1.0, with y increasing moving up).
+</blockquote>
+
+<p>
+<tt>void <b>InDrag</b>(GLfloat xn, GLfloat yn) const</tt>
+</p>
+<blockquote>
+Continues dragging. Generally you should call this in response to a mouse drag event. <tt>xn</tt> and <tt>yn</tt> denote the mouse coordinates in OpenGL coordinates (i.e. -1.0 to 1.0, with y increasing moving up).
+</blockquote>
+
+<p>
+<tt>void <b>EndDrag</b>(GLfloat xn, GLfloat yn) const</tt>
+</p>
+<blockquote>
+Ends dragging. Generally you should call this in response to a mouse up event. <tt>xn</tt> and <tt>yn</tt> denote the mouse coordinates in OpenGL coordinates (i.e. -1.0 to 1.0, with y increasing moving up).
+</blockquote>
+
+</blockquote>
+
+
+<p>
 <b>State and settings</b>
 </p>
 
@@ -414,23 +458,27 @@ These methods are inherited from <tt><a href="GlowComponent.html">GlowComponent<
 </p>
 
 <p>
-<tt>int <b>NumChildren</b>(void)</tt>
+<tt><a href="GlowComponent.html">GlowComponent</a>* <b>Next</b>(void) const</tt>
 </p>
 
 <p>
-<tt>ChildIterator <b>BeginChildren</b>(void)</tt>
+<tt><a href="GlowComponent.html">GlowComponent</a>* <b>Prev</b>(void) const</tt>
 </p>
 
 <p>
-<tt>ConstChildIterator <b>BeginChildren</b>(void) const</tt>
+<tt>int <b>NumChildren</b>(void) const</tt>
 </p>
 
 <p>
-<tt>ChildIterator <b>EndChildren</b>(void)</tt>
+<tt><a href="GlowComponent.html">GlowComponent</a>* <b>FirstChild</b>(void) const</tt>
 </p>
 
 <p>
-<tt>ConstChildIterator <b>EndChildren</b>(void) const</tt>
+<tt><a href="GlowComponent.html">GlowComponent</a>* <b>LastChild</b>(void) const</tt>
+</p>
+
+<p>
+<tt>void <b>ReorderChild</b>(<a href="GlowComponent.html">GlowComponent</a>* child, <a href="GlowComponent.html">GlowComponent</a>* pos)</tt>
 </p>
 
 <p>

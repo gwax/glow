@@ -97,8 +97,8 @@ GlowMessageWindowParams::GlowMessageWindowParams(bool)
 	buttonFont = GLUT_BITMAP_HELVETICA_12;
 	buttonLabels = "OK";
 	windowSpacing = 10;
-	enterButton = -1;
-	escapeButton = -1;
+	enterButton = 0;
+	escapeButton = 1;
 	receiver = 0;
 	backColor.Set(0.8f, 0.8f, 0.8f);
 	textColor.Set(0.0f, 0.0f, 0.0f);
