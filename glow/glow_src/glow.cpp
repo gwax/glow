@@ -851,6 +851,21 @@ bool Glow::IsBufferTypeSupported(
 }
 
 
+void Glow::RefreshGlutWindow(
+	int id)
+{
+	GLOW_DEBUGSCOPE("Glow::RefreshGlutWindow");
+	
+	int saveWind = ::glutGetWindow();
+	::glutSetWindow(id);
+	::glutPostRedisplay();
+	if (saveWind != 0)
+	{
+		::glutSetWindow(saveWind);
+	}
+}
+
+
 /*
 ===============================================================================
 	Methods for GlowComponent
@@ -1480,23 +1495,6 @@ void GlowSubwindow::SetInactiveEventMask(
 		int saveWind = ::glutGetWindow();
 		::glutSetWindow(_windowNum);
 		_RegisterCallbacks(eventMask);
-		if (saveWind != 0)
-		{
-			::glutSetWindow(saveWind);
-		}
-	}
-}
-
-
-void GlowSubwindow::Refresh()
-{
-	GLOW_DEBUGSCOPE("GlowSubwindow::Refresh");
-	
-	if (_refreshEnabled)
-	{
-		int saveWind = ::glutGetWindow();
-		::glutSetWindow(_windowNum);
-		::glutPostRedisplay();
 		if (saveWind != 0)
 		{
 			::glutSetWindow(saveWind);

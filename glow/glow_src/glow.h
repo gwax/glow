@@ -330,6 +330,8 @@ class Glow
 		
 		// Drawing
 		inline static void SwapBuffers();
+		static void RefreshGlutWindow(
+			int id);
 		
 		// Miscellaneous
 		inline static bool IsMenuInUse();
@@ -746,9 +748,9 @@ class GlowSubwindow :
 		inline void MakeCurGlutWindow();
 		int GlutInfo(
 			GLenum key) const;
-		int GlutWindowNum() const;
+		inline int GlutWindowNum() const;
 		
-		void Refresh();
+		inline void Refresh();
 		inline bool IsRefreshEnabled() const;
 		inline void SetRefreshEnabled(
 			bool enable);

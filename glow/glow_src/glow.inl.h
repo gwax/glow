@@ -494,6 +494,17 @@ inline void GlowSubwindow::SetRefreshEnabled(
 }
 
 
+inline void GlowSubwindow::Refresh()
+{
+	GLOW_DEBUGSCOPE("GlowSubwindow::Refresh");
+	
+	if (_refreshEnabled)
+	{
+		Glow::RefreshGlutWindow(_windowNum);
+	}
+}
+
+
 inline bool GlowSubwindow::IsAutoSwapBuffersEnabled() const
 {
 	return _autoSwapBuffers;
