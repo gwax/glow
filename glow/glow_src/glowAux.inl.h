@@ -371,7 +371,7 @@ inline const void* TGlowImage<T>::RawArray() const
 
 
 template <class T>
-inline T* ReleaseArray()
+inline T* TGlowImage<T>::ReleaseArray()
 {
 	T* ret = data_;
 	data_ = 0;
@@ -381,7 +381,8 @@ inline T* ReleaseArray()
 }
 
 
-inline void GrabArray(
+template <class T>
+inline void TGlowImage<T>::GrabArray(
 	T* array,
 	unsigned int width,
 	unsigned int height)

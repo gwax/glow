@@ -1,7 +1,7 @@
 /*
 ===============================================================================
 
-	FILE:  glowTextFieldWidget.cpp
+	FILE:  glowTextAreaWidget.cpp
 	
 	PROJECT:
 	
@@ -9,7 +9,7 @@
 	
 	CONTENTS:
 	
-		Editable text field for GLOW
+		Scrollable text area widget for GLOW
 	
 	PROGRAMMERS:
 	
@@ -55,8 +55,8 @@
 	#include "glowHeader.h"
 #endif
 
-#ifndef GLOW_TEXTFIELDWIDGET__H
-	#include "glowTextFieldWidget.h"
+#ifndef GLOW_TEXTAREAWIDGET__H
+	#include "glowTextAreaWidget.h"
 #endif
 
 
@@ -70,14 +70,14 @@ GLOW_NAMESPACE_BEGIN
 ===============================================================================
 */
 
-GlowTextFieldParams GlowTextFieldParams::defaults(true);
+GlowTextAreaParams GlowTextAreaParams::defaults(true);
 
-GlowTextFieldParams::GlowTextFieldParams()
+GlowTextAreaParams::GlowTextAreaParams()
 {
 	*this = defaults;
 }
 
-GlowTextFieldParams::GlowTextFieldParams(bool) :
+GlowTextAreaParams::GlowTextAreaParams(bool) :
 GlowWidgetParams(true),
 backColor(1.0f, 1.0f, 1.0f),
 textColor(0.0f, 0.0f, 0.0f),
@@ -96,7 +96,7 @@ darkBevelColor(0.3f, 0.3f, 0.3f)
 {
 	width = 100;
 	height = 20;
-	style = GlowTextFieldWidget::loweredStyle;
+	style = GlowTextAreaWidget::loweredStyle;
 	initialText = "";
 	font = GLUT_BITMAP_HELVETICA_12;
 	height = 24;
@@ -106,33 +106,8 @@ darkBevelColor(0.3f, 0.3f, 0.3f)
 	autoScrollInterval = 50;
 	inset = 5;
 	caretInset = 2;
-}
-
-
-/*
-===============================================================================
-	Param defaults
-===============================================================================
-*/
-
-GlowLabeledTextFieldParams GlowLabeledTextFieldParams::defaults(true);
-
-GlowLabeledTextFieldParams::GlowLabeledTextFieldParams()
-{
-	*this = defaults;
-}
-
-GlowLabeledTextFieldParams::GlowLabeledTextFieldParams(bool) :
-GlowTextFieldParams(true),
-labelColor(0.0f, 0.0f, 0.0f),
-disableLabelColor(0.3f, 0.3f, 0.3f)
-{
-	labelText = "";
-	labelFont = GLUT_BITMAP_HELVETICA_12;
-	labelPosition = GlowWidgetLabelHelper::defaultLabelPosition;
-	labelWidth = 100;
-	labelHeight = 20;
-	labelSpacing = 5;
+	wrapping = true;
+	hasScrollBars = false;
 }
 
 
@@ -142,11 +117,11 @@ disableLabelColor(0.3f, 0.3f, 0.3f)
 ===============================================================================
 */
 
-void Glow_TextField_BlinkTask::Task()
+void Glow_TextArea_BlinkTask::Task()
 {
-	field_->blink_ = !field_->blink_;
-	field_->Refresh();
-	Schedule(field_->blinkInterval_);
+	widget_->blink_ = !widget_->blink_;
+	widget_->Refresh();
+	Schedule(widget_->blinkInterval_);
 }
 
 
@@ -156,19 +131,19 @@ void Glow_TextField_BlinkTask::Task()
 ===============================================================================
 */
 
-static int _autoScrollTimerID = 0;
+static int autoScrollTimerID_ = 0;
 
 
-class Glow_TextField_AutoScrollTimer :
+class Glow_TextArea_AutoScrollTimer :
 	public GlowTimerReceiver
 {
 	public:
 	
-		inline Glow_TextField_AutoScrollTimer();
+		inline Glow_TextArea_AutoScrollTimer();
 		inline void SetTextField(
-			GlowTextFieldWidget* field);
+			GlowTextAreaWidget* widget);
 		inline void ForceRemove(
-			GlowTextFieldWidget* field);
+			GlowTextAreaWidget* widget);
 	
 	protected:
 	
@@ -177,56 +152,56 @@ class Glow_TextField_AutoScrollTimer :
 	
 	private:
 	
-		GlowTextFieldWidget* field_;
+		GlowTextAreaWidget* widget_;
 };
 
 
-inline Glow_TextField_AutoScrollTimer::Glow_TextField_AutoScrollTimer()
+inline Glow_TextArea_AutoScrollTimer::Glow_TextArea_AutoScrollTimer()
 {
-	field_ = 0;
+	widget_ = 0;
 }
 
 
-inline void Glow_TextField_AutoScrollTimer::SetTextField(
-	GlowTextFieldWidget* field)
+inline void Glow_TextArea_AutoScrollTimer::SetTextField(
+	GlowTextAreaWidget* widget)
 {
-	field_ = field;
+	widget_ = widget;
 }
 
 
-inline void Glow_TextField_AutoScrollTimer::ForceRemove(
-	GlowTextFieldWidget* field)
+inline void Glow_TextArea_AutoScrollTimer::ForceRemove(
+	GlowTextAreaWidget* widget)
 {
-	if (field_ == field)
+	if (widget_ == widget)
 	{
-		Glow::UnregisterTimer(_autoScrollTimerID);
+		Glow::UnregisterTimer(autoScrollTimerID_);
 	}
 }
 
 
-void Glow_TextField_AutoScrollTimer::OnMessage(
+void Glow_TextArea_AutoScrollTimer::OnMessage(
 	const GlowTimerMessage& message)
 {
-	field_->HandleAutoScrollTimer_();
+	widget_->HandleAutoScrollTimer_();
 }
 
 
-static Glow_TextField_AutoScrollTimer* _autoScrollTimer =
-	new Glow_TextField_AutoScrollTimer;
+static Glow_TextArea_AutoScrollTimer* autoScrollTimer_ =
+	new Glow_TextArea_AutoScrollTimer;
 
 
 /*
 ===============================================================================
-	Methods of GlowTextFieldWidget
+	Methods of GlowTextAreaWidget
 ===============================================================================
 */
 
-void GlowTextFieldWidget::Init(
+void GlowTextAreaWidget::Init(
 	GlowWidgetRoot* root,
 	GlowWidget* parent,
-	const GlowTextFieldParams& params)
+	const GlowTextAreaParams& params)
 {
-	GLOW_DEBUGSCOPE("GlowTextFieldWidget::Init");
+	GLOW_DEBUGSCOPE("GlowTextAreaWidget::Init");
 	
 	GlowWidget::Init(root, parent, params);
 	style_ = params.style;
@@ -260,23 +235,26 @@ void GlowTextFieldWidget::Init(
 	blink_ = true;
 	toggleAutoScroll_ = false;
 	blinkTask_.Init(this);
+	wrapping_ = wrapping;
+	hScrollBar_ = 0;    // TODO
+	vScrollBar_ = 0;    // TODO
 	
 	RegisterMouseEvents();
 	RegisterKeyboardEvents();
 }
 
 
-GlowTextFieldWidget::~GlowTextFieldWidget()
+GlowTextAreaWidget::~GlowTextAreaWidget()
 {
-	GLOW_DEBUGSCOPE("GlowTextFieldWidget::~GlowTextFieldWidget");
+	GLOW_DEBUGSCOPE("GlowTextAreaWidget::~GlowTextAreaWidget");
 	
-	_autoScrollTimer->ForceRemove(this);
+	autoScrollTimer_->ForceRemove(this);
 }
 
 
-void GlowTextFieldWidget::OnWidgetPaint()
+void GlowTextAreaWidget::OnWidgetPaint()
 {
-	GLOW_DEBUGSCOPE("GlowTextFieldWidget::OnWidgetPaint");
+	GLOW_DEBUGSCOPE("GlowTextAreaWidget::OnWidgetPaint");
 	
 	// Backing
 	if (!IsActive())
@@ -468,8 +446,8 @@ void GlowTextFieldWidget::OnWidgetPaint()
 	if (toggleAutoScroll_)
 	{
 		toggleAutoScroll_ = false;
-		_autoScrollTimer->SetTextField(this);
-		_autoScrollTimerID = Glow::RegisterTimer(autoScrollInterval_, _autoScrollTimer);
+		autoScrollTimer_->SetTextField(this);
+		autoScrollTimerID_ = Glow::RegisterTimer(autoScrollInterval_, autoScrollTimer_);
 	}
 }
 

@@ -164,14 +164,14 @@ inline void GlowTextData::SetSelection(
 	if (start > end)
 	{
 		GLOW_ASSERT(end >= 0);
-		GLOW_ASSERT(start <= int(size()));
+		GLOW_ASSERT(start <= int(str_.size()));
 		selStart_ = end;
 		selEnd_ = start;
 	}
 	else
 	{
 		GLOW_ASSERT(start >= 0);
-		GLOW_ASSERT(end <= int(size()));
+		GLOW_ASSERT(end <= int(str_.size()));
 		selStart_ = start;
 		selEnd_ = end;
 	}
@@ -182,7 +182,7 @@ inline void GlowTextData::SetSelection(
 	int pos)
 {
 	GLOW_ASSERT(pos >= 0);
-	GLOW_ASSERT(pos <= int(size()));
+	GLOW_ASSERT(pos <= int(str_.size()));
 	selStart_ = pos;
 	selEnd_ = pos;
 }

@@ -68,7 +68,7 @@ GLOW_NAMESPACE_BEGIN
 
 template <class T>
 TGlowImage<T>::TGlowImage(
-	const GlowImage<T>& orig)
+	const TGlowImage<T>& orig)
 {
 	width_ = orig.width_;
 	height_ = orig.height_;

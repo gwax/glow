@@ -275,15 +275,15 @@ void GlowLabelWidget::OnWidgetPaint()
 			}
 			
 			// Set alignment raster position
-			int hPos = (alignment == alignLeft) ? hIndent_ :
-				((alignment == alignRight) ? Width()-hIndent_ : Width()/2);
+			int hPos = (alignment_ == alignLeft) ? hIndent_ :
+				((alignment_ == alignRight) ? Width()-hIndent_ : Width()/2);
 			NormalizeCoordinates(hPos, vPos, x, y);
 			::glRasterPos2f(x, y);
 			
 			// Now we need to align the text (if center or right).
 			// This means we need to subtract the length of the line if
 			// aligned right, or half the length if aligned center
-			if (alignment != alignLeft)
+			if (alignment_ != alignLeft)
 			{
 				// First, find the length of the line.
 				int thisLineWidth = 0;
@@ -294,7 +294,7 @@ void GlowLabelWidget::OnWidgetPaint()
 				}
 				
 				// Find delta
-				x = float((alignment == alignRight) ?
+				x = float((alignment_ == alignRight) ?
 					thisLineWidth : thisLineWidth/2) / float(Width()/2);
 				
 				// Offset

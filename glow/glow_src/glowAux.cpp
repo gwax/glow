@@ -326,8 +326,8 @@ void GlowColorImage::Scale(
 		::glPixelStorei(GL_PACK_ROW_LENGTH, 0);
 		::glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 		::glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-		::gluScaleImage(GL_RGBA, Width(), Height(), GL_UNSIGNED_BYTE, data_,
-			width, height, GL_UNSIGNED_BYTE, ndata);
+		::gluScaleImage(GL_RGBA, Width(), Height(), GL_UNSIGNED_BYTE,
+			RawArray(), width, height, GL_UNSIGNED_BYTE, ndata);
 		::glPixelStorei(GL_PACK_ALIGNMENT, save1);
 		::glPixelStorei(GL_PACK_ROW_LENGTH, save2);
 		::glPixelStorei(GL_UNPACK_ALIGNMENT, save3);

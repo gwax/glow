@@ -429,7 +429,7 @@ inline void Glow::SetAutoQuitting(
 
 inline GlowComponent::GlowComponent()
 {
-	_initializeState = -1;
+	initializeState_ = -1;
 	parent_ = 0;
 }
 
@@ -437,7 +437,7 @@ inline GlowComponent::GlowComponent()
 inline GlowComponent::GlowComponent(
 	GlowComponent* parent)
 {
-	_initializeState = -1;
+	initializeState_ = -1;
 	Init(parent);
 }
 

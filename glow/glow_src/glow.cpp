@@ -1237,7 +1237,7 @@ void GlowComponent::Init(
 			activeState_ = 2;
 		}
 	}
-	_initializeState = 1;
+	initializeState_ = 1;
 }
 
 
@@ -1275,7 +1275,7 @@ void GlowComponent::Close()
 		Glow::closeList_.insert(
 			GLOW_STD::pair<GlowComponent* const, bool>(this, true));
 	}
-	_initializeState = 0;
+	initializeState_ = 0;
 }
 
 

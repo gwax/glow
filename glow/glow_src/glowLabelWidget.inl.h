@@ -164,7 +164,7 @@ inline void GlowLabelWidget::SetVIndent(
 }
 
 
-inline Alignment GlowLabelWidget::GetAlignment() const
+inline GlowLabelWidget::Alignment GlowLabelWidget::GetAlignment() const
 {
 	return alignment_;
 }

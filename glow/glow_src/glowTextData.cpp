@@ -77,7 +77,7 @@ int GlowTextData::LineNumOf(
 	int pos) const
 {
 	GLOW_ASSERT(pos >= 0);
-	GLOW_ASSERT(pos < int(size()));
+	GLOW_ASSERT(pos < int(str_.size()));
 	
 	int b = 0;
 	int e = lineBreaks_.size();
@@ -116,14 +116,14 @@ void GlowTextData::RecalcLineBreaks(
 	int pos = lineBreaks_.back();
 	const char* dat = str_.data();
 	
-	while (pos < int(size()))
+	while (pos < int(str_.size()))
 	{
 		char ch = dat[pos];
 		
 		// Check for EOL character
 		if (ch == '\r')
 		{
-			if (pos+1 < int(size()) && dat[pos+1] == '\n')
+			if (pos+1 < int(str_.size()) && dat[pos+1] == '\n')
 			{
 				lineBreaks_.push_back(pos+2);
 				pos += 2;
@@ -321,9 +321,9 @@ int GlowTextData::PixelPosOf(
 
 void GlowTextData::RevalidateSelection()
 {
-	if (selEnd_ > int(size()))
+	if (selEnd_ > int(str_.size()))
 	{
-		selEnd_ = size();
+		selEnd_ = str_.size();
 		if (selStart_ > selEnd_)
 		{
 			selStart_ = selEnd_;

@@ -624,8 +624,8 @@ void GlowViewManipulator::DrawArc_(
 {
 	if (level <= 0)
 	{
-		glVertex2fv(start);
-		glVertex2fv(end);
+		glVertex2fv(start.Array());
+		glVertex2fv(end.Array());
 	}
 	else
 	{

@@ -399,8 +399,8 @@ class GlowColorImage :
 		
 		// Scale
 		void Scale(
-			int nWidth,
-			int nHeight);
+			unsigned int nWidth,
+			unsigned int nHeight);
 };
 
 

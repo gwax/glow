@@ -154,26 +154,26 @@ inline void GlowTextFieldWidget::SetAutoScrollInterval(
 
 inline const char* GlowTextFieldWidget::GetTextChars() const
 {
-	return data_.c_str();
+	return data_.String().c_str();
 }
 
 
 inline int GlowTextFieldWidget::GetTextLength() const
 {
-	return data_.length();
+	return data_.String().length();
 }
 
 
 inline const GLOW_STD::string& GlowTextFieldWidget::GetTextString() const
 {
-	return data_;
+	return data_.String();
 }
 
 
 inline void GlowTextFieldWidget::SetText(
 	const char* str)
 {
-	data_.assign(str);
+	data_.String().assign(str);
 	data_.RevalidateSelection();
 	Refresh();
 }
@@ -182,7 +182,7 @@ inline void GlowTextFieldWidget::SetText(
 inline void GlowTextFieldWidget::SetText(
 	const GLOW_STD::string& str)
 {
-	data_.assign(str);
+	data_.String().assign(str);
 	data_.RevalidateSelection();
 	Refresh();
 }
@@ -517,7 +517,7 @@ inline void GlowHiddenTextFieldWidget::SetText(
 	const char* str)
 {
 	hiddenData_.assign(str);
-	data_.assign(hiddenData_.size(), hideCharacter_);
+	data_.String().assign(hiddenData_.size(), hideCharacter_);
 	data_.RevalidateSelection();
 	Refresh();
 }
@@ -527,7 +527,7 @@ inline void GlowHiddenTextFieldWidget::SetText(
 	const GLOW_STD::string& str)
 {
 	hiddenData_.assign(str);
-	data_.assign(hiddenData_.size(), hideCharacter_);
+	data_.String().assign(hiddenData_.size(), hideCharacter_);
 	data_.RevalidateSelection();
 	Refresh();
 }
