@@ -87,7 +87,7 @@ This is necessary to activate certain features of ANSI C++. GLOW will not compil
 <tt>-no_auto_include</tt>
 </p>
 <blockquote>
-This is not strictly necessary for successful compilation, but you should use it to prevent linker warnings about duplicate definitions of <tt>Sender_Base</tt> and <tt>Receiver_Base</tt>. The flag prevents the compiler from attempting to automatically include <tt>glowMessage.cpp</tt> whenever <tt>glowMessage.h</tt> is included. (MIPSPro appears to do this as a hack to simulate the effect of the unimplemented C++ <tt>export</tt> keyword. I find it a distasteful hack and a nuisance.)
+This is not strictly necessary for successful compilation, but you should use it to prevent linker warnings about duplicate definitions of <tt>Sender_Base</tt> and <tt>Receiver_Base</tt>. The flag prevents the compiler from attempting to automatically include <tt>glowSenderReceiver.cpp</tt> whenever <tt>glowSenderReceiver.h</tt> is included. (MIPSPro appears to do this as a hack to simulate the effect of the unimplemented C++ <tt>export</tt> keyword. I find it a distasteful hack and a nuisance.)
 </blockquote>
 
 <p>
@@ -201,7 +201,7 @@ Finally, if you're compiling in debug mode, you may want to change the debug inf
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 10 April 2000
+Last updated 11 April 2000
 </address>
 
 

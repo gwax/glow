@@ -70,7 +70,7 @@ GLOW programs that use the QuickPalette interface should use this API to create 
 <p>
 <b>General settings constant</b>
 <br>
-Use this constant to specify using the parent's setting for margins or inset
+Use this constant to specify using the parent's setting for spacing or margins.
 </p>
 
 <blockquote>
@@ -219,7 +219,7 @@ Adds a labeled slider widget to the panel. <tt>min</tt>, <tt>max</tt> and <tt>in
 </blockquote>
 
 <p>
-<tt><a href="GlowScrollBarWidget.html">GlowScrollBarWidget</a>* <b>AddSlider</b>(long min, long max, long span, long initialTop, <a href="GlowScrollBarReceiver.html">GlowScrollBarReceiver</a>* receiver = 0)</tt>
+<tt><a href="GlowScrollBarWidget.html">GlowScrollBarWidget</a>* <b>AddScrollBar</b>(long min, long max, long span, long initialTop, <a href="GlowScrollBarReceiver.html">GlowScrollBarReceiver</a>* receiver = 0)</tt>
 </p>
 <blockquote>
 Adds a scroll bar widget to the panel. <tt>min</tt>, <tt>max</tt>, <tt>span</tt> and <tt>initialTop</tt> specify the range, indicator span and initial value for the scroll bar. <tt>receiver</tt> provides a receiver to receive events from the new scroll bar, or pass the null pointer if you do not want to bind a receiver.
@@ -353,7 +353,7 @@ Sets the current vertical margin setting in pixels.
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 10 April 2000
+Last updated 11 April 2000
 </address>
 
 
