@@ -826,21 +826,21 @@ These methods are called as soon as a widget-level event occurs. The default met
 <tt>virtual void <b>OnDragged</b>(<a href="Glow.html">Glow</a>::MouseButton mouseButton, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 <blockquote>
-Called when a scroll bar indicator is being dragged. <tt>mouseButton</tt> is the mouse button pressed (see constants in <a href="Glow.html>Glow</a>) and <tt>modifiers</tt> gives the keyboard modifiers that were down when the mouse button was pressed. The default method sends messages to the attached <a href="GlowScrollBarReceiver.html">GlowScrollBarReceiver</a>s.
+Called when a scroll bar indicator is being dragged. <tt>mouseButton</tt> is the mouse button pressed (see constants in <a href="Glow.html">Glow</a>) and <tt>modifiers</tt> gives the keyboard modifiers that were down when the mouse button was pressed. The default method sends messages to the attached <a href="GlowScrollBarReceiver.html">GlowScrollBarReceiver</a>s.
 </blockquote>
 
 <p>
 <tt>virtual void <b>OnPart</b>(GlowScrollBarWidget::Part part, <a href="Glow.html">Glow</a>::MouseButton mouseButton, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 <blockquote>
-Called when a scroll bar button or page area is hit or depressed. <tt>part</tt> gives the part in question, <tt>mouseButton</tt> is the mouse button pressed (see constants in <a href="Glow.html>Glow</a>) and <tt>modifiers</tt> gives the keyboard modifiers that were down when the mouse button was pressed. The default method changes the value of the scroll bar as defined by <tt>GetArrowStep()</tt> and <tt>GetPageStep()</tt>, and then sends messages to the attached <a href="GlowScrollBarReceiver.html">GlowScrollBarReceiver</a>s.
+Called when a scroll bar button or page area is hit or depressed. <tt>part</tt> gives the part in question, <tt>mouseButton</tt> is the mouse button pressed (see constants in <a href="Glow.html">Glow</a>) and <tt>modifiers</tt> gives the keyboard modifiers that were down when the mouse button was pressed. The default method changes the value of the scroll bar as defined by <tt>GetArrowStep()</tt> and <tt>GetPageStep()</tt>, and then sends messages to the attached <a href="GlowScrollBarReceiver.html">GlowScrollBarReceiver</a>s.
 </blockquote>
 
 <p>
 <tt>virtual void <b>OnReleased</b>(GlowScrollBarWidget::Part part, <a href="Glow.html">Glow</a>::MouseButton mouseButton, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 <blockquote>
-Called when a scroll bar indicator is released. <tt>part</tt> gives the part that was released (which could be <tt>indicatorPart</tt>, or either of the button or page parts), <tt>mouseButton</tt> is the mouse button pressed (see constants in <a href="Glow.html>Glow</a>) and <tt>modifiers</tt> gives the keyboard modifiers that were down when the mouse button was pressed. The default method sends messages to the attached <a href="GlowScrollBarReceiver.html">GlowScrollBarReceiver</a>s.
+Called when a scroll bar indicator is released. <tt>part</tt> gives the part that was released (which could be <tt>indicatorPart</tt>, or either of the button or page parts), <tt>mouseButton</tt> is the mouse button pressed (see constants in <a href="Glow.html">Glow</a>) and <tt>modifiers</tt> gives the keyboard modifiers that were down when the mouse button was pressed. The default method sends messages to the attached <a href="GlowScrollBarReceiver.html">GlowScrollBarReceiver</a>s.
 </blockquote>
 
 </blockquote>
