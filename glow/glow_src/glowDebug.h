@@ -137,14 +137,14 @@ class Glow_DebugScope_
 			const char* name)
 			throw()
 		{
-			_data = name;
-			_next = _top;
-			_top = this;
+			data_ = name;
+			next_ = top_;
+			top_ = this;
 		}
 		inline ~Glow_DebugScope_()
 			throw()
 		{
-			_top = _next;
+			top_ = next_;
 		}
 		
 		static void PrintScopeTrace()
@@ -152,12 +152,12 @@ class Glow_DebugScope_
 	
 	private:
 	
-		const char* _data;
-		Glow_DebugScope_* _next;
+		const char* data_;
+		Glow_DebugScope_* next_;
 	
 	private:
 	
-		static Glow_DebugScope_* _top;
+		static Glow_DebugScope_* top_;
 };
 
 

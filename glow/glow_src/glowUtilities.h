@@ -100,7 +100,7 @@ class GlowWindowSetting
 	
 	private:
 	
-		int _saveWindowNum;
+		int saveWindowNum_;
 };
 
 
@@ -150,7 +150,7 @@ class GlowDeferredTask :
 	
 	private:
 	
-		int _curTimerID;
+		int curTimerID_;
 };
 
 
@@ -208,8 +208,8 @@ class GlowFixedSizeWindow :
 	
 	private:
 	
-		int _canonicalWidth;
-		int _canonicalHeight;
+		int canonicalWidth_;
+		int canonicalHeight_;
 	
 	protected:
 	

@@ -281,7 +281,7 @@ class Vec3f
 	
 	private:
 	
-		GLfloat _vals[3];
+		GLfloat vals_[3];
 };
 
 
@@ -475,7 +475,7 @@ class Mat4f
 	
 	protected:
 	
-		GLfloat _vals[4][4];
+		GLfloat vals_[4][4];
 	
 	private:
 	
@@ -704,7 +704,7 @@ class Quatf
 	
 	private:
 	
-		GLfloat _vals[4];
+		GLfloat vals_[4];
 };
 
 

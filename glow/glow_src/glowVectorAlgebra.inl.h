@@ -100,7 +100,7 @@ inline Vec3f::Vec3f(
 inline Vec3f::Vec3f(
 	const Vec3f& v)
 {
-	Set(v._vals[0], v._vals[1], v._vals[2]);
+	Set(v.vals_[0], v.vals_[1], v.vals_[2]);
 }
 
 
@@ -113,27 +113,27 @@ inline void Vec3f::Set(
 	GLfloat yval,
 	GLfloat zval)
 {
-	_vals[0]=xval;
-	_vals[1]=yval;
-	_vals[2]=zval;
+	vals_[0]=xval;
+	vals_[1]=yval;
+	vals_[2]=zval;
 }
 
 
 inline void Vec3f::Set(
 	GLfloat val)
 {
-	_vals[0]=val;
-	_vals[1]=val;
-	_vals[2]=val;
+	vals_[0]=val;
+	vals_[1]=val;
+	vals_[2]=val;
 }
 
 
 inline void Vec3f::Set(
 	const GLfloat* vals)
 {
-	_vals[0]=vals[0];
-	_vals[1]=vals[1];
-	_vals[2]=vals[2];
+	vals_[0]=vals[0];
+	vals_[1]=vals[1];
+	vals_[2]=vals[2];
 }
 
 
@@ -143,16 +143,16 @@ inline void Vec3f::Set(
 
 inline void Vec3f::SetZero()
 {
-	_vals[0] = GLfloat(0);
-	_vals[1] = GLfloat(0);
-	_vals[2] = GLfloat(0);
+	vals_[0] = GLfloat(0);
+	vals_[1] = GLfloat(0);
+	vals_[2] = GLfloat(0);
 }
 
 
 inline bool Vec3f::IsZero() const
 {
-	return (_vals[0] == GLfloat(0) && _vals[1] == GLfloat(0) &&
-		_vals[2] == GLfloat(0));
+	return (vals_[0] == GLfloat(0) && vals_[1] == GLfloat(0) &&
+		vals_[2] == GLfloat(0));
 }
 
 
@@ -162,17 +162,17 @@ inline bool Vec3f::IsZero() const
 
 inline GLfloat Vec3f::GetX() const
 {
-	return _vals[0];
+	return vals_[0];
 }
 
 inline GLfloat Vec3f::GetY() const
 {
-	return _vals[1];
+	return vals_[1];
 }
 
 inline GLfloat Vec3f::GetZ() const
 {
-	return _vals[2];
+	return vals_[2];
 }
 
 
@@ -183,19 +183,19 @@ inline GLfloat Vec3f::GetZ() const
 inline void Vec3f::SetX(
 	GLfloat xval)
 {
-	_vals[0]=xval;
+	vals_[0]=xval;
 }
 
 inline void Vec3f::SetY(
 	GLfloat yval)
 {
-	_vals[1]=yval;
+	vals_[1]=yval;
 }
 
 inline void Vec3f::SetZ(
 	GLfloat zval)
 {
-	_vals[2]=zval;
+	vals_[2]=zval;
 }
 
 
@@ -205,32 +205,32 @@ inline void Vec3f::SetZ(
 
 inline GLfloat& Vec3f::X()
 {
-	return _vals[0];
+	return vals_[0];
 }
 
 inline GLfloat& Vec3f::Y()
 {
-	return _vals[1];
+	return vals_[1];
 }
 
 inline GLfloat& Vec3f::Z()
 {
-	return _vals[2];
+	return vals_[2];
 }
 
 inline const GLfloat& Vec3f::X() const
 {
-	return _vals[0];
+	return vals_[0];
 }
 
 inline const GLfloat& Vec3f::Y() const
 {
-	return _vals[1];
+	return vals_[1];
 }
 
 inline const GLfloat& Vec3f::Z() const
 {
-	return _vals[2];
+	return vals_[2];
 }
 
 
@@ -242,7 +242,7 @@ inline GLfloat Vec3f::GetVal(
 	GLOW_CSTD::ptrdiff_t i) const
 {
 	GLOW_DEBUG(i < 0 || i >= 3, "index out of bounds in Vec3f::GetVal");
-	return _vals[i];
+	return vals_[i];
 }
 
 inline void Vec3f::SetVal(
@@ -250,7 +250,7 @@ inline void Vec3f::SetVal(
 	GLfloat val)
 {
 	GLOW_DEBUG(i < 0 || i >= 3, "index out of bounds in Vec3f::SetVal");
-	_vals[i] = val;
+	vals_[i] = val;
 }
 
 
@@ -262,14 +262,14 @@ inline GLfloat& Vec3f::operator[](
 	GLOW_CSTD::ptrdiff_t i)
 {
 	GLOW_DEBUG(i < 0 || i >= 3, "index out of bounds in Vec3f::operator[]");
-	return _vals[i];
+	return vals_[i];
 }
 
 inline GLfloat Vec3f::operator[](
 	GLOW_CSTD::ptrdiff_t i) const
 {
 	GLOW_DEBUG(i < 0 || i >= 3, "index out of bounds in Vec3f::operator[]");
-	return _vals[i];
+	return vals_[i];
 }
 
 
@@ -279,7 +279,7 @@ inline GLfloat Vec3f::operator[](
 
 inline Vec3f::operator const GLfloat*() const
 {
-	return _vals;
+	return vals_;
 }
 
 
@@ -290,9 +290,9 @@ inline Vec3f::operator const GLfloat*() const
 inline Vec3f& Vec3f::operator=(
 	const Vec3f& v)
 {
-	_vals[0] = v._vals[0];
-	_vals[1] = v._vals[1];
-	_vals[2] = v._vals[2];
+	vals_[0] = v.vals_[0];
+	vals_[1] = v.vals_[1];
+	vals_[2] = v.vals_[2];
 	return *this;
 }
 
@@ -300,9 +300,9 @@ inline Vec3f& Vec3f::operator=(
 inline Vec3f& Vec3f::operator=(
 	const GLfloat* array)
 {
-	_vals[0] = array[0];
-	_vals[1] = array[1];
-	_vals[2] = array[2];
+	vals_[0] = array[0];
+	vals_[1] = array[1];
+	vals_[2] = array[2];
 	return *this;
 }
 
@@ -314,16 +314,16 @@ inline Vec3f& Vec3f::operator=(
 inline bool Vec3f::operator==(
 	const Vec3f& v) const
 {
-	return _vals[0] == v._vals[0] && _vals[1] == v._vals[1] &&
-		_vals[2] == v._vals[2];
+	return vals_[0] == v.vals_[0] && vals_[1] == v.vals_[1] &&
+		vals_[2] == v.vals_[2];
 }
 
 
 inline bool Vec3f::operator!=(
 	const Vec3f& v) const
 {
-	return _vals[0] != v._vals[0] || _vals[1] != v._vals[1] ||
-		_vals[2] != v._vals[2];
+	return vals_[0] != v.vals_[0] || vals_[1] != v.vals_[1] ||
+		vals_[2] != v.vals_[2];
 }
 
 
@@ -333,15 +333,15 @@ inline bool Vec3f::operator!=(
 
 inline const Vec3f Vec3f::operator-() const
 {
-	return Vec3f(-_vals[0], -_vals[1], -_vals[2]);
+	return Vec3f(-vals_[0], -vals_[1], -vals_[2]);
 }
 
 
 inline void Vec3f::Negate()
 {
-	_vals[0] = -_vals[0];
-	_vals[1] = -_vals[1];
-	_vals[2] = -_vals[2];
+	vals_[0] = -vals_[0];
+	vals_[1] = -vals_[1];
+	vals_[2] = -vals_[2];
 }
 
 
@@ -352,7 +352,7 @@ inline void Vec3f::Negate()
 inline const Vec3f Vec3f::operator*(
 	GLfloat op2) const
 {
-	return Vec3f(_vals[0]*op2, _vals[1]*op2, _vals[2]*op2);
+	return Vec3f(vals_[0]*op2, vals_[1]*op2, vals_[2]*op2);
 }
 
 
@@ -367,16 +367,16 @@ inline const Vec3f operator*(
 inline const Vec3f Vec3f::operator/(
 	GLfloat op2) const
 {
-	return Vec3f(_vals[0]/op2, _vals[1]/op2, _vals[2]/op2);
+	return Vec3f(vals_[0]/op2, vals_[1]/op2, vals_[2]/op2);
 }
 
 
 inline Vec3f& Vec3f::operator*=(
 	GLfloat op2)
 {
-	_vals[0] *= op2;
-	_vals[1] *= op2;
-	_vals[2] *= op2;
+	vals_[0] *= op2;
+	vals_[1] *= op2;
+	vals_[2] *= op2;
 	
 	return *this;
 }
@@ -385,9 +385,9 @@ inline Vec3f& Vec3f::operator*=(
 inline Vec3f& Vec3f::operator/=(
 	GLfloat op2)
 {
-	_vals[0] /= op2;
-	_vals[1] /= op2;
-	_vals[2] /= op2;
+	vals_[0] /= op2;
+	vals_[1] /= op2;
+	vals_[2] /= op2;
 	
 	return *this;
 }
@@ -401,9 +401,9 @@ inline const Vec3f Vec3f::operator+(
 	const Vec3f& op2) const
 {
 	return Vec3f(
-		_vals[0]+op2._vals[0],
-		_vals[1]+op2._vals[1],
-		_vals[2]+op2._vals[2]);
+		vals_[0]+op2.vals_[0],
+		vals_[1]+op2.vals_[1],
+		vals_[2]+op2.vals_[2]);
 }
 
 
@@ -411,18 +411,18 @@ inline const Vec3f Vec3f::operator-(
 	const Vec3f& op2) const
 {
 	return Vec3f(
-		_vals[0]-op2._vals[0],
-		_vals[1]-op2._vals[1],
-		_vals[2]-op2._vals[2]);
+		vals_[0]-op2.vals_[0],
+		vals_[1]-op2.vals_[1],
+		vals_[2]-op2.vals_[2]);
 }
 
 
 inline GLfloat Vec3f::operator*(
 	const Vec3f& op2) const
 {
-	return _vals[0]*op2._vals[0] +
-		_vals[1]*op2._vals[1] +
-		_vals[2]*op2._vals[2];
+	return vals_[0]*op2.vals_[0] +
+		vals_[1]*op2.vals_[1] +
+		vals_[2]*op2.vals_[2];
 }
 
 
@@ -430,18 +430,18 @@ inline const Vec3f Vec3f::operator%(
 	const Vec3f& op2) const
 {
 	return Vec3f(
-		_vals[1]*op2._vals[2]-_vals[2]*op2._vals[1],
-		_vals[2]*op2._vals[0]-_vals[0]*op2._vals[2],
-		_vals[0]*op2._vals[1]-_vals[1]*op2._vals[0]);
+		vals_[1]*op2.vals_[2]-vals_[2]*op2.vals_[1],
+		vals_[2]*op2.vals_[0]-vals_[0]*op2.vals_[2],
+		vals_[0]*op2.vals_[1]-vals_[1]*op2.vals_[0]);
 }
 
 
 inline Vec3f& Vec3f::operator+=(
 	const Vec3f& op2)
 {
-	_vals[0] += op2._vals[0];
-	_vals[1] += op2._vals[1];
-	_vals[2] += op2._vals[2];
+	vals_[0] += op2.vals_[0];
+	vals_[1] += op2.vals_[1];
+	vals_[2] += op2.vals_[2];
 	return *this;
 }
 
@@ -449,9 +449,9 @@ inline Vec3f& Vec3f::operator+=(
 inline Vec3f& Vec3f::operator-=(
 	const Vec3f& op2)
 {
-	_vals[0] -= op2._vals[0];
-	_vals[1] -= op2._vals[1];
-	_vals[2] -= op2._vals[2];
+	vals_[0] -= op2.vals_[0];
+	vals_[1] -= op2.vals_[1];
+	vals_[2] -= op2.vals_[2];
 	return *this;
 }
 
@@ -459,9 +459,9 @@ inline Vec3f& Vec3f::operator-=(
 inline Vec3f& Vec3f::operator%=(
 	const Vec3f& op2)
 {
-	Set(_vals[1]*op2._vals[2]-_vals[2]*op2._vals[1],
-		_vals[2]*op2._vals[0]-_vals[0]*op2._vals[2],
-		_vals[0]*op2._vals[1]-_vals[1]*op2._vals[0]);
+	Set(vals_[1]*op2.vals_[2]-vals_[2]*op2.vals_[1],
+		vals_[2]*op2.vals_[0]-vals_[0]*op2.vals_[2],
+		vals_[0]*op2.vals_[1]-vals_[1]*op2.vals_[0]);
 	return *this;
 }
 
@@ -472,33 +472,33 @@ inline Vec3f& Vec3f::operator%=(
 
 inline GLfloat Vec3f::Norm() const
 {
-	return GLOW_CSTD::sqrt(_vals[0]*_vals[0]+_vals[1]*_vals[1]+_vals[2]*_vals[2]);
+	return GLOW_CSTD::sqrt(vals_[0]*vals_[0]+vals_[1]*vals_[1]+vals_[2]*vals_[2]);
 }
 
 
 inline GLfloat Vec3f::NormSquared() const
 {
-	return GLfloat(_vals[0]*_vals[0]+_vals[1]*_vals[1]+_vals[2]*_vals[2]);
+	return GLfloat(vals_[0]*vals_[0]+vals_[1]*vals_[1]+vals_[2]*vals_[2]);
 }
 
 
 inline const Vec3f Vec3f::Normalized() const
 {
-	GLfloat norm = GLOW_CSTD::sqrt(_vals[0]*_vals[0]+_vals[1]*_vals[1]+_vals[2]*_vals[2]);
+	GLfloat norm = GLOW_CSTD::sqrt(vals_[0]*vals_[0]+vals_[1]*vals_[1]+vals_[2]*vals_[2]);
 	return (norm == 0.0) ?
 		Vec3f(0, 0, 0) :
-		Vec3f(_vals[0]/norm, _vals[1]/norm, _vals[2]/norm);
+		Vec3f(vals_[0]/norm, vals_[1]/norm, vals_[2]/norm);
 }
 
 
 inline void Vec3f::Normalize()
 {
-	GLfloat norm = GLOW_CSTD::sqrt(_vals[0]*_vals[0]+_vals[1]*_vals[1]+_vals[2]*_vals[2]);
+	GLfloat norm = GLOW_CSTD::sqrt(vals_[0]*vals_[0]+vals_[1]*vals_[1]+vals_[2]*vals_[2]);
 	if (norm != 0)
 	{
-		_vals[0]/=norm;
-		_vals[1]/=norm;
-		_vals[2]/=norm;
+		vals_[0]/=norm;
+		vals_[1]/=norm;
+		vals_[2]/=norm;
 	}
 }
 
@@ -512,18 +512,18 @@ inline void Vec3f::Normalize()
 inline void Vec3f::WriteTo(
 	GLOW_STD::ostream& stream) const
 {
-	stream.write(reinterpret_cast<const char*>(&_vals[0]), sizeof(GLfloat));
-	stream.write(reinterpret_cast<const char*>(&_vals[1]), sizeof(GLfloat));
-	stream.write(reinterpret_cast<const char*>(&_vals[2]), sizeof(GLfloat));
+	stream.write(reinterpret_cast<const char*>(&vals_[0]), sizeof(GLfloat));
+	stream.write(reinterpret_cast<const char*>(&vals_[1]), sizeof(GLfloat));
+	stream.write(reinterpret_cast<const char*>(&vals_[2]), sizeof(GLfloat));
 }
 
 
 inline void Vec3f::ReadFrom(
 	GLOW_STD::istream& stream)
 {
-	stream.read(reinterpret_cast<char*>(&_vals[0]), sizeof(GLfloat));
-	stream.read(reinterpret_cast<char*>(&_vals[1]), sizeof(GLfloat));
-	stream.read(reinterpret_cast<char*>(&_vals[2]), sizeof(GLfloat));
+	stream.read(reinterpret_cast<char*>(&vals_[0]), sizeof(GLfloat));
+	stream.read(reinterpret_cast<char*>(&vals_[1]), sizeof(GLfloat));
+	stream.read(reinterpret_cast<char*>(&vals_[2]), sizeof(GLfloat));
 }
 
 #endif
@@ -570,29 +570,29 @@ inline Mat4f::Mat4f(
 	GLfloat i, GLfloat j, GLfloat k, GLfloat l,
 	GLfloat m, GLfloat n, GLfloat o, GLfloat p)
 {
-	_vals[0][0] = a;
-	_vals[1][0] = b;
-	_vals[2][0] = c;
-	_vals[3][0] = d;
-	_vals[0][1] = e;
-	_vals[1][1] = f;
-	_vals[2][1] = g;
-	_vals[3][1] = h;
-	_vals[0][2] = i;
-	_vals[1][2] = j;
-	_vals[2][2] = k;
-	_vals[3][2] = l;
-	_vals[0][3] = m;
-	_vals[1][3] = n;
-	_vals[2][3] = o;
-	_vals[3][3] = p;
+	vals_[0][0] = a;
+	vals_[1][0] = b;
+	vals_[2][0] = c;
+	vals_[3][0] = d;
+	vals_[0][1] = e;
+	vals_[1][1] = f;
+	vals_[2][1] = g;
+	vals_[3][1] = h;
+	vals_[0][2] = i;
+	vals_[1][2] = j;
+	vals_[2][2] = k;
+	vals_[3][2] = l;
+	vals_[0][3] = m;
+	vals_[1][3] = n;
+	vals_[2][3] = o;
+	vals_[3][3] = p;
 }
 
 
 inline Mat4f::Mat4f(
 	const GLfloat* array)
 {
-	GLfloat* ptr = (GLfloat*)_vals;
+	GLfloat* ptr = (GLfloat*)vals_;
 	for (short i=0; i<16; ++i)
 	{
 		ptr[i] = array[i];
@@ -603,8 +603,8 @@ inline Mat4f::Mat4f(
 inline Mat4f::Mat4f(
 	const Mat4f& m)
 {
-	GLfloat* ptr = (GLfloat*)_vals;
-	const GLfloat* ptr2 = (GLfloat*)(m._vals);
+	GLfloat* ptr = (GLfloat*)vals_;
+	const GLfloat* ptr2 = (GLfloat*)(m.vals_);
 	for (short i=0; i<16; ++i)
 	{
 		ptr[i] = ptr2[i];
@@ -619,8 +619,8 @@ inline Mat4f::Mat4f(
 inline Mat4f& Mat4f::operator=(
 	const Mat4f& m)
 {
-	GLfloat* ptr = (GLfloat*)_vals;
-	const GLfloat* ptr2 = (GLfloat*)(m._vals);
+	GLfloat* ptr = (GLfloat*)vals_;
+	const GLfloat* ptr2 = (GLfloat*)(m.vals_);
 	for (short i=0; i<16; ++i)
 	{
 		ptr[i] = ptr2[i];
@@ -632,7 +632,7 @@ inline Mat4f& Mat4f::operator=(
 inline Mat4f& Mat4f::operator=(
 	const GLfloat* array)
 {
-	GLfloat* ptr = (GLfloat*)_vals;
+	GLfloat* ptr = (GLfloat*)vals_;
 	for (short i=0; i<16; ++i)
 	{
 		ptr[i] = array[i];
@@ -647,7 +647,7 @@ inline Mat4f& Mat4f::operator=(
 
 inline Mat4f::operator const GLfloat*() const
 {
-	return (const GLfloat*)_vals;
+	return (const GLfloat*)vals_;
 }
 
 
@@ -661,22 +661,22 @@ inline void Mat4f::Set(
 	GLfloat i, GLfloat j, GLfloat k, GLfloat l,
 	GLfloat m, GLfloat n, GLfloat o, GLfloat p)
 {
-	_vals[0][0] = a;
-	_vals[1][0] = b;
-	_vals[2][0] = c;
-	_vals[3][0] = d;
-	_vals[0][1] = e;
-	_vals[1][1] = f;
-	_vals[2][1] = g;
-	_vals[3][1] = h;
-	_vals[0][2] = i;
-	_vals[1][2] = j;
-	_vals[2][2] = k;
-	_vals[3][2] = l;
-	_vals[0][3] = m;
-	_vals[1][3] = n;
-	_vals[2][3] = o;
-	_vals[3][3] = p;
+	vals_[0][0] = a;
+	vals_[1][0] = b;
+	vals_[2][0] = c;
+	vals_[3][0] = d;
+	vals_[0][1] = e;
+	vals_[1][1] = f;
+	vals_[2][1] = g;
+	vals_[3][1] = h;
+	vals_[0][2] = i;
+	vals_[1][2] = j;
+	vals_[2][2] = k;
+	vals_[3][2] = l;
+	vals_[0][3] = m;
+	vals_[1][3] = n;
+	vals_[2][3] = o;
+	vals_[3][3] = p;
 }
 
 
@@ -689,7 +689,7 @@ inline void Mat4f::SetVal(
 	short col,
 	GLfloat val)
 {
-	_vals[col][row] = val;
+	vals_[col][row] = val;
 }
 
 
@@ -697,7 +697,7 @@ inline GLfloat Mat4f::GetVal(
 	short row,
 	short col) const
 {
-	return _vals[col][row];
+	return vals_[col][row];
 }
 
 
@@ -710,7 +710,7 @@ inline void Mat4f::SetIdentity()
 	for (short j=0; j<4; j++)
 	for (short i=0; i<4; i++)
 	{
-		_vals[i][j] = (i==j) ? 1 : 0;
+		vals_[i][j] = (i==j) ? 1 : 0;
 	}
 }
 
@@ -720,7 +720,7 @@ inline void Mat4f::SetZero()
 	for (short j=0; j<4; j++)
 	for (short i=0; i<4; i++)
 	{
-		_vals[i][j] = 0;
+		vals_[i][j] = 0;
 	}
 }
 
@@ -730,8 +730,8 @@ inline bool Mat4f::IsIdentity() const
 	for (short j=0; j<4; j++)
 	for (short i=0; i<4; i++)
 	{
-		if ((i != j && _vals[i][j] != 0) ||
-			(i == j && _vals[i][j] != GLfloat(1)))
+		if ((i != j && vals_[i][j] != 0) ||
+			(i == j && vals_[i][j] != GLfloat(1)))
 				return false;
 	}
 	return true;
@@ -743,7 +743,7 @@ inline bool Mat4f::IsZero() const
 	for (short j=0; j<4; j++)
 	for (short i=0; i<4; i++)
 	{
-		if (_vals[i][j] != 0)
+		if (vals_[i][j] != 0)
 			return false;
 	}
 	return true;
@@ -757,7 +757,7 @@ inline bool Mat4f::IsZero() const
 inline void Mat4f::GetGLMatrix(
 	GLfloat* mat) const
 {
-	const GLfloat* ptr = (GLfloat*)_vals;
+	const GLfloat* ptr = (GLfloat*)vals_;
 	for (short i=0; i<16; ++i)
 	{
 		mat[i] = ptr[i];
@@ -767,14 +767,14 @@ inline void Mat4f::GetGLMatrix(
 
 inline const GLfloat* Mat4f::GetGLMatrix() const
 {
-	return (const GLfloat*)_vals;
+	return (const GLfloat*)vals_;
 }
 
 
 inline void Mat4f::SetGLMatrix(
 	const GLfloat* mat)
 {
-	GLfloat* ptr = (GLfloat*)_vals;
+	GLfloat* ptr = (GLfloat*)vals_;
 	for (short i=0; i<16; ++i)
 	{
 		ptr[i] = mat[i];
@@ -821,9 +821,9 @@ inline void Mat4f::SetScale(
 
 inline void Mat4f::RemoveTranslation()
 {
-	_vals[3][0] = 0;
-	_vals[3][1] = 0;
-	_vals[3][2] = 0;
+	vals_[3][0] = 0;
+	vals_[3][1] = 0;
+	vals_[3][2] = 0;
 }
 
 
@@ -837,7 +837,7 @@ inline void Mat4f::_GJScaleRow(
 {
 	for (short i=0; i<4; i++)
 	{
-		_vals[i][row] *= scale;
+		vals_[i][row] *= scale;
 	}
 }
 
@@ -852,9 +852,9 @@ inline void Mat4f::_GJSwapRows(
 {
 	for (short i=0; i<4; i++)
 	{
-		GLfloat temp = _vals[i][row1];
-		_vals[i][row1] = _vals[i][row2];
-		_vals[i][row2] = temp;
+		GLfloat temp = vals_[i][row1];
+		vals_[i][row1] = vals_[i][row2];
+		vals_[i][row2] = temp;
 	}
 }
 
@@ -870,7 +870,7 @@ inline void Mat4f::_GJAddToRow(
 {
 	for (short i=0; i<4; i++)
 	{
-		_vals[i][rowToChange] += _vals[i][rowToAdd]*scale;
+		vals_[i][rowToChange] += vals_[i][rowToAdd]*scale;
 	}
 }
 
@@ -891,12 +891,12 @@ inline GLfloat Mat4f::_CofactorElem(
 		q[i] = (i<b) ? i : i+1;
 	}
 	
-	GLfloat ret = _vals[p[0]][q[0]] * _vals[p[1]][q[1]] * _vals[p[2]][q[2]] +
-	      _vals[p[1]][q[0]] * _vals[p[2]][q[1]] * _vals[p[0]][q[2]] +
-	      _vals[p[2]][q[0]] * _vals[p[0]][q[1]] * _vals[p[1]][q[2]] -
-	      _vals[p[2]][q[0]] * _vals[p[1]][q[1]] * _vals[p[0]][q[2]] -
-	      _vals[p[1]][q[0]] * _vals[p[0]][q[1]] * _vals[p[2]][q[2]] -
-	      _vals[p[0]][q[0]] * _vals[p[2]][q[1]] * _vals[p[1]][q[2]];
+	GLfloat ret = vals_[p[0]][q[0]] * vals_[p[1]][q[1]] * vals_[p[2]][q[2]] +
+	      vals_[p[1]][q[0]] * vals_[p[2]][q[1]] * vals_[p[0]][q[2]] +
+	      vals_[p[2]][q[0]] * vals_[p[0]][q[1]] * vals_[p[1]][q[2]] -
+	      vals_[p[2]][q[0]] * vals_[p[1]][q[1]] * vals_[p[0]][q[2]] -
+	      vals_[p[1]][q[0]] * vals_[p[0]][q[1]] * vals_[p[2]][q[2]] -
+	      vals_[p[0]][q[0]] * vals_[p[2]][q[1]] * vals_[p[1]][q[2]];
 	
 	return ((((a+b)%2) != 0) ? -ret : ret);
 }
@@ -912,7 +912,7 @@ inline bool Mat4f::operator==(
 	for (short j=0; j<4; j++)
 	for (short i=0; i<4; i++)
 	{
-		if (_vals[i][j] != op2._vals[i][j])
+		if (vals_[i][j] != op2.vals_[i][j])
 			return false;
 	}
 	
@@ -926,7 +926,7 @@ inline bool Mat4f::operator!=(
 	for (short j=0; j<4; j++)
 	for (short i=0; i<4; i++)
 	{
-		if (_vals[i][j] != op2._vals[i][j])
+		if (vals_[i][j] != op2.vals_[i][j])
 			return true;
 	}
 	
@@ -944,7 +944,7 @@ inline Mat4f& Mat4f::operator*=(
 	for (short j=0; j<4; j++)
 	for (short i=0; i<4; i++)
 	{
-		_vals[i][j] *= op2;
+		vals_[i][j] *= op2;
 	}
 	
 	return *this;
@@ -957,7 +957,7 @@ inline Mat4f& Mat4f::operator/=(
 	for (short j=0; j<4; j++)
 	for (short i=0; i<4; i++)
 	{
-		_vals[i][j] /= op2;
+		vals_[i][j] /= op2;
 	}
 	
 	return *this;
@@ -974,7 +974,7 @@ inline Mat4f& Mat4f::operator+=(
 	for (short j=0; j<4; j++)
 	for (short i=0; i<4; i++)
 	{
-		_vals[j][i] += op2._vals[j][i];
+		vals_[j][i] += op2.vals_[j][i];
 	}
 	
 	return *this;
@@ -987,7 +987,7 @@ inline Mat4f& Mat4f::operator-=(
 	for (short j=0; j<4; j++)
 	for (short i=0; i<4; i++)
 	{
-		_vals[j][i] -= op2._vals[j][i];
+		vals_[j][i] -= op2.vals_[j][i];
 	}
 	
 	return *this;
@@ -1006,7 +1006,7 @@ inline void Mat4f::WriteTo(
 	for (short j=0; j<4; j++)
 	for (short i=0; i<4; i++)
 	{
-		stream.write(reinterpret_cast<const char*>(&_vals[i][j]), sizeof(GLfloat));
+		stream.write(reinterpret_cast<const char*>(&vals_[i][j]), sizeof(GLfloat));
 	}
 }
 
@@ -1017,7 +1017,7 @@ inline void Mat4f::ReadFrom(
 	for (short j=0; j<4; j++)
 	for (short i=0; i<4; i++)
 	{
-		stream.read(reinterpret_cast<char*>(&_vals[i][j]), sizeof(GLfloat));
+		stream.read(reinterpret_cast<char*>(&vals_[i][j]), sizeof(GLfloat));
 	}
 }
 
@@ -1044,10 +1044,10 @@ inline Quatf::Quatf()
 inline Quatf::Quatf(
 	const Quatf& q)
 {
-	_vals[0] = q._vals[0];
-	_vals[1] = q._vals[1];
-	_vals[2] = q._vals[2];
-	_vals[3] = q._vals[3];
+	vals_[0] = q.vals_[0];
+	vals_[1] = q.vals_[1];
+	vals_[2] = q.vals_[2];
+	vals_[3] = q.vals_[3];
 }
 
 
@@ -1057,20 +1057,20 @@ inline Quatf::Quatf(
 	GLfloat c,
 	GLfloat d)
 {
-	_vals[0] = a;
-	_vals[1] = b;
-	_vals[2] = c;
-	_vals[3] = d;
+	vals_[0] = a;
+	vals_[1] = b;
+	vals_[2] = c;
+	vals_[3] = d;
 }
 
 
 inline Quatf::Quatf(
 	const GLfloat* vals)
 {
-	_vals[0] = vals[0];
-	_vals[1] = vals[1];
-	_vals[2] = vals[2];
-	_vals[3] = vals[3];
+	vals_[0] = vals[0];
+	vals_[1] = vals[1];
+	vals_[2] = vals[2];
+	vals_[3] = vals[3];
 }
 
 
@@ -1081,10 +1081,10 @@ inline Quatf::Quatf(
 inline Quatf::Quatf(
 	const Vec3f& vec)
 {
-	_vals[0] = 0.0f;
-	_vals[1] = vec.GetX();
-	_vals[2] = vec.GetY();
-	_vals[3] = vec.GetZ();
+	vals_[0] = 0.0f;
+	vals_[1] = vec.GetX();
+	vals_[2] = vec.GetY();
+	vals_[3] = vec.GetZ();
 }
 
 
@@ -1103,10 +1103,10 @@ inline Quatf::Quatf(
 inline Quatf& Quatf::operator=(
 	const Quatf& q)
 {
-	_vals[0] = q._vals[0];
-	_vals[1] = q._vals[1];
-	_vals[2] = q._vals[2];
-	_vals[3] = q._vals[3];
+	vals_[0] = q.vals_[0];
+	vals_[1] = q.vals_[1];
+	vals_[2] = q.vals_[2];
+	vals_[3] = q.vals_[3];
 	return *this;
 }
 
@@ -1114,10 +1114,10 @@ inline Quatf& Quatf::operator=(
 inline Quatf& Quatf::operator=(
 	const GLfloat* vals)
 {
-	_vals[0] = vals[0];
-	_vals[1] = vals[1];
-	_vals[2] = vals[2];
-	_vals[3] = vals[3];
+	vals_[0] = vals[0];
+	vals_[1] = vals[1];
+	vals_[2] = vals[2];
+	vals_[3] = vals[3];
 	return *this;
 }
 
@@ -1125,10 +1125,10 @@ inline Quatf& Quatf::operator=(
 inline Quatf& Quatf::operator=(
 	const Vec3f& vec)
 {
-	_vals[0] = 0.0f;
-	_vals[1] = vec.GetX();
-	_vals[2] = vec.GetY();
-	_vals[3] = vec.GetZ();
+	vals_[0] = 0.0f;
+	vals_[1] = vec.GetX();
+	vals_[2] = vec.GetY();
+	vals_[3] = vec.GetZ();
 	return *this;
 }
 
@@ -1139,7 +1139,7 @@ inline Quatf& Quatf::operator=(
 
 inline Quatf::operator const GLfloat*() const
 {
-	return _vals;
+	return vals_;
 }
 
 
@@ -1153,20 +1153,20 @@ inline void Quatf::Set(
 	GLfloat c,
 	GLfloat d)
 {
-	_vals[0] = a;
-	_vals[1] = b;
-	_vals[2] = c;
-	_vals[3] = d;
+	vals_[0] = a;
+	vals_[1] = b;
+	vals_[2] = c;
+	vals_[3] = d;
 }
 
 
 inline void Quatf::Set(
 	const GLfloat* vals)
 {
-	_vals[0] = vals[0];
-	_vals[1] = vals[1];
-	_vals[2] = vals[2];
-	_vals[3] = vals[3];
+	vals_[0] = vals[0];
+	vals_[1] = vals[1];
+	vals_[2] = vals[2];
+	vals_[3] = vals[3];
 }
 
 
@@ -1177,28 +1177,28 @@ inline void Quatf::Set(
 inline void Quatf::SetW(
 	GLfloat val)
 {
-	_vals[0] = val;
+	vals_[0] = val;
 }
 
 
 inline void Quatf::SetX(
 	GLfloat val)
 {
-	_vals[1] = val;
+	vals_[1] = val;
 }
 
 
 inline void Quatf::SetY(
 	GLfloat val)
 {
-	_vals[2] = val;
+	vals_[2] = val;
 }
 
 
 inline void Quatf::SetZ(
 	GLfloat val)
 {
-	_vals[3] = val;
+	vals_[3] = val;
 }
 
 
@@ -1208,25 +1208,25 @@ inline void Quatf::SetZ(
 
 inline GLfloat Quatf::GetW() const
 {
-	return _vals[0];
+	return vals_[0];
 }
 
 
 inline GLfloat Quatf::GetX() const
 {
-	return _vals[1];
+	return vals_[1];
 }
 
 
 inline GLfloat Quatf::GetY() const
 {
-	return _vals[2];
+	return vals_[2];
 }
 
 
 inline GLfloat Quatf::GetZ() const
 {
-	return _vals[3];
+	return vals_[3];
 }
 
 
@@ -1236,49 +1236,49 @@ inline GLfloat Quatf::GetZ() const
 
 inline GLfloat& Quatf::W()
 {
-	return _vals[0];
+	return vals_[0];
 }
 
 
 inline const GLfloat& Quatf::W() const
 {
-	return _vals[0];
+	return vals_[0];
 }
 
 
 inline GLfloat& Quatf::X()
 {
-	return _vals[1];
+	return vals_[1];
 }
 
 
 inline const GLfloat& Quatf::X() const
 {
-	return _vals[1];
+	return vals_[1];
 }
 
 
 inline GLfloat& Quatf::Y()
 {
-	return _vals[2];
+	return vals_[2];
 }
 
 
 inline const GLfloat& Quatf::Y() const
 {
-	return _vals[2];
+	return vals_[2];
 }
 
 
 inline GLfloat& Quatf::Z()
 {
-	return _vals[3];
+	return vals_[3];
 }
 
 
 inline const GLfloat& Quatf::Z() const
 {
-	return _vals[3];
+	return vals_[3];
 }
 
 
@@ -1291,7 +1291,7 @@ inline void Quatf::SetVal(
 	GLfloat val)
 {
 	GLOW_DEBUG(a < 0 || a >= 4, "index out of bounds in Quatf::SetVal");
-	_vals[a] = val;
+	vals_[a] = val;
 }
 
 
@@ -1299,7 +1299,7 @@ inline GLfloat Quatf::GetVal(
 	GLOW_CSTD::ptrdiff_t a) const
 {
 	GLOW_DEBUG(a < 0 || a >= 4, "index out of bounds in Quatf::GetVal");
-	return _vals[a];
+	return vals_[a];
 }
 
 
@@ -1311,14 +1311,14 @@ inline GLfloat& Quatf::operator[](
 	GLOW_CSTD::ptrdiff_t i)
 {
 	GLOW_DEBUG(i < 0 || i >= 4, "index out of bounds in Quatf::operator[]");
-	return _vals[i];
+	return vals_[i];
 }
 
 inline GLfloat Quatf::operator[](
 	GLOW_CSTD::ptrdiff_t i) const
 {
 	GLOW_DEBUG(i < 0 || i >= 4, "index out of bounds in Quatf::operator[]");
-	return _vals[i];
+	return vals_[i];
 }
 
 
@@ -1334,10 +1334,10 @@ inline void Quatf::SetRotation(
 {
 	GLfloat fac = GLOW_CSTD::sin(angle*0.5f)/
 		GLOW_CSTD::sqrt(axisX*axisX+axisY*axisY+axisZ*axisZ);
-	_vals[0] = GLOW_CSTD::cos(angle*0.5f);
-	_vals[1] = fac*axisX;
-	_vals[2] = fac*axisY;
-	_vals[3] = fac*axisZ;
+	vals_[0] = GLOW_CSTD::cos(angle*0.5f);
+	vals_[1] = fac*axisX;
+	vals_[2] = fac*axisY;
+	vals_[3] = fac*axisZ;
 }
 
 
@@ -1346,10 +1346,10 @@ inline void Quatf::SetRotation(
 	GLfloat angle)
 {
 	GLfloat fac = GLOW_CSTD::sin(angle*0.5f)/axis.Norm();
-	_vals[0] = GLOW_CSTD::cos(angle*0.5f);
-	_vals[1] = fac*axis.GetX();
-	_vals[2] = fac*axis.GetY();
-	_vals[3] = fac*axis.GetZ();
+	vals_[0] = GLOW_CSTD::cos(angle*0.5f);
+	vals_[1] = fac*axis.GetX();
+	vals_[2] = fac*axis.GetY();
+	vals_[3] = fac*axis.GetZ();
 }
 
 
@@ -1359,7 +1359,7 @@ inline void Quatf::SetRotation(
 
 inline GLfloat Quatf::GetAngle() const
 {
-	GLfloat val = _vals[0];
+	GLfloat val = vals_[0];
 	if (val > 1.0)
 	{
 		val = 1.0;
@@ -1378,7 +1378,7 @@ inline GLfloat Quatf::GetAngle() const
 
 inline Vec3f Quatf::GetAxis() const
 {
-	Vec3f result(_vals[1], _vals[2], _vals[3]);
+	Vec3f result(vals_[1], vals_[2], vals_[3]);
 	if (!result.IsZero())
 	{
 		result.Normalize();
@@ -1396,26 +1396,26 @@ inline void Quatf::SetImaginary(
 	GLfloat vecY,
 	GLfloat vecZ)
 {
-	_vals[0] = 0.0f;
-	_vals[1] = vecX;
-	_vals[2] = vecY;
-	_vals[3] = vecZ;
+	vals_[0] = 0.0f;
+	vals_[1] = vecX;
+	vals_[2] = vecY;
+	vals_[3] = vecZ;
 }
 
 
 inline void Quatf::SetImaginary(
 	const Vec3f& vec)
 {
-	_vals[0] = 0.0f;
-	_vals[1] = vec.GetX();
-	_vals[2] = vec.GetY();
-	_vals[3] = vec.GetZ();
+	vals_[0] = 0.0f;
+	vals_[1] = vec.GetX();
+	vals_[2] = vec.GetY();
+	vals_[3] = vec.GetZ();
 }
 
 
 inline const Vec3f Quatf::GetImaginary() const
 {
-	return Vec3f(_vals[1], _vals[2], _vals[3]);
+	return Vec3f(vals_[1], vals_[2], vals_[3]);
 }
 
 
@@ -1425,26 +1425,26 @@ inline const Vec3f Quatf::GetImaginary() const
 
 inline void Quatf::SetIdentity()
 {
-	_vals[0] = GLfloat(1);
-	_vals[1] = GLfloat(0);
-	_vals[2] = GLfloat(0);
-	_vals[3] = GLfloat(0);
+	vals_[0] = GLfloat(1);
+	vals_[1] = GLfloat(0);
+	vals_[2] = GLfloat(0);
+	vals_[3] = GLfloat(0);
 }
 
 
 inline void Quatf::SetZero()
 {
-	_vals[0] = GLfloat(0);
-	_vals[1] = GLfloat(0);
-	_vals[2] = GLfloat(0);
-	_vals[3] = GLfloat(0);
+	vals_[0] = GLfloat(0);
+	vals_[1] = GLfloat(0);
+	vals_[2] = GLfloat(0);
+	vals_[3] = GLfloat(0);
 }
 
 
 inline bool Quatf::IsZero() const
 {
-	return (_vals[0]==GLfloat(0) && _vals[1]==GLfloat(0) &&
-		_vals[2]==GLfloat(0) && _vals[3]==GLfloat(0));
+	return (vals_[0]==GLfloat(0) && vals_[1]==GLfloat(0) &&
+		vals_[2]==GLfloat(0) && vals_[3]==GLfloat(0));
 }
 
 
@@ -1454,24 +1454,24 @@ inline bool Quatf::IsZero() const
 
 inline GLfloat Quatf::Norm() const
 {
-	return GLOW_CSTD::sqrt(_vals[0]*_vals[0]+_vals[1]*_vals[1]+_vals[2]*_vals[2]+_vals[3]*_vals[3]);
+	return GLOW_CSTD::sqrt(vals_[0]*vals_[0]+vals_[1]*vals_[1]+vals_[2]*vals_[2]+vals_[3]*vals_[3]);
 }
 
 
 inline void Quatf::Normalize()
 {
 	GLfloat n = Norm();
-	_vals[0] /= n;
-	_vals[1] /= n;
-	_vals[2] /= n;
-	_vals[3] /= n;
+	vals_[0] /= n;
+	vals_[1] /= n;
+	vals_[2] /= n;
+	vals_[3] /= n;
 }
 
 
 inline const Quatf Quatf::Normalized() const
 {
 	GLfloat n = Norm();
-	return Quatf(_vals[0]/n, _vals[1]/n, _vals[2]/n, _vals[3]/n);
+	return Quatf(vals_[0]/n, vals_[1]/n, vals_[2]/n, vals_[3]/n);
 }
 
 
@@ -1481,13 +1481,13 @@ inline const Quatf Quatf::Normalized() const
 
 inline const Quatf Quatf::Conjugate() const
 {
-	return Quatf(_vals[0], -_vals[1], -_vals[2], -_vals[3]);
+	return Quatf(vals_[0], -vals_[1], -vals_[2], -vals_[3]);
 }
 
 
 inline const Quatf Quatf::operator-() const
 {
-	return Quatf(-_vals[0], -_vals[1], -_vals[2], -_vals[3]);
+	return Quatf(-vals_[0], -vals_[1], -vals_[2], -vals_[3]);
 }
 
 
@@ -1498,7 +1498,7 @@ inline const Quatf Quatf::operator-() const
 inline const Quatf Quatf::operator*(
 	GLfloat op2) const
 {
-	return Quatf(_vals[0]*op2, _vals[1]*op2, _vals[2]*op2, _vals[3]*op2);
+	return Quatf(vals_[0]*op2, vals_[1]*op2, vals_[2]*op2, vals_[3]*op2);
 }
 
 
@@ -1513,17 +1513,17 @@ inline const Quatf operator*(
 inline const Quatf Quatf::operator/(
 	GLfloat op2) const
 {
-	return Quatf(_vals[0]/op2, _vals[1]/op2, _vals[2]/op2, _vals[3]/op2);
+	return Quatf(vals_[0]/op2, vals_[1]/op2, vals_[2]/op2, vals_[3]/op2);
 }
 
 
 inline Quatf& Quatf::operator*=(
 	GLfloat op2)
 {
-	_vals[0] *= op2;
-	_vals[1] *= op2;
-	_vals[2] *= op2;
-	_vals[3] *= op2;
+	vals_[0] *= op2;
+	vals_[1] *= op2;
+	vals_[2] *= op2;
+	vals_[3] *= op2;
 	
 	return *this;
 }
@@ -1532,10 +1532,10 @@ inline Quatf& Quatf::operator*=(
 inline Quatf& Quatf::operator/=(
 	GLfloat op2)
 {
-	_vals[0] /= op2;
-	_vals[1] /= op2;
-	_vals[2] /= op2;
-	_vals[3] /= op2;
+	vals_[0] /= op2;
+	vals_[1] /= op2;
+	vals_[2] /= op2;
+	vals_[3] /= op2;
 	
 	return *this;
 }
@@ -1549,18 +1549,18 @@ inline const Quatf Quatf::operator+(
 	const Quatf& op2) const
 {
 	return Quatf(
-		_vals[0]+op2._vals[0], _vals[1]+op2._vals[1],
-		_vals[2]+op2._vals[2], _vals[3]+op2._vals[3]);
+		vals_[0]+op2.vals_[0], vals_[1]+op2.vals_[1],
+		vals_[2]+op2.vals_[2], vals_[3]+op2.vals_[3]);
 }
 
 
 inline Quatf& Quatf::operator+=(
 	const Quatf& op2)
 {
-	_vals[0] += op2._vals[0];
-	_vals[1] += op2._vals[1];
-	_vals[2] += op2._vals[2];
-	_vals[3] += op2._vals[3];
+	vals_[0] += op2.vals_[0];
+	vals_[1] += op2.vals_[1];
+	vals_[2] += op2.vals_[2];
+	vals_[3] += op2.vals_[3];
 	return *this;
 }
 
@@ -1569,18 +1569,18 @@ inline const Quatf Quatf::operator-(
 	const Quatf& op2) const
 {
 	return Quatf(
-		_vals[0]-op2._vals[0], _vals[1]-op2._vals[1],
-		_vals[2]-op2._vals[2], _vals[3]-op2._vals[3]);
+		vals_[0]-op2.vals_[0], vals_[1]-op2.vals_[1],
+		vals_[2]-op2.vals_[2], vals_[3]-op2.vals_[3]);
 }
 
 
 inline Quatf& Quatf::operator-=(
 	const Quatf& op2)
 {
-	_vals[0] -= op2._vals[0];
-	_vals[1] -= op2._vals[1];
-	_vals[2] -= op2._vals[2];
-	_vals[3] -= op2._vals[3];
+	vals_[0] -= op2.vals_[0];
+	vals_[1] -= op2.vals_[1];
+	vals_[2] -= op2.vals_[2];
+	vals_[3] -= op2.vals_[3];
 	return *this;
 }
 
@@ -1588,8 +1588,8 @@ inline Quatf& Quatf::operator-=(
 inline GLfloat Quatf::operator*(
 	const Quatf& op2) const
 {
-	return _vals[0]*op2._vals[0] + _vals[0]*op2._vals[1] +
-		_vals[2]*op2._vals[2] + _vals[3]*op2._vals[3];
+	return vals_[0]*op2.vals_[0] + vals_[0]*op2.vals_[1] +
+		vals_[2]*op2.vals_[2] + vals_[3]*op2.vals_[3];
 }
 
 

@@ -68,7 +68,7 @@ GLOW_NAMESPACE_BEGIN
 
 inline GlowFont::GlowFont()
 {
-	_glutFont = GLUT_BITMAP_HELVETICA_12;
+	glutFont_ = GLUT_BITMAP_HELVETICA_12;
 }
 
 
@@ -82,26 +82,26 @@ inline GlowFont::GlowFont(
 		glutFont != GLUT_BITMAP_TIMES_ROMAN_24 &&
 		glutFont != GLUT_BITMAP_8_BY_13 &&
 		glutFont != GLUT_BITMAP_9_BY_15, "Unknown GLUT font");
-	_glutFont = glutFont;
+	glutFont_ = glutFont;
 }
 
 
 inline GlowFont::operator void*()
 {
-	return _glutFont;
+	return glutFont_;
 }
 
 
 inline GlowFont::operator const void*() const
 {
-	return _glutFont;
+	return glutFont_;
 }
 
 
 inline GlowFont& GlowFont::operator=(
 	const GlowFont& font)
 {
-	_glutFont = font._glutFont;
+	glutFont_ = font.glutFont_;
 	return *this;
 }
 
@@ -116,7 +116,7 @@ inline GlowFont& GlowFont::operator=(
 		glutFont != GLUT_BITMAP_TIMES_ROMAN_24 &&
 		glutFont != GLUT_BITMAP_8_BY_13 &&
 		glutFont != GLUT_BITMAP_9_BY_15, "Unknown GLUT font");
-	_glutFont = glutFont;
+	glutFont_ = glutFont;
 	return *this;
 }
 
@@ -124,14 +124,14 @@ inline GlowFont& GlowFont::operator=(
 inline bool GlowFont::operator==(
 	void* op2) const
 {
-	return _glutFont == op2;
+	return glutFont_ == op2;
 }
 
 
 inline int GlowFont::CharWidth(
 	int ch) const
 {
-	return ::glutBitmapWidth(_glutFont, ch);
+	return ::glutBitmapWidth(glutFont_, ch);
 }
 
 
@@ -145,8 +145,8 @@ inline GlowColor::GlowColor(
 	GLubyte rgbval,
 	GLubyte aval)
 {
-	_rgba[0] = _rgba[1] = _rgba[2] = rgbval;
-	_rgba[3] = aval;
+	rgba_[0] = rgba_[1] = rgba_[2] = rgbval;
+	rgba_[3] = aval;
 }
 
 
@@ -156,10 +156,10 @@ inline GlowColor::GlowColor(
 	GLubyte b,
 	GLubyte a)
 {
-	_rgba[0] = r;
-	_rgba[1] = g;
-	_rgba[2] = b;
-	_rgba[3] = a;
+	rgba_[0] = r;
+	rgba_[1] = g;
+	rgba_[2] = b;
+	rgba_[3] = a;
 }
 
 
@@ -169,10 +169,10 @@ inline GlowColor::GlowColor(
 	GLfloat b,
 	GLfloat a)
 {
-	_rgba[0] = GLubyte(int(r*255.0f));
-	_rgba[1] = GLubyte(int(g*255.0f));
-	_rgba[2] = GLubyte(int(b*255.0f));
-	_rgba[3] = GLubyte(int(a*255.0f));
+	rgba_[0] = GLubyte(int(r*255.0f));
+	rgba_[1] = GLubyte(int(g*255.0f));
+	rgba_[2] = GLubyte(int(b*255.0f));
+	rgba_[3] = GLubyte(int(a*255.0f));
 }
 
 
@@ -182,10 +182,10 @@ inline GlowColor::GlowColor(
 	GLdouble b,
 	GLdouble a)
 {
-	_rgba[0] = GLubyte(int(r*255.0));
-	_rgba[1] = GLubyte(int(g*255.0));
-	_rgba[2] = GLubyte(int(b*255.0));
-	_rgba[3] = GLubyte(int(a*255.0));
+	rgba_[0] = GLubyte(int(r*255.0));
+	rgba_[1] = GLubyte(int(g*255.0));
+	rgba_[2] = GLubyte(int(b*255.0));
+	rgba_[3] = GLubyte(int(a*255.0));
 }
 
 
@@ -193,8 +193,8 @@ inline void GlowColor::Set(
 	GLubyte rgbval,
 	GLubyte aval)
 {
-	_rgba[0] = _rgba[1] = _rgba[2] = rgbval;
-	_rgba[3] = aval;
+	rgba_[0] = rgba_[1] = rgba_[2] = rgbval;
+	rgba_[3] = aval;
 }
 
 
@@ -204,10 +204,10 @@ inline void GlowColor::Set(
 	GLubyte b,
 	GLubyte a)
 {
-	_rgba[0] = r;
-	_rgba[1] = g;
-	_rgba[2] = b;
-	_rgba[3] = a;
+	rgba_[0] = r;
+	rgba_[1] = g;
+	rgba_[2] = b;
+	rgba_[3] = a;
 }
 
 
@@ -217,10 +217,10 @@ inline void GlowColor::Set(
 	GLfloat b,
 	GLfloat a)
 {
-	_rgba[0] = GLubyte(int(r*255.0f));
-	_rgba[1] = GLubyte(int(g*255.0f));
-	_rgba[2] = GLubyte(int(b*255.0f));
-	_rgba[3] = GLubyte(int(a*255.0f));
+	rgba_[0] = GLubyte(int(r*255.0f));
+	rgba_[1] = GLubyte(int(g*255.0f));
+	rgba_[2] = GLubyte(int(b*255.0f));
+	rgba_[3] = GLubyte(int(a*255.0f));
 }
 
 
@@ -230,22 +230,22 @@ inline void GlowColor::Set(
 	GLdouble b,
 	GLdouble a)
 {
-	_rgba[0] = GLubyte(int(r*255.0));
-	_rgba[1] = GLubyte(int(g*255.0));
-	_rgba[2] = GLubyte(int(b*255.0));
-	_rgba[3] = GLubyte(int(a*255.0));
+	rgba_[0] = GLubyte(int(r*255.0));
+	rgba_[1] = GLubyte(int(g*255.0));
+	rgba_[2] = GLubyte(int(b*255.0));
+	rgba_[3] = GLubyte(int(a*255.0));
 }
 
 
 inline GlowColor::operator GLubyte*()
 {
-	return _rgba;
+	return rgba_;
 }
 
 
 inline GlowColor::operator const GLubyte*() const
 {
-	return _rgba;
+	return rgba_;
 }
 
 
@@ -253,7 +253,7 @@ inline GLubyte& GlowColor::operator[](
 	int i)
 {
 	GLOW_ASSERT(i>=0 && i<4);
-	return _rgba[i];
+	return rgba_[i];
 }
 
 
@@ -261,33 +261,33 @@ inline const GLubyte& GlowColor::operator[](
 	int i) const
 {
 	GLOW_ASSERT(i>=0 && i<4);
-	return _rgba[i];
+	return rgba_[i];
 }
 
 
 inline bool GlowColor::operator==(
 	const GlowColor& op2) const
 {
-	return _rgba[0] == op2._rgba[0] &&
-		_rgba[1] == op2._rgba[1] &&
-		_rgba[2] == op2._rgba[2] &&
-		_rgba[3] == op2._rgba[3];
+	return rgba_[0] == op2.rgba_[0] &&
+		rgba_[1] == op2.rgba_[1] &&
+		rgba_[2] == op2.rgba_[2] &&
+		rgba_[3] == op2.rgba_[3];
 }
 
 
 inline bool GlowColor::operator!=(
 	const GlowColor& op2) const
 {
-	return _rgba[0] != op2._rgba[0] ||
-		_rgba[1] != op2._rgba[1] ||
-		_rgba[2] != op2._rgba[2] ||
-		_rgba[3] != op2._rgba[3];
+	return rgba_[0] != op2.rgba_[0] ||
+		rgba_[1] != op2.rgba_[1] ||
+		rgba_[2] != op2.rgba_[2] ||
+		rgba_[3] != op2.rgba_[3];
 }
 
 
 inline void GlowColor::Apply() const
 {
-	::glColor4ubv(_rgba);
+	::glColor4ubv(rgba_);
 }
 
 

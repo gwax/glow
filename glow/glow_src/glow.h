@@ -358,122 +358,115 @@ class Glow
 	
 	private:
 	
-		typedef GLOW_STD::map<int, GlowSubwindow*>::value_type _WindowRegistryEntry;
-		typedef GLOW_STD::map<int, GlowMenu*>::value_type _MenuRegistryEntry;
-		typedef GLOW_STD::map<int, GlowSubwindow*>::iterator _WindowRegistryIterator;
-		typedef GLOW_STD::map<int, GlowMenu*>::iterator _MenuRegistryIterator;
-	
-	private:
-	
 		// Prevent instantiation
 		inline Glow() {}
 	
 	private:
 	
 		// Map glut ids to window and menu pointers
-		static GLOW_STD::map<int, GlowSubwindow*> _windowRegistry;
-		static GLOW_STD::map<int, GlowMenu*> _menuRegistry;
+		static GLOW_STD::map<int, GlowSubwindow*> windowRegistry_;
+		static GLOW_STD::map<int, GlowMenu*> menuRegistry_;
 		
 		// List of deferred activate notifications
-		static GLOW_STD::map<GlowComponent*, bool> _activateNotifyList;
+		static GLOW_STD::map<GlowComponent*, bool> activateNotifyList_;
 		// List of deferred component deletions
-		static GLOW_STD::map<GlowComponent*, bool> _closeList;
+		static GLOW_STD::map<GlowComponent*, bool> closeList_;
 		// Function to notify for widgets
-		static void (*_widgetNotifier)();
+		static void (*widgetNotifier_)();
 		// Used to sync up global position to glut's
-		static unsigned long _clock;
+		static unsigned long clock_;
 		
 		// Menu state
-		static GlowSubwindow* _menuWindow;
-		static int _menuXClick;
-		static int _menuYClick;
-		static bool _menuInUse;
+		static GlowSubwindow* menuWindow_;
+		static int menuXClick_;
+		static int menuYClick_;
+		static bool menuInUse_;
 		
 		// Modal window stack
-		static GLOW_STD::vector<GlowWindow*> _modalWindows;
+		static GLOW_STD::vector<GlowWindow*> modalWindows_;
 		
 		// Idle, timer and finalizer senders
-		static TSender<const GlowIdleMessage&> _idleSender;
-		static GLOW_STD::map<int, TSender<const GlowTimerMessage&>*> _timerSenders;
+		static TSender<const GlowIdleMessage&> idleSender_;
+		static GLOW_STD::map<int, TSender<const GlowTimerMessage&>*> timerSenders_;
 		
 		// Next timer id to assign
-		static int _nextTimerID;
+		static int nextTimerID_;
 		
 		// GLUT compatibility callbacks
-		static Glow_IdleFuncReceiver* _idleFuncReceiver;
-		static void (*_userMenuStatusFunc)(int status, int x, int y);
+		static Glow_IdleFuncReceiver* idleFuncReceiver_;
+		static void (*userMenuStatusFunc_)(int status, int x, int y);
 		
 		// Event filter senders
-		static TSender<GlowMouseData&> _mouseFilters;
-		static TSender<GlowKeyboardData&> _keyboardFilters;
+		static TSender<GlowMouseData&> mouseFilters_;
+		static TSender<GlowKeyboardData&> keyboardFilters_;
 		
 		// Toplevel window counter
-		static int _numToplevelWindows;
-		static bool _autoQuitting;
+		static int numToplevelWindows_;
+		static bool autoQuitting_;
 		
 		// Workaround for GLUT redisplay bug
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
-		static int _curDisplayWindow;
-		static int _refreshMe;
+		static int curDisplayWindow_;
+		static int refreshMe_;
 #endif
 	
 	private:
 	
 		// Manage glut id mappings
-		static void _AddWindow(
+		static void AddWindow_(
 			GlowSubwindow* window,
 			int windowNum);
-		static void _RemoveWindow(
+		static void RemoveWindow_(
 			int windowNum);
 		
-		static void _AddMenu(
+		static void AddMenu_(
 			GlowMenu* menu,
 			int menuNum);
-		static void _RemoveMenu(
+		static void RemoveMenu_(
 			int menuNum);
 		
 		// Call backs
-		static void _TimerFunc(
+		static void TimerFunc_(
 			int id);
-		static void _DisplayFunc();
-		static void _ReshapeFunc(
+		static void DisplayFunc_();
+		static void ReshapeFunc_(
 			int width,
 			int height);
-		static void _KeyboardFunc(
+		static void KeyboardFunc_(
 			unsigned char key,
 			int x,
 			int y);
-		static void _MouseFunc(
+		static void MouseFunc_(
 			int button,
 			int state,
 			int x,
 			int y);
-		static void _MotionFunc(
+		static void MotionFunc_(
 			int x,
 			int y);
-		static void _PassiveMotionFunc(
+		static void PassiveMotionFunc_(
 			int x,
 			int y);
-		static void _VisibilityFunc(
+		static void VisibilityFunc_(
 			int state);
-		static void _EntryFunc(
+		static void EntryFunc_(
 			int state);
-		static void _SpecialFunc(
+		static void SpecialFunc_(
 			int key,
 			int x,
 			int y);
-		static void _MenuStatusFunc(
+		static void MenuStatusFunc_(
 			int status,
 			int x,
 			int y);
-		static void _MenuFunc(
+		static void MenuFunc_(
 			int value);
-		static void _IdleFunc();
+		static void IdleFunc_();
 		
 		// Deferred execution
-		static void _ExecuteDeferred();
+		static void ExecuteDeferred_();
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
-		static void _RaiseDeferredRefresh();
+		static void RaiseDeferredRefresh_();
 #endif
 };
 
@@ -668,22 +661,22 @@ class GlowComponent
 	
 	private:
 	
-		GlowComponent* _parent;
-		GlowComponent* _next;
-		GlowComponent* _prev;
-		int _numChildren;
-		GlowComponent* _firstChild;
-		GlowComponent* _lastChild;
-		short _activeState;
+		GlowComponent* parent_;
+		GlowComponent* next_;
+		GlowComponent* prev_;
+		int numChildren_;
+		GlowComponent* firstChild_;
+		GlowComponent* lastChild_;
+		short activeState_;
 	
 	private:
 	
-		void _AddChild(
+		void AddChild_(
 			GlowComponent* child);
-		void _RemoveChild(
+		void RemoveChild_(
 			GlowComponent* child);
 		
-		void _BroadcastStandby(
+		void BroadcastStandby_(
 			bool activating,
 			bool first);
 };
@@ -875,29 +868,29 @@ class GlowSubwindow :
 	
 	private:
 	
-		int _width;
-		int _height;
-		int _windowNum;
-		Glow::EventMask _eventMask;
-		Glow::EventMask _inactiveEventMask;
-		Glow::BufferType _bufferType;
-		int _saveCursor;
-		mutable unsigned long _clock;
-		mutable int _globalXPos;
-		mutable int _globalYPos;
-		GlowMenu* _leftMenu;
-		GlowMenu* _centerMenu;
-		GlowMenu* _rightMenu;
-		bool _needSwapBuffers;
-		bool _refreshEnabled;
-		bool _autoSwapBuffers;
+		int width_;
+		int height_;
+		int windowNum_;
+		Glow::EventMask eventMask_;
+		Glow::EventMask inactiveEventMask_;
+		Glow::BufferType bufferType_;
+		int saveCursor_;
+		mutable unsigned long clock_;
+		mutable int globalXPos_;
+		mutable int globalYPos_;
+		GlowMenu* leftMenu_;
+		GlowMenu* centerMenu_;
+		GlowMenu* rightMenu_;
+		bool needSwapBuffers_;
+		bool refreshEnabled_;
+		bool autoSwapBuffers_;
 	
 	private:
 	
-		void _RegisterCallbacks(
+		void RegisterCallbacks_(
 			Glow::EventMask eventMask);
-		inline void _FinishRender() const;
-		void _EventsForActivation(
+		inline void FinishRender_() const;
+		void EventsForActivation_(
 			bool activating);
 };
 
@@ -964,8 +957,8 @@ class GlowWindow :
 	
 	private:
 	
-		char* _title;
-		char* _iconTitle;
+		char* title_;
+		char* iconTitle_;
 };
 
 
@@ -1167,19 +1160,14 @@ class GlowMenu
 	
 	private:
 	
-		int _menuNum;
-		BindState _bindState;
-		GLOW_STD::vector<Glow_MenuItem> _itemData;
-		TSender<const GlowMenuMessage&> _sender;
+		int menuNum_;
+		BindState bindState_;
+		GLOW_STD::vector<Glow_MenuItem> itemData_;
+		TSender<const GlowMenuMessage&> sender_;
 	
 	private:
 	
-		typedef GLOW_STD::vector<Glow_MenuItem>::iterator ItemIterator;
-		typedef GLOW_STD::vector<Glow_MenuItem>::const_iterator ItemConstIterator;
-	
-	private:
-	
-		void _SetupItem(
+		void SetupItem_(
 			int itemNum,
 			int untilNum = -1) const;
 };

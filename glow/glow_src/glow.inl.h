@@ -110,7 +110,7 @@ inline GlowMouseData::GlowMouseData()
 
 inline bool Glow::IsMenuInUse()
 {
-	return _menuInUse;
+	return menuInUse_;
 }
 
 
@@ -128,13 +128,13 @@ inline int Glow::NumMouseButtons()
 
 inline int Glow::NumModalWindows()
 {
-	return _modalWindows.size();
+	return modalWindows_.size();
 }
 
 
 inline GlowWindow* Glow::TopModalWindow()
 {
-	return _modalWindows.empty() ? 0 : _modalWindows.back();
+	return modalWindows_.empty() ? 0 : modalWindows_.back();
 }
 
 
@@ -146,21 +146,21 @@ inline GlowWindow* Glow::TopModalWindow()
 
 inline void Glow::UnregisterAllIdle()
 {
-	_idleSender.UnbindAll();
+	idleSender_.UnbindAll();
 	::glutIdleFunc(0);
 }
 
 
 inline unsigned int Glow::NumRegisteredIdle()
 {
-	return _idleSender.NumReceivers();
+	return idleSender_.NumReceivers();
 }
 
 
 inline bool Glow::IsIdleRegistered(
 	GlowIdleReceiver* idle)
 {
-	return _idleSender.IsBoundTo(idle);
+	return idleSender_.IsBoundTo(idle);
 }
 
 
@@ -173,7 +173,7 @@ inline bool Glow::IsIdleRegistered(
 inline bool Glow::IsTimerPending(
 	int id)
 {
-	return _timerSenders.find(id) != _timerSenders.end();
+	return timerSenders_.find(id) != timerSenders_.end();
 }
 
 
@@ -185,48 +185,48 @@ inline bool Glow::IsTimerPending(
 
 inline void Glow::UnregisterAllMouseFilters()
 {
-	_mouseFilters.UnbindAll();
+	mouseFilters_.UnbindAll();
 }
 
 
 inline void Glow::UnregisterAllKeyboardFilters()
 {
-	_keyboardFilters.UnbindAll();
+	keyboardFilters_.UnbindAll();
 }
 
 
 inline unsigned int Glow::NumRegisteredMouseFilters()
 {
-	return _mouseFilters.NumReceivers();
+	return mouseFilters_.NumReceivers();
 }
 
 
 inline unsigned int Glow::NumRegisteredKeyboardFilters()
 {
-	return _keyboardFilters.NumReceivers();
+	return keyboardFilters_.NumReceivers();
 }
 
 
 inline bool Glow::IsFilterRegistered(
 	GlowMouseFilter* filter)
 {
-	return _mouseFilters.IsBoundTo(filter);
+	return mouseFilters_.IsBoundTo(filter);
 }
 
 
 inline bool Glow::IsFilterRegistered(
 	GlowKeyboardFilter* filter)
 {
-	return _keyboardFilters.IsBoundTo(filter);
+	return keyboardFilters_.IsBoundTo(filter);
 }
 
 
 inline void Glow::RegisterFilter(
 	GlowMouseFilter* filter)
 {
-	if (!_mouseFilters.IsBoundTo(filter))
+	if (!mouseFilters_.IsBoundTo(filter))
 	{
-		_mouseFilters.Bind(filter);
+		mouseFilters_.Bind(filter);
 	}
 }
 
@@ -234,9 +234,9 @@ inline void Glow::RegisterFilter(
 inline void Glow::RegisterFilter(
 	GlowKeyboardFilter* filter)
 {
-	if (!_keyboardFilters.IsBoundTo(filter))
+	if (!keyboardFilters_.IsBoundTo(filter))
 	{
-		_keyboardFilters.Bind(filter);
+		keyboardFilters_.Bind(filter);
 	}
 }
 
@@ -244,9 +244,9 @@ inline void Glow::RegisterFilter(
 inline void Glow::UnregisterFilter(
 	GlowMouseFilter* filter)
 {
-	if (_mouseFilters.IsBoundTo(filter))
+	if (mouseFilters_.IsBoundTo(filter))
 	{
-		_mouseFilters.Unbind(filter);
+		mouseFilters_.Unbind(filter);
 	}
 }
 
@@ -254,9 +254,9 @@ inline void Glow::UnregisterFilter(
 inline void Glow::UnregisterFilter(
 	GlowKeyboardFilter* filter)
 {
-	if (_keyboardFilters.IsBoundTo(filter))
+	if (keyboardFilters_.IsBoundTo(filter))
 	{
-		_keyboardFilters.Unbind(filter);
+		keyboardFilters_.Unbind(filter);
 	}
 }
 
@@ -359,7 +359,7 @@ inline int Glow::GetMilliseconds()
 inline void Glow::SetMenuStatusFunc(
 	void (*func)(int status, int x, int y))
 {
-	_userMenuStatusFunc = func;
+	userMenuStatusFunc_ = func;
 }
 
 
@@ -371,20 +371,20 @@ inline void Glow::SetMenuStatusFunc(
 
 inline int Glow::NumToplevelWindows()
 {
-	return _numToplevelWindows;
+	return numToplevelWindows_;
 }
 
 
 inline bool Glow::IsAutoQuitting()
 {
-	return _autoQuitting;
+	return autoQuitting_;
 }
 
 
 inline void Glow::SetAutoQuitting(
 	bool autoQuit)
 {
-	_autoQuitting = autoQuit;
+	autoQuitting_ = autoQuit;
 }
 
 
@@ -396,7 +396,7 @@ inline void Glow::SetAutoQuitting(
 
 inline GlowComponent::GlowComponent()
 {
-	_parent = 0;
+	parent_ = 0;
 }
 
 
@@ -409,74 +409,74 @@ inline GlowComponent::GlowComponent(
 
 inline GlowComponent* GlowComponent::Next() const
 {
-	return _next;
+	return next_;
 }
 
 
 inline GlowComponent* GlowComponent::Prev() const
 {
-	return _prev;
+	return prev_;
 }
 
 
 inline GlowComponent* GlowComponent::Parent() const
 {
-	return _parent;
+	return parent_;
 }
 
 
 inline GlowSubwindow* GlowComponent::ParentWindow() const
 {
-	if (_parent == 0)
+	if (parent_ == 0)
 	{
 		return 0;
 	}
 	else
 	{
-		return _parent->WhichWindow();
+		return parent_->WhichWindow();
 	}
 }
 
 
 inline bool GlowComponent::IsTopLevel() const
 {
-	return _parent == 0;
+	return parent_ == 0;
 }
 
 
 inline int GlowComponent::NumChildren() const
 {
-	return _numChildren;
+	return numChildren_;
 }
 
 
 inline GlowComponent* GlowComponent::FirstChild() const
 {
-	return _firstChild;
+	return firstChild_;
 }
 
 
 inline GlowComponent* GlowComponent::LastChild() const
 {
-	return _lastChild;
+	return lastChild_;
 }
 
 
 inline bool GlowComponent::IsActive() const
 {
-	return _activeState == 1;
+	return activeState_ == 1;
 }
 
 
 inline bool GlowComponent::IsActiveStandby() const
 {
-	return _activeState == 2;
+	return activeState_ == 2;
 }
 
 
 inline bool GlowComponent::IsInactive() const
 {
-	return _activeState == 0;
+	return activeState_ == 0;
 }
 
 
@@ -514,14 +514,14 @@ inline GlowSubwindow::GlowSubwindow(
 
 inline bool GlowSubwindow::IsRefreshEnabled() const
 {
-	return _refreshEnabled;
+	return refreshEnabled_;
 }
 
 
 inline void GlowSubwindow::SetRefreshEnabled(
 	bool enable)
 {
-	_refreshEnabled = enable;
+	refreshEnabled_ = enable;
 }
 
 
@@ -529,41 +529,41 @@ inline void GlowSubwindow::Refresh()
 {
 	GLOW_DEBUGSCOPE("GlowSubwindow::Refresh");
 	
-	if (_refreshEnabled)
+	if (refreshEnabled_)
 	{
-		Glow::RefreshGlutWindow(_windowNum);
+		Glow::RefreshGlutWindow(windowNum_);
 	}
 }
 
 
 inline bool GlowSubwindow::IsAutoSwapBuffersEnabled() const
 {
-	return _autoSwapBuffers;
+	return autoSwapBuffers_;
 }
 
 
 inline void GlowSubwindow::SetAutoSwapBuffersEnabled(
 	bool enable)
 {
-	_autoSwapBuffers = enable;
+	autoSwapBuffers_ = enable;
 }
 
 
 inline void GlowSubwindow::MakeCurGlutWindow()
 {
-	::glutSetWindow(_windowNum);
+	::glutSetWindow(windowNum_);
 }
 
 
 inline int GlowSubwindow::GlutWindowNum() const
 {
-	return _windowNum;
+	return windowNum_;
 }
 
 
 inline int GlowSubwindow::PositionX() const
 {
-	if (_parent == 0)
+	if (parent_ == 0)
 	{
 		return GlobalPositionX();
 	}
@@ -577,7 +577,7 @@ inline int GlowSubwindow::PositionX() const
 
 inline int GlowSubwindow::PositionY() const
 {
-	if (_parent == 0)
+	if (parent_ == 0)
 	{
 		return GlobalPositionY();
 	}
@@ -591,37 +591,37 @@ inline int GlowSubwindow::PositionY() const
 
 inline int GlowSubwindow::GlobalPositionX() const
 {
-	if (_clock != Glow::_clock)
+	if (clock_ != Glow::clock_)
 	{
-		_clock = Glow::_clock;
-		_globalXPos = GlutInfo((GLenum)GLUT_WINDOW_X);
-		_globalYPos = GlutInfo((GLenum)GLUT_WINDOW_Y);
+		clock_ = Glow::clock_;
+		globalXPos_ = GlutInfo((GLenum)GLUT_WINDOW_X);
+		globalYPos_ = GlutInfo((GLenum)GLUT_WINDOW_Y);
 	}
-	return _globalXPos;
+	return globalXPos_;
 }
 
 
 inline int GlowSubwindow::GlobalPositionY() const
 {
-	if (_clock != Glow::_clock)
+	if (clock_ != Glow::clock_)
 	{
-		_clock = Glow::_clock;
-		_globalXPos = GlutInfo((GLenum)GLUT_WINDOW_X);
-		_globalYPos = GlutInfo((GLenum)GLUT_WINDOW_Y);
+		clock_ = Glow::clock_;
+		globalXPos_ = GlutInfo((GLenum)GLUT_WINDOW_X);
+		globalYPos_ = GlutInfo((GLenum)GLUT_WINDOW_Y);
 	}
-	return _globalYPos;
+	return globalYPos_;
 }
 
 
 inline int GlowSubwindow::Width() const
 {
-	return _width;
+	return width_;
 }
 
 
 inline int GlowSubwindow::Height() const
 {
-	return _height;
+	return height_;
 }
 
 
@@ -636,15 +636,15 @@ inline GlowMenu* GlowSubwindow::GetMenu(
 {
 	if (button == Glow::leftButton)
 	{
-		return _leftMenu;
+		return leftMenu_;
 	}
 	else if (button == Glow::middleButton)
 	{
-		return _centerMenu;
+		return centerMenu_;
 	}
 	else //if (button == Glow::rightButton)
 	{
-		return _rightMenu;
+		return rightMenu_;
 	}
 }
 
@@ -658,19 +658,19 @@ inline void GlowSubwindow::UnsetMenu(
 
 inline Glow::EventMask GlowSubwindow::GetEventMask() const
 {
-	return _eventMask;
+	return eventMask_;
 }
 
 
 inline Glow::EventMask GlowSubwindow::GetInactiveEventMask() const
 {
-	return _inactiveEventMask;
+	return inactiveEventMask_;
 }
 
 
 inline Glow::BufferType GlowSubwindow::GetBufferType() const
 {
-	return _bufferType;
+	return bufferType_;
 }
 
 
@@ -680,15 +680,15 @@ inline void GlowSubwindow::NormalizeCoordinates(
 	GLfloat& xn,
 	GLfloat& yn) const
 {
-	xn = GLfloat(x)*2.0f/GLfloat(_width)-1.0f;
-	yn = 1.0f-GLfloat(y)*2.0f/GLfloat(_height);
+	xn = GLfloat(x)*2.0f/GLfloat(width_)-1.0f;
+	yn = 1.0f-GLfloat(y)*2.0f/GLfloat(height_);
 }
 
 
-inline void GlowSubwindow::_FinishRender() const
+inline void GlowSubwindow::FinishRender_() const
 {
 	::glFlush();
-	if (_needSwapBuffers && _autoSwapBuffers)
+	if (needSwapBuffers_ && autoSwapBuffers_)
 	{
 		::glutSwapBuffers();
 	}
@@ -728,13 +728,13 @@ inline GlowWindow::GlowWindow(
 
 inline const char* GlowWindow::GetTitle() const
 {
-	return _title;
+	return title_;
 }
 
 
 inline const char* GlowWindow::GetIconTitle() const
 {
-	return _iconTitle;
+	return iconTitle_;
 }
 
 
@@ -748,9 +748,9 @@ inline bool GlowMenu::IsEntry(
 	int itemNum) const
 {
 	GLOW_ASSERT(itemNum >= 0);
-	GLOW_ASSERT(itemNum < int(_itemData.size()));
+	GLOW_ASSERT(itemNum < int(itemData_.size()));
 	
-	return _itemData[itemNum].subMenu == 0;
+	return itemData_[itemNum].subMenu == 0;
 }
 
 
@@ -758,9 +758,9 @@ inline bool GlowMenu::IsSubmenu(
 	int itemNum) const
 {
 	GLOW_ASSERT(itemNum >= 0);
-	GLOW_ASSERT(itemNum < int(_itemData.size()));
+	GLOW_ASSERT(itemNum < int(itemData_.size()));
 	
-	return _itemData[itemNum].subMenu != 0;
+	return itemData_[itemNum].subMenu != 0;
 }
 
 
@@ -768,9 +768,9 @@ inline const char* GlowMenu::GetItemLabel(
 	int itemNum) const
 {
 	GLOW_ASSERT(itemNum >= 0);
-	GLOW_ASSERT(itemNum < int(_itemData.size()));
+	GLOW_ASSERT(itemNum < int(itemData_.size()));
 	
-	return _itemData[itemNum].label;
+	return itemData_[itemNum].label;
 }
 
 
@@ -778,9 +778,9 @@ inline const char* GlowMenu::GetItemMark(
 	int itemNum) const
 {
 	GLOW_ASSERT(itemNum >= 0);
-	GLOW_ASSERT(itemNum < int(_itemData.size()));
+	GLOW_ASSERT(itemNum < int(itemData_.size()));
 	
-	return _itemData[itemNum].mark;
+	return itemData_[itemNum].mark;
 }
 
 
@@ -788,11 +788,11 @@ inline int GlowMenu::GetItemCode(
 	int itemNum) const
 {
 	GLOW_ASSERT(itemNum >= 0);
-	GLOW_ASSERT(itemNum < int(_itemData.size()));
-	GLOW_DEBUG(_itemData[itemNum].subMenu != 0,
+	GLOW_ASSERT(itemNum < int(itemData_.size()));
+	GLOW_DEBUG(itemData_[itemNum].subMenu != 0,
 		"GlowMenu::GetItemCode on submenu item");
 	
-	return _itemData[itemNum].code;
+	return itemData_[itemNum].code;
 }
 
 
@@ -800,11 +800,11 @@ inline GlowMenu* GlowMenu::GetItemSubmenu(
 	int itemNum) const
 {
 	GLOW_ASSERT(itemNum >= 0);
-	GLOW_ASSERT(itemNum < int(_itemData.size()));
-	GLOW_DEBUG(_itemData[itemNum].subMenu == 0,
+	GLOW_ASSERT(itemNum < int(itemData_.size()));
+	GLOW_DEBUG(itemData_[itemNum].subMenu == 0,
 		"GlowMenu::GetItemSubmenu on entry item");
 	
-	return _itemData[itemNum].subMenu;
+	return itemData_[itemNum].subMenu;
 }
 
 
@@ -812,34 +812,34 @@ inline bool GlowMenu::IsItemMarked(
 	int itemNum) const
 {
 	GLOW_ASSERT(itemNum >= 0);
-	GLOW_ASSERT(itemNum < int(_itemData.size()));
+	GLOW_ASSERT(itemNum < int(itemData_.size()));
 	
-	return _itemData[itemNum].mark != 0;
+	return itemData_[itemNum].mark != 0;
 }
 
 
 inline int GlowMenu::NumItems() const
 {
-	return _itemData.size();
+	return itemData_.size();
 }
 
 
 inline void GlowMenu::SetBindState(
 	GlowMenu::BindState bindState)
 {
-	_bindState = bindState;
+	bindState_ = bindState;
 }
 
 
 inline GlowMenu::BindState GlowMenu::GetBindState() const
 {
-	return _bindState;
+	return bindState_;
 }
 
 
 inline TSender<const GlowMenuMessage&>& GlowMenu::Notifier()
 {
-	return _sender;
+	return sender_;
 }
 
 

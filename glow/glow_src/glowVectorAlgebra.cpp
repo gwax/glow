@@ -132,7 +132,7 @@ const Mat4f Mat4f::operator*(
 	for (short j=0; j<4; j++)
 	for (short i=0; i<4; i++)
 	{
-		result._vals[i][j] = _vals[i][j] * op2;
+		result.vals_[i][j] = vals_[i][j] * op2;
 	}
 	
 	return result;
@@ -163,7 +163,7 @@ const Mat4f Mat4f::operator/(
 	for (short j=0; j<4; j++)
 	for (short i=0; i<4; i++)
 	{
-		result._vals[i][j] = _vals[i][j] / op2;
+		result.vals_[i][j] = vals_[i][j] / op2;
 	}
 	
 	return result;
@@ -177,7 +177,7 @@ const Mat4f Mat4f::operator-() const
 	for (short j=0; j<4; j++)
 	for (short i=0; i<4; i++)
 	{
-		result._vals[i][j] = -_vals[i][j];
+		result.vals_[i][j] = -vals_[i][j];
 	}
 	
 	return result;
@@ -202,10 +202,10 @@ void Mat4f::SetInverse(
 	{
 		// Find largest pivot
 		pivrow = j;
-		pivot = GLOW_CSTD::fabs(temp._vals[j][j]);
+		pivot = GLOW_CSTD::fabs(temp.vals_[j][j]);
 		for (i=j+1; i<4; i++)
 		{
-			pivot2 = GLOW_CSTD::fabs(temp._vals[j][i]);
+			pivot2 = GLOW_CSTD::fabs(temp.vals_[j][i]);
 			if (pivot2 > pivot)
 			{
 				pivot = pivot2;
@@ -228,16 +228,16 @@ void Mat4f::SetInverse(
 		}
 		
 		// Turn the pivot into 1
-		fac = GLfloat(1)/temp._vals[j][j];
+		fac = GLfloat(1)/temp.vals_[j][j];
 		temp._GJScaleRow(j, fac);
 		_GJScaleRow(j, fac);
 		
 		// Zero out this element in other rows
 		for (i=0; i<4; i++)
 		{
-			if (j != i && temp._vals[j][i] != GLfloat(0))
+			if (j != i && temp.vals_[j][i] != GLfloat(0))
 			{
-				fac = -(temp._vals[j][i]);
+				fac = -(temp.vals_[j][i]);
 				temp._GJAddToRow(j, fac, i);
 				_GJAddToRow(j, fac, i);
 			}
@@ -264,7 +264,7 @@ void Mat4f::SetCofactors(
 	for (int j=0; j<4; j++)
 	for (int i=0; i<4; i++)
 	{
-		_vals[i][j] = orig._CofactorElem(i, j);
+		vals_[i][j] = orig._CofactorElem(i, j);
 	}
 }
 
@@ -276,7 +276,7 @@ const Mat4f Mat4f::Cofactors() const
 	for (int j=0; j<4; j++)
 	for (int i=0; i<4; i++)
 	{
-		result._vals[i][j] = _CofactorElem(i, j);
+		result.vals_[i][j] = _CofactorElem(i, j);
 	}
 	
 	return result;
@@ -310,7 +310,7 @@ void Mat4f::SetTranspose(
 	for (int j=0; j<4; j++)
 	for (int i=0; i<4; i++)
 	{
-		_vals[i][j] = orig._vals[j][i];
+		vals_[i][j] = orig.vals_[j][i];
 	}
 }
 
@@ -322,7 +322,7 @@ const Mat4f Mat4f::Transpose() const
 	for (int j=0; j<4; j++)
 	for (int i=0; i<4; i++)
 	{
-		result._vals[i][j] = _vals[j][i];
+		result.vals_[i][j] = vals_[j][i];
 	}
 	
 	return result;
@@ -339,22 +339,22 @@ void Mat4f::SetRotation(
 	GLfloat z,
 	GLfloat angle)
 {
-	_vals[0][0] = x*x+(GLfloat(1)-x*x)*GLOW_CSTD::cos(angle);
-	_vals[1][0] = x*y*(GLfloat(1)-GLOW_CSTD::cos(angle))-z*GLOW_CSTD::sin(angle);
-	_vals[2][0] = z*x*(GLfloat(1)-GLOW_CSTD::cos(angle))+y*GLOW_CSTD::sin(angle);
-	_vals[3][0] = GLfloat(0);
-	_vals[0][1] = x*y*(GLfloat(1)-GLOW_CSTD::cos(angle))+z*GLOW_CSTD::sin(angle);
-	_vals[1][1] = y*y+(GLfloat(1)-y*y)*GLOW_CSTD::cos(angle);
-	_vals[2][1] = y*z*(GLfloat(1)-GLOW_CSTD::cos(angle))-x*GLOW_CSTD::sin(angle);
-	_vals[3][1] = GLfloat(0);
-	_vals[0][2] = z*x*(GLfloat(1)-GLOW_CSTD::cos(angle))-y*GLOW_CSTD::sin(angle);
-	_vals[1][2] = y*z*(GLfloat(1)-GLOW_CSTD::cos(angle))+x*GLOW_CSTD::sin(angle);
-	_vals[2][2] = z*z+(GLfloat(1)-z*z)*GLOW_CSTD::cos(angle);
-	_vals[3][2] = GLfloat(0);
-	_vals[0][3] = GLfloat(0);
-	_vals[1][3] = GLfloat(0);
-	_vals[2][3] = GLfloat(0);
-	_vals[3][3] = GLfloat(1);
+	vals_[0][0] = x*x+(GLfloat(1)-x*x)*GLOW_CSTD::cos(angle);
+	vals_[1][0] = x*y*(GLfloat(1)-GLOW_CSTD::cos(angle))-z*GLOW_CSTD::sin(angle);
+	vals_[2][0] = z*x*(GLfloat(1)-GLOW_CSTD::cos(angle))+y*GLOW_CSTD::sin(angle);
+	vals_[3][0] = GLfloat(0);
+	vals_[0][1] = x*y*(GLfloat(1)-GLOW_CSTD::cos(angle))+z*GLOW_CSTD::sin(angle);
+	vals_[1][1] = y*y+(GLfloat(1)-y*y)*GLOW_CSTD::cos(angle);
+	vals_[2][1] = y*z*(GLfloat(1)-GLOW_CSTD::cos(angle))-x*GLOW_CSTD::sin(angle);
+	vals_[3][1] = GLfloat(0);
+	vals_[0][2] = z*x*(GLfloat(1)-GLOW_CSTD::cos(angle))-y*GLOW_CSTD::sin(angle);
+	vals_[1][2] = y*z*(GLfloat(1)-GLOW_CSTD::cos(angle))+x*GLOW_CSTD::sin(angle);
+	vals_[2][2] = z*z+(GLfloat(1)-z*z)*GLOW_CSTD::cos(angle);
+	vals_[3][2] = GLfloat(0);
+	vals_[0][3] = GLfloat(0);
+	vals_[1][3] = GLfloat(0);
+	vals_[2][3] = GLfloat(0);
+	vals_[3][3] = GLfloat(1);
 }
 
 
@@ -367,22 +367,22 @@ void Mat4f::SetTranslation(
 	GLfloat y,
 	GLfloat z)
 {
-	_vals[0][0] = GLfloat(1);
-	_vals[1][0] = GLfloat(0);
-	_vals[2][0] = GLfloat(0);
-	_vals[3][0] = x;
-	_vals[0][1] = GLfloat(0);
-	_vals[1][1] = GLfloat(1);
-	_vals[2][1] = GLfloat(0);
-	_vals[3][1] = y;
-	_vals[0][2] = GLfloat(0);
-	_vals[1][2] = GLfloat(0);
-	_vals[2][2] = GLfloat(1);
-	_vals[3][2] = z;
-	_vals[0][3] = GLfloat(0);
-	_vals[1][3] = GLfloat(0);
-	_vals[2][3] = GLfloat(0);
-	_vals[3][3] = GLfloat(1);
+	vals_[0][0] = GLfloat(1);
+	vals_[1][0] = GLfloat(0);
+	vals_[2][0] = GLfloat(0);
+	vals_[3][0] = x;
+	vals_[0][1] = GLfloat(0);
+	vals_[1][1] = GLfloat(1);
+	vals_[2][1] = GLfloat(0);
+	vals_[3][1] = y;
+	vals_[0][2] = GLfloat(0);
+	vals_[1][2] = GLfloat(0);
+	vals_[2][2] = GLfloat(1);
+	vals_[3][2] = z;
+	vals_[0][3] = GLfloat(0);
+	vals_[1][3] = GLfloat(0);
+	vals_[2][3] = GLfloat(0);
+	vals_[3][3] = GLfloat(1);
 }
 
 
@@ -395,22 +395,22 @@ void Mat4f::SetScale(
 	GLfloat y,
 	GLfloat z)
 {
-	_vals[0][0] = x;
-	_vals[1][0] = GLfloat(0);
-	_vals[2][0] = GLfloat(0);
-	_vals[3][0] = GLfloat(0);
-	_vals[0][1] = GLfloat(0);
-	_vals[1][1] = y;
-	_vals[2][1] = GLfloat(0);
-	_vals[3][1] = GLfloat(0);
-	_vals[0][2] = GLfloat(0);
-	_vals[1][2] = GLfloat(0);
-	_vals[2][2] = z;
-	_vals[3][2] = GLfloat(0);
-	_vals[0][3] = GLfloat(0);
-	_vals[1][3] = GLfloat(0);
-	_vals[2][3] = GLfloat(0);
-	_vals[3][3] = GLfloat(1);
+	vals_[0][0] = x;
+	vals_[1][0] = GLfloat(0);
+	vals_[2][0] = GLfloat(0);
+	vals_[3][0] = GLfloat(0);
+	vals_[0][1] = GLfloat(0);
+	vals_[1][1] = y;
+	vals_[2][1] = GLfloat(0);
+	vals_[3][1] = GLfloat(0);
+	vals_[0][2] = GLfloat(0);
+	vals_[1][2] = GLfloat(0);
+	vals_[2][2] = z;
+	vals_[3][2] = GLfloat(0);
+	vals_[0][3] = GLfloat(0);
+	vals_[1][3] = GLfloat(0);
+	vals_[2][3] = GLfloat(0);
+	vals_[3][3] = GLfloat(1);
 }
 
 
@@ -423,22 +423,22 @@ void Mat4f::SetAxisTransformation(
 	const Vec3f& y,
 	const Vec3f& z)
 {
-	_vals[0][0] = x.GetX();
-	_vals[1][0] = y.GetX();
-	_vals[2][0] = z.GetX();
-	_vals[3][0] = 0.0f;
-	_vals[0][1] = x.GetY();
-	_vals[1][1] = y.GetY();
-	_vals[2][1] = z.GetY();
-	_vals[3][1] = 0.0f;
-	_vals[0][2] = x.GetZ();
-	_vals[1][2] = y.GetZ();
-	_vals[2][2] = z.GetZ();
-	_vals[3][2] = 0.0f;
-	_vals[0][3] = 0.0f;
-	_vals[1][3] = 0.0f;
-	_vals[2][3] = 0.0f;
-	_vals[3][3] = 1.0f;
+	vals_[0][0] = x.GetX();
+	vals_[1][0] = y.GetX();
+	vals_[2][0] = z.GetX();
+	vals_[3][0] = 0.0f;
+	vals_[0][1] = x.GetY();
+	vals_[1][1] = y.GetY();
+	vals_[2][1] = z.GetY();
+	vals_[3][1] = 0.0f;
+	vals_[0][2] = x.GetZ();
+	vals_[1][2] = y.GetZ();
+	vals_[2][2] = z.GetZ();
+	vals_[3][2] = 0.0f;
+	vals_[0][3] = 0.0f;
+	vals_[1][3] = 0.0f;
+	vals_[2][3] = 0.0f;
+	vals_[3][3] = 1.0f;
 }
 
 
@@ -450,14 +450,14 @@ const Vec3f Mat4f::operator*(
 	const Vec3f& v)
 {
 	return Vec3f(
-		v.GetX()*GLfloat(_vals[0][0]) + v.GetY()*GLfloat(_vals[1][0]) +
-			v.GetZ()*GLfloat(_vals[2][0]) + GLfloat(_vals[3][0]),
-		v.GetX()*GLfloat(_vals[0][1]) + v.GetY()*GLfloat(_vals[1][1]) +
-			v.GetZ()*GLfloat(_vals[2][1]) + GLfloat(_vals[3][1]),
-		v.GetX()*GLfloat(_vals[0][2]) + v.GetY()*GLfloat(_vals[1][2]) +
-			v.GetZ()*GLfloat(_vals[2][2]) + GLfloat(_vals[3][2])) /
-		GLfloat(v.GetX()*GLfloat(_vals[0][3]) + v.GetY()*GLfloat(_vals[1][3]) +
-	      v.GetZ()*GLfloat(_vals[2][3]) + GLfloat(_vals[3][3]));
+		v.GetX()*GLfloat(vals_[0][0]) + v.GetY()*GLfloat(vals_[1][0]) +
+			v.GetZ()*GLfloat(vals_[2][0]) + GLfloat(vals_[3][0]),
+		v.GetX()*GLfloat(vals_[0][1]) + v.GetY()*GLfloat(vals_[1][1]) +
+			v.GetZ()*GLfloat(vals_[2][1]) + GLfloat(vals_[3][1]),
+		v.GetX()*GLfloat(vals_[0][2]) + v.GetY()*GLfloat(vals_[1][2]) +
+			v.GetZ()*GLfloat(vals_[2][2]) + GLfloat(vals_[3][2])) /
+		GLfloat(v.GetX()*GLfloat(vals_[0][3]) + v.GetY()*GLfloat(vals_[1][3]) +
+	      v.GetZ()*GLfloat(vals_[2][3]) + GLfloat(vals_[3][3]));
 }
 
 
@@ -473,11 +473,11 @@ Mat4f& Mat4f::operator*=(
 	for (short j=0; j<4; j++)
 	for (short i=0; i<4; i++)
 	{
-		result._vals[i][j] =
-			_vals[0][j]*op2._vals[i][0] +
-			_vals[1][j]*op2._vals[i][1] +
-			_vals[2][j]*op2._vals[i][2] +
-			_vals[3][j]*op2._vals[i][3];
+		result.vals_[i][j] =
+			vals_[0][j]*op2.vals_[i][0] +
+			vals_[1][j]*op2.vals_[i][1] +
+			vals_[2][j]*op2.vals_[i][2] +
+			vals_[3][j]*op2.vals_[i][3];
 	}
 	
 	*this = result;
@@ -494,7 +494,7 @@ const Mat4f Mat4f::operator+(
 	for (short j=0; j<4; j++)
 	for (short i=0; i<4; i++)
 	{
-		result._vals[j][i] = _vals[j][i] + op2._vals[j][i];
+		result.vals_[j][i] = vals_[j][i] + op2.vals_[j][i];
 	}
 	
 	return result;
@@ -513,7 +513,7 @@ const Mat4f Mat4f::operator-(
 	for (short j=0; j<4; j++)
 	for (short i=0; i<4; i++)
 	{
-		result._vals[j][i] = _vals[j][i] - op2._vals[j][i];
+		result.vals_[j][i] = vals_[j][i] - op2.vals_[j][i];
 	}
 	
 	return result;
@@ -532,11 +532,11 @@ const Mat4f Mat4f::operator*(
 	for (short j=0; j<4; j++)
 	for (short i=0; i<4; i++)
 	{
-		result._vals[i][j] =
-			_vals[0][j]*op2._vals[i][0] +
-			_vals[1][j]*op2._vals[i][1] +
-			_vals[2][j]*op2._vals[i][2] +
-			_vals[3][j]*op2._vals[i][3];
+		result.vals_[i][j] =
+			vals_[0][j]*op2.vals_[i][0] +
+			vals_[1][j]*op2.vals_[i][1] +
+			vals_[2][j]*op2.vals_[i][2] +
+			vals_[3][j]*op2.vals_[i][3];
 	}
 	
 	return result;
@@ -616,7 +616,7 @@ void Quatf::GetRotation(
 	Vec3f& axis,
 	GLfloat& angle) const
 {
-	GLfloat val = _vals[0];
+	GLfloat val = vals_[0];
 	if (val > 1.0)
 	{
 		val = 1.0;
@@ -630,13 +630,13 @@ void Quatf::GetRotation(
 	{
 		angle -= Math::twopi;
 	}
-	if (_vals[1] == 0.0 && _vals[2] == 0.0 && _vals[3] == 0.0)
+	if (vals_[1] == 0.0 && vals_[2] == 0.0 && vals_[3] == 0.0)
 	{
 		axis.Set(GLfloat(1), GLfloat(0), GLfloat(0));
 	}
 	else
 	{
-		axis.Set(_vals[1], _vals[2], _vals[3]);
+		axis.Set(vals_[1], vals_[2], vals_[3]);
 		axis.Normalize();
 	}
 }
@@ -649,16 +649,16 @@ void Quatf::GetRotation(
 void Quatf::ScaleRotation(
 	GLfloat factor)
 {
-	GLfloat l = GLOW_CSTD::sqrt(GLfloat(1)-_vals[0]*_vals[0]);
+	GLfloat l = GLOW_CSTD::sqrt(GLfloat(1)-vals_[0]*vals_[0]);
 	if (l>FLT_EPSILON || l<-FLT_EPSILON)
 	{
 		Normalize();
-		GLfloat a = GLOW_CSTD::acos(_vals[0])*factor;
+		GLfloat a = GLOW_CSTD::acos(vals_[0])*factor;
 		GLfloat b = GLOW_CSTD::sin(a)/l;
-		_vals[0] = GLOW_CSTD::cos(a);
-		_vals[1] = _vals[1]*b;
-		_vals[2] = _vals[2]*b;
-		_vals[3] = _vals[3]*b;
+		vals_[0] = GLOW_CSTD::cos(a);
+		vals_[1] = vals_[1]*b;
+		vals_[2] = vals_[2]*b;
+		vals_[3] = vals_[3]*b;
 	}
 }
 
@@ -682,22 +682,22 @@ const Quatf Quatf::operator%(
 	const Quatf& op2) const
 {
 	return Quatf(
-		_vals[0]*op2._vals[0]-
-			_vals[1]*op2._vals[1]-
-			_vals[2]*op2._vals[2]-
-			_vals[3]*op2._vals[3],
-		_vals[0]*op2._vals[1]+
-			_vals[1]*op2._vals[0]+
-			_vals[2]*op2._vals[3]-
-			_vals[3]*op2._vals[2],
-		_vals[0]*op2._vals[2]-
-			_vals[1]*op2._vals[3]+
-			_vals[2]*op2._vals[0]+
-			_vals[3]*op2._vals[1],
-		_vals[0]*op2._vals[3]+
-			_vals[1]*op2._vals[2]-
-			_vals[2]*op2._vals[1]+
-			_vals[3]*op2._vals[0]);
+		vals_[0]*op2.vals_[0]-
+			vals_[1]*op2.vals_[1]-
+			vals_[2]*op2.vals_[2]-
+			vals_[3]*op2.vals_[3],
+		vals_[0]*op2.vals_[1]+
+			vals_[1]*op2.vals_[0]+
+			vals_[2]*op2.vals_[3]-
+			vals_[3]*op2.vals_[2],
+		vals_[0]*op2.vals_[2]-
+			vals_[1]*op2.vals_[3]+
+			vals_[2]*op2.vals_[0]+
+			vals_[3]*op2.vals_[1],
+		vals_[0]*op2.vals_[3]+
+			vals_[1]*op2.vals_[2]-
+			vals_[2]*op2.vals_[1]+
+			vals_[3]*op2.vals_[0]);
 }
 
 
@@ -705,22 +705,22 @@ Quatf& Quatf::operator%=(
 	const Quatf& op2)
 {
 	Quatf result(
-		_vals[0]*op2._vals[0]-
-			_vals[1]*op2._vals[1]-
-			_vals[2]*op2._vals[2]-
-			_vals[3]*op2._vals[3],
-		_vals[0]*op2._vals[1]+
-			_vals[1]*op2._vals[0]+
-			_vals[2]*op2._vals[3]-
-			_vals[3]*op2._vals[2],
-		_vals[0]*op2._vals[2]-
-			_vals[1]*op2._vals[3]+
-			_vals[2]*op2._vals[0]+
-			_vals[3]*op2._vals[1],
-		_vals[0]*op2._vals[3]+
-			_vals[1]*op2._vals[2]-
-			_vals[2]*op2._vals[1]+
-			_vals[3]*op2._vals[0]);
+		vals_[0]*op2.vals_[0]-
+			vals_[1]*op2.vals_[1]-
+			vals_[2]*op2.vals_[2]-
+			vals_[3]*op2.vals_[3],
+		vals_[0]*op2.vals_[1]+
+			vals_[1]*op2.vals_[0]+
+			vals_[2]*op2.vals_[3]-
+			vals_[3]*op2.vals_[2],
+		vals_[0]*op2.vals_[2]-
+			vals_[1]*op2.vals_[3]+
+			vals_[2]*op2.vals_[0]+
+			vals_[3]*op2.vals_[1],
+		vals_[0]*op2.vals_[3]+
+			vals_[1]*op2.vals_[2]-
+			vals_[2]*op2.vals_[1]+
+			vals_[3]*op2.vals_[0]);
 	*this = result;
 	return *this;
 }

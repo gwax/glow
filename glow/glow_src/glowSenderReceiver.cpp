@@ -72,10 +72,10 @@ GLOW_NAMESPACE_BEGIN
 
 Receiver_Base::~Receiver_Base()
 {
-	for (GLOW_STD::list<Sender_Base*>::iterator iter = _senders.begin();
-		iter != _senders.end(); iter++)
+	for (GLOW_STD::list<Sender_Base*>::iterator iter = senders_.begin();
+		iter != senders_.end(); iter++)
 	{
-		(*iter)->_RemoveReceiver(this);
+		(*iter)->RemoveReceiver_(this);
 	}
 }
 
@@ -88,21 +88,21 @@ Receiver_Base::~Receiver_Base()
 
 void Sender_Base::UnbindAll()
 {
-	for (GLOW_STD::list<Receiver_Base*>::iterator iter = _receivers.begin();
-		iter != _receivers.end(); iter++)
+	for (GLOW_STD::list<Receiver_Base*>::iterator iter = receivers_.begin();
+		iter != receivers_.end(); iter++)
 	{
-		(*iter)->_RemoveSender(this);
+		(*iter)->RemoveSender_(this);
 	}
-	_receivers.erase(_receivers.begin(), _receivers.end());
+	receivers_.erase(receivers_.begin(), receivers_.end());
 }
 
 
 Sender_Base::~Sender_Base()
 {
-	for (GLOW_STD::list<Receiver_Base*>::iterator iter = _receivers.begin();
-		iter != _receivers.end(); iter++)
+	for (GLOW_STD::list<Receiver_Base*>::iterator iter = receivers_.begin();
+		iter != receivers_.end(); iter++)
 	{
-		(*iter)->_RemoveSender(this);
+		(*iter)->RemoveSender_(this);
 	}
 }
 
@@ -121,9 +121,9 @@ ReceiverTracker::~ReceiverTracker()
 
 void ReceiverTracker::DeleteAllReceivers()
 {
-	while (!_receivers.empty())
+	while (!receivers_.empty())
 	{
-		delete _receivers.front();
+		delete receivers_.front();
 	}
 }
 
@@ -132,13 +132,13 @@ void ReceiverTracker::Unbind(
 	Receiver_Base* receiver)
 {
 	GLOW_STD::list<Receiver_Base*>::iterator iter =
-		GLOW_STD::find(_receivers.begin(), _receivers.end(), receiver);
-	GLOW_DEBUG(iter == _receivers.end(),
+		GLOW_STD::find(receivers_.begin(), receivers_.end(), receiver);
+	GLOW_DEBUG(iter == receivers_.end(),
 		"ReceiverTracker not tracking TReceiver");
-	receiver->_RemoveTracker(this);
-	_receivers.erase(iter);
-	if ((receiver->NumTrackers() == 0 && _options == referenceCountDelete) ||
-		_options == alwaysDelete)
+	receiver->RemoveTracker_(this);
+	receivers_.erase(iter);
+	if ((receiver->NumTrackers() == 0 && options_ == referenceCountDelete) ||
+		options_ == alwaysDelete)
 	{
 		delete receiver;
 	}
@@ -147,17 +147,17 @@ void ReceiverTracker::Unbind(
 
 void ReceiverTracker::UnbindAll()
 {
-	for (GLOW_STD::list<Receiver_Base*>::iterator iter = _receivers.begin();
-		iter != _receivers.end(); iter++)
+	for (GLOW_STD::list<Receiver_Base*>::iterator iter = receivers_.begin();
+		iter != receivers_.end(); iter++)
 	{
-		(*iter)->_RemoveTracker(this);
-		if (((*iter)->NumTrackers() == 0 && _options == referenceCountDelete) ||
-			_options == alwaysDelete)
+		(*iter)->RemoveTracker_(this);
+		if (((*iter)->NumTrackers() == 0 && options_ == referenceCountDelete) ||
+			options_ == alwaysDelete)
 		{
 			delete (*iter);
 		}
 	}
-	_receivers.erase(_receivers.begin(), _receivers.end());
+	receivers_.erase(receivers_.begin(), receivers_.end());
 }
 
 

@@ -63,23 +63,23 @@ GLOW_NAMESPACE_BEGIN
 
 inline GlowWindowSetting::GlowWindowSetting()
 {
-	_saveWindowNum = 0;
+	saveWindowNum_ = 0;
 }
 
 
 inline GlowWindowSetting::GlowWindowSetting(
 	int windowNum)
 {
-	_saveWindowNum = ::glutGetWindow();
+	saveWindowNum_ = ::glutGetWindow();
 	::glutSetWindow(windowNum);
 }
 
 
 inline GlowWindowSetting::~GlowWindowSetting()
 {
-	if (_saveWindowNum != 0)
+	if (saveWindowNum_ != 0)
 	{
-		::glutSetWindow(_saveWindowNum);
+		::glutSetWindow(saveWindowNum_);
 	}
 }
 
@@ -87,17 +87,17 @@ inline GlowWindowSetting::~GlowWindowSetting()
 inline void GlowWindowSetting::Set(
 	int windowNum)
 {
-	GLOW_DEBUG(_saveWindowNum != 0, "Attempt to re-enter GlowWindowSetting");
-	_saveWindowNum = ::glutGetWindow();
+	GLOW_DEBUG(saveWindowNum_ != 0, "Attempt to re-enter GlowWindowSetting");
+	saveWindowNum_ = ::glutGetWindow();
 	::glutSetWindow(windowNum);
 }
 
 
 inline void GlowWindowSetting::Reset()
 {
-	GLOW_DEBUG(_saveWindowNum == 0, "Attempt to re-exit GlowWindowSetting");
-	::glutSetWindow(_saveWindowNum);
-	_saveWindowNum = 0;
+	GLOW_DEBUG(saveWindowNum_ == 0, "Attempt to re-exit GlowWindowSetting");
+	::glutSetWindow(saveWindowNum_);
+	saveWindowNum_ = 0;
 }
 
 
@@ -109,34 +109,34 @@ inline void GlowWindowSetting::Reset()
 
 inline GlowDeferredTask::GlowDeferredTask()
 {
-	_curTimerID = 0;
+	curTimerID_ = 0;
 }
 
 
 inline void GlowDeferredTask::Schedule(
 	unsigned int msecs)
 {
-	if (_curTimerID != 0)
+	if (curTimerID_ != 0)
 	{
-		Glow::UnregisterTimer(_curTimerID);
+		Glow::UnregisterTimer(curTimerID_);
 	}
-	_curTimerID = Glow::RegisterTimer(msecs, this);
+	curTimerID_ = Glow::RegisterTimer(msecs, this);
 }
 
 
 inline void GlowDeferredTask::Unschedule()
 {
-	if (_curTimerID != 0)
+	if (curTimerID_ != 0)
 	{
-		Glow::UnregisterTimer(_curTimerID);
-		_curTimerID = 0;
+		Glow::UnregisterTimer(curTimerID_);
+		curTimerID_ = 0;
 	}
 }
 
 
 inline bool GlowDeferredTask::IsScheduled()
 {
-	return _curTimerID != 0;
+	return curTimerID_ != 0;
 }
 
 
@@ -154,8 +154,8 @@ inline GlowFixedSizeWindow::GlowFixedSizeWindow()
 inline GlowFixedSizeWindow::GlowFixedSizeWindow(
 	const GlowWindowParams& params)
 {
-	_canonicalWidth = params.width;
-	_canonicalHeight = params.height;
+	canonicalWidth_ = params.width;
+	canonicalHeight_ = params.height;
 	GlowWindow::Init(params);
 }
 
@@ -169,8 +169,8 @@ inline GlowFixedSizeWindow::GlowFixedSizeWindow(
 	Glow::BufferType mode,
 	Glow::EventMask eventMask)
 {
-	_canonicalWidth = width;
-	_canonicalHeight = height;
+	canonicalWidth_ = width;
+	canonicalHeight_ = height;
 	GlowWindow::Init(title, x, y, width, height, mode, eventMask);
 }
 
@@ -178,8 +178,8 @@ inline GlowFixedSizeWindow::GlowFixedSizeWindow(
 inline void GlowFixedSizeWindow::Init(
 	const GlowWindowParams& params)
 {
-	_canonicalWidth = params.width;
-	_canonicalHeight = params.height;
+	canonicalWidth_ = params.width;
+	canonicalHeight_ = params.height;
 	GlowWindow::Init(params);
 }
 
@@ -193,8 +193,8 @@ inline void GlowFixedSizeWindow::Init(
 	Glow::BufferType mode,
 	Glow::EventMask eventMask)
 {
-	_canonicalWidth = width;
-	_canonicalHeight = height;
+	canonicalWidth_ = width;
+	canonicalHeight_ = height;
 	GlowWindow::Init(title, x, y, width, height, mode, eventMask);
 }
 
@@ -203,21 +203,21 @@ inline void GlowFixedSizeWindow::ForceReshape(
 	int width,
 	int height)
 {
-	_canonicalWidth = width;
-	_canonicalHeight = height;
+	canonicalWidth_ = width;
+	canonicalHeight_ = height;
 	Reshape(width, height);
 }
 
 
 inline int GlowFixedSizeWindow::FixedWidth() const
 {
-	return _canonicalWidth;
+	return canonicalWidth_;
 }
 
 
 inline int GlowFixedSizeWindow::FixedHeight() const
 {
-	return _canonicalHeight;
+	return canonicalHeight_;
 }
 
 

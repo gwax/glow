@@ -118,7 +118,7 @@ _MISSINGSTUFF+=COMPILE
 endif
 
 ifneq ($(origin LINK_$(_ARCH)),undefined)
-LINK:=$(PROG_$(_ARCH))
+LINK:=$(LINK_$(_ARCH))
 endif
 ifneq ($(origin LINK_$(_FIRSTFILEOPT)),undefined)
 LINK:=$(LINK_$(_FIRSTFILEOPT))
@@ -127,7 +127,7 @@ ifneq ($(origin LINK_$(_ARCH)_$(_FIRSTFILEOPT)),undefined)
 LINK:=$(LINK_$(_ARCH)_$(_FIRSTFILEOPT))
 endif
 ifndef LINK
-LINK:=$(COMPILE)
+LINK:=$(COMPILE) -o $(PROG)
 endif
 
 ifneq ($(origin SHELL_$(_ARCH)),undefined)
@@ -201,6 +201,8 @@ NODEBUGLIBS:=$(NODEBUGLIBS_$(_ARCH))
 endif
 NODEBUGLIBS+=$(foreach _TEMP,$(_OTHERFILEOPTS),$(NODEBUGLIBS_$(_TEMP)))
 
+CLEANFILES+=
+
 ifeq ($(_DEBUGFILEOPT),DEBUG)
 CFLAGS+=$(DEBUGCFLAGS)
 LDFLAGS+=$(DEBUGLDFLAGS)
@@ -215,17 +217,6 @@ ifndef DEPSUFFIX
 DEPSUFFIX:=dep
 endif
 
-ifdef _MISSINGSTUFF
-.PHONY: dummy
-dummy:
-	@echo
-	@echo Symbols missing from makefile:
-	@echo "  $(_MISSINGSTUFF)"
-	@echo
-	@echo +++ Terminating build +++
-	@echo
-endif
-
 ifeq ($(_GLOWLIBFILEOPT),GLOWLIB)
 _OBJS:=$(addsuffix .o,$(MODULES))
 _DEPS:=$(addsuffix .$(DEPSUFFIX),$(MODULES))
@@ -236,16 +227,24 @@ endif
 VPATH=$(SRCDIR):$(GLOWDIR)
 
 $(PROG): $(_OBJS)
+ifdef _MISSINGSTUFF
+	@echo
+	@echo Symbols missing from makefile:
+	@echo "  $(_MISSINGSTUFF)"
+	@echo
+	@echo +++ Terminating build +++
+	@echo
+else
 	@echo
 	@echo --- Linker: $@ ---
 ifeq ($(_GLOWLIBFILEOPT),GLOWLIB)
 ifeq ($(_DEBUGFILEOPT),DEBUG)
-	$(LINK) $(LDFLAGS) -o $@ $^ -lglowdebug $(LIBS)
+	$(LINK) $(LDFLAGS) $^ -lglowdebug $(LIBS)
 else
-	$(LINK) $(LDFLAGS) -o $@ $^ -lglow $(LIBS)
+	$(LINK) $(LDFLAGS) $^ -lglow $(LIBS)
 endif
 else
-	$(LINK) $(LDFLAGS) -o $@ $^ $(LIBS)
+	$(LINK) $(LDFLAGS) $^ $(LIBS)
 endif
 	@echo
 ifeq ($(_STRIPFILEOPT),STRIP)
@@ -266,6 +265,7 @@ ifneq ($(strip $(_OTHERFILEOPTS)),)
 	@echo "  File-options: $(_OTHERFILEOPTS)"
 endif
 	@echo
+endif
 
 .PHONY: all
 all: $(PROG)
@@ -339,7 +339,7 @@ cleandeps:
 clean:
 	@echo
 	@echo --- Cleaning: $(PROG) ---
-	rm -f -r $(PROG) *.o *.$(DEPSUFFIX) ii_files so_locations
+	rm -f -r $(PROG) *.o *.$(DEPSUFFIX) ii_files so_locations $(CLEANFILES)
 	@echo
 	@echo +++ Finished clean +++
 	@echo
@@ -368,7 +368,9 @@ IGNOREDEPTARGETS+=info cleanobjs cleandeps clean
 
 ifndef _MISSINGSTUFF
 ifeq ($(MAKECMDGOALS),)
+ifneq ($(filter .,$(IGNOREDEPTARGETS)),.)
 include $(_DEPS)
+endif
 else
 ifneq ($(filter $(MAKECMDGOALS),$(IGNOREDEPTARGETS)),$(MAKECMDGOALS))
 include $(_DEPS)

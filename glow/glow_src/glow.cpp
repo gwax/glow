@@ -67,6 +67,14 @@ GLOW_INTERNAL_USINGSTD
 GLOW_NAMESPACE_BEGIN
 
 
+typedef GLOW_STD::map<int, GlowSubwindow*>::value_type WindowRegistryEntry_;
+typedef GLOW_STD::map<int, GlowMenu*>::value_type MenuRegistryEntry_;
+typedef GLOW_STD::map<int, GlowSubwindow*>::iterator WindowRegistryIterator_;
+typedef GLOW_STD::map<int, GlowMenu*>::iterator MenuRegistryIterator_;
+typedef GLOW_STD::vector<Glow_MenuItem>::iterator MenuItemIterator_;
+typedef GLOW_STD::vector<Glow_MenuItem>::const_iterator MenuItemConstIterator_;
+
+
 /*
 ===============================================================================
 	Param defaults
@@ -193,17 +201,17 @@ void GlowMouseFilter::OnMessage(
 */
 
 // Map window IDs to GlowSubwindow*s
-GLOW_STD::map<int, GlowSubwindow*> Glow::_windowRegistry;
+GLOW_STD::map<int, GlowSubwindow*> Glow::windowRegistry_;
 // Map menu IDs to GlowMenu*s
-GLOW_STD::map<int, GlowMenu*> Glow::_menuRegistry;
+GLOW_STD::map<int, GlowMenu*> Glow::menuRegistry_;
 
 // List of components to activate in deferred activation
-GLOW_STD::map<GlowComponent*, bool> Glow::_activateNotifyList;
+GLOW_STD::map<GlowComponent*, bool> Glow::activateNotifyList_;
 // List of components to close in deferred delete (bool is unused)
-GLOW_STD::map<GlowComponent*, bool> Glow::_closeList;
+GLOW_STD::map<GlowComponent*, bool> Glow::closeList_;
 // Special pointer to a function to call during deferred event time
 // used by widget system to implement deferred widget events
-void (*Glow::_widgetNotifier)() = 0;
+void (*Glow::widgetNotifier_)() = 0;
 // Each subwindow contains a local clock value, and there's this global
 // clock here that gets incremented before every event handler. If local
 // clock == global clock, then the subwindow's data members contain the
@@ -217,40 +225,40 @@ void (*Glow::_widgetNotifier)() = 0;
 // If the window is moved by the user, the local clock will be inc'd
 // at the beginning of the next event handling cycle, so GLOW knows that
 // it is possible the cached data member values are stale.
-unsigned long Glow::_clock = 0;
+unsigned long Glow::clock_ = 0;
 
 // Subwindow that spawned the current menu. Set if a menu is down.
-GlowSubwindow* Glow::_menuWindow = 0;
+GlowSubwindow* Glow::menuWindow_ = 0;
 // Coordinates of the click that spawned the current menu.
-int Glow::_menuXClick = -1;
-int Glow::_menuYClick = -1;
+int Glow::menuXClick_ = -1;
+int Glow::menuYClick_ = -1;
 // Is a menu down?
-bool Glow::_menuInUse = false;
+bool Glow::menuInUse_ = false;
 
 // Modal window stack
-GLOW_STD::vector<GlowWindow*> Glow::_modalWindows;
+GLOW_STD::vector<GlowWindow*> Glow::modalWindows_;
 
 // Sender for idle events
-TSender<const GlowIdleMessage&> Glow::_idleSender;
+TSender<const GlowIdleMessage&> Glow::idleSender_;
 // List of senders for timer events. Maps Timer IDs to senders.
-GLOW_STD::map<int, TSender<const GlowTimerMessage&>*> Glow::_timerSenders;
+GLOW_STD::map<int, TSender<const GlowTimerMessage&>*> Glow::timerSenders_;
 // The next timer ID that will be assigned.
-int Glow::_nextTimerID = 1;
+int Glow::nextTimerID_ = 1;
 
 // Special idle function receiver implementing GLUT-style idle func
-Glow_IdleFuncReceiver* Glow::_idleFuncReceiver = 0;
+Glow_IdleFuncReceiver* Glow::idleFuncReceiver_ = 0;
 // GLUT-style menu status function pointer
-void (*Glow::_userMenuStatusFunc)(int status, int x, int y) = 0;
+void (*Glow::userMenuStatusFunc_)(int status, int x, int y) = 0;
 
 // Global filters for mouse and keyboard events
-TSender<GlowMouseData&> Glow::_mouseFilters;
-TSender<GlowKeyboardData&> Glow::_keyboardFilters;
+TSender<GlowMouseData&> Glow::mouseFilters_;
+TSender<GlowKeyboardData&> Glow::keyboardFilters_;
 
 // Number of toplevel windows in existence
-int Glow::_numToplevelWindows = 0;
+int Glow::numToplevelWindows_ = 0;
 // If true, GLOW will automatically quit when the last toplevel window
 // is deleted.
-bool Glow::_autoQuitting = false;
+bool Glow::autoQuitting_ = false;
 
 // GLUT seems to have a bug that sometimes causes windows to be "locked
 // out" of the worklist (i.e. unable to receive events.) It often happens
@@ -259,9 +267,9 @@ bool Glow::_autoQuitting = false;
 // until the next event.
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
 // Window ID currently in display callback, or 0 for not displaying
-int Glow::_curDisplayWindow = 0;
+int Glow::curDisplayWindow_ = 0;
 // Window ID for which we should repost redisplay, or 0 for none.
-int Glow::_refreshMe = 0;
+int Glow::refreshMe_ = 0;
 #endif
 
 
@@ -276,7 +284,7 @@ void Glow::Init(
 	char** argv)
 {
 	::glutInit(&argc, argv);
-	::glutMenuStatusFunc(Glow::_MenuStatusFunc);
+	::glutMenuStatusFunc(Glow::MenuStatusFunc_);
 }
 
 
@@ -304,56 +312,56 @@ int Glow::APIVersion()
 ===============================================================================
 */
 
-void Glow::_AddWindow(
+void Glow::AddWindow_(
 	GlowSubwindow* window,
 	int windowNum)
 {
 	if (dynamic_cast<GlowWindow*>(window) != 0)
 	{
-		++_numToplevelWindows;
+		++numToplevelWindows_;
 	}
-	_windowRegistry.insert(_WindowRegistryEntry(windowNum, window));
+	windowRegistry_.insert(WindowRegistryEntry_(windowNum, window));
 }
 
 
-void Glow::_RemoveWindow(
+void Glow::RemoveWindow_(
 	int windowNum)
 {
 	// Find entry in registry
-	_WindowRegistryIterator iter = _windowRegistry.find(windowNum);
-	if (iter != _windowRegistry.end())
+	WindowRegistryIterator_ iter = windowRegistry_.find(windowNum);
+	if (iter != windowRegistry_.end())
 	{
 		// Update numToplevelWindows
 		GlowSubwindow* wind = (*iter).second;
 		if (dynamic_cast<GlowWindow*>(wind) != 0)
 		{
-			--_numToplevelWindows;
+			--numToplevelWindows_;
 		}
 		// Are there modal windows?
-		if (!_modalWindows.empty())
+		if (!modalWindows_.empty())
 		{
 			// Is window to remove the current top modal window?
-			if (wind == _modalWindows.back())
+			if (wind == modalWindows_.back())
 			{
 				PopModalWindow();
 			}
 			else
 			{
 				// Is window to remove in the modal window stack at all?
-				for (GLOW_STD::vector<GlowWindow*>::iterator miter = _modalWindows.begin();
-					miter != _modalWindows.end(); ++miter)
+				for (GLOW_STD::vector<GlowWindow*>::iterator miter = modalWindows_.begin();
+					miter != modalWindows_.end(); ++miter)
 				{
 					if (*miter == wind)
 					{
-						_modalWindows.erase(miter);
+						modalWindows_.erase(miter);
 						break;
 					}
 				}
 			}
 		}
-		_windowRegistry.erase(iter);
+		windowRegistry_.erase(iter);
 		// Auto-quit
-		if (_autoQuitting && _windowRegistry.empty())
+		if (autoQuitting_ && windowRegistry_.empty())
 		{
 			GLOW_CSTD::exit(0);
 		}
@@ -364,31 +372,31 @@ void Glow::_RemoveWindow(
 GlowSubwindow* Glow::ResolveWindow(
 	int windowNum)
 {
-	_WindowRegistryIterator iter = _windowRegistry.find(windowNum);
-	return (iter == _windowRegistry.end()) ? 0 : (*iter).second;
+	WindowRegistryIterator_ iter = windowRegistry_.find(windowNum);
+	return (iter == windowRegistry_.end()) ? 0 : (*iter).second;
 }
 
 
-void Glow::_AddMenu(
+void Glow::AddMenu_(
 	GlowMenu *menu,
 	int menuNum)
 {
-	_menuRegistry.insert(_MenuRegistryEntry(menuNum, menu));
+	menuRegistry_.insert(MenuRegistryEntry_(menuNum, menu));
 }
 
 
-void Glow::_RemoveMenu(
+void Glow::RemoveMenu_(
 	int menuNum)
 {
-	_menuRegistry.erase(menuNum);
+	menuRegistry_.erase(menuNum);
 }
 
 
 GlowMenu* Glow::ResolveMenu(
 	int menuNum)
 {
-	_MenuRegistryIterator iter = _menuRegistry.find(menuNum);
-	return (iter == _menuRegistry.end()) ? 0 : (*iter).second;
+	MenuRegistryIterator_ iter = menuRegistry_.find(menuNum);
+	return (iter == menuRegistry_.end()) ? 0 : (*iter).second;
 }
 
 
@@ -404,16 +412,16 @@ void Glow::RegisterIdle(
 	GLOW_DEBUGSCOPE("Glow::RegisterIdle");
 	
 	// Bind to this receiver if it's not already
-	if (!_idleSender.IsBoundTo(idle))
+	if (!idleSender_.IsBoundTo(idle))
 	{
-		_idleSender.Bind(idle);
+		idleSender_.Bind(idle);
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
-		if (_idleSender.NumReceivers() == 1 && _refreshMe == 0)
+		if (idleSender_.NumReceivers() == 1 && refreshMe_ == 0)
 #else
-		if (_idleSender.NumReceivers() == 1)
+		if (idleSender_.NumReceivers() == 1)
 #endif
 		{
-			::glutIdleFunc(_IdleFunc);
+			::glutIdleFunc(IdleFunc_);
 		}
 	}
 }
@@ -425,13 +433,13 @@ void Glow::UnregisterIdle(
 	GLOW_DEBUGSCOPE("Glow::UnregisterIdle");
 	
 	// Unbind this receiver if it's bound
-	if (_idleSender.IsBoundTo(idle))
+	if (idleSender_.IsBoundTo(idle))
 	{
-		_idleSender.Unbind(idle);
+		idleSender_.Unbind(idle);
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
-		if (_idleSender.NumReceivers() == 0 && _refreshMe == 0)
+		if (idleSender_.NumReceivers() == 0 && refreshMe_ == 0)
 #else
-		if (_idleSender.NumReceivers() == 0)
+		if (idleSender_.NumReceivers() == 0)
 #endif
 		{
 			::glutIdleFunc(0);
@@ -449,25 +457,25 @@ void Glow::SetIdleFunc(
 	if (func == 0)
 	{
 		// Unregister the GLUT-style idle function receiver
-		if (_idleFuncReceiver != 0)
+		if (idleFuncReceiver_ != 0)
 		{
-			UnregisterIdle(_idleFuncReceiver);
-			delete _idleFuncReceiver;
-			_idleFuncReceiver = 0;
+			UnregisterIdle(idleFuncReceiver_);
+			delete idleFuncReceiver_;
+			idleFuncReceiver_ = 0;
 		}
 	}
 	else
 	{
 		// Set the function pointer if the receiver is already registered
-		if (_idleFuncReceiver != 0)
+		if (idleFuncReceiver_ != 0)
 		{
-			_idleFuncReceiver->_funcPtr = func;
+			idleFuncReceiver_->_funcPtr = func;
 		}
 		else
 		// Otherwise register a GLUT-style idle function receiver
 		{
-			_idleFuncReceiver = new Glow_IdleFuncReceiver(func);
-			RegisterIdle(_idleFuncReceiver);
+			idleFuncReceiver_ = new Glow_IdleFuncReceiver(func);
+			RegisterIdle(idleFuncReceiver_);
 		}
 	}
 }
@@ -486,18 +494,18 @@ int Glow::RegisterTimer(
 	GLOW_DEBUGSCOPE("Glow::RegisterTimer");
 	
 	// Get the next available timer ID.
-	int timerID = _nextTimerID;
-	while (_timerSenders.find(timerID) != _timerSenders.end() || timerID == 0)
+	int timerID = nextTimerID_;
+	while (timerSenders_.find(timerID) != timerSenders_.end() || timerID == 0)
 	{
 		++timerID;
 	}
-	_nextTimerID = timerID + 1;
+	nextTimerID_ = timerID + 1;
 	// Create a sender for this timer
 	TSender<const GlowTimerMessage&>* sender = new TSender<const GlowTimerMessage&>;
 	sender->Bind(timer);
-	_timerSenders[timerID] = sender;
+	timerSenders_[timerID] = sender;
 	// Register timer event
-	::glutTimerFunc(msecs, _TimerFunc, timerID);
+	::glutTimerFunc(msecs, TimerFunc_, timerID);
 	return timerID;
 }
 
@@ -513,11 +521,11 @@ void Glow::UnregisterTimer(
 	// This will, of course, fail if the id gets reused. However, I don't
 	// think anyone will be scheduling 4 billion timers in that short
 	// a space of time.
-	GLOW_STD::map<int, TSender<const GlowTimerMessage&>*>::iterator iter = _timerSenders.find(id);
-	if (iter != _timerSenders.end())
+	GLOW_STD::map<int, TSender<const GlowTimerMessage&>*>::iterator iter = timerSenders_.find(id);
+	if (iter != timerSenders_.end())
 	{
 		delete (*iter).second;
-		_timerSenders.erase(iter);
+		timerSenders_.erase(iter);
 	}
 }
 
@@ -528,89 +536,89 @@ void Glow::UnregisterTimer(
 ===============================================================================
 */
 
-void Glow::_TimerFunc(
+void Glow::TimerFunc_(
 	int id)
 {
-	GLOW_DEBUGSCOPE("Glow::_TimerFunc");
+	GLOW_DEBUGSCOPE("Glow::TimerFunc_");
 	
-	++_clock;
+	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
-	_RaiseDeferredRefresh();
+	RaiseDeferredRefresh_();
 #endif
 	// Which timer was invoked?
-	GLOW_STD::map<int, TSender<const GlowTimerMessage&>*>::iterator iter = _timerSenders.find(id);
-	if (iter != _timerSenders.end())
+	GLOW_STD::map<int, TSender<const GlowTimerMessage&>*>::iterator iter = timerSenders_.find(id);
+	if (iter != timerSenders_.end())
 	{
 		// Remove the timer sender, and send the message.
 		TSender<const GlowTimerMessage&>* sender = (*iter).second;
-		_timerSenders.erase(iter);
+		timerSenders_.erase(iter);
 		sender->Send(GlowTimerMessage(id));
 		delete sender;
-		_ExecuteDeferred();
+		ExecuteDeferred_();
 	}
 }
 
 
-void Glow::_DisplayFunc()
+void Glow::DisplayFunc_()
 {
-	GLOW_DEBUGSCOPE("Glow::_DisplayFunc");
+	GLOW_DEBUGSCOPE("Glow::DisplayFunc_");
 	
-	++_clock;
+	++clock_;
 	// Paint the window
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
-	_curDisplayWindow = ::glutGetWindow();
-	if (_curDisplayWindow != _refreshMe)
+	curDisplayWindow_ = ::glutGetWindow();
+	if (curDisplayWindow_ != refreshMe_)
 	{
-		_RaiseDeferredRefresh();
+		RaiseDeferredRefresh_();
 	}
-	GlowSubwindow* window = ResolveWindow(_curDisplayWindow);
+	GlowSubwindow* window = ResolveWindow(curDisplayWindow_);
 #else
 	GlowSubwindow* window = ResolveWindow(::glutGetWindow());
 #endif
 	if (window != 0)
 	{
 		window->Paint();
-		window->_FinishRender();
-		_ExecuteDeferred();
+		window->FinishRender_();
+		ExecuteDeferred_();
 	}
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
-	_curDisplayWindow = 0;
+	curDisplayWindow_ = 0;
 #endif
 }
 
 
-void Glow::_ReshapeFunc(
+void Glow::ReshapeFunc_(
 	int width,
 	int height)
 {
-	GLOW_DEBUGSCOPE("Glow::_ReshapeFunc");
+	GLOW_DEBUGSCOPE("Glow::ReshapeFunc_");
 	
-	++_clock;
+	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
-	_RaiseDeferredRefresh();
+	RaiseDeferredRefresh_();
 #endif
 	// Find the window, set the width and height, and handle the event
 	GlowSubwindow* window = ResolveWindow(::glutGetWindow());
 	if (window != 0)
 	{
-		window->_width = width;
-		window->_height = height;
+		window->width_ = width;
+		window->height_ = height;
 		window->OnReshape(width, height);
-		_ExecuteDeferred();
+		ExecuteDeferred_();
 	}
 }
 
 
-void Glow::_KeyboardFunc(
+void Glow::KeyboardFunc_(
 	unsigned char key,
 	int x,
 	int y)
 {
-	GLOW_DEBUGSCOPE("Glow::_KeyboardFunc");
+	GLOW_DEBUGSCOPE("Glow::KeyboardFunc_");
 	
-	++_clock;
+	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
-	_RaiseDeferredRefresh();
+	RaiseDeferredRefresh_();
 #endif
 	// Find the window
 	GlowSubwindow* window = ResolveWindow(::glutGetWindow());
@@ -623,29 +631,29 @@ void Glow::_KeyboardFunc(
 		filterData.x = x;
 		filterData.y = y;
 		filterData.modifiers = Modifiers(::glutGetModifiers());
-		_keyboardFilters.Send(filterData);
+		keyboardFilters_.Send(filterData);
 		// If the event wasn't consumed, send it to the event handler
 		if (filterData._continue)
 		{
 			filterData.subwindow->OnKeyboard(filterData.key,
 				filterData.x, filterData.y, filterData.modifiers);
 		}
-		_ExecuteDeferred();
+		ExecuteDeferred_();
 	}
 }
 
 
-void Glow::_MouseFunc(
+void Glow::MouseFunc_(
 	int button,
 	int state,
 	int x,
 	int y)
 {
-	GLOW_DEBUGSCOPE("Glow::_MouseFunc");
+	GLOW_DEBUGSCOPE("Glow::MouseFunc_");
 	
-	++_clock;
+	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
-	_RaiseDeferredRefresh();
+	RaiseDeferredRefresh_();
 #endif
 	// Find the window
 	GlowSubwindow* window = ResolveWindow(::glutGetWindow());
@@ -660,7 +668,7 @@ void Glow::_MouseFunc(
 		filterData.x = x;
 		filterData.y = y;
 		filterData.modifiers = Modifiers(::glutGetModifiers());
-		_mouseFilters.Send(filterData);
+		mouseFilters_.Send(filterData);
 		// If the event wasn't consumed, send it to the event handler
 		if (filterData._continue)
 		{
@@ -675,59 +683,59 @@ void Glow::_MouseFunc(
 					filterData.x, filterData.y, filterData.modifiers);
 			}
 		}
-		_ExecuteDeferred();
+		ExecuteDeferred_();
 	}
 }
 
 
-void Glow::_MotionFunc(
+void Glow::MotionFunc_(
 	int x,
 	int y)
 {
-	GLOW_DEBUGSCOPE("Glow::_MotionFunc");
+	GLOW_DEBUGSCOPE("Glow::MotionFunc_");
 	
-	++_clock;
+	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
-	_RaiseDeferredRefresh();
+	RaiseDeferredRefresh_();
 #endif
 	// Find the window and invoke event handler
 	GlowSubwindow* window = ResolveWindow(::glutGetWindow());
 	if (window != 0)
 	{
 		window->OnMouseDrag(x, y);
-		_ExecuteDeferred();
+		ExecuteDeferred_();
 	}
 }
 
 
-void Glow::_PassiveMotionFunc(
+void Glow::PassiveMotionFunc_(
 	int x,
 	int y)
 {
-	GLOW_DEBUGSCOPE("Glow::_PassiveMotionFunc");
+	GLOW_DEBUGSCOPE("Glow::PassiveMotionFunc_");
 	
-	++_clock;
+	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
-	_RaiseDeferredRefresh();
+	RaiseDeferredRefresh_();
 #endif
 	// Find the window and invoke event handler
 	GlowSubwindow* window = ResolveWindow(::glutGetWindow());
 	if (window != 0)
 	{
 		window->OnMouseMotion(x, y);
-		_ExecuteDeferred();
+		ExecuteDeferred_();
 	}
 }
 
 
-void Glow::_VisibilityFunc(
+void Glow::VisibilityFunc_(
 	int state)
 {
-	GLOW_DEBUGSCOPE("Glow::_VisibilityFunc");
+	GLOW_DEBUGSCOPE("Glow::VisibilityFunc_");
 	
-	++_clock;
+	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
-	_RaiseDeferredRefresh();
+	RaiseDeferredRefresh_();
 #endif
 	// Find the window and invoke event handler
 	GlowSubwindow* window = ResolveWindow(::glutGetWindow());
@@ -741,19 +749,19 @@ void Glow::_VisibilityFunc(
 		{
 			window->OnInvisible();
 		}
-		_ExecuteDeferred();
+		ExecuteDeferred_();
 	}
 }
 
 
-void Glow::_EntryFunc(
+void Glow::EntryFunc_(
 	int state)
 {
-	GLOW_DEBUGSCOPE("Glow::_EntryFunc");
+	GLOW_DEBUGSCOPE("Glow::EntryFunc_");
 	
-	++_clock;
+	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
-	_RaiseDeferredRefresh();
+	RaiseDeferredRefresh_();
 #endif
 	// Find the window and invoke event handler
 	GlowSubwindow* window = ResolveWindow(::glutGetWindow());
@@ -767,21 +775,21 @@ void Glow::_EntryFunc(
 		{
 			window->OnMouseExit();
 		}
-		_ExecuteDeferred();
+		ExecuteDeferred_();
 	}
 }
 
 
-void Glow::_SpecialFunc(
+void Glow::SpecialFunc_(
 	int key,
 	int x,
 	int y)
 {
-	GLOW_DEBUGSCOPE("Glow::_SpecialFunc");
+	GLOW_DEBUGSCOPE("Glow::SpecialFunc_");
 	
-	++_clock;
+	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
-	_RaiseDeferredRefresh();
+	RaiseDeferredRefresh_();
 #endif
 	// Find the window
 	GlowSubwindow* window = ResolveWindow(::glutGetWindow());
@@ -794,89 +802,89 @@ void Glow::_SpecialFunc(
 		filterData.x = x;
 		filterData.y = y;
 		filterData.modifiers = Modifiers(::glutGetModifiers());
-		_keyboardFilters.Send(filterData);
+		keyboardFilters_.Send(filterData);
 		// If the event wasn't consumed, send it to the event handler
 		if (filterData._continue)
 		{
 			filterData.subwindow->OnKeyboard(filterData.key,
 				filterData.x, filterData.y, filterData.modifiers);
 		}
-		_ExecuteDeferred();
+		ExecuteDeferred_();
 	}
 }
 
 
-void Glow::_MenuStatusFunc(
+void Glow::MenuStatusFunc_(
 	int status,
 	int x,
 	int y)
 {
-	GLOW_DEBUGSCOPE("Glow::_MenuStatusFunc");
+	GLOW_DEBUGSCOPE("Glow::MenuStatusFunc_");
 	
-	++_clock;
+	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
-	_RaiseDeferredRefresh();
+	RaiseDeferredRefresh_();
 #endif
 	// Give GLUT-style function a chance to handle the event
-	if (_userMenuStatusFunc != 0)
+	if (userMenuStatusFunc_ != 0)
 	{
-		_userMenuStatusFunc(status, x, y);
+		userMenuStatusFunc_(status, x, y);
 	}
 	if (status == GLUT_MENU_IN_USE)
 	{
 		// Menu-down event
-		_menuWindow = ResolveWindow(::glutGetWindow());
-		_menuXClick = x;
-		_menuYClick = y;
-		_menuInUse = true;
-		if (_menuWindow != 0)
+		menuWindow_ = ResolveWindow(::glutGetWindow());
+		menuXClick_ = x;
+		menuYClick_ = y;
+		menuInUse_ = true;
+		if (menuWindow_ != 0)
 		{
-			_menuWindow->OnMenuDown(x, y);
+			menuWindow_->OnMenuDown(x, y);
 		}
 	}
 	else if (status == GLUT_MENU_NOT_IN_USE)
 	{
 		// Menu-up event
-		if (_menuWindow != 0)
+		if (menuWindow_ != 0)
 		{
-			_menuWindow->OnMenuUp();
+			menuWindow_->OnMenuUp();
 		}
-		_menuInUse = false;
+		menuInUse_ = false;
 	}
-	_ExecuteDeferred();
+	ExecuteDeferred_();
 }
 
 
-void Glow::_MenuFunc(
+void Glow::MenuFunc_(
 	int value)
 {
-	GLOW_DEBUGSCOPE("Glow::_MenuFunc");
+	GLOW_DEBUGSCOPE("Glow::MenuFunc_");
 	
-	++_clock;
+	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
-	_RaiseDeferredRefresh();
+	RaiseDeferredRefresh_();
 #endif
 	// Find the menu and invoke event handler
 	GlowMenu* menu = ResolveMenu(::glutGetMenu());
 	if (menu != 0)
 	{
-		menu->OnHit(value, _menuWindow, _menuXClick, _menuYClick);
-		_ExecuteDeferred();
+		menu->OnHit(value, menuWindow_, menuXClick_, menuYClick_);
+		ExecuteDeferred_();
 	}
 }
 
 
-void Glow::_IdleFunc()
+void Glow::IdleFunc_()
 {
-	GLOW_DEBUGSCOPE("Glow::_IdleFunc");
+	GLOW_DEBUGSCOPE("Glow::IdleFunc_");
 	
-	++_clock;
+	++clock_;
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
-	_RaiseDeferredRefresh();
+	RaiseDeferredRefresh_();
 #endif
 	// Invoke idle event handlers
-	_idleSender.Send(GlowIdleMessage());
-	_ExecuteDeferred();
+	idleSender_.Send(GlowIdleMessage());
+	ExecuteDeferred_();
 }
 
 
@@ -886,19 +894,19 @@ void Glow::_IdleFunc()
 ===============================================================================
 */
 
-void Glow::_ExecuteDeferred()
+void Glow::ExecuteDeferred_()
 {
-	GLOW_DEBUGSCOPE("Glow::_ExecuteDeferred");
+	GLOW_DEBUGSCOPE("Glow::ExecuteDeferred_");
 	
 	// Widget notifier
-	if (_widgetNotifier != 0)
+	if (widgetNotifier_ != 0)
 	{
-		_widgetNotifier();
+		widgetNotifier_();
 	}
 	
 	// Deferred activation and deactivation
-	for (GLOW_STD::map<GlowComponent*, bool>::iterator iter = _activateNotifyList.begin();
-		iter != _activateNotifyList.end(); ++iter)
+	for (GLOW_STD::map<GlowComponent*, bool>::iterator iter = activateNotifyList_.begin();
+		iter != activateNotifyList_.end(); ++iter)
 	{
 		if ((*iter).second)
 		{
@@ -909,24 +917,24 @@ void Glow::_ExecuteDeferred()
 			(*iter).first->OnDeactivate();
 		}
 	}
-	_activateNotifyList.clear();
+	activateNotifyList_.clear();
 	
 	// Deferred deletion of components
-	while (!_closeList.empty())
+	while (!closeList_.empty())
 	{
-		delete (*(_closeList.begin())).first;
+		delete (*(closeList_.begin())).first;
 	}
 }
 
 
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
-void Glow::_RaiseDeferredRefresh()
+void Glow::RaiseDeferredRefresh_()
 {
-	if (_refreshMe != 0)
+	if (refreshMe_ != 0)
 	{
-		RefreshGlutWindow(_refreshMe);
-		_refreshMe = 0;
-		if (_idleSender.NumReceivers() == 0)
+		RefreshGlutWindow(refreshMe_);
+		refreshMe_ = 0;
+		if (idleSender_.NumReceivers() == 0)
 		{
 			::glutIdleFunc(0);
 		}
@@ -946,18 +954,18 @@ void Glow::PushModalWindow(
 {
 	GLOW_DEBUGSCOPE("Glow::PushModalWindow");
 	
-	if (_modalWindows.empty())
+	if (modalWindows_.empty())
 	{
 		// This is the first modal window
 		// Go through and deactivate all toplevel windows except the one
 		// to be made modal
-		for (_WindowRegistryIterator iter = _windowRegistry.begin();
-			iter != _windowRegistry.end(); iter++)
+		for (WindowRegistryIterator_ iter = windowRegistry_.begin();
+			iter != windowRegistry_.end(); iter++)
 		{
 			GlowSubwindow* subwind = (*iter).second;
 			if (subwind->IsTopLevel() && subwind != wind)
 			{
-				subwind->_BroadcastStandby(false, false);
+				subwind->BroadcastStandby_(false, false);
 			}
 		}
 	}
@@ -965,11 +973,11 @@ void Glow::PushModalWindow(
 	{
 		// There's a modal window already. Deactivate that one and
 		// activate the new modal window
-		_modalWindows.back()->_BroadcastStandby(false, false);
-		wind->_BroadcastStandby(true, false);
+		modalWindows_.back()->BroadcastStandby_(false, false);
+		wind->BroadcastStandby_(true, false);
 	}
 	// push window onto stack, and bring to front
-	_modalWindows.push_back(wind);
+	modalWindows_.push_back(wind);
 	wind->Raise();
 }
 
@@ -979,21 +987,21 @@ void Glow::PopModalWindow()
 	GLOW_DEBUGSCOPE("Glow::PopModalWindow");
 	
 	// Make sure there's a modal window.
-	if (!_modalWindows.empty())
+	if (!modalWindows_.empty())
 	{
 		// pop modal window off stack
-		GlowWindow* wind = _modalWindows.back();
-		_modalWindows.pop_back();
-		if (_modalWindows.empty())
+		GlowWindow* wind = modalWindows_.back();
+		modalWindows_.pop_back();
+		if (modalWindows_.empty())
 		{
 			// This was the last modal window. Reactivate windows
-			for (_WindowRegistryIterator iter = _windowRegistry.begin();
-				iter != _windowRegistry.end(); iter++)
+			for (WindowRegistryIterator_ iter = windowRegistry_.begin();
+				iter != windowRegistry_.end(); iter++)
 			{
 				GlowSubwindow* subwind = (*iter).second;
 				if (subwind->IsTopLevel() && subwind != wind)
 				{
-					subwind->_BroadcastStandby(true, false);
+					subwind->BroadcastStandby_(true, false);
 				}
 			}
 		}
@@ -1001,9 +1009,9 @@ void Glow::PopModalWindow()
 		{
 			// There are more windows on the stack
 			// Deactivate popped window and reactivate next modal window
-			wind->_BroadcastStandby(false, false);
-			_modalWindows.back()->_BroadcastStandby(true, false);
-			_modalWindows.back()->Raise();
+			wind->BroadcastStandby_(false, false);
+			modalWindows_.back()->BroadcastStandby_(true, false);
+			modalWindows_.back()->Raise();
 		}
 	}
 }
@@ -1025,10 +1033,10 @@ bool Glow::IsExtensionSupported(
 	// If there's just no current window, we'll use the first one registered.
 	if (::glutGetWindow() == 0)
 	{
-		GLOW_DEBUG(_windowRegistry.empty(),
+		GLOW_DEBUG(windowRegistry_.empty(),
 			"Glow::IsExtensionSupported() called when no windows are open");
-		if (_windowRegistry.empty()) return false;
-		::glutSetWindow((*(_windowRegistry.begin())).first);
+		if (windowRegistry_.empty()) return false;
+		::glutSetWindow((*(windowRegistry_.begin())).first);
 	}
 	
 	// Need to copy the string because glutExtensionSupported wants a
@@ -1061,18 +1069,18 @@ void Glow::RefreshGlutWindow(
 	GLOW_DEBUGSCOPE("Glow::RefreshGlutWindow");
 	
 #ifdef GLOW_OPTION_GLUTREDISPLAYFIX
-	if (_curDisplayWindow == id)
+	if (curDisplayWindow_ == id)
 	{
 		// Workaround for apparent GLUT bug that affects re-posting refresh events
 		// from within a display function. Instead, we defer posting the refresh
 		// until the next event handled. (We register an idle event to make sure
 		// another event is raised.)
-		if (_refreshMe == 0)
+		if (refreshMe_ == 0)
 		{
-			_refreshMe = id;
-			if (_idleSender.NumReceivers() == 0)
+			refreshMe_ = id;
+			if (idleSender_.NumReceivers() == 0)
 			{
-				::glutIdleFunc(_IdleFunc);
+				::glutIdleFunc(IdleFunc_);
 			}
 		}
 	}
@@ -1112,17 +1120,17 @@ void GlowComponent::Init(
 {
 	GLOW_DEBUGSCOPE("GlowComponent::Init");
 	
-	_activeState = 1;
-	_firstChild = _lastChild = 0;
-	_prev = _next = 0;
-	_numChildren = 0;
-	_parent = 0;
+	activeState_ = 1;
+	firstChild_ = lastChild_ = 0;
+	prev_ = next_ = 0;
+	numChildren_ = 0;
+	parent_ = 0;
 	if (parent != 0)
 	{
-		parent->_AddChild(this);
+		parent->AddChild_(this);
 		if (!parent->IsActive())
 		{
-			_activeState = 2;
+			activeState_ = 2;
 		}
 	}
 }
@@ -1133,20 +1141,20 @@ GlowComponent::~GlowComponent()
 	GLOW_DEBUGSCOPE("GlowComponent::~GlowComponent");
 	
 	KillChildren();
-	if (_parent != 0)
+	if (parent_ != 0)
 	{
-		_parent->_RemoveChild(this);
+		parent_->RemoveChild_(this);
 	}
 	GLOW_STD::map<GlowComponent*, bool>::iterator iter =
-		Glow::_activateNotifyList.find(this);
-	if (iter != Glow::_activateNotifyList.end())
+		Glow::activateNotifyList_.find(this);
+	if (iter != Glow::activateNotifyList_.end())
 	{
-		Glow::_activateNotifyList.erase(iter);
+		Glow::activateNotifyList_.erase(iter);
 	}
-	iter = Glow::_closeList.find(this);
-	if (iter != Glow::_closeList.end())
+	iter = Glow::closeList_.find(this);
+	if (iter != Glow::closeList_.end())
 	{
-		Glow::_closeList.erase(iter);
+		Glow::closeList_.erase(iter);
 	}
 }
 
@@ -1156,61 +1164,61 @@ void GlowComponent::Close()
 	GLOW_DEBUGSCOPE("GlowComponent::Close");
 	
 	GLOW_STD::map<GlowComponent*, bool>::iterator iter =
-		Glow::_closeList.find(this);
-	if (iter == Glow::_closeList.end())
+		Glow::closeList_.find(this);
+	if (iter == Glow::closeList_.end())
 	{
-		Glow::_closeList.insert(
+		Glow::closeList_.insert(
 			GLOW_STD::pair<GlowComponent* const, bool>(this, true));
 	}
 }
 
 
-void GlowComponent::_AddChild(
+void GlowComponent::AddChild_(
 	GlowComponent* child)
 {
-	GLOW_DEBUGSCOPE("GlowComponent::_AddChild");
-	GLOW_ASSERT(child->_parent == 0);
+	GLOW_DEBUGSCOPE("GlowComponent::AddChild_");
+	GLOW_ASSERT(child->parent_ == 0);
 	
-	child->_parent = this;
-	if (_firstChild == 0)
+	child->parent_ = this;
+	if (firstChild_ == 0)
 	{
-		_firstChild = child;
+		firstChild_ = child;
 	}
 	else
 	{
-		_lastChild->_next = child;
+		lastChild_->next_ = child;
 	}
-	child->_prev = _lastChild;
-	child->_next = 0;
-	_lastChild = child;
-	++_numChildren;
+	child->prev_ = lastChild_;
+	child->next_ = 0;
+	lastChild_ = child;
+	++numChildren_;
 }
 
 
-void GlowComponent::_RemoveChild(
+void GlowComponent::RemoveChild_(
 	GlowComponent* child)
 {
-	GLOW_DEBUGSCOPE("GlowComponent::_RemoveChild");
-	GLOW_ASSERT(child->_parent == this);
+	GLOW_DEBUGSCOPE("GlowComponent::RemoveChild_");
+	GLOW_ASSERT(child->parent_ == this);
 	
-	if (child->_next == 0)
+	if (child->next_ == 0)
 	{
-		_lastChild = child->_prev;
+		lastChild_ = child->prev_;
 	}
 	else
 	{
-		child->_next->_prev = child->_prev;
+		child->next_->prev_ = child->prev_;
 	}
-	if (child->_prev == 0)
+	if (child->prev_ == 0)
 	{
-		_firstChild = child->_next;
+		firstChild_ = child->next_;
 	}
 	else
 	{
-		child->_prev->_next = child->_next;
+		child->prev_->next_ = child->next_;
 	}
-	child->_prev = child->_next = child->_parent = 0;
-	--_numChildren;
+	child->prev_ = child->next_ = child->parent_ = 0;
+	--numChildren_;
 }
 
 
@@ -1220,7 +1228,7 @@ void GlowComponent::Paint()
 	
 	if (OnBeginPaint())
 	{
-		for (GlowComponent* child = _firstChild; child != 0; child = child->Next())
+		for (GlowComponent* child = firstChild_; child != 0; child = child->Next())
 		{
 			if (dynamic_cast<GlowSubwindow*>(child) == 0)
 			{
@@ -1232,48 +1240,48 @@ void GlowComponent::Paint()
 }
 
 
-void GlowComponent::_BroadcastStandby(
+void GlowComponent::BroadcastStandby_(
 	bool activating,
 	bool first)
 {
-	GLOW_DEBUGSCOPE("GlowComponent::_BroadcastStandby");
+	GLOW_DEBUGSCOPE("GlowComponent::BroadcastStandby_");
 	
 	bool changing = false;
 	
-	if (activating && (_activeState == 2 || (first && _activeState == 0)))
+	if (activating && (activeState_ == 2 || (first && activeState_ == 0)))
 	{
 		changing = true;
-		_activeState = 1;
+		activeState_ = 1;
 	}
-	else if (!activating && _activeState == 1)
+	else if (!activating && activeState_ == 1)
 	{
 		changing = true;
-		_activeState = (first ? 0 : 2);
+		activeState_ = (first ? 0 : 2);
 	}
 	if (changing)
 	{
 		GlowSubwindow* subwindow = dynamic_cast<GlowSubwindow*>(this);
 		if (subwindow != 0)
 		{
-			subwindow->_EventsForActivation(activating);
+			subwindow->EventsForActivation_(activating);
 		}
 		GLOW_STD::map<GlowComponent*, bool>::iterator iter =
-			Glow::_activateNotifyList.find(this);
-		if (iter != Glow::_activateNotifyList.end())
+			Glow::activateNotifyList_.find(this);
+		if (iter != Glow::activateNotifyList_.end())
 		{
 			if (activating != (*iter).second)
 			{
-				Glow::_activateNotifyList.erase(iter);
+				Glow::activateNotifyList_.erase(iter);
 			}
 		}
 		else
 		{
-			Glow::_activateNotifyList.insert(
+			Glow::activateNotifyList_.insert(
 				GLOW_STD::pair<GlowComponent* const, bool>(this, activating));
 		}
-		for (GlowComponent* child = _firstChild; child != 0; child = child->Next())
+		for (GlowComponent* child = firstChild_; child != 0; child = child->Next())
 		{
-			child->_BroadcastStandby(activating, false);
+			child->BroadcastStandby_(activating, false);
 		}
 		WhichWindow()->Refresh();
 	}
@@ -1284,16 +1292,16 @@ void GlowComponent::Activate()
 {
 	GLOW_DEBUGSCOPE("GlowComponent::Activate");
 	
-	if (_activeState == 0)
+	if (activeState_ == 0)
 	{
 		if ((IsTopLevel() && (Glow::NumModalWindows() == 0 || Glow::TopModalWindow() == this)) ||
 			(!IsTopLevel() && Parent()->IsActive()))
 		{
-			_BroadcastStandby(true, true);
+			BroadcastStandby_(true, true);
 		}
 		else
 		{
-			_activeState = 2;
+			activeState_ = 2;
 		}
 	}
 }
@@ -1303,26 +1311,26 @@ void GlowComponent::Deactivate()
 {
 	GLOW_DEBUGSCOPE("GlowComponent::Deactivate");
 	
-	if (_activeState == 1)
+	if (activeState_ == 1)
 	{
-		_BroadcastStandby(false, true);
+		BroadcastStandby_(false, true);
 	}
-	else if (_activeState == 2)
+	else if (activeState_ == 2)
 	{
-		_activeState = 0;
+		activeState_ = 0;
 	}
 }
 
 
 GlowSubwindow* GlowComponent::WhichWindow()
 {
-	return _parent->WhichWindow();
+	return parent_->WhichWindow();
 }
 
 
 GlowWindow* GlowComponent::ToplevelWindow()
 {
-	return (_parent == 0) ? static_cast<GlowWindow*>(this) : _parent->ToplevelWindow();
+	return (parent_ == 0) ? static_cast<GlowWindow*>(this) : parent_->ToplevelWindow();
 }
 
 
@@ -1336,28 +1344,28 @@ void GlowComponent::ReorderChild(
 	
 	if (child == before) return;
 	
-	_RemoveChild(child);
+	RemoveChild_(child);
 	if (before == 0)
 	{
-		_AddChild(child);
+		AddChild_(child);
 	}
-	else if (before == _firstChild)
+	else if (before == firstChild_)
 	{
-		_firstChild->_prev = child;
-		child->_next = _firstChild;
-		child->_prev = 0;
-		_firstChild = child;
-		child->_parent = this;
-		++_numChildren;
+		firstChild_->prev_ = child;
+		child->next_ = firstChild_;
+		child->prev_ = 0;
+		firstChild_ = child;
+		child->parent_ = this;
+		++numChildren_;
 	}
 	else
 	{
-		child->_next = before;
-		child->_prev = before->_prev;
-		before->_prev = child;
-		child->_prev->_next = child;
-		child->_parent = this;
-		++_numChildren;
+		child->next_ = before;
+		child->prev_ = before->prev_;
+		before->prev_ = child;
+		child->prev_->next_ = child;
+		child->parent_ = this;
+		++numChildren_;
 	}
 }
 
@@ -1366,9 +1374,9 @@ void GlowComponent::KillChildren()
 {
 	GLOW_DEBUGSCOPE("GlowComponent::KillChildren");
 	
-	while (_numChildren > 0)
+	while (numChildren_ > 0)
 	{
-		delete _firstChild;
+		delete firstChild_;
 	}
 }
 
@@ -1414,33 +1422,33 @@ void GlowSubwindow::Init(
 	
 	GlowComponent::Init(parent);
 	::glutInitDisplayMode(params.mode);
-	_width = params.width;
-	if (_width == parentWindowSize)
+	width_ = params.width;
+	if (width_ == parentWindowSize)
 	{
-		_width = parent->WhichWindow()->Width() - params.x;
+		width_ = parent->WhichWindow()->Width() - params.x;
 	}
-	_height = params.height;
-	if (_height == parentWindowSize)
+	height_ = params.height;
+	if (height_ == parentWindowSize)
 	{
-		_height = parent->WhichWindow()->Height() - params.y;
+		height_ = parent->WhichWindow()->Height() - params.y;
 	}
-	_windowNum = ::glutCreateSubWindow(parent->WhichWindow()->_windowNum,
-		params.x, params.y, _width, _height);
-	_eventMask = params.eventMask;
-	_inactiveEventMask = params.inactiveEventMask;
-	_bufferType = params.mode;
-	_leftMenu = 0;
-	_centerMenu = 0;
-	_rightMenu = 0;
-	_RegisterCallbacks(_eventMask);
-	_saveCursor = GLUT_CURSOR_INHERIT;
-	Glow::_AddWindow(this, _windowNum);
-	_needSwapBuffers = ((params.mode & Glow::doubleBuffer) != 0);
-	_refreshEnabled = true;
-	_autoSwapBuffers = true;
-	_clock = Glow::_clock;
-	_globalXPos = ::glutGet((GLenum)GLUT_WINDOW_X);
-	_globalYPos = ::glutGet((GLenum)GLUT_WINDOW_Y);
+	windowNum_ = ::glutCreateSubWindow(parent->WhichWindow()->windowNum_,
+		params.x, params.y, width_, height_);
+	eventMask_ = params.eventMask;
+	inactiveEventMask_ = params.inactiveEventMask;
+	bufferType_ = params.mode;
+	leftMenu_ = 0;
+	centerMenu_ = 0;
+	rightMenu_ = 0;
+	RegisterCallbacks_(eventMask_);
+	saveCursor_ = GLUT_CURSOR_INHERIT;
+	Glow::AddWindow_(this, windowNum_);
+	needSwapBuffers_ = ((params.mode & Glow::doubleBuffer) != 0);
+	refreshEnabled_ = true;
+	autoSwapBuffers_ = true;
+	clock_ = Glow::clock_;
+	globalXPos_ = ::glutGet((GLenum)GLUT_WINDOW_X);
+	globalYPos_ = ::glutGet((GLenum)GLUT_WINDOW_Y);
 }
 
 
@@ -1470,25 +1478,25 @@ void GlowSubwindow::Init(
 	{
 		height = parent->WhichWindow()->Height() - y;
 	}
-	_windowNum = ::glutCreateSubWindow(parent->WhichWindow()->_windowNum,
+	windowNum_ = ::glutCreateSubWindow(parent->WhichWindow()->windowNum_,
 		x, y, width, height);
-	_width = width;
-	_height = height;
-	_eventMask = eventMask;
-	_inactiveEventMask = GlowSubwindowParams::defaults.inactiveEventMask;
-	_bufferType = mode;
-	_leftMenu = 0;
-	_centerMenu = 0;
-	_rightMenu = 0;
-	_RegisterCallbacks(_eventMask);
-	_saveCursor = GLUT_CURSOR_INHERIT;
-	Glow::_AddWindow(this, _windowNum);
-	_needSwapBuffers = ((mode & Glow::doubleBuffer) != 0);
-	_refreshEnabled = true;
-	_autoSwapBuffers = true;
-	_clock = Glow::_clock;
-	_globalXPos = ::glutGet((GLenum)GLUT_WINDOW_X);
-	_globalYPos = ::glutGet((GLenum)GLUT_WINDOW_Y);
+	width_ = width;
+	height_ = height;
+	eventMask_ = eventMask;
+	inactiveEventMask_ = GlowSubwindowParams::defaults.inactiveEventMask;
+	bufferType_ = mode;
+	leftMenu_ = 0;
+	centerMenu_ = 0;
+	rightMenu_ = 0;
+	RegisterCallbacks_(eventMask_);
+	saveCursor_ = GLUT_CURSOR_INHERIT;
+	Glow::AddWindow_(this, windowNum_);
+	needSwapBuffers_ = ((mode & Glow::doubleBuffer) != 0);
+	refreshEnabled_ = true;
+	autoSwapBuffers_ = true;
+	clock_ = Glow::clock_;
+	globalXPos_ = ::glutGet((GLenum)GLUT_WINDOW_X);
+	globalYPos_ = ::glutGet((GLenum)GLUT_WINDOW_Y);
 }
 
 
@@ -1497,21 +1505,21 @@ GlowSubwindow::~GlowSubwindow()
 	GLOW_DEBUGSCOPE("GlowSubwindow::~GlowSubwindow");
 	
 	KillChildren();
-	Glow::_RemoveWindow(_windowNum);
-	::glutDestroyWindow(_windowNum);
+	Glow::RemoveWindow_(windowNum_);
+	::glutDestroyWindow(windowNum_);
 }
 
 
-void GlowSubwindow::_RegisterCallbacks(
+void GlowSubwindow::RegisterCallbacks_(
 	Glow::EventMask eventMask)
 {
-	::glutDisplayFunc(Glow::_DisplayFunc);
-	::glutReshapeFunc(Glow::_ReshapeFunc);
+	::glutDisplayFunc(Glow::DisplayFunc_);
+	::glutReshapeFunc(Glow::ReshapeFunc_);
 	
 	if (eventMask & Glow::keyboardEvents)
 	{
-		::glutKeyboardFunc(Glow::_KeyboardFunc);
-		::glutSpecialFunc(Glow::_SpecialFunc);
+		::glutKeyboardFunc(Glow::KeyboardFunc_);
+		::glutSpecialFunc(Glow::SpecialFunc_);
 	}
 	else
 	{
@@ -1520,7 +1528,7 @@ void GlowSubwindow::_RegisterCallbacks(
 	}
 	if (eventMask & Glow::mouseEvents)
 	{
-		::glutMouseFunc(Glow::_MouseFunc);
+		::glutMouseFunc(Glow::MouseFunc_);
 	}
 	else
 	{
@@ -1528,7 +1536,7 @@ void GlowSubwindow::_RegisterCallbacks(
 	}
 	if (eventMask & Glow::dragEvents)
 	{
-		::glutMotionFunc(Glow::_MotionFunc);
+		::glutMotionFunc(Glow::MotionFunc_);
 	}
 	else
 	{
@@ -1536,7 +1544,7 @@ void GlowSubwindow::_RegisterCallbacks(
 	}
 	if (eventMask & Glow::motionEvents)
 	{
-		::glutPassiveMotionFunc(Glow::_PassiveMotionFunc);
+		::glutPassiveMotionFunc(Glow::PassiveMotionFunc_);
 	}
 	else
 	{
@@ -1544,7 +1552,7 @@ void GlowSubwindow::_RegisterCallbacks(
 	}
 	if (eventMask & Glow::visibilityEvents)
 	{
-		::glutVisibilityFunc(Glow::_VisibilityFunc);
+		::glutVisibilityFunc(Glow::VisibilityFunc_);
 	}
 	else
 	{
@@ -1552,7 +1560,7 @@ void GlowSubwindow::_RegisterCallbacks(
 	}
 	if (eventMask & Glow::focusEvents)
 	{
-		::glutEntryFunc(Glow::_EntryFunc);
+		::glutEntryFunc(Glow::EntryFunc_);
 	}
 	else
 	{
@@ -1561,19 +1569,19 @@ void GlowSubwindow::_RegisterCallbacks(
 	if (eventMask & Glow::menuEvents)
 	{
 		int saveMenu = ::glutGetMenu();
-		if (_leftMenu != 0)
+		if (leftMenu_ != 0)
 		{
-			::glutSetMenu(_leftMenu->_menuNum);
+			::glutSetMenu(leftMenu_->menuNum_);
 			::glutAttachMenu(Glow::leftButton);
 		}
-		if (_centerMenu != 0)
+		if (centerMenu_ != 0)
 		{
-			::glutSetMenu(_centerMenu->_menuNum);
+			::glutSetMenu(centerMenu_->menuNum_);
 			::glutAttachMenu(Glow::middleButton);
 		}
-		if (_rightMenu != 0)
+		if (rightMenu_ != 0)
 		{
-			::glutSetMenu(_rightMenu->_menuNum);
+			::glutSetMenu(rightMenu_->menuNum_);
 			::glutAttachMenu(Glow::rightButton);
 		}
 		if (saveMenu != 0)
@@ -1583,15 +1591,15 @@ void GlowSubwindow::_RegisterCallbacks(
 	}
 	else
 	{
-		if (_leftMenu != 0)
+		if (leftMenu_ != 0)
 		{
 			::glutDetachMenu(Glow::leftButton);
 		}
-		if (_centerMenu != 0)
+		if (centerMenu_ != 0)
 		{
 			::glutDetachMenu(Glow::middleButton);
 		}
-		if (_rightMenu != 0)
+		if (rightMenu_ != 0)
 		{
 			::glutDetachMenu(Glow::rightButton);
 		}
@@ -1705,16 +1713,16 @@ void GlowSubwindow::SetEventMask(
 {
 	GLOW_DEBUGSCOPE("GlowSubwindow::SetEventMask");
 	
-	_eventMask = eventMask;
+	eventMask_ = eventMask;
 	if (IsActive())
 	{
 		int saveWind = ::glutGetWindow();
-		if (saveWind != _windowNum)
+		if (saveWind != windowNum_)
 		{
-			::glutSetWindow(_windowNum);
+			::glutSetWindow(windowNum_);
 		}
-		_RegisterCallbacks(eventMask);
-		if (saveWind != 0 && saveWind != _windowNum)
+		RegisterCallbacks_(eventMask);
+		if (saveWind != 0 && saveWind != windowNum_)
 		{
 			::glutSetWindow(saveWind);
 		}
@@ -1727,16 +1735,16 @@ void GlowSubwindow::SetInactiveEventMask(
 {
 	GLOW_DEBUGSCOPE("GlowSubwindow::SetInactiveEventMask");
 	
-	_inactiveEventMask = eventMask;
+	inactiveEventMask_ = eventMask;
 	if (!IsActive())
 	{
 		int saveWind = ::glutGetWindow();
-		if (saveWind != _windowNum)
+		if (saveWind != windowNum_)
 		{
-			::glutSetWindow(_windowNum);
+			::glutSetWindow(windowNum_);
 		}
-		_RegisterCallbacks(eventMask);
-		if (saveWind != 0 && saveWind != _windowNum)
+		RegisterCallbacks_(eventMask);
+		if (saveWind != 0 && saveWind != windowNum_)
 		{
 			::glutSetWindow(saveWind);
 		}
@@ -1750,23 +1758,23 @@ void GlowSubwindow::Move(
 {
 	GLOW_DEBUGSCOPE("GlowSubwindow::Move");
 	
-	_clock = Glow::_clock;
-	_globalXPos = x;
-	_globalYPos = y;
+	clock_ = Glow::clock_;
+	globalXPos_ = x;
+	globalYPos_ = y;
 	GlowSubwindow* parent = ParentWindow();
 	if (parent != 0)
 	{
-		_globalXPos += parent->GlobalPositionX();
-		_globalYPos += parent->GlobalPositionY();
+		globalXPos_ += parent->GlobalPositionX();
+		globalYPos_ += parent->GlobalPositionY();
 	}
 	
 	int saveWind = ::glutGetWindow();
-	if (saveWind != _windowNum)
+	if (saveWind != windowNum_)
 	{
-		::glutSetWindow(_windowNum);
+		::glutSetWindow(windowNum_);
 	}
 	::glutPositionWindow(x, y);
-	if (saveWind != 0 && saveWind != _windowNum)
+	if (saveWind != 0 && saveWind != windowNum_)
 	{
 		::glutSetWindow(saveWind);
 	}
@@ -1782,16 +1790,16 @@ void GlowSubwindow::Reshape(
 	GLOW_ASSERT(width > 0);
 	GLOW_ASSERT(height > 0);
 	
-	_width = width;
-	_height = height;
+	width_ = width;
+	height_ = height;
 	
 	int saveWind = ::glutGetWindow();
-	if (saveWind != _windowNum)
+	if (saveWind != windowNum_)
 	{
-		::glutSetWindow(_windowNum);
+		::glutSetWindow(windowNum_);
 	}
 	::glutReshapeWindow(width, height);
-	if (saveWind != 0 && saveWind != _windowNum)
+	if (saveWind != 0 && saveWind != windowNum_)
 	{
 		::glutSetWindow(saveWind);
 	}
@@ -1803,12 +1811,12 @@ void GlowSubwindow::Raise()
 	GLOW_DEBUGSCOPE("GlowSubwindow::Raise");
 	
 	int saveWind = ::glutGetWindow();
-	if (saveWind != _windowNum)
+	if (saveWind != windowNum_)
 	{
-		::glutSetWindow(_windowNum);
+		::glutSetWindow(windowNum_);
 	}
 	::glutPopWindow();
-	if (saveWind != 0 && saveWind != _windowNum)
+	if (saveWind != 0 && saveWind != windowNum_)
 	{
 		::glutSetWindow(saveWind);
 	}
@@ -1820,12 +1828,12 @@ void GlowSubwindow::Lower()
 	GLOW_DEBUGSCOPE("GlowSubwindow::Lower");
 	
 	int saveWind = ::glutGetWindow();
-	if (saveWind != _windowNum)
+	if (saveWind != windowNum_)
 	{
-		::glutSetWindow(_windowNum);
+		::glutSetWindow(windowNum_);
 	}
 	::glutPushWindow();
-	if (saveWind != 0 && saveWind != _windowNum)
+	if (saveWind != 0 && saveWind != windowNum_)
 	{
 		::glutSetWindow(saveWind);
 	}
@@ -1837,12 +1845,12 @@ void GlowSubwindow::Show()
 	GLOW_DEBUGSCOPE("GlowSubwindow::Show");
 	
 	int saveWind = ::glutGetWindow();
-	if (saveWind != _windowNum)
+	if (saveWind != windowNum_)
 	{
-		::glutSetWindow(_windowNum);
+		::glutSetWindow(windowNum_);
 	}
 	::glutShowWindow();
-	if (saveWind != 0 && saveWind != _windowNum)
+	if (saveWind != 0 && saveWind != windowNum_)
 	{
 		::glutSetWindow(saveWind);
 	}
@@ -1854,12 +1862,12 @@ void GlowSubwindow::Hide()
 	GLOW_DEBUGSCOPE("GlowSubwindow::Hide");
 	
 	int saveWind = ::glutGetWindow();
-	if (saveWind != _windowNum)
+	if (saveWind != windowNum_)
 	{
-		::glutSetWindow(_windowNum);
+		::glutSetWindow(windowNum_);
 	}
 	::glutHideWindow();
-	if (saveWind != 0 && saveWind != _windowNum)
+	if (saveWind != 0 && saveWind != windowNum_)
 	{
 		::glutSetWindow(saveWind);
 	}
@@ -1871,14 +1879,14 @@ void GlowSubwindow::SetCursor(
 {
 	GLOW_DEBUGSCOPE("GlowSubwindow::SetCursor");
 	
-	_saveCursor = cursor;
+	saveCursor_ = cursor;
 	int saveWind = ::glutGetWindow();
-	if (saveWind != _windowNum)
+	if (saveWind != windowNum_)
 	{
-		::glutSetWindow(_windowNum);
+		::glutSetWindow(windowNum_);
 	}
 	::glutSetCursor(cursor);
-	if (saveWind != 0 && saveWind != _windowNum)
+	if (saveWind != 0 && saveWind != windowNum_)
 	{
 		::glutSetWindow(saveWind);
 	}
@@ -1893,37 +1901,37 @@ void GlowSubwindow::SetMenu(
 	
 	if (button == Glow::leftButton)
 	{
-		_leftMenu = menu;
+		leftMenu_ = menu;
 	}
 	else if (button == Glow::middleButton)
 	{
-		_centerMenu = menu;
+		centerMenu_ = menu;
 	}
 	else //if (button == Glow::rightButton)
 	{
-		_rightMenu = menu;
+		rightMenu_ = menu;
 	}
 	if (menu != 0)
 	{
-		if ((IsActive() && (_eventMask & Glow::menuEvents) != 0) ||
-			(!IsActive() && (_inactiveEventMask & Glow::menuEvents) != 0))
+		if ((IsActive() && (eventMask_ & Glow::menuEvents) != 0) ||
+			(!IsActive() && (inactiveEventMask_ & Glow::menuEvents) != 0))
 		{
 			int saveWind = ::glutGetWindow();
-			if (saveWind != _windowNum)
+			if (saveWind != windowNum_)
 			{
-				::glutSetWindow(_windowNum);
+				::glutSetWindow(windowNum_);
 			}
 			int saveMenu = ::glutGetMenu();
-			if (saveMenu != menu->_menuNum)
+			if (saveMenu != menu->menuNum_)
 			{
-				::glutSetMenu(menu->_menuNum);
+				::glutSetMenu(menu->menuNum_);
 			}
 			::glutAttachMenu(button);
-			if (saveWind != 0 && saveWind != _windowNum)
+			if (saveWind != 0 && saveWind != windowNum_)
 			{
 				::glutSetWindow(saveWind);
 			}
-			if (saveMenu != 0 && saveMenu != menu->_menuNum)
+			if (saveMenu != 0 && saveMenu != menu->menuNum_)
 			{
 				::glutSetMenu(saveMenu);
 			}
@@ -1932,12 +1940,12 @@ void GlowSubwindow::SetMenu(
 	else
 	{
 		int saveWind = ::glutGetWindow();
-		if (saveWind != _windowNum)
+		if (saveWind != windowNum_)
 		{
-			::glutSetWindow(_windowNum);
+			::glutSetWindow(windowNum_);
 		}
 		::glutDetachMenu(button);
-		if (saveWind != 0 && saveWind != _windowNum)
+		if (saveWind != 0 && saveWind != windowNum_)
 		{
 			::glutSetWindow(saveWind);
 		}
@@ -1952,12 +1960,12 @@ int GlowSubwindow::GlutInfo(
 	
 	int ret;
 	int saveWind = ::glutGetWindow();
-	if (saveWind != _windowNum)
+	if (saveWind != windowNum_)
 	{
-		::glutSetWindow(_windowNum);
+		::glutSetWindow(windowNum_);
 	}
 	ret = ::glutGet(key);
-	if (saveWind != 0 && saveWind != _windowNum)
+	if (saveWind != 0 && saveWind != windowNum_)
 	{
 		::glutSetWindow(saveWind);
 	}
@@ -1965,25 +1973,25 @@ int GlowSubwindow::GlutInfo(
 }
 
 
-void GlowSubwindow::_EventsForActivation(
+void GlowSubwindow::EventsForActivation_(
 	bool activating)
 {
 	int saveWind = ::glutGetWindow();
-	if (saveWind != _windowNum)
+	if (saveWind != windowNum_)
 	{
-		::glutSetWindow(_windowNum);
+		::glutSetWindow(windowNum_);
 	}
 	if (activating)
 	{
-		::glutSetCursor(_saveCursor);
-		_RegisterCallbacks(_eventMask);
+		::glutSetCursor(saveCursor_);
+		RegisterCallbacks_(eventMask_);
 	}
 	else
 	{
 		::glutSetCursor(GLUT_CURSOR_INHERIT);
-		_RegisterCallbacks(_inactiveEventMask);
+		RegisterCallbacks_(inactiveEventMask_);
 	}
-	if (saveWind != 0 && saveWind != _windowNum)
+	if (saveWind != 0 && saveWind != windowNum_)
 	{
 		::glutSetWindow(saveWind);
 	}
@@ -2006,43 +2014,43 @@ void GlowWindow::Init(
 	GLOW_ASSERT(params.height > 0);
 	
 	GlowComponent::Init(0);
-	_eventMask = params.eventMask;
-	_inactiveEventMask = params.inactiveEventMask;
-	_bufferType = params.mode;
-	_leftMenu = 0;
-	_centerMenu = 0;
-	_rightMenu = 0;
-	_saveCursor = GLUT_CURSOR_INHERIT;
-	_width = params.width;
-	_height = params.height;
-	_title = new char[GLOW_CSTD::strlen(params.title)+1];
-	GLOW_CSTD::strcpy(_title, params.title);
+	eventMask_ = params.eventMask;
+	inactiveEventMask_ = params.inactiveEventMask;
+	bufferType_ = params.mode;
+	leftMenu_ = 0;
+	centerMenu_ = 0;
+	rightMenu_ = 0;
+	saveCursor_ = GLUT_CURSOR_INHERIT;
+	width_ = params.width;
+	height_ = params.height;
+	title_ = new char[GLOW_CSTD::strlen(params.title)+1];
+	GLOW_CSTD::strcpy(title_, params.title);
 	if (params.iconTitle == 0)
 	{
-		_iconTitle = new char[GLOW_CSTD::strlen(params.title)+1];
-		GLOW_CSTD::strcpy(_iconTitle, params.title);
+		iconTitle_ = new char[GLOW_CSTD::strlen(params.title)+1];
+		GLOW_CSTD::strcpy(iconTitle_, params.title);
 	}
 	else
 	{
-		_iconTitle = new char[GLOW_CSTD::strlen(params.iconTitle)+1];
-		GLOW_CSTD::strcpy(_iconTitle, params.iconTitle);
+		iconTitle_ = new char[GLOW_CSTD::strlen(params.iconTitle)+1];
+		GLOW_CSTD::strcpy(iconTitle_, params.iconTitle);
 	}
 	::glutInitWindowSize(params.width, params.height);
 	::glutInitWindowPosition(params.x, params.y);
 	::glutInitDisplayMode(params.mode);
-	_windowNum = ::glutCreateWindow(_title);
-	::glutSetIconTitle(_iconTitle);
-	_RegisterCallbacks(params.eventMask);
-	Glow::_AddWindow(this, _windowNum);
-	_needSwapBuffers = ((params.mode & Glow::doubleBuffer) != 0);
-	_refreshEnabled = true;
-	_autoSwapBuffers = true;
-	_clock = Glow::_clock;
-	_globalXPos = ::glutGet((GLenum)GLUT_WINDOW_X);
-	_globalYPos = ::glutGet((GLenum)GLUT_WINDOW_Y);
+	windowNum_ = ::glutCreateWindow(title_);
+	::glutSetIconTitle(iconTitle_);
+	RegisterCallbacks_(params.eventMask);
+	Glow::AddWindow_(this, windowNum_);
+	needSwapBuffers_ = ((params.mode & Glow::doubleBuffer) != 0);
+	refreshEnabled_ = true;
+	autoSwapBuffers_ = true;
+	clock_ = Glow::clock_;
+	globalXPos_ = ::glutGet((GLenum)GLUT_WINDOW_X);
+	globalYPos_ = ::glutGet((GLenum)GLUT_WINDOW_Y);
 	if (Glow::NumModalWindows() != 0)
 	{
-		_activeState = 2;
+		activeState_ = 2;
 		Glow::TopModalWindow()->Raise();
 	}
 }
@@ -2063,35 +2071,35 @@ void GlowWindow::Init(
 	GLOW_ASSERT(height > 0);
 	
 	GlowComponent::Init(0);
-	_eventMask = eventMask;
-	_inactiveEventMask = GlowWindowParams::defaults.inactiveEventMask;
-	_bufferType = mode;
-	_leftMenu = 0;
-	_centerMenu = 0;
-	_rightMenu = 0;
-	_saveCursor = GLUT_CURSOR_INHERIT;
-	_width = width;
-	_height = height;
+	eventMask_ = eventMask;
+	inactiveEventMask_ = GlowWindowParams::defaults.inactiveEventMask;
+	bufferType_ = mode;
+	leftMenu_ = 0;
+	centerMenu_ = 0;
+	rightMenu_ = 0;
+	saveCursor_ = GLUT_CURSOR_INHERIT;
+	width_ = width;
+	height_ = height;
 	int len = GLOW_CSTD::strlen(title)+1;
-	_title = new char[len];
-	GLOW_CSTD::strcpy(_title, title);
-	_iconTitle = new char[len];
-	GLOW_CSTD::strcpy(_iconTitle, title);
+	title_ = new char[len];
+	GLOW_CSTD::strcpy(title_, title);
+	iconTitle_ = new char[len];
+	GLOW_CSTD::strcpy(iconTitle_, title);
 	::glutInitWindowSize(width, height);
 	::glutInitWindowPosition(x, y);
 	::glutInitDisplayMode(mode);
-	_windowNum = ::glutCreateWindow(_title);
-	_RegisterCallbacks(eventMask);
-	Glow::_AddWindow(this, _windowNum);
-	_needSwapBuffers = ((mode & Glow::doubleBuffer) != 0);
-	_refreshEnabled = true;
-	_autoSwapBuffers = true;
-	_clock = Glow::_clock;
-	_globalXPos = ::glutGet((GLenum)GLUT_WINDOW_X);
-	_globalYPos = ::glutGet((GLenum)GLUT_WINDOW_Y);
+	windowNum_ = ::glutCreateWindow(title_);
+	RegisterCallbacks_(eventMask);
+	Glow::AddWindow_(this, windowNum_);
+	needSwapBuffers_ = ((mode & Glow::doubleBuffer) != 0);
+	refreshEnabled_ = true;
+	autoSwapBuffers_ = true;
+	clock_ = Glow::clock_;
+	globalXPos_ = ::glutGet((GLenum)GLUT_WINDOW_X);
+	globalYPos_ = ::glutGet((GLenum)GLUT_WINDOW_Y);
 	if (Glow::NumModalWindows() != 0)
 	{
-		_activeState = 2;
+		activeState_ = 2;
 		Glow::TopModalWindow()->Raise();
 	}
 }
@@ -2102,12 +2110,12 @@ void GlowWindow::Maximize()
 	GLOW_DEBUGSCOPE("GlowWindow::Maximize");
 	
 	int saveWind = ::glutGetWindow();
-	if (saveWind != _windowNum)
+	if (saveWind != windowNum_)
 	{
-		::glutSetWindow(_windowNum);
+		::glutSetWindow(windowNum_);
 	}
 	::glutFullScreen();
-	if (saveWind != 0 && saveWind != _windowNum)
+	if (saveWind != 0 && saveWind != windowNum_)
 	{
 		::glutSetWindow(saveWind);
 	}
@@ -2119,12 +2127,12 @@ void GlowWindow::Iconify()
 	GLOW_DEBUGSCOPE("GlowWindow::Iconify");
 	
 	int saveWind = ::glutGetWindow();
-	if (saveWind != _windowNum)
+	if (saveWind != windowNum_)
 	{
-		::glutSetWindow(_windowNum);
+		::glutSetWindow(windowNum_);
 	}
 	::glutIconifyWindow();
-	if (saveWind != 0 && saveWind != _windowNum)
+	if (saveWind != 0 && saveWind != windowNum_)
 	{
 		::glutSetWindow(saveWind);
 	}
@@ -2139,15 +2147,15 @@ void GlowWindow::SetTitle(
 	GLOW_ASSERT(name != 0);
 	
 	int saveWind = ::glutGetWindow();
-	if (saveWind != _windowNum)
+	if (saveWind != windowNum_)
 	{
-		::glutSetWindow(_windowNum);
+		::glutSetWindow(windowNum_);
 	}
-	delete[] _title;
-	_title = new char[GLOW_CSTD::strlen(name)+1];
-	GLOW_CSTD::strcpy(_title, name);
-	::glutSetWindowTitle(_title);
-	if (saveWind != 0 && saveWind != _windowNum)
+	delete[] title_;
+	title_ = new char[GLOW_CSTD::strlen(name)+1];
+	GLOW_CSTD::strcpy(title_, name);
+	::glutSetWindowTitle(title_);
+	if (saveWind != 0 && saveWind != windowNum_)
 	{
 		::glutSetWindow(saveWind);
 	}
@@ -2162,15 +2170,15 @@ void GlowWindow::SetIconTitle(
 	GLOW_ASSERT(name != 0);
 	
 	int saveWind = ::glutGetWindow();
-	if (saveWind != _windowNum)
+	if (saveWind != windowNum_)
 	{
-		::glutSetWindow(_windowNum);
+		::glutSetWindow(windowNum_);
 	}
-	delete[] _iconTitle;
-	_iconTitle = new char[GLOW_CSTD::strlen(name)+1];
-	GLOW_CSTD::strcpy(_iconTitle, name);
-	::glutSetIconTitle(_iconTitle);
-	if (saveWind != 0 && saveWind != _windowNum)
+	delete[] iconTitle_;
+	iconTitle_ = new char[GLOW_CSTD::strlen(name)+1];
+	GLOW_CSTD::strcpy(iconTitle_, name);
+	::glutSetIconTitle(iconTitle_);
+	if (saveWind != 0 && saveWind != windowNum_)
 	{
 		::glutSetWindow(saveWind);
 	}
@@ -2187,9 +2195,9 @@ GlowMenu::GlowMenu()
 {
 	GLOW_DEBUGSCOPE("GlowMenu::GlowMenu");
 	
-	_menuNum = ::glutCreateMenu(Glow::_MenuFunc);
-	Glow::_AddMenu(this, _menuNum);
-	_bindState = bindNormal;
+	menuNum_ = ::glutCreateMenu(Glow::MenuFunc_);
+	Glow::AddMenu_(this, menuNum_);
+	bindState_ = bindNormal;
 }
 
 
@@ -2197,9 +2205,9 @@ GlowMenu::~GlowMenu()
 {
 	GLOW_DEBUGSCOPE("GlowMenu::~GlowMenu");
 	
-	Glow::_RemoveMenu(_menuNum);
-	::glutDestroyMenu(_menuNum);
-	for (ItemIterator iter = _itemData.begin(); iter != _itemData.end(); ++iter)
+	Glow::RemoveMenu_(menuNum_);
+	::glutDestroyMenu(menuNum_);
+	for (MenuItemIterator_ iter = itemData_.begin(); iter != itemData_.end(); ++iter)
 	{
 		delete[] (*iter).label;
 		delete[] (*iter).mark;
@@ -2215,7 +2223,7 @@ void GlowMenu::OnHit(
 {
 	GLOW_DEBUGSCOPE("GlowMenu::OnHit");
 	
-	if (_bindState != bindNone)
+	if (bindState_ != bindNone)
 	{
 		GlowMenuMessage msg;
 		msg.code = code;
@@ -2223,27 +2231,27 @@ void GlowMenu::OnHit(
 		msg.window = window;
 		msg.x = x;
 		msg.y = y;
-		if (_bindState == bindSubwindow)
+		if (bindState_ == bindSubwindow)
 		{
 			window->OnDirectMenuHit(msg);
 		}
 		else
 		{
-			_sender.Send(msg);
+			sender_.Send(msg);
 		}
 	}
 }
 
 
-void GlowMenu::_SetupItem(
+void GlowMenu::SetupItem_(
 	int itemNum,
 	int untilNum) const
 {
 	if (untilNum == -1) untilNum = itemNum+1;
 	char buf[200];
 	int saveMenu = ::glutGetMenu();
-	::glutSetMenu(_menuNum);
-	ItemConstIterator iter = _itemData.begin()+itemNum;
+	::glutSetMenu(menuNum_);
+	MenuItemConstIterator_ iter = itemData_.begin()+itemNum;
 	for (int i=itemNum; i<untilNum; ++i)
 	{
 		buf[0] = 0;
@@ -2256,11 +2264,11 @@ void GlowMenu::_SetupItem(
 		{
 			if (i < ::glutGet(GLenum(GLUT_MENU_NUM_ITEMS)))
 			{
-				::glutChangeToSubMenu(i+1, buf, (*iter).subMenu->_menuNum);
+				::glutChangeToSubMenu(i+1, buf, (*iter).subMenu->menuNum_);
 			}
 			else
 			{
-				::glutAddSubMenu(buf, (*iter).subMenu->_menuNum);
+				::glutAddSubMenu(buf, (*iter).subMenu->menuNum_);
 			}
 		}
 		else
@@ -2297,10 +2305,10 @@ void GlowMenu::AddEntry(
 	item.mark = 0;
 	item.code = code;
 	item.subMenu = 0;
-	_itemData.push_back(item);
+	itemData_.push_back(item);
 	
 	int saveMenu = ::glutGetMenu();
-	::glutSetMenu(_menuNum);
+	::glutSetMenu(menuNum_);
 	::glutAddMenuEntry((char*)label, code);
 	if (saveMenu != 0)
 	{
@@ -2322,11 +2330,11 @@ void GlowMenu::AddSubmenu(
 	item.mark = 0;
 	item.code = 0;
 	item.subMenu = menu;
-	_itemData.push_back(item);
+	itemData_.push_back(item);
 	
 	int saveMenu = ::glutGetMenu();
-	::glutSetMenu(_menuNum);
-	::glutAddSubMenu((char*)label, menu->_menuNum);
+	::glutSetMenu(menuNum_);
+	::glutAddSubMenu((char*)label, menu->menuNum_);
 	if (saveMenu != 0)
 	{
 		::glutSetMenu(saveMenu);
@@ -2340,7 +2348,7 @@ void GlowMenu::InsertEntry(
 	int code)
 {
 	GLOW_DEBUGSCOPE("GlowMenu::InsertEntry");
-	GLOW_DEBUG(itemNum<0 || itemNum>int(_itemData.size()),
+	GLOW_DEBUG(itemNum<0 || itemNum>int(itemData_.size()),
 		"itemNum out of range in GlowMenu::InsertEntry");
 	
 	Glow_MenuItem item;
@@ -2349,9 +2357,9 @@ void GlowMenu::InsertEntry(
 	item.mark = 0;
 	item.code = code;
 	item.subMenu = 0;
-	_itemData.insert(_itemData.begin()+itemNum, item);
+	itemData_.insert(itemData_.begin()+itemNum, item);
 	
-	_SetupItem(itemNum, _itemData.size());
+	SetupItem_(itemNum, itemData_.size());
 }
 
 
@@ -2361,7 +2369,7 @@ void GlowMenu::InsertSubmenu(
 	GlowMenu* menu)
 {
 	GLOW_DEBUGSCOPE("GlowMenu::InsertSubmenu");
-	GLOW_DEBUG(itemNum<0 || itemNum>int(_itemData.size()),
+	GLOW_DEBUG(itemNum<0 || itemNum>int(itemData_.size()),
 		"itemNum out of range in GlowMenu::InsertSubmenu");
 	
 	Glow_MenuItem item;
@@ -2370,9 +2378,9 @@ void GlowMenu::InsertSubmenu(
 	item.mark = 0;
 	item.code = 0;
 	item.subMenu = menu;
-	_itemData.insert(_itemData.begin()+itemNum, item);
+	itemData_.insert(itemData_.begin()+itemNum, item);
 	
-	_SetupItem(itemNum, _itemData.size());
+	SetupItem_(itemNum, itemData_.size());
 }
 
 
@@ -2381,16 +2389,16 @@ void GlowMenu::RemoveItem(
 {
 	GLOW_DEBUGSCOPE("GlowMenu::RemoveItem");
 	
-	GLOW_DEBUG(itemNum<0 || itemNum>=int(_itemData.size()),
+	GLOW_DEBUG(itemNum<0 || itemNum>=int(itemData_.size()),
 		"itemnum out of range");
 	
-	ItemIterator iter = _itemData.begin()+itemNum;
+	MenuItemIterator_ iter = itemData_.begin()+itemNum;
 	delete[] (*iter).label;
 	delete[] (*iter).mark;
-	_itemData.erase(iter);
+	itemData_.erase(iter);
 	
 	int saveMenu = ::glutGetMenu();
-	::glutSetMenu(_menuNum);
+	::glutSetMenu(menuNum_);
 	::glutRemoveMenuItem(itemNum+1);
 	if (saveMenu != 0)
 	{
@@ -2406,10 +2414,10 @@ int GlowMenu::NextMarkedItem(
 	
 	GLOW_DEBUG(start<-1, "starting itemnum out of range");
 	
-	int max = _itemData.size();
+	int max = itemData_.size();
 	for (int i=start+1; i<max; i++)
 	{
-		if (_itemData[i].mark != 0)
+		if (itemData_[i].mark != 0)
 			return i;
 	}
 	return -1;
@@ -2422,16 +2430,16 @@ void GlowMenu::SetItemLabel(
 {
 	GLOW_DEBUGSCOPE("GlowMenu::SetItemLabel");
 	
-	GLOW_DEBUG(itemNum<0 || itemNum>=int(_itemData.size()),
+	GLOW_DEBUG(itemNum<0 || itemNum>=int(itemData_.size()),
 		"itemnum out of range");
 	GLOW_ASSERT(label);
 	
-	ItemIterator iter = _itemData.begin()+itemNum;
+	MenuItemIterator_ iter = itemData_.begin()+itemNum;
 	delete[] (*iter).label;
 	int labellen = GLOW_CSTD::strlen(label);
 	(*iter).label = new char[labellen+1];
 	GLOW_CSTD::strcpy((*iter).label, label);
-	_SetupItem(itemNum);
+	SetupItem_(itemNum);
 }
 
 
@@ -2441,10 +2449,10 @@ void GlowMenu::SetItemMark(
 {
 	GLOW_DEBUGSCOPE("GlowMenu::SetItemMark");
 	
-	GLOW_DEBUG(itemNum<0 || itemNum>=int(_itemData.size()),
+	GLOW_DEBUG(itemNum<0 || itemNum>=int(itemData_.size()),
 		"itemnum out of range");
 	
-	ItemIterator iter = _itemData.begin()+itemNum;
+	MenuItemIterator_ iter = itemData_.begin()+itemNum;
 	delete[] (*iter).mark;
 	if (mark == 0)
 	{
@@ -2456,7 +2464,7 @@ void GlowMenu::SetItemMark(
 		(*iter).mark = new char[marklen+1];
 		GLOW_CSTD::strcpy((*iter).mark, mark);
 	}
-	_SetupItem(itemNum);
+	SetupItem_(itemNum);
 }
 
 
@@ -2466,10 +2474,10 @@ void GlowMenu::ToggleItemMark(
 {
 	GLOW_DEBUGSCOPE("GlowMenu::ToggleItemMark");
 	
-	GLOW_DEBUG(itemNum<0 || itemNum>=int(_itemData.size()),
+	GLOW_DEBUG(itemNum<0 || itemNum>=int(itemData_.size()),
 		"itemnum out of range");
 	
-	ItemIterator iter = _itemData.begin()+itemNum;
+	MenuItemIterator_ iter = itemData_.begin()+itemNum;
 	if ((*iter).mark == 0)
 	{
 		int marklen = GLOW_CSTD::strlen(mark);
@@ -2481,7 +2489,7 @@ void GlowMenu::ToggleItemMark(
 		delete[] (*iter).mark;
 		(*iter).mark = 0;
 	}
-	_SetupItem(itemNum);
+	SetupItem_(itemNum);
 }
 
 
@@ -2490,13 +2498,13 @@ void GlowMenu::UnmarkItem(
 {
 	GLOW_DEBUGSCOPE("GlowMenu::UnmarkItem");
 	
-	GLOW_DEBUG(itemNum<0 || itemNum>=int(_itemData.size()),
+	GLOW_DEBUG(itemNum<0 || itemNum>=int(itemData_.size()),
 		"itemnum out of range");
 	
-	ItemIterator iter = _itemData.begin()+itemNum;
+	MenuItemIterator_ iter = itemData_.begin()+itemNum;
 	delete[] (*iter).mark;
 	(*iter).mark = 0;
-	_SetupItem(itemNum);
+	SetupItem_(itemNum);
 }
 
 
@@ -2505,11 +2513,11 @@ void GlowMenu::UnmarkAllItems()
 	GLOW_DEBUGSCOPE("GlowMenu::UnmarkAllItems");
 	
 	int itemNum = 0;
-	for (ItemIterator iter = _itemData.begin(); iter != _itemData.end(); ++iter)
+	for (MenuItemIterator_ iter = itemData_.begin(); iter != itemData_.end(); ++iter)
 	{
 		delete[] (*iter).mark;
 		(*iter).mark = 0;
-		_SetupItem(itemNum);
+		SetupItem_(itemNum);
 		itemNum++;
 	}
 }
@@ -2522,11 +2530,11 @@ void GlowMenu::ChangeToEntry(
 {
 	GLOW_DEBUGSCOPE("GlowMenu::ChangeToEntry");
 	
-	GLOW_DEBUG(itemNum<0 || itemNum>=int(_itemData.size()),
+	GLOW_DEBUG(itemNum<0 || itemNum>=int(itemData_.size()),
 		"itemnum out of range");
 	GLOW_ASSERT(label);
 	
-	ItemIterator iter = _itemData.begin()+itemNum;
+	MenuItemIterator_ iter = itemData_.begin()+itemNum;
 	delete[] (*iter).label;
 	int labellen = GLOW_CSTD::strlen(label);
 	(*iter).label = new char[labellen+1];
@@ -2535,7 +2543,7 @@ void GlowMenu::ChangeToEntry(
 	(*iter).mark = 0;
 	(*iter).code = code;
 	(*iter).subMenu = 0;
-	_SetupItem(itemNum);
+	SetupItem_(itemNum);
 }
 
 
@@ -2545,13 +2553,13 @@ void GlowMenu::SetItemCode(
 {
 	GLOW_DEBUGSCOPE("GlowMenu::SetItemCode");
 	
-	GLOW_DEBUG(itemNum<0 || itemNum>=int(_itemData.size()),
+	GLOW_DEBUG(itemNum<0 || itemNum>=int(itemData_.size()),
 		"itemnum out of range");
 	
-	ItemIterator iter = _itemData.begin()+itemNum;
+	MenuItemIterator_ iter = itemData_.begin()+itemNum;
 	(*iter).code = code;
 	(*iter).subMenu = 0;
-	_SetupItem(itemNum);
+	SetupItem_(itemNum);
 }
 
 
@@ -2559,12 +2567,12 @@ void GlowMenu::SetCodesToItemNumbers()
 {
 	GLOW_DEBUGSCOPE("GlowMenu::SetCodesToItemNumbers");
 	
-	int mx = _itemData.size();
+	int mx = itemData_.size();
 	for (int i=0; i<mx; ++i)
 	{
-		if (_itemData[i].subMenu == 0)
+		if (itemData_[i].subMenu == 0)
 		{
-			_itemData[i].code = i;
+			itemData_[i].code = i;
 		}
 	}
 }
@@ -2577,10 +2585,10 @@ void GlowMenu::ChangeToSubmenu(
 {
 	GLOW_DEBUGSCOPE("GlowMenu::ChangeToSubmenu");
 	
-	GLOW_DEBUG(itemNum<0 || itemNum>=int(_itemData.size()),
+	GLOW_DEBUG(itemNum<0 || itemNum>=int(itemData_.size()),
 		"itemnum out of range");
 	
-	ItemIterator iter = _itemData.begin()+itemNum;
+	MenuItemIterator_ iter = itemData_.begin()+itemNum;
 	delete[] (*iter).label;
 	int labellen = GLOW_CSTD::strlen(label);
 	(*iter).label = new char[labellen+1];
@@ -2589,7 +2597,7 @@ void GlowMenu::ChangeToSubmenu(
 	(*iter).mark = 0;
 	(*iter).code = 0;
 	(*iter).subMenu = menu;
-	_SetupItem(itemNum);
+	SetupItem_(itemNum);
 }
 
 
@@ -2599,13 +2607,13 @@ void GlowMenu::SetItemSubmenu(
 {
 	GLOW_DEBUGSCOPE("GlowMenu::SetItemSubmenu");
 	
-	GLOW_DEBUG(itemNum<0 || itemNum>=int(_itemData.size()),
+	GLOW_DEBUG(itemNum<0 || itemNum>=int(itemData_.size()),
 		"itemnum out of range");
 	
-	ItemIterator iter = _itemData.begin()+itemNum;
+	MenuItemIterator_ iter = itemData_.begin()+itemNum;
 	(*iter).code = 0;
 	(*iter).subMenu = menu;
-	_SetupItem(itemNum);
+	SetupItem_(itemNum);
 }
 
 

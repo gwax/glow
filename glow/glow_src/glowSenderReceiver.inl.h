@@ -70,57 +70,57 @@ GLOW_NAMESPACE_BEGIN
 
 inline Receiver_Base::Receiver_Base()
 {
-	_numActualSenders = 0;
+	numActualSenders_ = 0;
 }
 
 
 inline unsigned int Receiver_Base::NumSenders() const
 {
-	return _numActualSenders;
+	return numActualSenders_;
 }
 
 
 inline unsigned int Receiver_Base::NumTrackers() const
 {
-	return _senders.size() - _numActualSenders;
+	return senders_.size() - numActualSenders_;
 }
 
 
-inline void Receiver_Base::_AddSender(
+inline void Receiver_Base::AddSender_(
 	Sender_Base* sender)
 {
-	++_numActualSenders;
-	_senders.push_back(sender);
+	++numActualSenders_;
+	senders_.push_back(sender);
 }
 
 
-inline void Receiver_Base::_RemoveSender(
-	Sender_Base* sender)
-{
-	GLOW_STD::list<Sender_Base*>::iterator iter =
-		GLOW_STD::find(_senders.begin(), _senders.end(), sender);
-	GLOW_DEBUG(iter == _senders.end(),
-		"Sender not found in Receiver_Base::_RemoveSender");
-	--_numActualSenders;
-	_senders.erase(iter);
-}
-
-
-inline void Receiver_Base::_AddTracker(
-	Sender_Base* sender)
-{
-	_senders.push_back(sender);
-}
-
-
-inline void Receiver_Base::_RemoveTracker(
+inline void Receiver_Base::RemoveSender_(
 	Sender_Base* sender)
 {
 	GLOW_STD::list<Sender_Base*>::iterator iter =
-		GLOW_STD::find(_senders.begin(), _senders.end(), sender);
-	GLOW_DEBUG(iter == _senders.end(),
-		"Tracker not found in Receiver_Base::_RemoveTracker");
-	_senders.erase(iter);
+		GLOW_STD::find(senders_.begin(), senders_.end(), sender);
+	GLOW_DEBUG(iter == senders_.end(),
+		"Sender not found in Receiver_Base::RemoveSender_");
+	--numActualSenders_;
+	senders_.erase(iter);
+}
+
+
+inline void Receiver_Base::AddTracker_(
+	Sender_Base* sender)
+{
+	senders_.push_back(sender);
+}
+
+
+inline void Receiver_Base::RemoveTracker_(
+	Sender_Base* sender)
+{
+	GLOW_STD::list<Sender_Base*>::iterator iter =
+		GLOW_STD::find(senders_.begin(), senders_.end(), sender);
+	GLOW_DEBUG(iter == senders_.end(),
+		"Tracker not found in Receiver_Base::RemoveTracker_");
+	senders_.erase(iter);
 }
 
 
@@ -137,25 +137,25 @@ inline Sender_Base::Sender_Base()
 
 inline unsigned int Sender_Base::NumReceivers() const
 {
-	return _receivers.size();
+	return receivers_.size();
 }
 
 
 inline bool Sender_Base::IsBoundTo(
 	Receiver_Base* receiver) const
 {
-	return GLOW_STD::find(_receivers.begin(), _receivers.end(), receiver)!=_receivers.end();
+	return GLOW_STD::find(receivers_.begin(), receivers_.end(), receiver)!=receivers_.end();
 }
 
 
-inline void Sender_Base::_RemoveReceiver(
+inline void Sender_Base::RemoveReceiver_(
 	Receiver_Base* receiver)
 {
 	GLOW_STD::list<Receiver_Base*>::iterator iter =
-		GLOW_STD::find(_receivers.begin(), _receivers.end(), receiver);
-	GLOW_DEBUG(iter == _receivers.end(),
-		"Receiver not found in Sender_Base::_RemoveReceiver");
-	_receivers.erase(iter);
+		GLOW_STD::find(receivers_.begin(), receivers_.end(), receiver);
+	GLOW_DEBUG(iter == receivers_.end(),
+		"Receiver not found in Sender_Base::RemoveReceiver_");
+	receivers_.erase(iter);
 }
 
 
@@ -167,30 +167,30 @@ inline void Sender_Base::_RemoveReceiver(
 
 inline ReceiverTracker::ReceiverTracker()
 {
-	_options = neverDelete;
+	options_ = neverDelete;
 }
 
 
 inline void ReceiverTracker::Bind(
 	Receiver_Base* receiver)
 {
-	GLOW_DEBUG(GLOW_STD::find(_receivers.begin(), _receivers.end(), receiver)!=_receivers.end(),
+	GLOW_DEBUG(GLOW_STD::find(receivers_.begin(), receivers_.end(), receiver)!=receivers_.end(),
 		"ReceiverTracker already tracking TReceiver");
-	receiver->_AddTracker(this);
-	_receivers.push_back(receiver);
+	receiver->AddTracker_(this);
+	receivers_.push_back(receiver);
 }
 
 
 inline void ReceiverTracker::SetDeletingOptions(
 	DeletingOptions options)
 {
-	_options = options;
+	options_ = options;
 }
 
 
 inline ReceiverTracker::DeletingOptions ReceiverTracker::GetDeletingOptions() const
 {
-	return _options;
+	return options_;
 }
 
 
@@ -243,11 +243,11 @@ template <class T>
 inline void TSender<T>::Bind(
 	TReceiver<T>* receiver)
 {
-	GLOW_DEBUG(GLOW_STD::find(_receivers.begin(), _receivers.end(), receiver)!=_receivers.end(),
+	GLOW_DEBUG(GLOW_STD::find(receivers_.begin(), receivers_.end(), receiver)!=receivers_.end(),
 		"TSender already bound to TReceiver");
 	
-	receiver->_AddSender(this);
-	_receivers.push_back(receiver);
+	receiver->AddSender_(this);
+	receivers_.push_back(receiver);
 }
 
 
@@ -256,11 +256,11 @@ inline void TSender<T>::Unbind(
 	TReceiver<T>* receiver)
 {
 	GLOW_STD::list<Receiver_Base*>::iterator iter =
-		GLOW_STD::find(_receivers.begin(), _receivers.end(), receiver);
-	GLOW_DEBUG(iter == _receivers.end(),
+		GLOW_STD::find(receivers_.begin(), receivers_.end(), receiver);
+	GLOW_DEBUG(iter == receivers_.end(),
 		"TSender not bound to TReceiver");
-	receiver->_RemoveSender(this);
-	_receivers.erase(iter);
+	receiver->RemoveSender_(this);
+	receivers_.erase(iter);
 }
 
 
@@ -268,8 +268,8 @@ template <class T>
 inline void TSender<T>::Send(
 	T message) const
 {
-	GLOW_STD::list<Receiver_Base*>::const_iterator iter = _receivers.begin();
-	while (iter != _receivers.end())
+	GLOW_STD::list<Receiver_Base*>::const_iterator iter = receivers_.begin();
+	while (iter != receivers_.end())
 	{
 		TReceiver<T>* cur = static_cast<TReceiver<T>*>(*iter);
 		iter++;
@@ -303,30 +303,30 @@ inline TSender_Void::TSender_Void()
 inline void TSender_Void::Bind(
 	TReceiver_Void* receiver)
 {
-	GLOW_DEBUG(GLOW_STD::find(_receivers.begin(), _receivers.end(), receiver)!=_receivers.end(),
+	GLOW_DEBUG(GLOW_STD::find(receivers_.begin(), receivers_.end(), receiver)!=receivers_.end(),
 		"TSender already bound to TReceiver");
 	
-	receiver->_AddSender(this);
-	_receivers.push_back(receiver);
+	receiver->AddSender_(this);
+	receivers_.push_back(receiver);
 }
 
 
 inline void TSender_Void::Unbind(
 	TReceiver_Void* receiver)
 {
-	receiver->_RemoveSender(this);
+	receiver->RemoveSender_(this);
 	GLOW_STD::list<Receiver_Base*>::iterator iter =
-		GLOW_STD::find(_receivers.begin(), _receivers.end(), receiver);
-	GLOW_DEBUG(iter == _receivers.end(),
+		GLOW_STD::find(receivers_.begin(), receivers_.end(), receiver);
+	GLOW_DEBUG(iter == receivers_.end(),
 		"TSender not bound to TReceiver");
-	_receivers.erase(iter);
+	receivers_.erase(iter);
 }
 
 
 inline void TSender_Void::Send() const
 {
-	GLOW_STD::list<Receiver_Base*>::const_iterator iter = _receivers.begin();
-	while (iter != _receivers.end())
+	GLOW_STD::list<Receiver_Base*>::const_iterator iter = receivers_.begin();
+	while (iter != receivers_.end())
 	{
 		TReceiver_Void* cur = static_cast<TReceiver_Void*>(*iter);
 		iter++;
@@ -351,30 +351,30 @@ inline TSender<void>::TSender()
 inline void TSender<void>::Bind(
 	TReceiver<void>* receiver)
 {
-	GLOW_DEBUG(GLOW_STD::find(_receivers.begin(), _receivers.end(), receiver)!=_receivers.end(),
+	GLOW_DEBUG(GLOW_STD::find(receivers_.begin(), receivers_.end(), receiver)!=receivers_.end(),
 		"TSender already bound to TReceiver");
 	
-	receiver->_AddSender(this);
-	_receivers.push_back(receiver);
+	receiver->AddSender_(this);
+	receivers_.push_back(receiver);
 }
 
 
 inline void TSender<void>::Unbind(
 	TReceiver<void>* receiver)
 {
-	receiver->_RemoveSender(this);
+	receiver->RemoveSender_(this);
 	GLOW_STD::list<Receiver_Base*>::iterator iter =
-		GLOW_STD::find(_receivers.begin(), _receivers.end(), receiver);
-	GLOW_DEBUG(iter == _receivers.end(),
+		GLOW_STD::find(receivers_.begin(), receivers_.end(), receiver);
+	GLOW_DEBUG(iter == receivers_.end(),
 		"TSender not bound to TReceiver");
-	_receivers.erase(iter);
+	receivers_.erase(iter);
 }
 
 
 inline void TSender<void>::Send() const
 {
-	GLOW_STD::list<Receiver_Base*>::const_iterator iter = _receivers.begin();
-	while (iter != _receivers.end())
+	GLOW_STD::list<Receiver_Base*>::const_iterator iter = receivers_.begin();
+	while (iter != receivers_.end())
 	{
 		TReceiver<void>* cur = static_cast<TReceiver<void>*>(*iter);
 		iter++;

@@ -151,9 +151,9 @@ void GlowWidget::Init(
 {
 	GLOW_DEBUGSCOPE("GlowWidget::Init");
 	
-	if (Glow::_widgetNotifier == 0)
+	if (Glow::widgetNotifier_ == 0)
 	{
-		Glow::_widgetNotifier = GlowWidget::_ExecuteNotify;
+		Glow::widgetNotifier_ = GlowWidget::_ExecuteNotify;
 	}
 	
 	if (parent == 0)

@@ -11,18 +11,28 @@ everything: debug nodebug
 nodebug:
 	rm -f .glowmake.DEBUG
 	$(MAKE) clean
+	touch .glowmake.SHARED
 	$(MAKE) libglow.so
 	mv libglow.so libglow.so.1.0.1
+	rm -r .glowmake.SHARED
+	$(MAKE) libglow.a
+	mv libglow.a libglow.a.1.0.1
 
 debug:
 	touch .glowmake.DEBUG
 	$(MAKE) clean
+	touch .glowmake.SHARED
 	$(MAKE) libglow.so
 	mv libglow.so libglowdebug.so.1.0.1
+	rm -r .glowmake.SHARED
+	$(MAKE) libglow.a
+	mv libglow.a libglowdebug.a.1.0.1
 
-IGNOREDEPTARGETS:=everything debug nodebug
+CLEANFILES:=libglow.so libglow.a
+IGNOREDEPTARGETS:=everything debug nodebug .
 
-PROG=libglow.so
+PROG_SHARED=libglow.so
+PROG=libglow.a
 
 SRCDIR=.
 GLOWDIR=.
@@ -55,6 +65,10 @@ MODULES=\
 
 COMPILE_Linux=gcc
 COMPILE_IRIX=CC
+LINK_Linux=ar crs libglow.a
+LINK_IRIX=CC -ar -o libglow.a
+LINK_Linux_SHARED=gcc -shared -o libglow.so
+LINK_IRIX_SHARED=CC -shared -o libglow.a
 SHELL=/bin/sh
 
 #LIBS=-lglut -lpthread -lGL -lGLU -lXi -lXmu -lX11 -lm -lstdc++
@@ -67,7 +81,6 @@ CFLAGS_Linux=-Wall \
 	-DGLOW_PLATFORM_LINUX \
 	-DGLOW_PLATFORM_LITTLEENDIAN
 NODEBUGCFLAGS_Linux=-O2 -DNODEBUG
-LDFLAGS_Linux=-shared
 
 CFLAGS_IRIX=-fullwarn -no_auto_include \
 	-LANG:std \
@@ -78,7 +91,6 @@ CFLAGS_IRIX=-fullwarn -no_auto_include \
 	-DGLOW_PLATFORM_IRIX \
 	-DGLOW_PLATFORM_BIGENDIAN
 NODEBUGCFLAGS_IRIX=-O2 -DNODEBUG
-LDFLAGS_IRIX=-shared
 
 
 include $(GLOWDIR)/glow_base.Makefile

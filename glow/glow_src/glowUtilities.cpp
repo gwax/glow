@@ -74,9 +74,9 @@ GlowDeferredTask::~GlowDeferredTask()
 {
 	GLOW_DEBUGSCOPE("GlowDeferredTask::~GlowDeferredTask");
 	
-	if (_curTimerID != 0)
+	if (curTimerID_ != 0)
 	{
-		Glow::UnregisterTimer(_curTimerID);
+		Glow::UnregisterTimer(curTimerID_);
 	}
 }
 
@@ -86,7 +86,7 @@ void GlowDeferredTask::OnMessage(
 {
 	GLOW_DEBUGSCOPE("GlowDeferredTask::OnMessage");
 	
-	_curTimerID = 0;
+	curTimerID_ = 0;
 	Task();
 }
 
@@ -103,14 +103,14 @@ void GlowFixedSizeWindow::OnReshape(
 {
 	GLOW_DEBUGSCOPE("GlowFixedSizeWindow::OnReshape");
 	
-	if (width != _canonicalWidth || height != _canonicalHeight)
+	if (width != canonicalWidth_ || height != canonicalHeight_)
 	{
-		Reshape(_canonicalWidth, _canonicalHeight);
+		Reshape(canonicalWidth_, canonicalHeight_);
 	}
 	else
 	{
-//		::glViewport(0, 0, _canonicalWidth, _canonicalHeight);
-		GlowSubwindow::OnReshape(_canonicalWidth, _canonicalHeight);
+//		::glViewport(0, 0, canonicalWidth_, canonicalHeight_);
+		GlowSubwindow::OnReshape(canonicalWidth_, canonicalHeight_);
 	}
 }
 

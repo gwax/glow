@@ -371,7 +371,7 @@ void Glow_Debug_::Signal(
 #endif
 
 
-Glow_DebugScope_* Glow_DebugScope_::_top = 0;
+Glow_DebugScope_* Glow_DebugScope_::top_ = 0;
 
 
 void Glow_DebugScope_::PrintScopeTrace()
@@ -380,15 +380,15 @@ void Glow_DebugScope_::PrintScopeTrace()
 #if !defined(GLOW_PLATFORM_MACOS) || !defined(GLOW_OPTION_REPORTDEBUGSTR)
 #ifdef GLOW_OPTION_NOIOSTREAMS
 	GLOW_CSTD::fprintf(GLOW_INTERNAL_STDERR, "SCOPE TRACE:\n");
-	for (Glow_DebugScope_* iter = _top; iter != 0; iter = iter->_next)
+	for (Glow_DebugScope_* iter = top_; iter != 0; iter = iter->next_)
 	{
-		GLOW_CSTD::fprintf(GLOW_INTERNAL_STDERR, "%s\n", iter->_data);
+		GLOW_CSTD::fprintf(GLOW_INTERNAL_STDERR, "%s\n", iter->data_);
 	}
 #else
 	GLOW_STD::cerr << "SCOPE TRACE:";
-	for (Glow_DebugScope_* iter = _top; iter != 0; iter = iter->_next)
+	for (Glow_DebugScope_* iter = top_; iter != 0; iter = iter->next_)
 	{
-		GLOW_STD::cerr << "\n" << iter->_data;
+		GLOW_STD::cerr << "\n" << iter->data_;
 	}
 	GLOW_STD::cerr << GLOW_STD::endl;
 #endif

@@ -108,19 +108,19 @@ class Receiver_Base
 	
 	protected:
 	
-		inline void _AddSender(
+		inline void AddSender_(
 			Sender_Base* sender);
-		inline void _RemoveSender(
+		inline void RemoveSender_(
 			Sender_Base* sender);
-		inline void _AddTracker(
+		inline void AddTracker_(
 			Sender_Base* sender);
-		inline void _RemoveTracker(
+		inline void RemoveTracker_(
 			Sender_Base* sender);
 	
 	protected:
 	
-		GLOW_STD::list<Sender_Base*> _senders;
-		unsigned int _numActualSenders;
+		GLOW_STD::list<Sender_Base*> senders_;
+		unsigned int numActualSenders_;
 };
 
 
@@ -162,12 +162,12 @@ class Sender_Base
 	
 	protected:
 	
-		inline void _RemoveReceiver(
+		inline void RemoveReceiver_(
 			Receiver_Base* receiver);
 	
 	protected:
 	
-		GLOW_STD::list<Receiver_Base*> _receivers;
+		GLOW_STD::list<Receiver_Base*> receivers_;
 };
 
 
@@ -220,7 +220,7 @@ class ReceiverTracker :
 	
 	private:
 	
-		DeletingOptions _options;
+		DeletingOptions options_;
 };
 
 

@@ -97,52 +97,52 @@ GlowFont GlowFont::helvetica18 = GLUT_BITMAP_HELVETICA_18;
 GlowFont GlowFont::timesRoman10 = GLUT_BITMAP_TIMES_ROMAN_10;
 GlowFont GlowFont::timesRoman24 = GLUT_BITMAP_TIMES_ROMAN_24;
 
-int GlowFont::_leading8by13 = 15;
-int GlowFont::_leading9by15 = 18;
-int GlowFont::_leadingHelve10 = 12;
-int GlowFont::_leadingHelve12 = 14;
-int GlowFont::_leadingHelve18 = 22;
-int GlowFont::_leadingTimes10 = 12;
-int GlowFont::_leadingTimes24 = 28;
+int GlowFont::leading8by13_ = 15;
+int GlowFont::leading9by15_ = 18;
+int GlowFont::leadingHelve10_ = 12;
+int GlowFont::leadingHelve12_ = 14;
+int GlowFont::leadingHelve18_ = 22;
+int GlowFont::leadingTimes10_ = 12;
+int GlowFont::leadingTimes24_ = 28;
 
-int GlowFont::_baseline8by13 = 11;
-int GlowFont::_baseline9by15 = 13;
-int GlowFont::_baselineHelve10 = 10;
-int GlowFont::_baselineHelve12 = 11;
-int GlowFont::_baselineHelve18 = 17;
-int GlowFont::_baselineTimes10 = 9;
-int GlowFont::_baselineTimes24 = 21;
+int GlowFont::baseline8by13_ = 11;
+int GlowFont::baseline9by15_ = 13;
+int GlowFont::baselineHelve10_ = 10;
+int GlowFont::baselineHelve12_ = 11;
+int GlowFont::baselineHelve18_ = 17;
+int GlowFont::baselineTimes10_ = 9;
+int GlowFont::baselineTimes24_ = 21;
 
 
 int GlowFont::Leading() const
 {
-	if (_glutFont == GLUT_BITMAP_8_BY_13)
+	if (glutFont_ == GLUT_BITMAP_8_BY_13)
 	{
-		return _leading8by13;
+		return leading8by13_;
 	}
-	else if (_glutFont == GLUT_BITMAP_9_BY_15)
+	else if (glutFont_ == GLUT_BITMAP_9_BY_15)
 	{
-		return _leading9by15;
+		return leading9by15_;
 	}
-	else if (_glutFont == GLUT_BITMAP_HELVETICA_10)
+	else if (glutFont_ == GLUT_BITMAP_HELVETICA_10)
 	{
-		return _leadingHelve10;
+		return leadingHelve10_;
 	}
-	else if (_glutFont == GLUT_BITMAP_HELVETICA_12)
+	else if (glutFont_ == GLUT_BITMAP_HELVETICA_12)
 	{
-		return _leadingHelve12;
+		return leadingHelve12_;
 	}
-	else if (_glutFont == GLUT_BITMAP_HELVETICA_18)
+	else if (glutFont_ == GLUT_BITMAP_HELVETICA_18)
 	{
-		return _leadingHelve18;
+		return leadingHelve18_;
 	}
-	else if (_glutFont == GLUT_BITMAP_TIMES_ROMAN_10)
+	else if (glutFont_ == GLUT_BITMAP_TIMES_ROMAN_10)
 	{
-		return _leadingTimes10;
+		return leadingTimes10_;
 	}
-	else if (_glutFont == GLUT_BITMAP_TIMES_ROMAN_24)
+	else if (glutFont_ == GLUT_BITMAP_TIMES_ROMAN_24)
 	{
-		return _leadingTimes24;
+		return leadingTimes24_;
 	}
 	GLOW_DEBUG(true, "Unknown font in GlowFont::Leading");
 	return 0;
@@ -151,33 +151,33 @@ int GlowFont::Leading() const
 
 int GlowFont::BaselinePos() const
 {
-	if (_glutFont == GLUT_BITMAP_8_BY_13)
+	if (glutFont_ == GLUT_BITMAP_8_BY_13)
 	{
-		return _baseline8by13;
+		return baseline8by13_;
 	}
-	else if (_glutFont == GLUT_BITMAP_9_BY_15)
+	else if (glutFont_ == GLUT_BITMAP_9_BY_15)
 	{
-		return _baseline9by15;
+		return baseline9by15_;
 	}
-	else if (_glutFont == GLUT_BITMAP_HELVETICA_10)
+	else if (glutFont_ == GLUT_BITMAP_HELVETICA_10)
 	{
-		return _baselineHelve10;
+		return baselineHelve10_;
 	}
-	else if (_glutFont == GLUT_BITMAP_HELVETICA_12)
+	else if (glutFont_ == GLUT_BITMAP_HELVETICA_12)
 	{
-		return _baselineHelve12;
+		return baselineHelve12_;
 	}
-	else if (_glutFont == GLUT_BITMAP_HELVETICA_18)
+	else if (glutFont_ == GLUT_BITMAP_HELVETICA_18)
 	{
-		return _baselineHelve18;
+		return baselineHelve18_;
 	}
-	else if (_glutFont == GLUT_BITMAP_TIMES_ROMAN_10)
+	else if (glutFont_ == GLUT_BITMAP_TIMES_ROMAN_10)
 	{
-		return _baselineTimes10;
+		return baselineTimes10_;
 	}
-	else if (_glutFont == GLUT_BITMAP_TIMES_ROMAN_24)
+	else if (glutFont_ == GLUT_BITMAP_TIMES_ROMAN_24)
 	{
-		return _baselineTimes24;
+		return baselineTimes24_;
 	}
 	GLOW_DEBUG(true, "Unknown font in GlowFont::BaselinePos");
 	return 0;
@@ -190,31 +190,31 @@ void GlowFont::SetLeadingMetric(
 {
 	if (font == GLUT_BITMAP_8_BY_13)
 	{
-		_leading8by13 = value;
+		leading8by13_ = value;
 	}
 	else if (font == GLUT_BITMAP_9_BY_15)
 	{
-		_leading9by15 = value;
+		leading9by15_ = value;
 	}
 	else if (font == GLUT_BITMAP_HELVETICA_10)
 	{
-		_leadingHelve10 = value;
+		leadingHelve10_ = value;
 	}
 	else if (font == GLUT_BITMAP_HELVETICA_12)
 	{
-		_leadingHelve12 = value;
+		leadingHelve12_ = value;
 	}
 	else if (font == GLUT_BITMAP_HELVETICA_18)
 	{
-		_leadingHelve18 = value;
+		leadingHelve18_ = value;
 	}
 	else if (font == GLUT_BITMAP_TIMES_ROMAN_10)
 	{
-		_leadingTimes10 = value;
+		leadingTimes10_ = value;
 	}
 	else if (font == GLUT_BITMAP_TIMES_ROMAN_24)
 	{
-		_leadingTimes24 = value;
+		leadingTimes24_ = value;
 	}
 	GLOW_DEBUG(true, "Unknown font in GlowFont::SetLeadingMetric");
 }
@@ -226,31 +226,31 @@ void GlowFont::SetBaselineMetric(
 {
 	if (font == GLUT_BITMAP_8_BY_13)
 	{
-		_baseline8by13 = value;
+		baseline8by13_ = value;
 	}
 	else if (font == GLUT_BITMAP_9_BY_15)
 	{
-		_baseline9by15 = value;
+		baseline9by15_ = value;
 	}
 	else if (font == GLUT_BITMAP_HELVETICA_10)
 	{
-		_baselineHelve10 = value;
+		baselineHelve10_ = value;
 	}
 	else if (font == GLUT_BITMAP_HELVETICA_12)
 	{
-		_baselineHelve12 = value;
+		baselineHelve12_ = value;
 	}
 	else if (font == GLUT_BITMAP_HELVETICA_18)
 	{
-		_baselineHelve18 = value;
+		baselineHelve18_ = value;
 	}
 	else if (font == GLUT_BITMAP_TIMES_ROMAN_10)
 	{
-		_baselineTimes10 = value;
+		baselineTimes10_ = value;
 	}
 	else if (font == GLUT_BITMAP_TIMES_ROMAN_24)
 	{
-		_baselineTimes24 = value;
+		baselineTimes24_ = value;
 	}
 	GLOW_DEBUG(true, "Unknown font in GlowFont::SetBaselineMetric");
 }
@@ -265,7 +265,7 @@ int GlowFont::StringWidth(
 	int len = GLOW_CSTD::strlen(str);
 	for (int i=0; i<len; i++)
 	{
-		ret += ::glutBitmapWidth(_glutFont, str[i]);
+		ret += ::glutBitmapWidth(glutFont_, str[i]);
 	}
 	return ret;
 }

@@ -86,29 +86,51 @@ RELEASE NOTES
     Features added
     --------------
 
-      (none)
+      Added a makefile for compiling unix shared and static libraries of
+      GLOW. Also added support for linking with a GLOW library in the
+      tutorial makefiles.
 
 
     Features changed
     ----------------
 
-      (none)
+      Specifying the DEBUG file-option in the makefile now adds -g by
+      default.
 
 
     Bugs fixed
     ----------
 
-      (none)
+      LINK_(uname) didn't work in the makefile. Fixed.
 
 
     Internal changes
     ----------------
 
-      (none)
+      Renamed VIRTUOSO_INTERNAL_MINMAXDEFINED (defined in glowHeader.h
+      when std::min and std::max are defined while compiling for Win32)
+      to GLOW_INTERNAL_MINMAXDEFINED.
+
+      Private class members now named with a trailing underscore rather
+      than a leading underscore, in conformance to current C++ style
+      recommendations.
+
+
+    To-do list
+    ----------
+
+      Support for autoconfig
+
+      Support for GameGLUT features
 
 
     Known issues
     ------------
+
+      I don't think it's currently possible to compile a Win32 DLL of
+      GLOW under MSVC++ 6.0 because of the heavy use of templates and
+      STL. If you succeed in building a DLL for GLOW, I'd appreciate
+      finding out how you did it.
 
       Under certain conditions, GLUT can lose track of some of its
       windows. This is most commonly manifested as windows or subwindows

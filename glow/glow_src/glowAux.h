@@ -128,25 +128,25 @@ class GlowFont
 	
 	private:
 	
-		void* _glutFont;
+		void* glutFont_;
 	
 	private:
 	
-		static int _leading8by13;
-		static int _leading9by15;
-		static int _leadingHelve10;
-		static int _leadingHelve12;
-		static int _leadingHelve18;
-		static int _leadingTimes10;
-		static int _leadingTimes24;
+		static int leading8by13_;
+		static int leading9by15_;
+		static int leadingHelve10_;
+		static int leadingHelve12_;
+		static int leadingHelve18_;
+		static int leadingTimes10_;
+		static int leadingTimes24_;
 		
-		static int _baseline8by13;
-		static int _baseline9by15;
-		static int _baselineHelve10;
-		static int _baselineHelve12;
-		static int _baselineHelve18;
-		static int _baselineTimes10;
-		static int _baselineTimes24;
+		static int baseline8by13_;
+		static int baseline9by15_;
+		static int baselineHelve10_;
+		static int baselineHelve12_;
+		static int baselineHelve18_;
+		static int baselineTimes10_;
+		static int baselineTimes24_;
 };
 
 
@@ -238,7 +238,7 @@ class GlowColor
 	
 	private:
 	
-		GLubyte _rgba[4];
+		GLubyte rgba_[4];
 };
 
 
