@@ -1,6 +1,6 @@
 
 The GLOW Toolkit
-version 1.1.2dev (?? July 2000)
+version 1.1.2dev (?? August 2000)
 Copyright (C) 1997-2000  Daniel Azuma
 
 
@@ -76,7 +76,7 @@ RELEASE NOTES
 
 
     The GLOW Toolkit
-    Version 1.1.2dev (?? July 2000)
+    Version 1.1.2dev (?? August 2000)
 
     These are the differences between versions 1.1.1dev and 1.1.2dev.
     A complete history of publicly released versions can be found on the
@@ -94,9 +94,15 @@ RELEASE NOTES
 
       Added GlowColorImage::Scale().
 
+      Added GlowTextAreaWidget class.
+
 
     Features changed
     ----------------
+
+      Widget windows and subwindows used to request alpha, stencil and
+      depth, but now default to Glow::rgbBuffer | Glow::doubleBuffer.
+      (also in 1.0.2)
 
       Removed conversion from Vec3f and Quatf to const GLfloat* and 
       replaced with method Array().
@@ -120,6 +126,8 @@ RELEASE NOTES
       Several classes in the tutorial weren't cleaning up all their
       resources if they were deleted. Fixed. (also in 1.0.2)
 
+      GlowSubwindow::OnJoystick() was missing. Fixed.
+
       Several more reference fixes.
 
 
@@ -136,9 +144,6 @@ RELEASE NOTES
       Support for autoconfig. This will probably involve, among other
       things, ditching the current makefile system, as well as ditching
       the idea of using GLOW as source code.
-
-      GlowTextAreaWidget. This will also require that GlowTextData get
-      finished.
 
       GlowTabbedPanelWidget class.
 
@@ -160,6 +165,8 @@ RELEASE NOTES
 
       Add TGlowImage, TGlowPNMReader and TGlowPNMWriter info to the
       reference.
+
+      Add GlowTextAreaWidget to the reference.
 
       Update tutorial.
 
