@@ -80,6 +80,7 @@ class MandelWind :
 	
 		MandelWind(
 			MandelData* data);
+		virtual ~MandelWind();
 		
 		// New with lesson 3
 		void ResetZoom();
@@ -121,28 +122,28 @@ class MandelWind :
 	
 	private:
 	
-		void _ComputeZoomFactor(
+		void ComputeZoomFactor_(
 			int x,
 			int y);
 	
 	private:
 	
 		// Image data
-		MandelData* _data;
-		unsigned char* _image;
+		MandelData* data_;
+		unsigned char* image_;
 		
 		// Zooming code
-		double _halfdiagonal;
-		int _dragType;
-		int _xdown;
-		int _ydown;
-		double _factor;
+		double halfdiagonal_;
+		int dragType_;
+		int xdown_;
+		int ydown_;
+		double factor_;
 		
 		// New with lesson 3
-		unsigned char _r;
-		unsigned char _g;
-		unsigned char _b;
-		bool _imageValid;
+		unsigned char r_;
+		unsigned char g_;
+		unsigned char b_;
+		bool imageValid_;
 };
 
 

@@ -62,15 +62,15 @@
 
 MandelData::MandelData()
 {
-	_data = new int[201*201];
-	_width = 201;
-	_height = 201;
-	_xcenter = -0.5;
-	_ycenter = 0;
-	_pixelwidth = 0.015;
-	_valid = false;
-	_linesLeft = _height;
-	_threshhold = 1023;
+	data_ = new int[201*201];
+	width_ = 201;
+	height_ = 201;
+	xcenter_ = -0.5;
+	ycenter_ = 0;
+	pixelwidth_ = 0.015;
+	valid_ = false;
+	linesLeft_ = height_;
+	threshhold_ = 1023;
 }
 
 
@@ -78,18 +78,18 @@ void MandelData::SetSize(
 	int width,
 	int height)
 {
-	_width = width;
-	_height = height;
-	delete _data;
-	_data = new int[width*height];
-	_valid = false;
-	_linesLeft = _height;
+	width_ = width;
+	height_ = height;
+	delete data_;
+	data_ = new int[width*height];
+	valid_ = false;
+	linesLeft_ = height_;
 }
 
 
 void MandelData::Recalc()
 {
-	while (!_valid)
+	while (!valid_)
 	{
 		RecalcOneLine();
 	}
@@ -98,47 +98,47 @@ void MandelData::Recalc()
 
 void MandelData::RecalcOneLine()
 {
-	if (_valid) return;
-	if (_linesLeft == _height)
+	if (valid_) return;
+	if (linesLeft_ == height_)
 	{
-		_cury = _ycenter-Numeric(_height-1)*0.5*_pixelwidth;
+		cury_ = ycenter_-Numeric(height_-1)*0.5*pixelwidth_;
 	}
 	
-	int* data = _data+(_height-_linesLeft)*_width;
-	Numeric x = _xcenter-Numeric(_width-1)*0.5*_pixelwidth;
-	for (int xindex=0; xindex<_width; ++xindex)
+	int* data = data_+(height_-linesLeft_)*width_;
+	Numeric x = xcenter_-Numeric(width_-1)*0.5*pixelwidth_;
+	for (int xindex=0; xindex<width_; ++xindex)
 	{
 		Numeric a=0;
 		Numeric b=0;
 		int index=1;
-		while (index<_threshhold && a*a+b*b<4)
+		while (index<threshhold_ && a*a+b*b<4)
 		{
 			Numeric anew = a*a-b*b+x;
-			b = a*b*2+_cury;
+			b = a*b*2+cury_;
 			a = anew;
 			++index;
 		}
-		*data = (index == _threshhold) ? 0 : index;
+		*data = (index == threshhold_) ? 0 : index;
 		data++;
-		x += _pixelwidth;
+		x += pixelwidth_;
 	}
-	_cury += _pixelwidth;
+	cury_ += pixelwidth_;
 	
-	--_linesLeft;
-	if (_linesLeft == 0)
+	--linesLeft_;
+	if (linesLeft_ == 0)
 	{
-		_valid = true;
+		valid_ = true;
 	}
 }
 
 
 void MandelData::InvalidateData()
 {
-	_valid = false;
-	_linesLeft = _height;
-	for (int i=0; i<_width*_height; ++i)
+	valid_ = false;
+	linesLeft_ = height_;
+	for (int i=0; i<width_*height_; ++i)
 	{
-		_data[i] = 0;
+		data_[i] = 0;
 	}
 }
 

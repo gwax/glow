@@ -430,6 +430,82 @@ In our case, we want the slider that controls the number of iterations to be "no
 
 <p>
 <table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>Changing the widget palette</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+We won't actually change the widget palette in our program, but since it's something that may be commonly done, I'll talk a little about it.
+</p>
+<p>
+Changing the widget palette is as simple as making changes to the widgets, and then calling <tt>Pack()</tt> again. To remove widgets from the palette, just delete them. To add new widgets to the palette, use the same methods we used to create the palette in the first place. Once you're finished removing and adding widgets, call <tt>Pack()</tt>, and the widget palette will arrange and size itself again to accomodate the new widget list.
+</p>
+
+<p>
+<b>What do you mean by "deleting" widgets?</b>
+</p>
+<p>
+It's just what it sounds like. To remove a widget, delete the widget object that was returned from the method you used to create it. For example, we stored a pointer to the number-of-iterations slider in the data member "<tt>_iterationSlider</tt>". To remove that slider, you can just
+</p>
+<blockquote>
+<pre>delete _iterationSlider;</pre>
+</blockquote>
+<p>
+Remember that some widgets (e.g. panels) can contain other widgets. If you delete a widget that contains other widgets, the contained widgets are also automatically deleted. In this way, you can delete an entire set of widgets at once. For example, the panel <tt>_multiColorControlsPanel</tt> contains two sliders, <tt>_multiCycleRateSlider</tt> and <tt>_multiCycleOffsetSlider</tt>. Deleting <tt>_multiColorControlsPanel</tt> will automatically cause the two contained sliders to be deleted as well. Additionally, all the widgets are contained within the widget palette window, so if you delete <tt>_controlWindow</tt>, the entire palette, including all the widgets, will be cleanly destroyed. That is what the <tt>MandleWind</tt> destructor does: simply delete the window.
+</p>
+
+<p>
+<b>Didn't you say in lesson 1 that deleting a window could be dangerous?</b>
+</p>
+<p>
+You don't miss much, do you? That's true, and now we have enough information to discuss why it may be dangerous, and when it's okay.
+</p>
+<p>
+Consider this common scenario: You have created a dialog box with an "OK" button. Among other things, the function of the "OK" button is to dismiss the dialog box. As we have seen, you can dismiss the dialog box by deleting the window object-- that automatically causes all the widgets within the dialog box to be deleted as well. That's easy. You write a receiver to handle events raised by presses of the "OK" button, and in the <tt>OnMessage()</tt> method of the push button receiver, you delete the window.
+</p>
+<p>
+Unfortunately, when you run the program and attempt to press the "OK" button, your program crashes and burns with a segmentation fault. What happened?
+</p>
+<p>
+The basic problem is the same as the reason why <tt>delete this;</tt> may be unsafe. When we deleted the window, we also implicitly deleted everything contained within the window, including our "OK" button. However, we are in the middle of handling an event raised by the "OK" button. When the window was deleted, the "OK" button was deleted along with GLOW's event tables for the widget, leading to the segmentation fault.
+</p>
+<p>
+Unfortunate, but there's a way around it. Use the <tt>Close()</tt> method of the window. When you call <tt>Close()</tt>, GLOW marks the window for termination but doesn't actually delete the object, letting your widgets finish handling their events. Later, when things are safe, GLOW will delete the window for you.
+</p>
+<p>
+The same thing can happen with deleting a widget. If your "OK" button were contained within a panel widget, it would also be unsafe to delete the panel widget from within a receiver of events from the "OK" button. However, widgets also provide a <tt>Close()</tt> method, so you can use it to safely delete the panel.
+</p>
+<p>
+<b>Rule of thumb:</b> If you may be handling an event raised by a widget, avoid deleting that widget or any object that contains it. Use <tt>Close()</tt> instead.
+</p>
+
+<p>
+<b>How do you "insert" a widget?</b>
+</p>
+<p>
+The only place you can add a widget is at the end, which would cause it to appear at the bottom (if the arrangement is vertical) or at the far right (if the arrangment is horizontal). However, once a widget is added, you can reposition it using the method <tt>ReorderChild()</tt> before you call <tt>Pack()</tt>. <tt>ReorderChild()</t> needs to be called as a method of the "parent" of the widget. Here is an example of its use:
+</p>
+<blockquote>
+<pre>GlowPushButtonWidget* widget1 = window->AddPushButton("Button");
+GlowPushButtonWidget* widget2 = window->AddPushButton("Insert me!");
+// At this point, widget2 is located after widget1.
+// The next line moves widget2 before widget1.
+widget2->Parent()->ReorderChild(widget2, widget1);</pre>
+</blockquote>
+
+<p>
+<image src="../../graphics/arrowbullet.gif" border=0 width=25 height=9 alt="Link to">Reference: <b><a href="../../reference/GlowWidget.html">class GlowWidget</a></b>
+<br>
+<image src="../../graphics/arrowbullet.gif" border=0 width=25 height=9 alt="Link to">Reference: <b><a href="../../reference/GlowWindow.html">class GlowWindow</a></b>
+</p>
+
+</blockquote>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
 <font size="+1"><b>Ready-to-use windows</b></font>
 </td></tr></table>
 </p>

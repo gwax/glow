@@ -98,13 +98,13 @@ GlowWindow("Mandelglow", GlowWindow::autoPosition, GlowWindow::autoPosition,
 {
 	// Get data
 	data->SetThreshhold(1500);
-	_data = data;
-	_image = 0;
-	_dragType = NO_DRAG;
-	_r = 255;
-	_g = 0;
-	_b = 0;
-	_imageValid = false;
+	data_ = data;
+	image_ = 0;
+	dragType_ = NO_DRAG;
+	r_ = 255;
+	g_ = 0;
+	b_ = 0;
+	imageValid_ = false;
 	
 	// The following is new for lesson 3...
 	
@@ -134,6 +134,15 @@ GlowWindow("Mandelglow", GlowWindow::autoPosition, GlowWindow::autoPosition,
 	// Set both menus to notify our receiver when it gets a hit
 	menu->Notifier().Bind(this);
 	colorMenu->Notifier().Bind(this);
+}
+
+
+// Destructor
+
+MandelWind::~MandelWind()
+{
+	delete data_;
+	delete image_;
 }
 
 
@@ -203,8 +212,8 @@ void MandelWind::OnMessage(
 
 void MandelWind::ResetZoom()
 {
-	_data->SetCenter(-0.5, 0);
-	_data->SetPixelWidth(0.015);
+	data_->SetCenter(-0.5, 0);
+	data_->SetPixelWidth(0.015);
 	Refresh();
 }
 
@@ -217,10 +226,10 @@ void MandelWind::SetColor(
 	unsigned char g,
 	unsigned char b)
 {
-	_r = r;
-	_g = g;
-	_b = b;
-	_imageValid = false;
+	r_ = r;
+	g_ = g;
+	b_ = b;
+	imageValid_ = false;
 	Refresh();
 }
 
@@ -230,15 +239,15 @@ void MandelWind::SetColor(
 void MandelWind::OnEndPaint()
 {
 	// Recompute if necessary
-	if (!_data->IsDataValid())
+	if (!data_->IsDataValid())
 	{
 		// Lesson 3: changed from Recalc()
-		for (int i=0; i<10; ++i) _data->RecalcOneLine();
+		for (int i=0; i<10; ++i) data_->RecalcOneLine();
 		
 		// Make image
-		delete[] _image;
-		_image = new unsigned char[_data->Width()*_data->Height()*4];
-		_imageValid = false;
+		delete[] image_;
+		image_ = new unsigned char[data_->Width()*data_->Height()*4];
+		imageValid_ = false;
 		
 		// Lesson 3 (incremental updating)
 		Glow::RegisterIdle(this);
@@ -249,101 +258,101 @@ void MandelWind::OnEndPaint()
 		Glow::UnregisterIdle(this);
 	}
 	
-	if (!_imageValid)
+	if (!imageValid_)
 	{
-		const int* rawimage = _data->Data();
-		int mx = _data->Width()*_data->Height();
+		const int* rawimage = data_->Data();
+		int mx = data_->Width()*data_->Height();
 		for (int i=0; i<mx; ++i)
 		{
 			if (rawimage[i] == 0)
 			{
 				// Black color
-				_image[i*4] = 0;
-				_image[i*4+1] = 0;
-				_image[i*4+2] = 0;
-				_image[i*4+3] = 0;
+				image_[i*4] = 0;
+				image_[i*4+1] = 0;
+				image_[i*4+2] = 0;
+				image_[i*4+3] = 0;
 			}
-			else if (_r != 0 || _g != 0 || _b != 0)
+			else if (r_ != 0 || g_ != 0 || b_ != 0)
 			{
 				// Outside color (non-multi)
-				_image[i*4] = _r;
-				_image[i*4+1] = _g;
-				_image[i*4+2] = _b;
-				_image[i*4+3] = 0;
+				image_[i*4] = r_;
+				image_[i*4+1] = g_;
+				image_[i*4+2] = b_;
+				image_[i*4+3] = 0;
 			}
 			// outside color (multi...)
 			else if (rawimage[i]<=256)
 			{
-				_image[i*4] = 256-rawimage[i];
-				_image[i*4+1] = rawimage[i]-1;
-				_image[i*4+2] = 0;
-				_image[i*4+3] = 0;
+				image_[i*4] = 256-rawimage[i];
+				image_[i*4+1] = rawimage[i]-1;
+				image_[i*4+2] = 0;
+				image_[i*4+3] = 0;
 			}
 			else if (rawimage[i]<=512)
 			{
-				_image[i*4] = 0;
-				_image[i*4+1] = 512-rawimage[i];
-				_image[i*4+2] = rawimage[i]-257;
-				_image[i*4+3] = 0;
+				image_[i*4] = 0;
+				image_[i*4+1] = 512-rawimage[i];
+				image_[i*4+2] = rawimage[i]-257;
+				image_[i*4+3] = 0;
 			}
 			else if (rawimage[i]<=768)
 			{
-				_image[i*4] = rawimage[i]-513;
-				_image[i*4+1] = 0;
-				_image[i*4+2] = 768-rawimage[i];
-				_image[i*4+3] = 0;
+				image_[i*4] = rawimage[i]-513;
+				image_[i*4+1] = 0;
+				image_[i*4+2] = 768-rawimage[i];
+				image_[i*4+3] = 0;
 			}
 			else if (rawimage[i]<=1024)
 			{
-				_image[i*4] = 1024-rawimage[i];
-				_image[i*4+1] = rawimage[i]-769;
-				_image[i*4+2] = 0;
-				_image[i*4+3] = 0;
+				image_[i*4] = 1024-rawimage[i];
+				image_[i*4+1] = rawimage[i]-769;
+				image_[i*4+2] = 0;
+				image_[i*4+3] = 0;
 			}
 			else if (rawimage[i]<=1280)
 			{
-				_image[i*4] = 0;
-				_image[i*4+1] = 1280-rawimage[i];
-				_image[i*4+2] = rawimage[i]-1025;
-				_image[i*4+3] = 0;
+				image_[i*4] = 0;
+				image_[i*4+1] = 1280-rawimage[i];
+				image_[i*4+2] = rawimage[i]-1025;
+				image_[i*4+3] = 0;
 			}
 			else if (rawimage[i]<=1536)
 			{
-				_image[i*4] = rawimage[i]-1281;
-				_image[i*4+1] = 0;
-				_image[i*4+2] = 1536-rawimage[i];
-				_image[i*4+3] = 0;
+				image_[i*4] = rawimage[i]-1281;
+				image_[i*4+1] = 0;
+				image_[i*4+2] = 1536-rawimage[i];
+				image_[i*4+3] = 0;
 			}
 			else
 			{
 				// Default color (red)
-				_image[i*4] = 255;
-				_image[i*4+1] = 0;
-				_image[i*4+2] = 0;
-				_image[i*4+3] = 0;
+				image_[i*4] = 255;
+				image_[i*4+1] = 0;
+				image_[i*4+2] = 0;
+				image_[i*4+3] = 0;
 			}
 		}
-		_imageValid = true;
+		imageValid_ = true;
 	}
 	
 	// Draw image
 	::glDisable(GL_LIGHTING);
 	::glDisable(GL_DEPTH_TEST);
 	::glRasterPos2f(-1.0f, -1.0f);
-	::glDrawPixels(_data->Width(), _data->Height(), GL_RGBA, GL_UNSIGNED_BYTE, _image);
+	::glDrawPixels(data_->Width(), data_->Height(), GL_RGBA, GL_UNSIGNED_BYTE, image_);
 	
 	// Draw drag rectangle
-	if ((_dragType == ZOOM_IN_DRAG || _dragType == ZOOM_OUT_DRAG) &&
-		_factor != 0)
+	if ((dragType_ == ZOOM_IN_DRAG || dragType_ == ZOOM_OUT_DRAG) &&
+		factor_ != 0)
 	{
 		GLfloat xcenter, ycenter;
-		NormalizeCoordinates(_xdown, _ydown, xcenter, ycenter);
+		NormalizeCoordinates(xdown_, ydown_, xcenter, ycenter);
 		::glColor3f(1.0f, 1.0f, 1.0f);
 		::glBegin(GL_LINE_LOOP);
-		::glVertex2f(xcenter-_factor, ycenter-_factor);
-		::glVertex2f(xcenter+_factor, ycenter-_factor);
-		::glVertex2f(xcenter+_factor, ycenter+_factor);
-		::glVertex2f(xcenter-_factor, ycenter+_factor);
+		::glVertex2f(xcenter-factor_, ycenter-factor_);
+		::glVertex2f(xcenter+factor_, ycenter-factor_);
+		::glVertex2f(xcenter+factor_, ycenter+factor_);
+		::glVertex2f(xcenter-factor_, ycenter+factor_);
 		::glEnd();
 	}
 }
@@ -357,10 +366,10 @@ void MandelWind::OnReshape(
 {
 	// Update the viewport to specify the entire window
 	::glViewport(0, 0, width, height);
-	_halfdiagonal = sqrt(double(width*width+height*height))*0.5;
+	halfdiagonal_ = sqrt(double(width*width+height*height))*0.5;
 	
 	// Update the mandel data
-	_data->SetSize(width, height);
+	data_->SetSize(width, height);
 }
 
 
@@ -373,7 +382,7 @@ void MandelWind::OnMouseDown(
 	Glow::Modifiers modifiers)
 {
 	// Ignore mousedowns if we're already dragging
-	if (_dragType == NO_DRAG)
+	if (dragType_ == NO_DRAG)
 	{
 		// Zoom with left mouse button
 		if (button == Glow::leftButton)
@@ -381,18 +390,18 @@ void MandelWind::OnMouseDown(
 			// Zoom out if shift key is down
 			if (modifiers & Glow::shiftModifier)
 			{
-				_xdown = Width()/2;
-				_ydown = Height()/2;
-				_dragType = ZOOM_OUT_DRAG;
+				xdown_ = Width()/2;
+				ydown_ = Height()/2;
+				dragType_ = ZOOM_OUT_DRAG;
 			}
 			else
 			// Zoom in if shift key isn't down
 			{
-				_xdown = x;
-				_ydown = y;
-				_dragType = ZOOM_IN_DRAG;
+				xdown_ = x;
+				ydown_ = y;
+				dragType_ = ZOOM_IN_DRAG;
 			}
-			_ComputeZoomFactor(x, y);
+			ComputeZoomFactor_(x, y);
 			Refresh();
 		}
 	}
@@ -407,29 +416,29 @@ void MandelWind::OnMouseUp(
 	int y,
 	Glow::Modifiers modifiers)
 {
-	if (_dragType == ZOOM_IN_DRAG)
+	if (dragType_ == ZOOM_IN_DRAG)
 	{
 		// for zooming "in"
-		_ComputeZoomFactor(x, y);
-		if (_factor != 0)
+		ComputeZoomFactor_(x, y);
+		if (factor_ != 0)
 		{
-			_data->MoveCenter(
-				(_xdown-Width()/2)*_data->GetPixelWidth(),
-				(Height()/2-_ydown)*_data->GetPixelWidth());
-			_data->ScalePixelWidth(_factor);
+			data_->MoveCenter(
+				(xdown_-Width()/2)*data_->GetPixelWidth(),
+				(Height()/2-ydown_)*data_->GetPixelWidth());
+			data_->ScalePixelWidth(factor_);
 		}
-		_dragType = NO_DRAG;
+		dragType_ = NO_DRAG;
 		Refresh();
 	}
-	else if (_dragType == ZOOM_OUT_DRAG)
+	else if (dragType_ == ZOOM_OUT_DRAG)
 	{
 		// for zooming "out"
-		_ComputeZoomFactor(x, y);
-		if (_factor != 0)
+		ComputeZoomFactor_(x, y);
+		if (factor_ != 0)
 		{
-			_data->ScalePixelWidth(1.0/_factor);
+			data_->ScalePixelWidth(1.0/factor_);
 		}
-		_dragType = NO_DRAG;
+		dragType_ = NO_DRAG;
 		Refresh();
 	}
 }
@@ -441,9 +450,9 @@ void MandelWind::OnMouseDrag(
 	int x,
 	int y)
 {
-	if (_dragType == ZOOM_IN_DRAG || _dragType == ZOOM_OUT_DRAG)
+	if (dragType_ == ZOOM_IN_DRAG || dragType_ == ZOOM_OUT_DRAG)
 	{
-		_ComputeZoomFactor(x, y);
+		ComputeZoomFactor_(x, y);
 		Refresh();
 	}
 }
@@ -451,19 +460,19 @@ void MandelWind::OnMouseDrag(
 
 // Compute current zooming factor
 
-void MandelWind::_ComputeZoomFactor(
+void MandelWind::ComputeZoomFactor_(
 	int x,
 	int y)
 {
 	// If the mouse is outside the window, zoom is being cancelled.
 	if (x<0 || x>=Width() || y<0 || y>=Height())
 	{
-		_factor = 0;
+		factor_ = 0;
 	}
 	else
 	{
 		// Figure out zoom factor
-		_factor = sqrt(double((_xdown-x)*(_xdown-x)+
-			(_ydown-y)*(_ydown-y)))/_halfdiagonal;
+		factor_ = sqrt(double((xdown_-x)*(xdown_-x)+
+			(ydown_-y)*(ydown_-y)))/halfdiagonal_;
 	}
 }

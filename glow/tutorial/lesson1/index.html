@@ -153,6 +153,29 @@ Calling the constructor for <tt>GlowWindow</tt> automatically creates a toplevel
 </p>
 
 <p>
+<b>The MandelWind destructor</b>
+</p>
+<p>
+Let's take a brief look at the destructor for MandelWind. The destructor will never actually get called, since the window is never actually deleted-- it doesn't go away until the process terminates. However, it is instructive to know what goes on when a window is destructed.
+</p>
+<p>
+Our destructor simply deletes the <tt>MandelData</tt> object used by the window, as well as the image storage we allocated in the constructor.
+</p>
+<blockquote>
+<pre>MandelWind::~MandelWind()
+{
+    delete _data;
+    delete _image;
+}</pre>
+</blockquote>
+<p>
+When the base class, <tt>GlowWindow</tt>, is destructed, it automatically dismantles and removes the GLUT window and all the related storage. Therefore, if you want to destroy a GLOW window, you can simply delete the object.
+</p>
+<p>
+It turns out, however, that there are subtle reasons why directly deleting a window object <i>may</i> be dangerous. For example, sometimes you may be tempted to delete the window from within one of its methods. Doing so not only carries the usual warnings about using "<tt>delete this;</tt>" but also can potentially cause crashes if an event is being handled from an object contained in the window. We'll look more closely at this issue in a later lesson. For now, however, I recommend that, instead of <tt>delete</tt>ing a window object, call the <tt>Close()</tt> method. That does a deferred-delete; the object isn't deleted immediately, but is marked "to-be-deleted", and GLOW will actually delete it later when it is safe.
+</p>
+
+<p>
 <b>The MandelWind redraw method</b>
 </p>
 <blockquote>

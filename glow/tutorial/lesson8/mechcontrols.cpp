@@ -82,21 +82,21 @@ MechControls::MechControls(
 {
 	GLOW_DEBUGSCOPE("MechControls::MechControls");
 	
-	_mainWindowID = mainWindowID;
+	mainWindowID_ = mainWindowID;
 	
 	// Create a control panel window
-	_controlWindow = new GlowQuickPaletteWindow("Controls");
+	controlWindow_ = new GlowQuickPaletteWindow("Controls");
 	
 	// Add controls
 	// First, we'll put a little blurb at the top of the window
-	_controlWindow->AddLabel(
+	controlWindow_->AddLabel(
 		"Glowmech (lesson 8)\n"
 		"Original glutmech code by Simon Parkinson-Bates\n"
 		"Glow controls added by Daniel Azuma");
 	
 	// The rest of the window appears in three panels. The panels are arranged
 	// horizontally, but widgets are arranged vertically within each panel
-	GlowQuickPanelWidget* hpanel = _controlWindow->AddArrangingPanel(
+	GlowQuickPanelWidget* hpanel = controlWindow_->AddArrangingPanel(
 		GlowQuickPanelWidget::horizontal);
 	
 	// First we have a few general controls
@@ -105,10 +105,10 @@ MechControls::MechControls(
 		GlowQuickPanelWidget::vertical);
 	
 	// Rotate hip slider
-	_rotateHipSlider = panel->AddSlider(-180, 180, 0,
+	rotateHipSlider_ = panel->AddSlider(-180, 180, 0,
 		GlowSliderWidget::defaultOptions, 3, "%.0f", "Rotation:\n%.0f", this);
 	// Tilt torso slider
-	_tiltTorsoSlider = panel->AddSlider(-90, 90, 10,
+	tiltTorsoSlider_ = panel->AddSlider(-90, 90, 10,
 		GlowSliderWidget::defaultOptions, 3, "%.0f", "Tilt:\n%.0f", this);
 	
 	// View balls (new with lesson 8)
@@ -117,26 +117,26 @@ MechControls::MechControls(
 		GlowQuickPanelWidget::horizontal);
 	GlowQuickPanelWidget* panel3 = panel2->AddArrangingPanel(
 		GlowQuickPanelWidget::vertical);
-	_viewBall = new BallWidget(panel3);
-	_viewBall->Notifier().Bind(this);
+	viewBall_ = new BallWidget(panel3);
+	viewBall_->Notifier().Bind(this);
 	panel3->AddLabel("View");
 	panel3 = panel2->AddArrangingPanel(GlowQuickPanelWidget::vertical);
-	_lightBall = new BallWidget(panel3);
-	_lightBall->Notifier().Bind(this);
+	lightBall_ = new BallWidget(panel3);
+	lightBall_->Notifier().Bind(this);
 	panel3->AddLabel("Light");
 	
 	// A separator
 	panel->AddSeparator();
 	// Toggle animation checkbox
-	_animationCheckbox = panel->AddCheckBox(
+	animationCheckbox_ = panel->AddCheckBox(
 		"Animation", GlowCheckBoxWidget::off, this);
 	// Toggle wireframe mode checkbox
-	_wireframeCheckbox = panel->AddCheckBox(
+	wireframeCheckbox_ = panel->AddCheckBox(
 		"Wireframe", GlowCheckBoxWidget::on, this);
 	// Fire guns button
-	_fireButton = panel->AddPushButton("Fire cannon", this);
+	fireButton_ = panel->AddPushButton("Fire cannon", this);
 	// Quit button
-	_quitButton = panel->AddPushButton("Quit", this);
+	quitButton_ = panel->AddPushButton("Quit", this);
 	
 	// Now make a bunch of sliders for each side of the robot. First the right side.
 	panel = hpanel->AddPanel(
@@ -144,28 +144,28 @@ MechControls::MechControls(
 		GlowQuickPanelWidget::vertical);
 	
 	// Shoulder back/forward slider
-	_rShoulderFwdSlider = panel->AddSlider(-180, 180, 0,
+	rShoulderFwdSlider_ = panel->AddSlider(-180, 180, 0,
 		GlowSliderWidget::defaultOptions, 3, "%.0f", "Shoulder fwd:\n%.0f", this);
 	// Shoulder in/out slider
-	_rShoulderOutSlider = panel->AddSlider(0, 180, 20,
+	rShoulderOutSlider_ = panel->AddSlider(0, 180, 20,
 		GlowSliderWidget::defaultOptions, 3, "%.0f", "Shoulder out:\n%.0f", this);
 	// Elbow back/forward slider
-	_rElbowFwdSlider = panel->AddSlider(-90, 90, 0,
+	rElbowFwdSlider_ = panel->AddSlider(-90, 90, 0,
 		GlowSliderWidget::defaultOptions, 3, "%.0f", "Elbow fwd:\n%.0f", this);
 	// Elbow in/out slider
-	_rElbowOutSlider = panel->AddSlider(-180, 180, 0,
+	rElbowOutSlider_ = panel->AddSlider(-180, 180, 0,
 		GlowSliderWidget::defaultOptions, 3, "%.0f", "Arm out:\n%.0f", this);
 	// Hip back/forward slider
-	_rHipFwdSlider = panel->AddSlider(-90, 90, 0,
+	rHipFwdSlider_ = panel->AddSlider(-90, 90, 0,
 		GlowSliderWidget::defaultOptions, 3, "%.0f", "Hip fwd:\n%.0f", this);
 	// Hip in/out slider
-	_rHipOutSlider = panel->AddSlider(-30, 90, 10,
+	rHipOutSlider_ = panel->AddSlider(-30, 90, 10,
 		GlowSliderWidget::defaultOptions, 3, "%.0f", "Hip out:\n%.0f", this);
 	// Knee slider
-	_rKneeSlider = panel->AddSlider(-90, 90, 0,
+	rKneeSlider_ = panel->AddSlider(-90, 90, 0,
 		GlowSliderWidget::defaultOptions, 3, "%.0f", "Knee:\n%.0f", this);
 	// Ankle slider
-	_rAnkleSlider = panel->AddSlider(-90, 90, 0,
+	rAnkleSlider_ = panel->AddSlider(-90, 90, 0,
 		GlowSliderWidget::defaultOptions, 3, "%.0f", "Ankle:\n%.0f", this);
 
 	// Now the left side
@@ -174,32 +174,40 @@ MechControls::MechControls(
 		GlowQuickPanelWidget::vertical);
 	
 	// Shoulder back/forward slider
-	_lShoulderFwdSlider = panel->AddSlider(-180, 180, 0,
+	lShoulderFwdSlider_ = panel->AddSlider(-180, 180, 0,
 		GlowSliderWidget::defaultOptions, 3, "%.0f", "Shoulder fwd:\n%.0f", this);
 	// Shoulder in/out slider
-	_lShoulderOutSlider = panel->AddSlider(0, 180, 20,
+	lShoulderOutSlider_ = panel->AddSlider(0, 180, 20,
 		GlowSliderWidget::defaultOptions, 3, "%.0f", "Shoulder out:\n%.0f", this);
 	// Elbow back/forward slider
-	_lElbowFwdSlider = panel->AddSlider(-90, 90, 0,
+	lElbowFwdSlider_ = panel->AddSlider(-90, 90, 0,
 		GlowSliderWidget::defaultOptions, 3, "%.0f", "Elbow fwd:\n%.0f", this);
 	// Elbow in/out slider
-	_lElbowOutSlider = panel->AddSlider(-180, 180, 0,
+	lElbowOutSlider_ = panel->AddSlider(-180, 180, 0,
 		GlowSliderWidget::defaultOptions, 3, "%.0f", "Arm out:\n%.0f", this);
 	// Hip back/forward slider
-	_lHipFwdSlider = panel->AddSlider(-90, 90, 0,
+	lHipFwdSlider_ = panel->AddSlider(-90, 90, 0,
 		GlowSliderWidget::defaultOptions, 3, "%.0f", "Hip fwd:\n%.0f", this);
 	// Hip in/out slider
-	_lHipOutSlider = panel->AddSlider(-30, 90, 10,
+	lHipOutSlider_ = panel->AddSlider(-30, 90, 10,
 		GlowSliderWidget::defaultOptions, 3, "%.0f", "Hip out:\n%.0f", this);
 	// Knee slider
-	_lKneeSlider = panel->AddSlider(-90, 90, 0,
+	lKneeSlider_ = panel->AddSlider(-90, 90, 0,
 		GlowSliderWidget::defaultOptions, 3, "%.0f", "Knee:\n%.0f", this);
 	// Ankle slider
-	_lAnkleSlider = panel->AddSlider(-90, 90, 0,
+	lAnkleSlider_ = panel->AddSlider(-90, 90, 0,
 		GlowSliderWidget::defaultOptions, 3, "%.0f", "Ankle:\n%.0f", this);
 	
 	// Arrange controls and show the control panel window
-	_controlWindow->Pack();
+	controlWindow_->Pack();
+}
+
+
+// Destructor
+
+MechControls::~MechControls()
+{
+	delete controlWindow_;
 }
 
 
@@ -210,15 +218,15 @@ void MechControls::OnMessage(
 	GLOW_DEBUGSCOPE("MechControls::OnMessage(pushbutton)");
 	
 	// Was it the quit button?
-	if (message.widget == _quitButton)
+	if (message.widget == quitButton_)
 	{
 		exit(0);
 	}
 	// Fire cannons button?
-	else if (message.widget == _fireButton)
+	else if (message.widget == fireButton_)
 	{
 		FireCannon();
-		Glow::RefreshGlutWindow(_mainWindowID);
+		Glow::RefreshGlutWindow(mainWindowID_);
 	}
 }
 
@@ -230,7 +238,7 @@ void MechControls::OnMessage(
 	GLOW_DEBUGSCOPE("MechControls::OnMessage(checkbox)");
 	
 	// Was it the toggle animation checkbox?
-	if (message.widget == _animationCheckbox)
+	if (message.widget == animationCheckbox_)
 	{
 		if (message.state == GlowCheckBoxWidget::on)
 		{
@@ -244,10 +252,10 @@ void MechControls::OnMessage(
 		}
 	}
 	// Was it the toggle wireframe checkbox?
-	else if (message.widget == _wireframeCheckbox)
+	else if (message.widget == wireframeCheckbox_)
 	{
 		solid_part = 1-solid_part;
-		Glow::RefreshGlutWindow(_mainWindowID);
+		Glow::RefreshGlutWindow(mainWindowID_);
 	}
 }
 
@@ -261,11 +269,11 @@ void MechControls::OnMessage(
 	// Check central sliders
 	
 	// Hip rotate
-	if (message.widget == _rotateHipSlider)
+	if (message.widget == rotateHipSlider_)
 	{
 		pivot = int(message.value);
 	}
-	else if (message.widget == _tiltTorsoSlider)
+	else if (message.widget == tiltTorsoSlider_)
 	{
 		tilt = int(message.value);
 	}
@@ -273,42 +281,42 @@ void MechControls::OnMessage(
 	// Check left side sliders
 	
 	// Shoulder forward/back
-	else if (message.widget == _lShoulderFwdSlider)
+	else if (message.widget == lShoulderFwdSlider_)
 	{
 		shoulder2 = int(message.value);
 	}
 	// Shoulder in/out
-	else if (message.widget == _lShoulderOutSlider)
+	else if (message.widget == lShoulderOutSlider_)
 	{
 		lat2 = int(message.value);
 	}
 	// Elbow forward/back
-	else if (message.widget == _lElbowFwdSlider)
+	else if (message.widget == lElbowFwdSlider_)
 	{
 		elbow2 = int(message.value);
 	}
 	// Elbow in/out
-	else if (message.widget == _lElbowOutSlider)
+	else if (message.widget == lElbowOutSlider_)
 	{
 		shoulder4 = int(message.value);
 	}
 	// Hip forward/back
-	else if (message.widget == _lHipFwdSlider)
+	else if (message.widget == lHipFwdSlider_)
 	{
 		hip21 = int(message.value);
 	}
 	// Hip in/out
-	else if (message.widget == _lHipOutSlider)
+	else if (message.widget == lHipOutSlider_)
 	{
 		hip22 = int(message.value);
 	}
 	// Knee
-	else if (message.widget == _lKneeSlider)
+	else if (message.widget == lKneeSlider_)
 	{
 		heel2 = int(message.value);
 	}
 	// Ankle
-	else if (message.widget == _lAnkleSlider)
+	else if (message.widget == lAnkleSlider_)
 	{
 		ankle2 = int(message.value);
 	}
@@ -316,48 +324,48 @@ void MechControls::OnMessage(
 	// Check right side sliders
 	
 	// Shoulder forward/back
-	else if (message.widget == _rShoulderFwdSlider)
+	else if (message.widget == rShoulderFwdSlider_)
 	{
 		shoulder1 = int(message.value);
 	}
 	// Shoulder in/out
-	else if (message.widget == _rShoulderOutSlider)
+	else if (message.widget == rShoulderOutSlider_)
 	{
 		lat1 = int(message.value);
 	}
 	// Elbow forward/back
-	else if (message.widget == _rElbowFwdSlider)
+	else if (message.widget == rElbowFwdSlider_)
 	{
 		elbow1 = int(message.value);
 	}
 	// Elbow in/out
-	else if (message.widget == _rElbowOutSlider)
+	else if (message.widget == rElbowOutSlider_)
 	{
 		shoulder3 = int(message.value);
 	}
 	// Hip forward/back
-	else if (message.widget == _rHipFwdSlider)
+	else if (message.widget == rHipFwdSlider_)
 	{
 		hip11 = int(message.value);
 	}
 	// Hip in/out
-	else if (message.widget == _rHipOutSlider)
+	else if (message.widget == rHipOutSlider_)
 	{
 		hip12 = int(message.value);
 	}
 	// Knee
-	else if (message.widget == _rKneeSlider)
+	else if (message.widget == rKneeSlider_)
 	{
 		heel1 = int(message.value);
 	}
 	// Ankle
-	else if (message.widget == _rAnkleSlider)
+	else if (message.widget == rAnkleSlider_)
 	{
 		ankle1 = int(message.value);
 	}
 	
 	// Redraw scene
-	Glow::RefreshGlutWindow(_mainWindowID);
+	Glow::RefreshGlutWindow(mainWindowID_);
 }
 
 
@@ -371,7 +379,7 @@ void MechControls::OnMessage(
 	// used by glutmech by applying the quaternion to a sample vector,
 	// the forward view (0,0,1), and examining the result
 	Vec3f vec = message.rotation * Vec3f(0, 0, 1);
-	if (message.widget == _viewBall)
+	if (message.widget == viewBall_)
 	{
 		GLfloat val = vec.Y();
 		if (val < -1) val = -1;
@@ -390,7 +398,7 @@ void MechControls::OnMessage(
 			turn = 180 - Math::radiansToDegrees * asin(val);
 		}
 	}
-	else if (message.widget == _lightBall)
+	else if (message.widget == lightBall_)
 	{
 		GLfloat val = vec.X();
 		if (val < -1) val = -1;
@@ -411,6 +419,6 @@ void MechControls::OnMessage(
 	}
 	
 	// Redraw scene
-	Glow::RefreshGlutWindow(_mainWindowID);
+	Glow::RefreshGlutWindow(mainWindowID_);
 }
 

@@ -75,14 +75,9 @@ inline GlowTextData::GlowTextData()
 }
 
 
-// MSVC doesn't like the base class initializers here. I have no idea why.
-// Luckily there's a workaround, but probably with worse performance.
-
-#if 0
-
 inline GlowTextData::GlowTextData(
 	const GLOW_STD::string& str) :
-GLOW_STD::string(str)
+str_(str)
 {
 	lineBreaks_.push_back(0);
 	selStart_ = selEnd_ = 0;
@@ -91,32 +86,23 @@ GLOW_STD::string(str)
 
 inline GlowTextData::GlowTextData(
 	const char* str) :
-GLOW_STD::string(str)
+str_(str)
 {
 	lineBreaks_.push_back(0);
 	selStart_ = selEnd_ = 0;
 }
 
-#else
 
-inline GlowTextData::GlowTextData(
-	const GLOW_STD::string& str)
+inline GLOW_STD::string& GlowTextData::String()
 {
-	assign(str);
-	lineBreaks_.push_back(0);
-	selStart_ = selEnd_ = 0;
+	return str_;
 }
 
 
-inline GlowTextData::GlowTextData(
-	const char* str)
+inline const GLOW_STD::string& GlowTextData::String() const
 {
-	assign(str);
-	lineBreaks_.push_back(0);
-	selStart_ = selEnd_ = 0;
+	return str_;
 }
-
-#endif
 
 
 inline void GlowTextData::ClearLineBreaks()
@@ -137,7 +123,7 @@ inline GLOW_STD::string GlowTextData::Line(
 {
 	GLOW_ASSERT(num > 0);
 	GLOW_ASSERT(num < int(lineBreaks_.size()));
-	return substr(lineBreaks_[num],
+	return str_.substr(lineBreaks_[num],
 		(num == int(lineBreaks_.size())-1) ? GLOW_STD::string::npos :
 		lineBreaks_[num+1]-lineBreaks_[num]);
 }
@@ -147,7 +133,7 @@ inline GLOW_STD::string GlowTextData::ToEndOfLine(
 	int pos) const
 {
 	int num = LineNumOf(pos);
-	return substr(lineBreaks_[num],
+	return str_.substr(lineBreaks_[num],
 		(num == int(lineBreaks_.size())-1) ? GLOW_STD::string::npos :
 		lineBreaks_[num+1]-lineBreaks_[num]);
 }
@@ -204,7 +190,7 @@ inline void GlowTextData::SetSelection(
 
 inline GLOW_STD::string GlowTextData::SelectedText() const
 {
-	return substr(selStart_, selEnd_-selStart_);
+	return str_.substr(selStart_, selEnd_-selStart_);
 }
 
 
@@ -212,7 +198,7 @@ inline void GlowTextData::ReplaceSelectionWith(
 	const char* str)
 {
 	int len = GLOW_CSTD::strlen(str);
-	replace(selStart_, selEnd_-selStart_, str, len);
+	str_.replace(selStart_, selEnd_-selStart_, str, len);
 	selEnd_ = selStart_+len;
 }
 
@@ -220,14 +206,14 @@ inline void GlowTextData::ReplaceSelectionWith(
 inline void GlowTextData::ReplaceSelectionWith(
 	char ch)
 {
-	replace(selStart_, selEnd_-selStart_, 1, ch);
+	str_.replace(selStart_, selEnd_-selStart_, 1, ch);
 	selEnd_ = selStart_+1;
 }
 
 
 inline void GlowTextData::DeleteSelection()
 {
-	erase(selStart_, selEnd_-selStart_);
+	str_.erase(selStart_, selEnd_-selStart_);
 	selEnd_ = selStart_;
 }
 

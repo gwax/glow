@@ -170,30 +170,30 @@ class CalcEngine
 	
 	private:
 	
-		void _Enter();
-		void _Clear();
-		void _BinaryOp(
+		void Enter_();
+		void Clear_();
+		void BinaryOp_(
 			Numeric result);
-		void _UnaryOp(
+		void UnaryOp_(
 			Numeric result);
-		void _BuildString(
+		void BuildString_(
 			string& str) const;
-		inline Numeric _ToRadians(
+		inline Numeric ToRadians_(
 			Numeric val);
-		inline Numeric _FromRadians(
+		inline Numeric FromRadians_(
 			Numeric val);
 	
 	private:
 	
-		Numeric _stack[STACKSIZE];
-		State _state;
-		Format _format;
-		AngleUnits _angleUnits;
-		string _intMantissa;
-		string _fracMantissa;
-		string _exponent;
-		bool _mantissaNegative;
-		bool _exponentNegative;
+		Numeric stack_[STACKSIZE];
+		State state_;
+		Format format_;
+		AngleUnits angleUnits_;
+		string intMantissa_;
+		string fracMantissa_;
+		string exponent_;
+		bool mantissaNegative_;
+		bool exponentNegative_;
 };
 
 
@@ -207,48 +207,48 @@ inline double CalcEngine::Value(
 	int level) const
 {
 	GLOW_ASSERT(level >= 0 && level < STACKSIZE);
-	return _stack[level];
+	return stack_[level];
 }
 
 
 inline CalcEngine::Format CalcEngine::GetFormat() const
 {
-	return _format;
+	return format_;
 }
 
 
 inline void CalcEngine::SetFormat(
 	Format fmt)
 {
-	_format = fmt;
+	format_ = fmt;
 }
 
 
 inline CalcEngine::AngleUnits CalcEngine::GetAngleUnits() const
 {
-	return _angleUnits;
+	return angleUnits_;
 }
 
 
 inline void CalcEngine::SetAngleUnits(
 	AngleUnits angleUnits)
 {
-	_angleUnits = angleUnits;
+	angleUnits_ = angleUnits;
 }
 
 
-inline Numeric CalcEngine::_ToRadians(
+inline Numeric CalcEngine::ToRadians_(
 	Numeric val)
 {
-	return (_angleUnits == radians) ? val :
+	return (angleUnits_ == radians) ? val :
 		val * Numeric(3.14159265358979323846264338328)/Numeric(180);
 }
 
 
-inline Numeric CalcEngine::_FromRadians(
+inline Numeric CalcEngine::FromRadians_(
 	Numeric val)
 {
-	return (_angleUnits == radians) ? val :
+	return (angleUnits_ == radians) ? val :
 		val * Numeric(180)/Numeric(3.14159265358979323846264338328);
 }
 

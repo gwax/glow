@@ -429,6 +429,7 @@ inline void Glow::SetAutoQuitting(
 
 inline GlowComponent::GlowComponent()
 {
+	_initializeState = -1;
 	parent_ = 0;
 }
 
@@ -436,6 +437,7 @@ inline GlowComponent::GlowComponent()
 inline GlowComponent::GlowComponent(
 	GlowComponent* parent)
 {
+	_initializeState = -1;
 	Init(parent);
 }
 
@@ -510,6 +512,18 @@ inline bool GlowComponent::IsActiveStandby() const
 inline bool GlowComponent::IsInactive() const
 {
 	return activeState_ == 0;
+}
+
+
+inline bool GlowComponent::IsInitialized() const
+{
+	return initializeState_ != -1;
+}
+
+
+inline bool GlowComponent::IsClosing() const
+{
+	return initializeState_ == 0;
 }
 
 

@@ -114,7 +114,7 @@ void GlowTextData::RecalcLineBreaks(
 	int curWidth = 0;
 	int lastBreakable = -1;
 	int pos = lineBreaks_.back();
-	const char* dat = data();
+	const char* dat = str_.data();
 	
 	while (pos < int(size()))
 	{
@@ -186,9 +186,9 @@ int GlowTextData::LinePixelWidth(
 	GLOW_ASSERT(line < int(lineBreaks_.size()));
 	
 	int e = ((line == int(lineBreaks_.size())-1) ?
-		size() : lineBreaks_[line+1]);
+		str_.size() : lineBreaks_[line+1]);
 	int curWidth = 0;
-	const char* dat = data();
+	const char* dat = str_.data();
 	for (int pos=lineBreaks_[line]; pos<e; pos++)
 	{
 		curWidth += ::glutBitmapWidth(font, dat[pos]);
@@ -219,13 +219,13 @@ int GlowTextData::AtPixelPos(
 	GLOW_ASSERT(line < int(lineBreaks_.size()));
 	
 	int e = ((line == int(lineBreaks_.size())-1) ?
-		size() : lineBreaks_[line+1]);
+		str_.size() : lineBreaks_[line+1]);
 	
 	if (pixpos < 0)
 	{
 		return lineBreaks_[line];
 	}
-	const char* dat = data();
+	const char* dat = str_.data();
 	
 	int curWidth = 0;
 	for (int pos=lineBreaks_[line]; pos<e; pos++)
@@ -261,7 +261,7 @@ void GlowTextData::CalcLineDrawInfo(
 	GLOW_ASSERT(line < int(lineBreaks_.size()));
 	
 	int e = ((line == int(lineBreaks_.size())-1) ?
-		size() : lineBreaks_[line+1]);
+		str_.size() : lineBreaks_[line+1]);
 	
 	if (pixoffset < 0)
 	{
@@ -270,7 +270,7 @@ void GlowTextData::CalcLineDrawInfo(
 		end = e;
 		return;
 	}
-	const char* dat = data();
+	const char* dat = str_.data();
 	
 	int curWidth = 0;
 	for (start=lineBreaks_[line]; start<e; start++)
@@ -302,14 +302,14 @@ int GlowTextData::PixelPosOf(
 	GLOW_ASSERT(line >= -1);
 	GLOW_ASSERT(line < int(lineBreaks_.size()));
 	GLOW_ASSERT(pos >= 0);
-	GLOW_ASSERT(pos <= int(size()));
+	GLOW_ASSERT(pos <= int(str_.size()));
 	
 	if (line == -1)
 	{
 		line = LineNumOf(pos);
 	}
 	
-	const char* dat = data();
+	const char* dat = str_.data();
 	int curWidth = 0;
 	for (int i=lineBreaks_[line]; i<pos; ++i)
 	{

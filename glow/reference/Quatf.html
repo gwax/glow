@@ -90,7 +90,7 @@ Creates a new quaternion with the given values. Note that the order is wxyz rath
 </blockquote>
 
 <p>
-<tt><b>Quatf</b>(const GLfloat* vals)</tt>
+<tt>explicit <b>Quatf</b>(const GLfloat* vals)</tt>
 </p>
 <blockquote>
 Creates a new quaternion, copying the given array of values in wxyz order.
@@ -320,10 +320,10 @@ Returns the imaginary part (xyz) of this quaterion.
 </blockquote>
 
 <p>
-<tt><b>operator const GLfloat*</b>(void) const</tt>
+<tt>const GLfloat* <b>Array</b>(void) const</tt>
 </p>
 <blockquote>
-You can cast a <tt>Quatf</tt> directly to a <tt>const GLfloat*</tt>. In the resulting array, index 0 corresponds to the w-coordinate and index 3 corresponds to the z-coordinate.
+Returns the quaternion as a const array of <tt>GLfloat</tt>. In the array, index 0 corresponds to the w-coordinate and index 3 corresponds to the z-coordinate.
 </blockquote>
 
 </blockquote>

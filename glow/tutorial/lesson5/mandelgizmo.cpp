@@ -87,7 +87,7 @@ class MandelGizmoComponent :
 	
 	private:
 	
-		GLuint _texObject;
+		GLuint texObject_;
 };
 
 
@@ -132,9 +132,9 @@ class MandelGizmoSubwindow :
 	
 	private:
 	
-		GlowViewManipulator* _manip;
-		GlowLabelWidget* _fpsIndicator;
-		int _starting;
+		GlowViewManipulator* manip_;
+		GlowLabelWidget* fpsIndicator_;
+		int starting_;
 };
 
 
@@ -175,8 +175,8 @@ GlowComponent(parent)
 		texwidth, texheight, GL_UNSIGNED_BYTE, teximage);
 	
 	// Set up texture
-	::glGenTextures(1, &_texObject);
-	::glBindTexture(GL_TEXTURE_2D, _texObject);
+	::glGenTextures(1, &texObject_);
+	::glBindTexture(GL_TEXTURE_2D, texObject_);
 	::glTexImage2D(GL_TEXTURE_2D, 0, 4, texwidth, texheight, 0, GL_RGBA,
 		GL_UNSIGNED_BYTE, teximage);
 	::glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -198,7 +198,7 @@ MandelGizmoComponent::~MandelGizmoComponent()
 {
 	GLOW_DEBUGSCOPE("MandelGizmoComponent::~MandelGizmoComponent");
 	// Done with texture object
-	::glDeleteTextures(1, &_texObject);
+	::glDeleteTextures(1, &texObject_);
 }
 
 
@@ -321,15 +321,15 @@ GlowSubwindow(parent, 0, ypos, size, size, Glow::rgbaBuffer | Glow::depthBuffer 
 	SetAutoSwapBuffersEnabled(false);
 	
 	// Attach maniuplator to subwindow
-	_manip = new GlowViewManipulator(this,
+	manip_ = new GlowViewManipulator(this,
 		GlowViewManipulatorParams::defaults);
-	_manip->SetSpinnable(true);
+	manip_->SetSpinnable(true);
 	
 	// Attach drawing component to manipulator
-	new MandelGizmoComponent(_manip, image, width, height);
+	new MandelGizmoComponent(manip_, image, width, height);
 	
 	// Store away this pointer
-	_fpsIndicator = fpsIndicator;
+	fpsIndicator_ = fpsIndicator;
 }
 
 
@@ -340,7 +340,7 @@ bool MandelGizmoSubwindow::OnBeginPaint()
 	GLOW_DEBUGSCOPE("MandelGizmoSubwindow::OnBeginPaint");
 	
 	// Begin computing frame rate.
-	_starting = Glow::GetMilliseconds();
+	starting_ = Glow::GetMilliseconds();
 	
 	// Clear buffer
 	::glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -403,8 +403,8 @@ void MandelGizmoSubwindow::OnEndPaint()
 	// Finish computing frame rate
 	char buf[100];
 	sprintf(buf, "%.2f fps",
-		float(1000)/float(Glow::GetMilliseconds()-_starting));
-	_fpsIndicator->SetText(buf);
+		float(1000)/float(Glow::GetMilliseconds()-starting_));
+	fpsIndicator_->SetText(buf);
 }
 
 
@@ -419,13 +419,13 @@ void MandelGizmoSubwindow::OnMouseDown(
 	GLOW_DEBUGSCOPE("MandelGizmoSubwindow::OnMouseDown");
 	
 	// If the manipulator is not yet active, then begin rotating
-	if (_manip->GetState() == GlowViewManipulator::idleState)
+	if (manip_->GetState() == GlowViewManipulator::idleState)
 	{
 		// Note that we need to transform window coordinates to
 		// OpenGL coordinates.
 		GLfloat xn, yn;
 		NormalizeCoordinates(x, y, xn, yn);
-		_manip->BeginRotationDrag(xn, yn);
+		manip_->BeginRotationDrag(xn, yn);
 	}
 }
 
@@ -441,11 +441,11 @@ void MandelGizmoSubwindow::OnMouseUp(
 	GLOW_DEBUGSCOPE("MandelGizmoSubwindow::OnMouseUp");
 	
 	// If the manipulator is currently rotating, then finish rotating
-	if (_manip->GetState() == GlowViewManipulator::rotatingState)
+	if (manip_->GetState() == GlowViewManipulator::rotatingState)
 	{
 		GLfloat xn, yn;
 		NormalizeCoordinates(x, y, xn, yn);
-		_manip->EndDrag(xn, yn);
+		manip_->EndDrag(xn, yn);
 	}
 }
 
@@ -460,11 +460,11 @@ void MandelGizmoSubwindow::OnMouseDrag(
 	
 	// If the manipulator is currently rotating, then pass drag event
 	// on to the manipulator
-	if (_manip->GetState() == GlowViewManipulator::rotatingState)
+	if (manip_->GetState() == GlowViewManipulator::rotatingState)
 	{
 		GLfloat xn, yn;
 		NormalizeCoordinates(x, y, xn, yn);
-		_manip->InDrag(xn, yn);
+		manip_->InDrag(xn, yn);
 	}
 }
 
@@ -490,18 +490,18 @@ MandelGizmoWindow::MandelGizmoWindow(
 	
 	// Create widget panel with close button and frame rate indicator.
 	// Note that we use a margin of 0
-	_widgetsPanel = new GlowQuickPaletteSubwindow(this, 0, 0, 200, 25,
+	widgetsPanel_ = new GlowQuickPaletteSubwindow(this, 0, 0, 200, 25,
 		GlowQuickPalette::horizontal, GlowQuickPalette::alignCenter, 10, 0, 0);
-	_widgetsPanel->AddDismissPushButton("Close", this);
+	widgetsPanel_->AddDismissPushButton("Close", this);
 	// Note that we provide initial text for the label widget so its
 	// computed width is wide enough to display any fps we want.
-	GlowLabelWidget* fpsIndicator = _widgetsPanel->AddLabel("0000.00 fps");
-	_widgetsPanel->Pack(true);
+	GlowLabelWidget* fpsIndicator = widgetsPanel_->AddLabel("0000.00 fps");
+	widgetsPanel_->Pack(true);
 	
 	// Create the subwindow that will contain the cube drawing
-	_gizmoPanel = new MandelGizmoSubwindow(this, 200, _widgetsPanel->Height(),
+	gizmoPanel_ = new MandelGizmoSubwindow(this, 200, widgetsPanel_->Height(),
 		image, width, height, fpsIndicator);
-	Reshape(200, 200+_widgetsPanel->Height());
+	Reshape(200, 200+widgetsPanel_->Height());
 }
 
 
@@ -514,24 +514,24 @@ void MandelGizmoWindow::OnReshape(
 	GLOW_DEBUGSCOPE("MandelGizmoWindow::OnReshape");
 	
 	// Enforce minimum size
-	if (width < 40 || height < 40+_widgetsPanel->Height())
+	if (width < 40 || height < 40+widgetsPanel_->Height())
 	{
-		Reshape(max(width, 40), max(height, 40+_widgetsPanel->Height()));
+		Reshape(max(width, 40), max(height, 40+widgetsPanel_->Height()));
 	}
 	else
 	{
 		// Reshape the widget panel if the width has changed
-		if (width != _widgetsPanel->Width())
+		if (width != widgetsPanel_->Width())
 		{
-			_widgetsPanel->Reshape(width, _widgetsPanel->Height());
+			widgetsPanel_->Reshape(width, widgetsPanel_->Height());
 		}
 		
 		// Position and size the drawing subwindow.
-		height -= _widgetsPanel->Height();
+		height -= widgetsPanel_->Height();
 		int gizmoSize = min(width, height);
-		_gizmoPanel->Move((width-gizmoSize)/2,
-			_widgetsPanel->Height()+(height-gizmoSize)/2);
-		_gizmoPanel->Reshape(gizmoSize, gizmoSize);
+		gizmoPanel_->Move((width-gizmoSize)/2,
+			widgetsPanel_->Height()+(height-gizmoSize)/2);
+		gizmoPanel_->Reshape(gizmoSize, gizmoSize);
 	}
 	
 	// Update the viewport

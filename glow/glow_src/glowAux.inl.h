@@ -298,7 +298,7 @@ inline void GlowColor::Apply() const
 */
 
 template <class T>
-inline GlowImage<T>::GlowImage()
+inline TGlowImage<T>::TGlowImage()
 {
 	data_ = 0;
 	width_ = 0;
@@ -307,7 +307,7 @@ inline GlowImage<T>::GlowImage()
 
 
 template <class T>
-inline T& GlowImage<T>::At(
+inline T& TGlowImage<T>::At(
 	unsigned int x,
 	unsigned int y)
 {
@@ -316,7 +316,7 @@ inline T& GlowImage<T>::At(
 
 
 template <class T>
-inline const T& GlowImage<T>::At(
+inline const T& TGlowImage<T>::At(
 	unsigned int x,
 	unsigned int y) const
 {
@@ -325,7 +325,7 @@ inline const T& GlowImage<T>::At(
 
 
 template <class T>
-inline T& GlowImage<T>::operator()(
+inline T& TGlowImage<T>::operator()(
 	unsigned int x,
 	unsigned int y)
 {
@@ -334,7 +334,7 @@ inline T& GlowImage<T>::operator()(
 
 
 template <class T>
-inline const T& GlowImage<T>::operator()(
+inline const T& TGlowImage<T>::operator()(
 	unsigned int x,
 	unsigned int y) const
 {
@@ -343,49 +343,72 @@ inline const T& GlowImage<T>::operator()(
 
 
 template <class T>
-inline T* GlowImage<T>::Array()
+inline T* TGlowImage<T>::Array()
 {
 	return data_;
 }
 
 
 template <class T>
-inline const T* GlowImage<T>::Array() const
+inline const T* TGlowImage<T>::Array() const
 {
 	return data_;
 }
 
 
 template <class T>
-inline void* GlowImage<T>::RawArray()
+inline void* TGlowImage<T>::RawArray()
 {
 	return static_cast<void*>(data_);
 }
 
 
 template <class T>
-inline const void* GlowImage<T>::RawArray() const
+inline const void* TGlowImage<T>::RawArray() const
 {
 	return static_cast<const void*>(data_);
 }
 
 
 template <class T>
-inline unsigned int GlowImage<T>::Width() const
+inline T* ReleaseArray()
+{
+	T* ret = data_;
+	data_ = 0;
+	width_ = 0;
+	height_ = 0;
+	return ret;
+}
+
+
+inline void GrabArray(
+	T* array,
+	unsigned int width,
+	unsigned int height)
+{
+	delete data_;
+	data_ = array;
+	width_ = width;
+	height_ = height;
+}
+
+
+template <class T>
+inline unsigned int TGlowImage<T>::Width() const
 {
 	return width_;
 }
 
 
 template <class T>
-inline unsigned int GlowImage<T>::Height() const
+inline unsigned int TGlowImage<T>::Height() const
 {
 	return height_;
 }
 
 
 template <class T>
-inline void GlowImage<T>::ResizeClear(
+inline void TGlowImage<T>::ResizeClear(
 	unsigned int width,
 	unsigned int height,
 	T defelem)
@@ -411,7 +434,7 @@ inline GlowColorImage::GlowColorImage()
 
 inline GlowColorImage::GlowColorImage(
 	const GlowColorImage& orig) :
-GlowImage<GlowColor>(orig)
+TGlowImage<GlowColor>(orig)
 {
 }
 
@@ -420,7 +443,7 @@ inline GlowColorImage::GlowColorImage(
 	unsigned int width,
 	unsigned int height,
 	GlowColor defelem) :
-GlowImage<GlowColor>(width, height, defelem)
+TGlowImage<GlowColor>(width, height, defelem)
 {
 }
 
@@ -459,7 +482,7 @@ inline GlowUcharImage::GlowUcharImage()
 
 inline GlowUcharImage::GlowUcharImage(
 	const GlowUcharImage& orig) :
-GlowImage<unsigned char>(orig)
+TGlowImage<unsigned char>(orig)
 {
 }
 
@@ -468,7 +491,7 @@ inline GlowUcharImage::GlowUcharImage(
 	unsigned int width,
 	unsigned int height,
 	unsigned char defelem) :
-GlowImage<unsigned char>(width, height, defelem)
+TGlowImage<unsigned char>(width, height, defelem)
 {
 }
 
@@ -507,7 +530,7 @@ inline GlowGLfloatImage::GlowGLfloatImage()
 
 inline GlowGLfloatImage::GlowGLfloatImage(
 	const GlowGLfloatImage& orig) :
-GlowImage<GLfloat>(orig)
+TGlowImage<GLfloat>(orig)
 {
 }
 
@@ -516,7 +539,7 @@ inline GlowGLfloatImage::GlowGLfloatImage(
 	unsigned int width,
 	unsigned int height,
 	GLfloat defelem) :
-GlowImage<GLfloat>(width, height, defelem)
+TGlowImage<GLfloat>(width, height, defelem)
 {
 }
 

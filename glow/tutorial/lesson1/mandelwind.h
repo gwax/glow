@@ -76,6 +76,7 @@ class MandelWind :
 	
 		MandelWind(
 			MandelData* data);
+		virtual ~MandelWind();
 	
 	protected:
 	
@@ -84,8 +85,8 @@ class MandelWind :
 	
 	private:
 	
-		MandelData* _data;
-		unsigned char* _image;
+		MandelData* data_;
+		unsigned char* image_;
 };
 
 

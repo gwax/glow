@@ -79,8 +79,7 @@ GLOW_NAMESPACE_BEGIN
 ===============================================================================
 */
 
-class GlowTextData :
-	public GLOW_STD::string
+class GlowTextData
 {
 	//-------------------------------------------------------------------------
 	//	Public interface
@@ -89,18 +88,25 @@ class GlowTextData :
 	public:
 	
 		inline GlowTextData();
-		inline GlowTextData(
+		inline explicit GlowTextData(
 			const GLOW_STD::string& str);
-		inline GlowTextData(
+		inline explicit GlowTextData(
 			const char* str);
 	
 	public:
 	
+		// Access to the string
+		inline GLOW_STD::string& String();
+		inline const GLOW_STD::string& String() const;
+		
+		// Affect line breaks
 		inline void ClearLineBreaks();
 		void RecalcLineBreaks(
 			GlowFont font,
 			int pixelWidth,
 			int startingLine = 0);
+		
+		// Line break info
 		inline int NumLines() const;
 		inline GLOW_STD::string Line(
 			int num) const;
@@ -129,9 +135,8 @@ class GlowTextData :
 			GlowFont font,
 			int pos,
 			int line = -1) const;
-	
-	public:
-	
+		
+		// Selection methods
 		inline int SelectionStart() const;
 		inline int SelectionEnd() const;
 		inline int SelectionLength() const;
@@ -156,6 +161,7 @@ class GlowTextData :
 	
 	private:
 	
+		GLOW_STD::string str_;
 		GLOW_STD::vector<int> lineBreaks_;
 		int selStart_;
 		int selEnd_;

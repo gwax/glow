@@ -90,7 +90,7 @@ Creates a new vector with the given coordinates.
 </blockquote>
 
 <p>
-<tt><b>Vec3f</b>(const GLfloat* vals)</tt>
+<tt>explicit <b>Vec3f</b>(const GLfloat* vals)</tt>
 </p>
 <blockquote>
 Creates a new vector, copying the given array of coordinates.
@@ -248,10 +248,10 @@ Is the vector set to the origin (0,0,0)?
 </blockquote>
 
 <p>
-<tt><b>operator const GLfloat*</b>(void) const</tt>
+<tt>const GLfloat* <b>Array</b>(void) const</tt>
 </p>
 <blockquote>
-You can cast a <tt>Vec3f</tt> directly to a <tt>const GLfloat*</tt>. This lets you do things like <tt>glVertex3fv(myVec3f);</tt>.
+Returns the vector as a const array of <tt>GLfloat</tt>. This lets you do things like <tt>glVertex3fv(myVec3f.Array());</tt>.
 </blockquote>
 
 </blockquote>

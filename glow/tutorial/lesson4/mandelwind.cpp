@@ -101,16 +101,16 @@ GlowWindow("Mandelglow", GlowWindow::autoPosition, GlowWindow::autoPosition,
 {
 	// Get data
 	data->SetThreshhold(1000);
-	_data = data;
-	_image = 0;
-	_dragType = NO_DRAG;
-	_r = 255;
-	_g = 0;
-	_b = 0;
-	_imageValid = false;
-	_updateInBackground = true;
-	_multiCycleRate = 1.0f;
-	_multiCycleOffset = 0.0f;
+	data_ = data;
+	image_ = 0;
+	dragType_ = NO_DRAG;
+	r_ = 255;
+	g_ = 0;
+	b_ = 0;
+	imageValid_ = false;
+	updateInBackground_ = true;
+	multiCycleRate_ = 1.0f;
+	multiCycleOffset_ = 0.0f;
 	
 	// We removed the menu material because we aren't using menus anymore
 	
@@ -144,15 +144,15 @@ GlowWindow("Mandelglow", GlowWindow::autoPosition, GlowWindow::autoPosition,
 	// The following is new with lesson 4:
 	
 	// Create a control panel window to go along with this window
-	_controlWindow = new GlowQuickPaletteWindow("Controls");
+	controlWindow_ = new GlowQuickPaletteWindow("Controls");
 	
 	// Add controls
 	// First, we'll put a little blurb at the top of the window
-	_controlWindow->AddLabel(
+	controlWindow_->AddLabel(
 		"Mandelglow (lesson 4)\nby Daniel Azuma");
 	
 	// The next set of controls will be within a panel called "calculation"
-	GlowQuickPanelWidget* panel = _controlWindow->AddPanel(
+	GlowQuickPanelWidget* panel = controlWindow_->AddPanel(
 		GlowQuickPanelWidget::etchedStyle, "Calculation");
 	
 	// Checkbox for background calculation.
@@ -164,11 +164,11 @@ GlowWindow("Mandelglow", GlowWindow::autoPosition, GlowWindow::autoPosition,
 	// Min iterations = 100, max = 2000, initial value = 1000.
 	// Specify the syntax for the value labels and the main label.
 	// Bind notifier to this MandelWind.
-	_iterationSlider = panel->AddSlider(100, 2000, 1000,
+	iterationSlider_ = panel->AddSlider(100, 2000, 1000,
 		GlowSliderWidget::defaultOptions, 2, "%.0f", "Iterations:\n%.0f", this);
 	
 	// Create another panel called "view"
-	panel = _controlWindow->AddPanel(
+	panel = controlWindow_->AddPanel(
 		GlowQuickPanelWidget::etchedStyle, "View");
 	
 	// Color scheme popup menu put it within the view panel
@@ -180,32 +180,46 @@ GlowWindow("Mandelglow", GlowWindow::autoPosition, GlowWindow::autoPosition,
 	popup->AddItem("Multi");
 	
 	// Create a nested panel.
-	_multiColorControlsPanel = panel->AddPanel(
+	multiColorControlsPanel_ = panel->AddPanel(
 		GlowQuickPanelWidget::etchedStyle, "Multicolor settings");
 	
 	// Slider giving the rate of cycling for "multi" coloring style
-	_multiCycleRateSlider = _multiColorControlsPanel->AddSlider(0.2, 20.0, 1.0,
+	multiCycleRateSlider_ = multiColorControlsPanel_->AddSlider(0.2, 20.0, 1.0,
 		GlowSliderWidget::logarithmic, 2, "%.2f", "Cycle rate:\n%.2f", this);
-	_multiCycleOffsetSlider = _multiColorControlsPanel->AddSlider(0.0, 3.0, 0.0,
+	multiCycleOffsetSlider_ = multiColorControlsPanel_->AddSlider(0.0, 3.0, 0.0,
 		GlowSliderWidget::defaultOptions, 2, "%.2f", "Cycle offset:\n%.2f", this);
 	
 	// The panel starts off inactive because the initial color scheme is
 	// plain red (not multicolor). Note that this also deactivates both
 	// sliders that are within the panel
-	_multiColorControlsPanel->Deactivate();
+	multiColorControlsPanel_->Deactivate();
 	
 	// Reset view button.
-	_resetButton = panel->AddPushButton("Reset View", this);
+	resetButton_ = panel->AddPushButton("Reset View", this);
 	
 	// Quit button and save button. Use an arranging panel to cause
 	// the buttons to be laid out horizontally
-	panel = _controlWindow->AddArrangingPanel(
+	panel = controlWindow_->AddArrangingPanel(
 		GlowQuickPanelWidget::horizontal);
-	_quitButton = panel->AddPushButton("Quit", this);
-	_saveButton = panel->AddPushButton("Save Image", this);
+	quitButton_ = panel->AddPushButton("Quit", this);
+	saveButton_ = panel->AddPushButton("Save Image", this);
 	
 	// Arrange controls and show the control panel window
-	_controlWindow->Pack();
+	controlWindow_->Pack();
+}
+
+
+// Destructor
+
+MandelWind::~MandelWind()
+{
+	delete data_;
+	delete image_;
+	
+	// We don't need to delete all the individual widgets because the
+	// window contains them and will delete them automatically. Just
+	// delete the window.
+	delete controlWindow_;
 }
 
 
@@ -275,8 +289,8 @@ void MandelWind::OnMessage(
 
 void MandelWind::ResetZoom()
 {
-	_data->SetCenter(-0.5, 0);
-	_data->SetPixelWidth(0.015);
+	data_->SetCenter(-0.5, 0);
+	data_->SetPixelWidth(0.015);
 	Refresh();
 }
 
@@ -288,10 +302,10 @@ void MandelWind::SetColor(
 	unsigned char g,
 	unsigned char b)
 {
-	_r = r;
-	_g = g;
-	_b = b;
-	_imageValid = false;
+	r_ = r;
+	g_ = g;
+	b_ = b;
+	imageValid_ = false;
 	Refresh();
 }
 
@@ -301,25 +315,25 @@ void MandelWind::SetColor(
 void MandelWind::OnEndPaint()
 {
 	// Recompute if necessary
-	if (!_data->IsDataValid())
+	if (!data_->IsDataValid())
 	{
-		// Lesson 4: use _updateInBackground setting
-		if (_updateInBackground)
+		// Lesson 4: use updateInBackground_ setting
+		if (updateInBackground_)
 		{
-			for (int i=0; i<10; ++i) _data->RecalcOneLine();
+			for (int i=0; i<10; ++i) data_->RecalcOneLine();
 		}
 		else
 		{
-			_data->Recalc();
+			data_->Recalc();
 		}
 		
 		// Make image
-		delete[] _image;
-		_image = new unsigned char[_data->Width()*_data->Height()*4];
-		_imageValid = false;
+		delete[] image_;
+		image_ = new unsigned char[data_->Width()*data_->Height()*4];
+		imageValid_ = false;
 		
 		// Make sure we update again at idle time
-		if (_updateInBackground)
+		if (updateInBackground_)
 		{
 			Glow::RegisterIdle(this);
 		}
@@ -330,79 +344,79 @@ void MandelWind::OnEndPaint()
 		Glow::UnregisterIdle(this);
 	}
 	
-	if (!_imageValid)
+	if (!imageValid_)
 	{
-		const int* rawimage = _data->Data();
-		int mx = _data->Width()*_data->Height();
+		const int* rawimage = data_->Data();
+		int mx = data_->Width()*data_->Height();
 		for (int i=0; i<mx; ++i)
 		{
 			if (rawimage[i] == 0)
 			{
 				// Black color
-				_image[i*4] = 0;
-				_image[i*4+1] = 0;
-				_image[i*4+2] = 0;
-				_image[i*4+3] = 0;
+				image_[i*4] = 0;
+				image_[i*4+1] = 0;
+				image_[i*4+2] = 0;
+				image_[i*4+3] = 0;
 			}
-			else if (_r != 0 || _g != 0 || _b != 0)
+			else if (r_ != 0 || g_ != 0 || b_ != 0)
 			{
 				// Outside color (non-multi)
-				_image[i*4] = _r;
-				_image[i*4+1] = _g;
-				_image[i*4+2] = _b;
-				_image[i*4+3] = 0;
+				image_[i*4] = r_;
+				image_[i*4+1] = g_;
+				image_[i*4+2] = b_;
+				image_[i*4+3] = 0;
 			}
 			// outside color (multi...)
 			else
 			{
 				// Lesson 4: better code that uses multi cycle rate/offset
-				float cycleLength = 256.0f/_multiCycleRate;
-				float value = rawimage[i]+_multiCycleOffset*cycleLength;
+				float cycleLength = 256.0f/multiCycleRate_;
+				float value = rawimage[i]+multiCycleOffset_*cycleLength;
 				value -= floor(value/(cycleLength*3))*(cycleLength*3);
 				if (value < cycleLength)
 				{
-					_image[i*4] = int((cycleLength-value)*255.0f/cycleLength);
-					_image[i*4+1] = int(value*255.0f/cycleLength);
-					_image[i*4+2] = 0;
-					_image[i*4+3] = 0;
+					image_[i*4] = int((cycleLength-value)*255.0f/cycleLength);
+					image_[i*4+1] = int(value*255.0f/cycleLength);
+					image_[i*4+2] = 0;
+					image_[i*4+3] = 0;
 				}
 				else if (value < cycleLength*2.0f)
 				{
-					_image[i*4] = 0;
-					_image[i*4+1] = int((cycleLength*2.0f-value)*255.0f/cycleLength);
-					_image[i*4+2] = int((value-cycleLength)*255.0f/cycleLength);
-					_image[i*4+3] = 0;
+					image_[i*4] = 0;
+					image_[i*4+1] = int((cycleLength*2.0f-value)*255.0f/cycleLength);
+					image_[i*4+2] = int((value-cycleLength)*255.0f/cycleLength);
+					image_[i*4+3] = 0;
 				}
 				else
 				{
-					_image[i*4] = int((value-cycleLength*2.0f)*255.0f/cycleLength);
-					_image[i*4+1] = 0;
-					_image[i*4+2] = int((cycleLength*3.0f-value)*255.0f/cycleLength);
-					_image[i*4+3] = 0;
+					image_[i*4] = int((value-cycleLength*2.0f)*255.0f/cycleLength);
+					image_[i*4+1] = 0;
+					image_[i*4+2] = int((cycleLength*3.0f-value)*255.0f/cycleLength);
+					image_[i*4+3] = 0;
 				}
 			}
 		}
-		_imageValid = true;
+		imageValid_ = true;
 	}
 	
 	// Draw image
 	::glDisable(GL_LIGHTING);
 	::glDisable(GL_DEPTH_TEST);
 	::glRasterPos2f(-1.0f, -1.0f);
-	::glDrawPixels(_data->Width(), _data->Height(), GL_RGBA, GL_UNSIGNED_BYTE, _image);
+	::glDrawPixels(data_->Width(), data_->Height(), GL_RGBA, GL_UNSIGNED_BYTE, image_);
 	
 	// Draw drag rectangle
-	if ((_dragType == ZOOM_IN_DRAG || _dragType == ZOOM_OUT_DRAG) &&
-		_factor != 0)
+	if ((dragType_ == ZOOM_IN_DRAG || dragType_ == ZOOM_OUT_DRAG) &&
+		factor_ != 0)
 	{
 		GLfloat xcenter, ycenter;
-		NormalizeCoordinates(_xdown, _ydown, xcenter, ycenter);
+		NormalizeCoordinates(xdown_, ydown_, xcenter, ycenter);
 		::glColor3f(1.0f, 1.0f, 1.0f);
 		::glBegin(GL_LINE_LOOP);
-		::glVertex2f(xcenter-_factor, ycenter-_factor);
-		::glVertex2f(xcenter+_factor, ycenter-_factor);
-		::glVertex2f(xcenter+_factor, ycenter+_factor);
-		::glVertex2f(xcenter-_factor, ycenter+_factor);
+		::glVertex2f(xcenter-factor_, ycenter-factor_);
+		::glVertex2f(xcenter+factor_, ycenter-factor_);
+		::glVertex2f(xcenter+factor_, ycenter+factor_);
+		::glVertex2f(xcenter-factor_, ycenter+factor_);
 		::glEnd();
 	}
 }
@@ -416,10 +430,10 @@ void MandelWind::OnReshape(
 {
 	// Update the viewport to specify the entire window
 	::glViewport(0, 0, width, height);
-	_halfdiagonal = sqrt(double(width*width+height*height))*0.5;
+	halfdiagonal_ = sqrt(double(width*width+height*height))*0.5;
 	
 	// Update the mandel data
-	_data->SetSize(width, height);
+	data_->SetSize(width, height);
 }
 
 
@@ -432,7 +446,7 @@ void MandelWind::OnMouseDown(
 	Glow::Modifiers modifiers)
 {
 	// Ignore mousedowns if we're already dragging
-	if (_dragType == NO_DRAG)
+	if (dragType_ == NO_DRAG)
 	{
 		// Zoom with left mouse button
 		if (button == Glow::leftButton)
@@ -440,18 +454,18 @@ void MandelWind::OnMouseDown(
 			// Zoom out if shift key is down
 			if (modifiers & Glow::shiftModifier)
 			{
-				_xdown = Width()/2;
-				_ydown = Height()/2;
-				_dragType = ZOOM_OUT_DRAG;
+				xdown_ = Width()/2;
+				ydown_ = Height()/2;
+				dragType_ = ZOOM_OUT_DRAG;
 			}
 			else
 			// Zoom in if shift key isn't down
 			{
-				_xdown = x;
-				_ydown = y;
-				_dragType = ZOOM_IN_DRAG;
+				xdown_ = x;
+				ydown_ = y;
+				dragType_ = ZOOM_IN_DRAG;
 			}
-			_ComputeZoomFactor(x, y);
+			ComputeZoomFactor_(x, y);
 			Refresh();
 		}
 	}
@@ -466,29 +480,29 @@ void MandelWind::OnMouseUp(
 	int y,
 	Glow::Modifiers modifiers)
 {
-	if (_dragType == ZOOM_IN_DRAG)
+	if (dragType_ == ZOOM_IN_DRAG)
 	{
 		// for zooming "in"
-		_ComputeZoomFactor(x, y);
-		if (_factor != 0)
+		ComputeZoomFactor_(x, y);
+		if (factor_ != 0)
 		{
-			_data->MoveCenter(
-				(_xdown-Width()/2)*_data->GetPixelWidth(),
-				(Height()/2-_ydown)*_data->GetPixelWidth());
-			_data->ScalePixelWidth(_factor);
+			data_->MoveCenter(
+				(xdown_-Width()/2)*data_->GetPixelWidth(),
+				(Height()/2-ydown_)*data_->GetPixelWidth());
+			data_->ScalePixelWidth(factor_);
 		}
-		_dragType = NO_DRAG;
+		dragType_ = NO_DRAG;
 		Refresh();
 	}
-	else if (_dragType == ZOOM_OUT_DRAG)
+	else if (dragType_ == ZOOM_OUT_DRAG)
 	{
 		// for zooming "out"
-		_ComputeZoomFactor(x, y);
-		if (_factor != 0)
+		ComputeZoomFactor_(x, y);
+		if (factor_ != 0)
 		{
-			_data->ScalePixelWidth(1.0/_factor);
+			data_->ScalePixelWidth(1.0/factor_);
 		}
-		_dragType = NO_DRAG;
+		dragType_ = NO_DRAG;
 		Refresh();
 	}
 }
@@ -500,9 +514,9 @@ void MandelWind::OnMouseDrag(
 	int x,
 	int y)
 {
-	if (_dragType == ZOOM_IN_DRAG || _dragType == ZOOM_OUT_DRAG)
+	if (dragType_ == ZOOM_IN_DRAG || dragType_ == ZOOM_OUT_DRAG)
 	{
-		_ComputeZoomFactor(x, y);
+		ComputeZoomFactor_(x, y);
 		Refresh();
 	}
 }
@@ -510,20 +524,20 @@ void MandelWind::OnMouseDrag(
 
 // Compute current zooming factor
 
-void MandelWind::_ComputeZoomFactor(
+void MandelWind::ComputeZoomFactor_(
 	int x,
 	int y)
 {
 	// If the mouse is outside the window, zoom is being cancelled.
 	if (x<0 || x>=Width() || y<0 || y>=Height())
 	{
-		_factor = 0;
+		factor_ = 0;
 	}
 	else
 	{
 		// Figure out zoom factor
-		_factor = sqrt(double((_xdown-x)*(_xdown-x)+
-			(_ydown-y)*(_ydown-y)))/_halfdiagonal;
+		factor_ = sqrt(double((xdown_-x)*(xdown_-x)+
+			(ydown_-y)*(ydown_-y)))/halfdiagonal_;
 	}
 }
 
@@ -535,17 +549,17 @@ void MandelWind::OnMessage(
 	const GlowPushButtonMessage& message)
 {
 	// Was it the quit button?
-	if (message.widget == _quitButton)
+	if (message.widget == quitButton_)
 	{
 		exit(0);
 	}
 	// Reset button?
-	else if (message.widget == _resetButton)
+	else if (message.widget == resetButton_)
 	{
 		ResetZoom();
 	}
 	// Save button?
-	else if (message.widget == _saveButton)
+	else if (message.widget == saveButton_)
 	{
 		// Create window to prompt for save filename
 		// Have it notify this MandelWind when the user dismisses it with
@@ -562,26 +576,26 @@ void MandelWind::OnMessage(
 	const GlowSliderMessage& message)
 {
 	// Was it the multicolor cycle rate slider?
-	if (message.widget == _multiCycleRateSlider)
+	if (message.widget == multiCycleRateSlider_)
 	{
-		_multiCycleRate = message.value;
-		_imageValid = false;
+		multiCycleRate_ = message.value;
+		imageValid_ = false;
 		Refresh();
 	}
 	// Was it the multicolor cycle offset slider?
-	else if (message.widget == _multiCycleOffsetSlider)
+	else if (message.widget == multiCycleOffsetSlider_)
 	{
-		_multiCycleOffset = message.value;
-		_imageValid = false;
+		multiCycleOffset_ = message.value;
+		imageValid_ = false;
 		Refresh();
 	}
 	// Was it the number of iterations slider?
-	else if (message.widget == _iterationSlider)
+	else if (message.widget == iterationSlider_)
 	{
 		// Respond only on slider release (i.e. non-"live" slider)
 		if (message.released)
 		{
-			_data->SetThreshhold(int(message.value));
+			data_->SetThreshhold(int(message.value));
 			Refresh();
 		}
 	}
@@ -594,7 +608,7 @@ void MandelWind::OnMessage(
 {
 	// Only one checkbox was created-- assume it's the background calculation
 	// checkbox
-	_updateInBackground = (message.state == GlowCheckBoxWidget::on);
+	updateInBackground_ = (message.state == GlowCheckBoxWidget::on);
 }
 
 
@@ -610,28 +624,28 @@ void MandelWind::OnMessage(
 			SetColor(255, 0, 0);
 			// The popup menu will automatically mark and unmark items
 			// Deactivate the sliders that control multicolor options
-			_multiColorControlsPanel->Deactivate();
+			multiColorControlsPanel_->Deactivate();
 			break;
 		
 		case 1:
 			// Set the background color to green
 			SetColor(0, 255, 0);
 			// Deactivate the sliders that control multicolor options
-			_multiColorControlsPanel->Deactivate();
+			multiColorControlsPanel_->Deactivate();
 			break;
 		
 		case 2:
 			// Set the background color to blue
 			SetColor(0, 0, 255);
 			// Deactivate the sliders that control multicolor options
-			_multiColorControlsPanel->Deactivate();
+			multiColorControlsPanel_->Deactivate();
 			break;
 		
 		case 3:
 			// Set the background color to multi
 			SetColor(0, 0, 0);
 			// Activate the sliders that control multicolor options
-			_multiColorControlsPanel->Activate();
+			multiColorControlsPanel_->Activate();
 			break;
 	}
 }
@@ -651,12 +665,12 @@ void MandelWind::OnMessage(
 	// a better image format if you want to
 	ofstream ofs(message.text.c_str());
 	if (!ofs) return;
-	ofs << "P3 " << _data->Width() << " " << _data->Height() << " 255\n";
-	int numpixels = _data->Width()*_data->Height();
+	ofs << "P3 " << data_->Width() << " " << data_->Height() << " 255\n";
+	int numpixels = data_->Width()*data_->Height();
 	for (int i=0; i<numpixels; ++i)
 	{
-		ofs << int(_image[i*4]) << " " << int(_image[i*4+1]) << " " <<
-			int(_image[i*4+2]) << endl;
+		ofs << int(image_[i*4]) << " " << int(image_[i*4+1]) << " " <<
+			int(image_[i*4+2]) << endl;
 	}
 }
 

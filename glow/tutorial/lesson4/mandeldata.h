@@ -128,16 +128,16 @@ class MandelData
 	
 	private:
 	
-		int* _data;
-		int _width;
-		int _height;
-		Numeric _xcenter;
-		Numeric _ycenter;
-		Numeric _pixelwidth;
-		int _threshhold;
-		bool _valid;
-		int _linesLeft;
-		Numeric _cury;
+		int* data_;
+		int width_;
+		int height_;
+		Numeric xcenter_;
+		Numeric ycenter_;
+		Numeric pixelwidth_;
+		int threshhold_;
+		bool valid_;
+		int linesLeft_;
+		Numeric cury_;
 };
 
 
@@ -149,37 +149,37 @@ class MandelData
 
 inline pair<int, int> MandelData::GetSize() const
 {
-	return make_pair(_width, _height);
+	return make_pair(width_, height_);
 }
 
 
 inline int MandelData::Width() const
 {
-	return _width;
+	return width_;
 }
 
 
 inline int MandelData::Height() const
 {
-	return _height;
+	return height_;
 }
 
 
 inline pair<Numeric, Numeric> MandelData::GetCenter() const
 {
-	return make_pair(_xcenter, _ycenter);
+	return make_pair(xcenter_, ycenter_);
 }
 
 
 inline Numeric MandelData::CenterX() const
 {
-	return _xcenter;
+	return xcenter_;
 }
 
 
 inline Numeric MandelData::CenterY() const
 {
-	return _ycenter;
+	return ycenter_;
 }
 
 
@@ -187,8 +187,8 @@ inline void MandelData::SetCenter(
 	Numeric x,
 	Numeric y)
 {
-	_xcenter = x;
-	_ycenter = y;
+	xcenter_ = x;
+	ycenter_ = y;
 	InvalidateData();
 }
 
@@ -197,22 +197,22 @@ inline void MandelData::MoveCenter(
 	Numeric deltax,
 	Numeric deltay)
 {
-	_xcenter += deltax;
-	_ycenter += deltay;
+	xcenter_ += deltax;
+	ycenter_ += deltay;
 	InvalidateData();
 }
 
 
 inline Numeric MandelData::GetPixelWidth() const
 {
-	return _pixelwidth;
+	return pixelwidth_;
 }
 
 
 inline void MandelData::SetPixelWidth(
 	Numeric width)
 {
-	_pixelwidth = width;
+	pixelwidth_ = width;
 	InvalidateData();
 }
 
@@ -220,7 +220,7 @@ inline void MandelData::SetPixelWidth(
 inline void MandelData::ScalePixelWidth(
 	Numeric factor)
 {
-	_pixelwidth *= factor;
+	pixelwidth_ *= factor;
 	InvalidateData();
 }
 
@@ -228,26 +228,26 @@ inline void MandelData::ScalePixelWidth(
 inline void MandelData::SetThreshhold(
 	int thresh)
 {
-	_threshhold = thresh;
+	threshhold_ = thresh;
 	InvalidateData();
 }
 
 
 inline int MandelData::GetThreshhold() const
 {
-	return _threshhold;
+	return threshhold_;
 }
 
 
 inline bool MandelData::IsDataValid() const
 {
-	return _valid;
+	return valid_;
 }
 
 
 inline int MandelData::LinesRemaining() const
 {
-	return _linesLeft;
+	return linesLeft_;
 }
 
 
@@ -255,13 +255,13 @@ inline int MandelData::DataAt(
 	int i,
 	int j) const
 {
-	return _data[i*_width+j];
+	return data_[i*width_+j];
 }
 
 
 inline const int* MandelData::Data() const
 {
-	return static_cast<const int*>(_data);
+	return static_cast<const int*>(data_);
 }
 
 

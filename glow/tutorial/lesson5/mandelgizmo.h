@@ -86,8 +86,8 @@ class MandelGizmoWindow :
 	
 	private:
 	
-		GlowQuickPaletteSubwindow* _widgetsPanel;
-		MandelGizmoSubwindow* _gizmoPanel;
+		GlowQuickPaletteSubwindow* widgetsPanel_;
+		MandelGizmoSubwindow* gizmoPanel_;
 };
 
 

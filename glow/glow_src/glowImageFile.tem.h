@@ -67,7 +67,7 @@ GLOW_NAMESPACE_BEGIN
 */
 
 template <class ImageClass>
-void GlowPNMReader<ImageClass>::Set1Channels_(
+void TGlowPNMReader<ImageClass>::Set1Channels_(
 	typename ImageClass::ElementType elem,
 	unsigned int i,
 	unsigned int j)
@@ -93,7 +93,7 @@ void GlowPNMReader<ImageClass>::Set1Channels_(
 
 
 template <class ImageClass>
-void GlowPNMReader<ImageClass>::Set3Channels_(
+void TGlowPNMReader<ImageClass>::Set3Channels_(
 	typename ImageClass::ElementType elem1,
 	typename ImageClass::ElementType elem2,
 	typename ImageClass::ElementType elem3,
@@ -117,7 +117,7 @@ void GlowPNMReader<ImageClass>::Set3Channels_(
 
 
 template <class ImageClass>
-void GlowPNMReader<ImageClass>::Read(
+void TGlowPNMReader<ImageClass>::Read(
 	ImageClass& image)
 {
 	class GlowPNMReader_Xlate
@@ -125,56 +125,51 @@ void GlowPNMReader<ImageClass>::Read(
 		public:
 		
 			// Determine alpha defaults
-			inline explicit GlowPNMReader_Xlate(
-				unsigned char& c)
+			inline static void GetAlphaDefault(
+				unsigned char& alpha)
 			{
-				c = UCHAR_MAX;
+				alpha = UCHAR_MAX;
 			}
-			inline explicit GlowPNMReader_Xlate(
-				char& c)
+			inline static void GetAlphaDefault(
+				char& alpha)
 			{
-				c = SCHAR_MAX;
+				alpha = SCHAR_MAX;
 			}
-			inline explicit GlowPNMReader_Xlate(
-				float& c)
+			inline static void GetAlphaDefault(
+				float& alpha)
 			{
-				c = 1.0f;
+				alpha = 1.0f;
 			}
-			inline explicit GlowPNMReader_Xlate(
-				double& c)
+			inline static void GetAlphaDefault(
+				double& alpha)
 			{
-				c = 1.0;
+				alpha = 1.0;
 			}
 			
 			// Translate input to type
-			inline explicit GlowPNMReader_Xlate(
+			inline static void TranslateInput(
 				unsigned char& c,
 				int i)
 			{
 				c = (unsigned char)i;
 			}
-			inline explicit GlowPNMReader_Xlate(
+			inline static void TranslateInput(
 				char& c,
 				int i)
 			{
 				c = (char)(i-128);
 			}
-			inline explicit GlowPNMReader_Xlate(
+			inline static void TranslateInput(
 				float& c,
 				int i)
 			{
 				c = (float)i/float(255);
 			}
-			inline explicit GlowPNMReader_Xlate(
+			inline static void TranslateInput(
 				double& c,
 				int i)
 			{
 				c = (double)i/double(255);
-			}
-			
-			// Dummy method to avoid warnings
-			inline void Xlate()
-			{
 			}
 	};
 	
@@ -204,7 +199,7 @@ void GlowPNMReader<ImageClass>::Read(
 	
 	// Set other info
 	imagePtr_ = &image;
-	GlowPNMReader_Xlate(alphaDefault_).Xlate();
+	GlowPNMReader_Xlate::GetAlphaDefault(alphaDefault_);
 	
 	// Size image
 	image.ResizeRaw(width, height);
@@ -223,7 +218,7 @@ void GlowPNMReader<ImageClass>::Read(
 					return;
 				}
 				r = r<128 ? 0 : 255;
-				GlowPNMReader_Xlate(elem1, r).Xlate();
+				GlowPNMReader_Xlate::TranslateInput(elem1, r);
 				Set1Channels_(elem1, i, j);
 			}
 			break;
@@ -238,7 +233,7 @@ void GlowPNMReader<ImageClass>::Read(
 				{
 					return;
 				}
-				GlowPNMReader_Xlate(elem1, r).Xlate();
+				GlowPNMReader_Xlate::TranslateInput(elem1, r);
 				Set1Channels_(elem1, i, j);
 			}
 			break;
@@ -255,9 +250,9 @@ void GlowPNMReader<ImageClass>::Read(
 				{
 					return;
 				}
-				GlowPNMReader_Xlate(elem1, r).Xlate();
-				GlowPNMReader_Xlate(elem2, g).Xlate();
-				GlowPNMReader_Xlate(elem3, b).Xlate();
+				GlowPNMReader_Xlate::TranslateInput(elem1, r);
+				GlowPNMReader_Xlate::TranslateInput(elem2, g);
+				GlowPNMReader_Xlate::TranslateInput(elem3, b);
 				Set3Channels_(elem1, elem2, elem3, i, j);
 			}
 			break;
@@ -283,7 +278,7 @@ void GlowPNMReader<ImageClass>::Read(
 					{
 						--count;
 					}
-					GlowPNMReader_Xlate(elem1, (val&1)!=0 ? 255 : 0).Xlate();
+					GlowPNMReader_Xlate::TranslateInput(elem1, (val&1)!=0 ? 255 : 0);
 					Set1Channels_(elem1, i, j);
 					val >>= 1;
 				}
@@ -300,7 +295,7 @@ void GlowPNMReader<ImageClass>::Read(
 				{
 					return;
 				}
-				GlowPNMReader_Xlate(elem1, r).Xlate();
+				GlowPNMReader_Xlate::TranslateInput(elem1, r);
 				Set1Channels_(elem1, i, j);
 			}
 			break;
@@ -317,9 +312,9 @@ void GlowPNMReader<ImageClass>::Read(
 				{
 					return;
 				}
-				GlowPNMReader_Xlate(elem1, r).Xlate();
-				GlowPNMReader_Xlate(elem2, g).Xlate();
-				GlowPNMReader_Xlate(elem3, b).Xlate();
+				GlowPNMReader_Xlate::TranslateInput(elem1, r);
+				GlowPNMReader_Xlate::TranslateInput(elem2, g);
+				GlowPNMReader_Xlate::TranslateInput(elem3, b);
 				Set3Channels_(elem1, elem2, elem3, i, j);
 			}
 			break;
@@ -334,7 +329,7 @@ void GlowPNMReader<ImageClass>::Read(
 */
 
 template <class ImageClass>
-void GlowPNMWriter<ImageClass>::Write(
+void TGlowPNMWriter<ImageClass>::Write(
 	const ImageClass& image,
 	bool binary)
 {
@@ -354,14 +349,14 @@ void GlowPNMWriter<ImageClass>::Write(
 				val_ = int(c)+128;
 			}
 			inline explicit GlowPNMWriter_Xlate(
-				float& c)
+				float c)
 			{
 				val_ = int(c*255.0f);
 				if (val_<0) val_=0;
 				if (val_>255) val_=255;
 			}
 			inline explicit GlowPNMWriter_Xlate(
-				double& c)
+				double c)
 			{
 				val_ = int(c*255.0);
 				if (val_<0) val_=0;

@@ -80,8 +80,8 @@ class CalcUI
 	
 	private:
 	
-		GlowFixedSizeWidgetWindow* _window;
-		CalcUIReceiver* _receiver;
+		GlowFixedSizeWidgetWindow* window_;
+		CalcUIReceiver* receiver_;
 };
 
 

@@ -175,7 +175,7 @@ class MySubwindow :
 	
 	private:
 	
-		GlowViewManipulator* _manip;
+		GlowViewManipulator* manip_;
 };
 
 
@@ -190,10 +190,10 @@ GlowSubwindow(parent, 0, 0, 400, 400,
 	Glow::rgbBuffer | Glow::depthBuffer | Glow::doubleBuffer,
 	Glow::mouseEvents | Glow::dragEvents)
 {
-	_manip = new GlowViewManipulator(this,
+	manip_ = new GlowViewManipulator(this,
 		GlowViewManipulatorParams::defaults);
-	_manip->SetSpinnable(true);
-	new MyCubeViewer(_manip);
+	manip_->SetSpinnable(true);
+	new MyCubeViewer(manip_);
 }
 
 
@@ -230,11 +230,11 @@ void MySubwindow::OnMouseDown(
 	int y,
 	Glow::Modifiers modifiers)
 {
-	if (!_manip->IsDragging())
+	if (!manip_->IsDragging())
 	{
 		float xn, yn;
 		NormalizeCoordinates(x, y, xn, yn);
-		_manip->BeginRotationDrag(xn, yn);
+		manip_->BeginRotationDrag(xn, yn);
 	}
 }
 
@@ -245,11 +245,11 @@ void MySubwindow::OnMouseDrag(
 	int x,
 	int y)
 {
-	if (_manip->IsDragging())
+	if (manip_->IsDragging())
 	{
 		float xn, yn;
 		NormalizeCoordinates(x, y, xn, yn);
-		_manip->InDrag(xn, yn);
+		manip_->InDrag(xn, yn);
 	}
 }
 
@@ -262,11 +262,11 @@ void MySubwindow::OnMouseUp(
 	int y,
 	Glow::Modifiers modifiers)
 {
-	if (_manip->IsDragging())
+	if (manip_->IsDragging())
 	{
 		float xn, yn;
 		NormalizeCoordinates(x, y, xn, yn);
-		_manip->EndDrag(xn, yn);
+		manip_->EndDrag(xn, yn);
 	}
 }
 

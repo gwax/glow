@@ -253,7 +253,7 @@ class GlowColor
 */
 
 template <class T>
-class GlowImage
+class TGlowImage
 {
 	//-------------------------------------------------------------------------
 	//	Public interface
@@ -266,20 +266,20 @@ class GlowImage
 	public:
 	
 		// Constructors
-		inline GlowImage();
-		GlowImage(
-			const GlowImage<T>& orig);
-		GlowImage(
+		inline TGlowImage();
+		TGlowImage(
+			const TGlowImage<T>& orig);
+		TGlowImage(
 			unsigned int width,
 			unsigned int height,
 			T defelem = T(0));
 		
 		// Destructor
-		virtual ~GlowImage();
+		virtual ~TGlowImage();
 		
 		// Set
-		GlowImage<T>& operator=(
-			const GlowImage<T>& orig);
+		TGlowImage<T>& operator=(
+			const TGlowImage<T>& orig);
 		
 		// Element access
 		inline T& At(
@@ -304,6 +304,11 @@ class GlowImage
 		inline const T* Array() const;
 		inline void* RawArray();
 		inline const void* RawArray() const;
+		inline T* ReleaseArray();
+		inline void GrabArray(
+			T* array,
+			unsigned int width,
+			unsigned int height);
 		
 		// Size access
 		inline unsigned int Width() const;
@@ -331,10 +336,10 @@ class GlowImage
 		static void CopyRect(
 			unsigned int width,
 			unsigned int height,
-			GlowImage<T>& to,
+			TGlowImage<T>& to,
 			unsigned int xto,
 			unsigned int yto,
-			const GlowImage<T>& from,
+			const TGlowImage<T>& from,
 			unsigned int xfrom,
 			unsigned int yfrom);
 	
@@ -358,7 +363,7 @@ class GlowImage
 */
 
 class GlowColorImage :
-	public GlowImage<GlowColor>
+	public TGlowImage<GlowColor>
 {
 	public:
 	
@@ -391,11 +396,16 @@ class GlowColorImage :
 			unsigned int width,
 			unsigned int height);
 		void DrawAtRasterPos() const;
+		
+		// Scale
+		void Scale(
+			int nWidth,
+			int nHeight);
 };
 
 
 class GlowUcharImage :
-	public GlowImage<unsigned char>
+	public TGlowImage<unsigned char>
 {
 	public:
 	
@@ -434,7 +444,7 @@ class GlowUcharImage :
 
 
 class GlowGLfloatImage :
-	public GlowImage<GLfloat>
+	public TGlowImage<GLfloat>
 {
 	public:
 	

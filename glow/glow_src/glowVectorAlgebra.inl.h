@@ -277,7 +277,7 @@ inline GLfloat Vec3f::operator[](
 // Vector cast
 //-----------------------------------------------------------------------------
 
-inline Vec3f::operator const GLfloat*() const
+inline const GLfloat* Vec3f::Array() const
 {
 	return vals_;
 }
@@ -1137,7 +1137,7 @@ inline Quatf& Quatf::operator=(
 // Quaternion cast
 //-----------------------------------------------------------------------------
 
-inline Quatf::operator const GLfloat*() const
+inline const GLfloat* Quatf::Array() const
 {
 	return vals_;
 }

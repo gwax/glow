@@ -1,6 +1,6 @@
 
 The GLOW Toolkit
-version 1.1.1dev (24 July 2000)
+version 1.1.2dev (?? July 2000)
 Copyright (C) 1997-2000  Daniel Azuma
 
 
@@ -76,9 +76,9 @@ RELEASE NOTES
 
 
     The GLOW Toolkit
-    Version 1.1.1dev (24 July 2000)
+    Version 1.1.2dev (?? July 2000)
 
-    These are the differences between versions 1.0.0 and 1.1.1dev.
+    These are the differences between versions 1.1.1dev and 1.1.2dev.
     A complete history of publicly released versions can be found on the
     GLOW web site.
 
@@ -86,83 +86,48 @@ RELEASE NOTES
     Features added
     --------------
 
-      Added a makefile for compiling unix shared and static libraries of
-      GLOW. Also added support for linking with a GLOW library in the
-      tutorial makefiles. (Also in 1.0.1)
+      Added GlowComponent::IsInitialized() and GlowComponent::IsClosed()
 
-      Added a bunch of features that depend on GLUT 4 APIs (currently,
-      GLUT 3.7 or later is sufficient). The features listed below that
-      are marked "GLUT4" can be disabled, and the dependency on GLUT 3.7
-      or later removed, by defining the symbol GLOW_OPTION_STRICTGLUT3.
+      GlowLabelWidget can now align text center and right.
 
-      Added GlowSubwindowParams::modeString to specify buffer features
-      using GLUT 4's new string interface. Also added constructors and
-      Init() methods to GlowSubwindow and GlowWindow that take mode
-      strings. (GLUT4)
+      Added TGlowImage::GrabArray() and TGlowImage::ReleaseArray().
 
-      Subwindows and windows can now receive keyboard-up events by
-      overriding the OnKeyboardUp() method. Also, GlowKeyboardData now
-      has a "type" field specifying the type of keyboard event (key down
-      or key up). Added Glow::keyboardUpEvents mask. (GLUT4)
-
-      Added IsKeyRepeatEnabled() and SetKeyRepeatEnabled() to subwindows
-      and windows for controlling key repeat. (GLUT4)
-
-      Added joystick support. Receive joystick events by overriding
-      OnJoystick(). Also added ReadJoystick(), SetJoystickPollInterval()
-      and GetJoystickPollInterval() and to subwindow and window classes.
-      Added Glow::joystickEvents mask. Added Glow static methods for
-      determining joystick capability. (GLUT4)
-
-      Added GlowSubwindow::WarpCursor(). (GLUT4)
-
-      Added GlowImage template. Added GlowColorImage, GlowUcharImage and
-      GlowGLfloatImage classes.
-
-      Added GlowPNMReader and GlowPNMWriter templates. (Available in the
-      glowImageFile module.
+      Added GlowColorImage::Scale().
 
 
     Features changed
     ----------------
 
-      Specifying the DEBUG file-option in the makefile now adds -g by
-      default. (Also in 1.0.1)
+      Removed conversion from Vec3f and Quatf to const GLfloat* and 
+      replaced with method Array().
 
-      Cursors should now be specified by enumeration Glow::Cursor.
+      GlowTextData contains rather than inherits from std::string.
 
-      gcc now needs GLOW_COMPAT_USEOLDSTREAMPOS defined for successful
-      compilation. The library makefile has been updated accordingly.
-
-      GlowWidgetWindow and GlowWidgetSubwindow now use Glow::rgbBuffer |
-      Glow::doubleBuffer by default. (Version 1.0 also included alpha,
-      accumulation and stencil.)
+      Renamed GlowImage, GlowPNMReader and GlowPNMWriter to
+      TGlowImage, TGlowPNMReader and TGlowPNMWriter, respectively.
 
 
     Bugs fixed
     ----------
 
-      LINK_(uname) didn't work in the makefile. Fixed. (Also in 1.0.1)
+      QuickPalette included widgets that were deferred-deleted using
+      Close(), resulting in blank areas when repacking a palette with
+      closed widgets. Fixed. (also in 1.0.2)
 
-      Several reference fixes.
+      GlowLabelWidget didn't draw strings with Mac-style newlines
+      correctly. Fixed. (also in 1.0.2)
+
+      Several classes in the tutorial weren't cleaning up all their
+      resources if they were deleted. Fixed. (also in 1.0.2)
+
+      Several more reference fixes.
 
 
     Internal changes
     ----------------
 
-      Renamed VIRTUOSO_INTERNAL_MINMAXDEFINED (defined in glowHeader.h
-      when std::min and std::max are defined while compiling for Win32)
-      to GLOW_INTERNAL_MINMAXDEFINED. (Also in 1.0.1)
-
-      Private class members now named with a trailing underscore rather
-      than a leading underscore, to conform to current C++ style
-      recommendations.
-
-      A bunch of template-related optimizations (e.g. preincrementing
-      iterators, eliminating temporaries) done.
-
-      Removed some unnecessary recursion and virtual methods. (Replaced
-      with iteration and RTTI.)
+      Fixed underscores (changed from leading to trailing) for private
+      class members in the tutorial.
 
 
     To-do list
@@ -187,16 +152,14 @@ RELEASE NOTES
 
       Add support for "either-or" to QuickPalette.
 
-      Add support for text alignment in GlowLabelWidget.
-
       GlowComboBoxWidget class? May use GlowTextListWidget.
 
       GlowScrollableWindow class? Not sure how to design this.
 
       Add stroke fonts to GlowFont? Not sure how to design this.
 
-      Add GlowImage template, GlowPNMReader and GlowPNMWriter info to
-      the reference.
+      Add TGlowImage, TGlowPNMReader and TGlowPNMWriter info to the
+      reference.
 
       Update tutorial.
 

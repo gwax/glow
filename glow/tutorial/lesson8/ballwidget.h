@@ -139,14 +139,14 @@ class BallWidget :
 	private:
 	
 		// The manipulator object for the ball
-		GlowViewManipulator* _manip;
+		GlowViewManipulator* manip_;
 		
 		// A sender for widget events
-		TSender<const BallMessage&> _sender;
+		TSender<const BallMessage&> sender_;
 		
 		// The mouse button and modifiers that were pressed
-		Glow::MouseButton _button;
-		Glow::Modifiers _modifiers;
+		Glow::MouseButton button_;
+		Glow::Modifiers modifiers_;
 	
 	protected:
 	
@@ -200,21 +200,21 @@ class BallMessage
 // Reset the transform
 inline void BallWidget::Reset()
 {
-	_manip->SetIdentity();
+	manip_->SetIdentity();
 }
 
 
 // Access (but don't allow changes to) the transform data
 inline const Quatf& BallWidget::GetRotation() const
 {
-	return _manip->GetRotation();
+	return manip_->GetRotation();
 }
 
 
 // Access the list of notifiers
 inline TSender<const BallMessage&>& BallWidget::Notifier()
 {
-	return _sender;
+	return sender_;
 }
 
 

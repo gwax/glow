@@ -116,8 +116,8 @@ BallWidget::BallWidget(
 	GlowWidget::Init(parent->Root(), parent, params);
 	
 	// Make view manipulator and drawing component
-	_manip = new GlowViewManipulator(this, GlowViewManipulatorParams::defaults);
-	new DrawWireSphere(_manip);
+	manip_ = new GlowViewManipulator(this, GlowViewManipulatorParams::defaults);
+	new DrawWireSphere(manip_);
 	
 	// Register to receive mouse events
 	RegisterMouseEvents();
@@ -149,14 +149,14 @@ void BallWidget::OnWidgetMouseDown(
 {
 	GLOW_DEBUGSCOPE("BallWidget::OnWidgetMouseDown");
 	
-	if (!_manip->IsDragging())
+	if (!manip_->IsDragging())
 	{
 		GLfloat xn;
 		GLfloat yn;
 		NormalizeCoordinates(x, y, xn, yn);
-		_manip->BeginRotationDrag(xn, yn);
-		_button = button;
-		_modifiers = modifiers;
+		manip_->BeginRotationDrag(xn, yn);
+		button_ = button;
+		modifiers_ = modifiers;
 	}
 }
 
@@ -170,13 +170,13 @@ void BallWidget::OnWidgetMouseUp(
 {
 	GLOW_DEBUGSCOPE("BallWidget::OnWidgetMouseUp");
 	
-	if (_manip->IsDragging())
+	if (manip_->IsDragging())
 	{
 		GLfloat xn;
 		GLfloat yn;
 		NormalizeCoordinates(x, y, xn, yn);
-		_manip->EndDrag(xn, yn);
-		OnReleased(_button, _modifiers);
+		manip_->EndDrag(xn, yn);
+		OnReleased(button_, modifiers_);
 	}
 }
 
@@ -188,13 +188,13 @@ void BallWidget::OnWidgetMouseDrag(
 {
 	GLOW_DEBUGSCOPE("BallWidget::OnWidgetMouseDrag");
 	
-	if (_manip->IsDragging())
+	if (manip_->IsDragging())
 	{
 		GLfloat xn;
 		GLfloat yn;
 		NormalizeCoordinates(x, y, xn, yn);
-		_manip->InDrag(xn, yn);
-		OnDragged(_button, _modifiers);
+		manip_->InDrag(xn, yn);
+		OnDragged(button_, modifiers_);
 	}
 }
 
@@ -209,11 +209,11 @@ void BallWidget::OnDragged(
 	// Send event message to receivers
 	BallMessage message;
 	message.widget = this;
-	message.rotation = _manip->GetRotation();
+	message.rotation = manip_->GetRotation();
 	message.released = false;
 	message.mouseButton = button;
 	message.modifiers = modifiers;
-	_sender.Send(message);
+	sender_.Send(message);
 }
 
 
@@ -227,11 +227,11 @@ void BallWidget::OnReleased(
 	// Send event message to receivers
 	BallMessage message;
 	message.widget = this;
-	message.rotation = _manip->GetRotation();
+	message.rotation = manip_->GetRotation();
 	message.released = true;
 	message.mouseButton = button;
 	message.modifiers = modifiers;
-	_sender.Send(message);
+	sender_.Send(message);
 }
 
 

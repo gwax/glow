@@ -201,7 +201,7 @@ GlowWidget::AutoPackError GlowQuickRadioGroupWidget::OnAutoPack(
 	for (GlowComponent* child = FirstChild(); child != 0; child = child->Next())
 	{
 		GlowRadioButtonWidget* button = dynamic_cast<GlowRadioButtonWidget*>(child);
-		if (button != 0)
+		if (button != 0 && button->IsVisible() && !button->IsClosing())
 		{
 			if (arrangement_ == GlowQuickPalette::horizontal)
 			{
@@ -608,7 +608,7 @@ GlowWidget::AutoPackError GlowQuickPanelWidget::OnAutoPack(
 	{
 		// Get next widget
 		GlowWidget* widget = dynamic_cast<GlowWidget*>(child);
-		if (widget == 0 || !widget->IsVisible())
+		if (widget == 0 || !widget->IsVisible() || widget->IsClosing())
 		{
 			continue;
 		}

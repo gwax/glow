@@ -74,6 +74,7 @@ class MandelWind :
 	
 		MandelWind(
 			MandelData* data);
+		virtual ~MandelWind();
 	
 	protected:
 	
@@ -101,21 +102,21 @@ class MandelWind :
 	
 	private:
 	
-		void _ComputeZoomFactor(
+		void ComputeZoomFactor_(
 			int x,
 			int y);
 	
 	private:
 	
-		MandelData* _data;
-		unsigned char* _image;
+		MandelData* data_;
+		unsigned char* image_;
 		
 		// New with lesson 2:
-		double _halfdiagonal;
-		int _dragType;
-		int _xdown;
-		int _ydown;
-		double _factor;
+		double halfdiagonal_;
+		int dragType_;
+		int xdown_;
+		int ydown_;
+		double factor_;
 };
 
 

@@ -86,12 +86,12 @@ CalcEngine::CalcEngine()
 	
 	for (int i=0; i<STACKSIZE; ++i)
 	{
-		_stack[i] = 0;
+		stack_[i] = 0;
 	}
-	_state = postEntry;
-	_format = decimalFormat;
-	_angleUnits = degrees;
-	_mantissaNegative = _exponentNegative = false;
+	state_ = postEntry;
+	format_ = decimalFormat;
+	angleUnits_ = degrees;
+	mantissaNegative_ = exponentNegative_ = false;
 }
 
 
@@ -105,294 +105,294 @@ void CalcEngine::Button(
 	switch (button)
 	{
 		case enterButton:
-			_Enter();
+			Enter_();
 			break;
 		
 		case pointButton:
-			if (_state == preEntry)
+			if (state_ == preEntry)
 			{
-				_Enter();
+				Enter_();
 			}
-			if (_state == postEntry)
+			if (state_ == postEntry)
 			{
-				_Clear();
+				Clear_();
 			}
-			if (_state != enterFrac && _state != enterExpon)
+			if (state_ != enterFrac && state_ != enterExpon)
 			{
-				_state = enterFrac;
+				state_ = enterFrac;
 			}
 			break;
 		
 		case exponentButton:
-			if (_state == preEntry)
+			if (state_ == preEntry)
 			{
-				_Enter();
+				Enter_();
 			}
-			if (_state == postEntry)
+			if (state_ == postEntry)
 			{
-				_Clear();
+				Clear_();
 			}
-			if (_state != enterExpon)
+			if (state_ != enterExpon)
 			{
-				_state = enterExpon;
+				state_ = enterExpon;
 			}
 			break;
 		
 		case negateButton:
-			if (_state == preEntry || _state == postEntry)
+			if (state_ == preEntry || state_ == postEntry)
 			{
-				_UnaryOp(-_stack[0]);
+				UnaryOp_(-stack_[0]);
 			}
-			else if (_state == enterExpon)
+			else if (state_ == enterExpon)
 			{
-				_exponentNegative = !_exponentNegative;
+				exponentNegative_ = !exponentNegative_;
 			}
 			else
 			{
-				_mantissaNegative = !_mantissaNegative;
+				mantissaNegative_ = !mantissaNegative_;
 			}
 			break;
 		
 		case deleteButton:
-			if (_state == postEntry)
+			if (state_ == postEntry)
 			{
-				_Clear();
+				Clear_();
 			}
-			else if (_state == enterExpon)
+			else if (state_ == enterExpon)
 			{
-				if (_exponent.size() > 0)
+				if (exponent_.size() > 0)
 				{
-					_exponent.erase(_exponent.size()-1, 1);
+					exponent_.erase(exponent_.size()-1, 1);
 				}
 				else
 				{
-					_exponentNegative = false;
-					if (_fracMantissa.size() > 0)
+					exponentNegative_ = false;
+					if (fracMantissa_.size() > 0)
 					{
-						_state = enterFrac;
+						state_ = enterFrac;
 					}
 					else
 					{
-						_state = enterInt;
+						state_ = enterInt;
 					}
 				}
 			}
-			else if (_state == enterFrac)
+			else if (state_ == enterFrac)
 			{
-				if (_fracMantissa.size() > 0)
+				if (fracMantissa_.size() > 0)
 				{
-					_fracMantissa.erase(_fracMantissa.size()-1, 1);
+					fracMantissa_.erase(fracMantissa_.size()-1, 1);
 				}
 				else
 				{
-					_state = enterInt;
+					state_ = enterInt;
 				}
 			}
-			else if (_state == enterInt)
+			else if (state_ == enterInt)
 			{
-				if (_intMantissa.size() > 0)
+				if (intMantissa_.size() > 0)
 				{
-					_intMantissa.erase(_intMantissa.size()-1, 1);
+					intMantissa_.erase(intMantissa_.size()-1, 1);
 				}
 			}
 			break;
 		
 		case plusButton:
-			_BinaryOp(_stack[1]+_stack[0]);
+			BinaryOp_(stack_[1]+stack_[0]);
 			break;
 		
 		case minusButton:
-			_BinaryOp(_stack[1]-_stack[0]);
+			BinaryOp_(stack_[1]-stack_[0]);
 			break;
 		
 		case multButton:
-			_BinaryOp(_stack[1]*_stack[0]);
+			BinaryOp_(stack_[1]*stack_[0]);
 			break;
 		
 		case divButton:
-			_BinaryOp(_stack[1]/_stack[0]);
+			BinaryOp_(stack_[1]/stack_[0]);
 			break;
 		
 		case recipButton:
-			_UnaryOp(Numeric(1)/_stack[0]);
+			UnaryOp_(Numeric(1)/stack_[0]);
 			break;
 		
 		case sqrtButton:
-			_UnaryOp(sqrt(_stack[0]));
+			UnaryOp_(sqrt(stack_[0]));
 			break;
 		
 		case sqrButton:
-			_UnaryOp(_stack[0]*_stack[0]);
+			UnaryOp_(stack_[0]*stack_[0]);
 			break;
 		
 		case expButton:
-			_UnaryOp(exp(_stack[0]));
+			UnaryOp_(exp(stack_[0]));
 			break;
 		
 		case logButton:
-			_UnaryOp(log(_stack[0]));
+			UnaryOp_(log(stack_[0]));
 			break;
 		
 		case powButton:
-			_BinaryOp(pow(_stack[1], _stack[0]));
+			BinaryOp_(pow(stack_[1], stack_[0]));
 			break;
 		
 		case rootButton:
-			_BinaryOp(pow(_stack[1], 1.0/_stack[0]));
+			BinaryOp_(pow(stack_[1], 1.0/stack_[0]));
 			break;
 		
 		case sinButton:
-			_UnaryOp(sin(_ToRadians(_stack[0])));
+			UnaryOp_(sin(ToRadians_(stack_[0])));
 			break;
 		
 		case cosButton:
-			_UnaryOp(cos(_ToRadians(_stack[0])));
+			UnaryOp_(cos(ToRadians_(stack_[0])));
 			break;
 		
 		case tanButton:
-			_UnaryOp(tan(_ToRadians(_stack[0])));
+			UnaryOp_(tan(ToRadians_(stack_[0])));
 			break;
 		
 		case arcsinButton:
-			_UnaryOp(_FromRadians(asin(_stack[0])));
+			UnaryOp_(FromRadians_(asin(stack_[0])));
 			break;
 		
 		case arccosButton:
-			_UnaryOp(_FromRadians(acos(_stack[0])));
+			UnaryOp_(FromRadians_(acos(stack_[0])));
 			break;
 		
 		case arctanButton:
-			_UnaryOp(_FromRadians(atan(_stack[0])));
+			UnaryOp_(FromRadians_(atan(stack_[0])));
 			break;
 		
 		case clearButton:
-			_Clear();
+			Clear_();
 			break;
 		
 		case swapButton:
-			tempval = _stack[0];
-			_stack[0] = _stack[1];
-			_stack[1] = tempval;
-			_state = preEntry;
+			tempval = stack_[0];
+			stack_[0] = stack_[1];
+			stack_[1] = tempval;
+			state_ = preEntry;
 			break;
 		
 		case consumeButton:
 			for (int i=1; i<STACKSIZE; ++i)
 			{
-				_stack[i-1] = _stack[i];
+				stack_[i-1] = stack_[i];
 			}
-			_stack[STACKSIZE-1] = 0;
-			_state = preEntry;
+			stack_[STACKSIZE-1] = 0;
+			state_ = preEntry;
 			break;
 		
 		default:
 			GLOW_ASSERT(button >= 0 && button <= 9);
-			if (_state == preEntry)
+			if (state_ == preEntry)
 			{
-				_Enter();
+				Enter_();
 			}
-			if (_state == postEntry)
+			if (state_ == postEntry)
 			{
-				_Clear();
+				Clear_();
 			}
-			if (_state == enterInt)
+			if (state_ == enterInt)
 			{
-				if (!_intMantissa.empty() || button != 0)
+				if (!intMantissa_.empty() || button != 0)
 				{
-					_intMantissa += char('0'+button);
+					intMantissa_ += char('0'+button);
 				}
 			}
-			else if (_state == enterFrac)
+			else if (state_ == enterFrac)
 			{
-				_fracMantissa += char('0'+button);
+				fracMantissa_ += char('0'+button);
 			}
-			else if (_state == enterExpon)
+			else if (state_ == enterExpon)
 			{
-				if ((!_exponent.empty() || button != 0) &&
-					_exponent.size() < 3 &&
-					(_exponent.size() < 2 || _exponent[0] < '3'))
+				if ((!exponent_.empty() || button != 0) &&
+					exponent_.size() < 3 &&
+					(exponent_.size() < 2 || exponent_[0] < '3'))
 				{
-					_exponent += char('0'+button);
+					exponent_ += char('0'+button);
 				}
 			}
 	}
 	
-	if (_state != preEntry && _state != postEntry)
+	if (state_ != preEntry && state_ != postEntry)
 	{
 		string temp;
-		_BuildString(temp);
-		_stack[0] = atof(temp.c_str());
+		BuildString_(temp);
+		stack_[0] = atof(temp.c_str());
 	}
 }
 
 
-void CalcEngine::_Enter()
+void CalcEngine::Enter_()
 {
 	for (int i=STACKSIZE-1; i>0; --i)
 	{
-		_stack[i] = _stack[i-1];
+		stack_[i] = stack_[i-1];
 	}
-	_state = postEntry;
+	state_ = postEntry;
 }
 
 
-void CalcEngine::_Clear()
+void CalcEngine::Clear_()
 {
-	_state = enterInt;
-	_mantissaNegative = _exponentNegative = false;
-	_intMantissa = "";
-	_fracMantissa = "";
-	_exponent = "";
-	_stack[0] = 0;
+	state_ = enterInt;
+	mantissaNegative_ = exponentNegative_ = false;
+	intMantissa_ = "";
+	fracMantissa_ = "";
+	exponent_ = "";
+	stack_[0] = 0;
 }
 
 
-void CalcEngine::_BinaryOp(
+void CalcEngine::BinaryOp_(
 	Numeric result)
 {
-	_state = preEntry;
-	_stack[0] = result;
+	state_ = preEntry;
+	stack_[0] = result;
 	for (int i=2; i<STACKSIZE; ++i)
 	{
-		_stack[i-1] = _stack[i];
+		stack_[i-1] = stack_[i];
 	}
-	_stack[STACKSIZE-1] = 0;
+	stack_[STACKSIZE-1] = 0;
 }
 
 
-void CalcEngine::_UnaryOp(
+void CalcEngine::UnaryOp_(
 	Numeric result)
 {
-	_state = preEntry;
-	_stack[0] = result;
+	state_ = preEntry;
+	stack_[0] = result;
 }
 
 
-void CalcEngine::_BuildString(
+void CalcEngine::BuildString_(
 	string& str) const
 {
-	GLOW_DEBUGSCOPE("CalcEngine::_BuildString");
+	GLOW_DEBUGSCOPE("CalcEngine::BuildString_");
 	
-	if (_mantissaNegative)
+	if (mantissaNegative_)
 	{
 		str = '-';
 	}
-	if (_intMantissa.empty())
+	if (intMantissa_.empty())
 	{
 		str += '0';
 	}
 	else
 	{
-		str.append(_intMantissa);
+		str.append(intMantissa_);
 	}
-	if (!_fracMantissa.empty() || _state == enterFrac)
+	if (!fracMantissa_.empty() || state_ == enterFrac)
 	{
 		str += '.';
-		str.append(_fracMantissa);
+		str.append(fracMantissa_);
 	}
-	if (!_exponent.empty() || _state == enterExpon)
+	if (!exponent_.empty() || state_ == enterExpon)
 	{
-		if (_exponentNegative)
+		if (exponentNegative_)
 		{
 			str += "e-";
 		}
@@ -400,7 +400,7 @@ void CalcEngine::_BuildString(
 		{
 			str += "e+";
 		}
-		str.append(_exponent);
+		str.append(exponent_);
 	}
 }
 
@@ -412,25 +412,25 @@ string CalcEngine::Display(
 	GLOW_ASSERT(level >= 0 && level < STACKSIZE);
 	
 	string result;
-	if (_state == preEntry || _state == postEntry || level != 0)
+	if (state_ == preEntry || state_ == postEntry || level != 0)
 	{
 		char buf[200];
-		if (_format == scientificFormat || _stack[level] >= 1e10 ||
-			_stack[level] <= -1e10 || (_stack[level] < 1e-10 &&
-			_stack[level] > -1e-10 && _stack[level] != 0))
+		if (format_ == scientificFormat || stack_[level] >= 1e10 ||
+			stack_[level] <= -1e10 || (stack_[level] < 1e-10 &&
+			stack_[level] > -1e-10 && stack_[level] != 0))
 		{
-			sprintf(buf, "%.15e", _stack[level]);
+			sprintf(buf, "%.15e", stack_[level]);
 		}
 		else
 		{
-			sprintf(buf, "%.15f", _stack[level]);
+			sprintf(buf, "%.15f", stack_[level]);
 			buf[21] = 0;
 		}
 		result.assign(buf);
 	}
 	else
 	{
-		_BuildString(result);
+		BuildString_(result);
 	}
 	return result;
 }

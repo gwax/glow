@@ -172,7 +172,7 @@ Here we created a subwindow that can have widgets added to it according to the Q
 <pre>_widgetsPanel-&gt;AddDismissPushButton("Close", this);</pre>
 </blockquote>
 <p>
-This line adds a special type of pushbutton to the subwindow-- a dismiss pushbutton. This kind of pushbutton causes some component to be deleted when it is pressed. In this case, we specify the <tt>this</tt> pointer as the component that will be deleted; i.e. when the button is pressed, our <tt>MandelGizmoWindow</tt> will be closed.
+This line adds a special type of pushbutton to the subwindow-- a dismiss pushbutton. This kind of pushbutton causes some component to be deleted when it is pressed. In this case, we specify the <tt>this</tt> pointer as the component that will be deleted; i.e. when the button is pressed, our <tt>MandelGizmoWindow</tt> will be closed. Because it is often contained within the window (or component) it will be dismissing, a dismiss pushbutton uses the <tt>Close()</tt> method rather than deleting the object directly.
 </p>
 <blockquote>
 <pre>GlowLabelWidget* fpsIndicator = _widgetsPanel-&gt;AddLabel("0000.00 fps");</pre>

@@ -726,6 +726,9 @@ class GlowComponent
 		inline bool IsActiveStandby() const;
 		inline bool IsInactive() const;
 		
+		inline bool IsInitialized() const;
+		inline bool IsClosing() const;
+		
 		void Paint();
 	
 	
@@ -757,6 +760,7 @@ class GlowComponent
 		GlowComponent* firstChild_;
 		GlowComponent* lastChild_;
 		short activeState_;
+		short initializeState_;
 	
 	private:
 	

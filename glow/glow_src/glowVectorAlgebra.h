@@ -159,7 +159,7 @@ class Vec3f
 			GLfloat xval,
 			GLfloat yval,
 			GLfloat zval);
-		inline Vec3f(
+		inline explicit Vec3f(
 			const GLfloat* vals);
 		inline Vec3f(
 			const Vec3f& v);
@@ -216,7 +216,7 @@ class Vec3f
 		inline Vec3f& operator=(
 			const GLfloat* ptr);
 		
-		inline operator const GLfloat*() const;
+		inline const GLfloat* Array() const;
 		
 		// Comparison
 		
@@ -338,7 +338,7 @@ class Mat4f
 			GLfloat e, GLfloat f, GLfloat g, GLfloat h,
 			GLfloat i, GLfloat j, GLfloat k, GLfloat l,
 			GLfloat m, GLfloat n, GLfloat o, GLfloat p);
-		inline Mat4f(
+		inline explicit Mat4f(
 			const GLfloat* array);
 		inline Mat4f(
 			const Mat4f& m);
@@ -556,7 +556,7 @@ class Quatf
 			GLfloat b,
 			GLfloat c,
 			GLfloat d);
-		inline Quatf(
+		inline explicit Quatf(
 			const GLfloat* vals);
 		
 		// Copy and cast
@@ -568,7 +568,7 @@ class Quatf
 		inline Quatf& operator=(
 			const Vec3f& vec);
 		
-		inline operator const GLfloat*() const;
+		inline const GLfloat* Array() const;
 		
 		// Setters
 		

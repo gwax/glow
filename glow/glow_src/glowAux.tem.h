@@ -67,7 +67,7 @@ GLOW_NAMESPACE_BEGIN
 */
 
 template <class T>
-GlowImage<T>::GlowImage(
+TGlowImage<T>::TGlowImage(
 	const GlowImage<T>& orig)
 {
 	width_ = orig.width_;
@@ -78,7 +78,7 @@ GlowImage<T>::GlowImage(
 
 
 template <class T>
-GlowImage<T>::GlowImage(
+TGlowImage<T>::TGlowImage(
 	unsigned int width,
 	unsigned int height,
 	T defelem)
@@ -95,15 +95,15 @@ GlowImage<T>::GlowImage(
 
 
 template <class T>
-GlowImage<T>::~GlowImage()
+TGlowImage<T>::~TGlowImage()
 {
 	delete[] data_;
 }
 
 
 template <class T>
-GlowImage<T>& GlowImage<T>::operator=(
-	const GlowImage<T>& orig)
+TGlowImage<T>& TGlowImage<T>::operator=(
+	const TGlowImage<T>& orig)
 {
 	if (orig.width_ != width_ || orig.height_ != height_)
 	{
@@ -117,7 +117,7 @@ GlowImage<T>& GlowImage<T>::operator=(
 
 
 template <class T>
-void GlowImage<T>::Clear(
+void TGlowImage<T>::Clear(
 	T defelem)
 {
 	for (int i=0, length=width_*height_; i<length; ++i)
@@ -128,7 +128,7 @@ void GlowImage<T>::Clear(
 
 
 template <class T>
-void GlowImage<T>::ResizeRaw(
+void TGlowImage<T>::ResizeRaw(
 	unsigned int width,
 	unsigned int height)
 {
@@ -143,7 +143,7 @@ void GlowImage<T>::ResizeRaw(
 
 
 template <class T>
-void GlowImage<T>::ResizeCopy(
+void TGlowImage<T>::ResizeCopy(
 	unsigned int width,
 	unsigned int height)
 {
@@ -168,7 +168,7 @@ void GlowImage<T>::ResizeCopy(
 
 
 template <class T>
-void GlowImage<T>::ResizeClearCopy(
+void TGlowImage<T>::ResizeClearCopy(
 	unsigned int width,
 	unsigned int height,
 	T defelem)
@@ -199,13 +199,13 @@ void GlowImage<T>::ResizeClearCopy(
 
 
 template <class T>
-void GlowImage<T>::CopyRect(
+void TGlowImage<T>::CopyRect(
 	unsigned int width,
 	unsigned int height,
-	GlowImage<T>& to,
+	TGlowImage<T>& to,
 	unsigned int xto,
 	unsigned int yto,
-	const GlowImage<T>& from,
+	const TGlowImage<T>& from,
 	unsigned int xfrom,
 	unsigned int yfrom)
 {

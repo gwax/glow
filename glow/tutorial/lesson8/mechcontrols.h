@@ -83,6 +83,7 @@ class MechControls :
 	
 		MechControls(
 			int mainWindowID);
+		virtual ~MechControls();
 	
 	protected:
 	
@@ -107,37 +108,37 @@ class MechControls :
 	private:
 	
 		// Main drawing window id
-		int _mainWindowID;
+		int mainWindowID_;
 		
 		// Pointer to the control window itself
-		GlowQuickPaletteWindow* _controlWindow;
+		GlowQuickPaletteWindow* controlWindow_;
 		
 		// Pointers to selected widgets. We store these so that we can tell
 		// what widget was hit when we receive events.
-		GlowCheckBoxWidget* _animationCheckbox;
-		GlowCheckBoxWidget* _wireframeCheckbox;
-		GlowPushButtonWidget* _quitButton;
-		GlowPushButtonWidget* _fireButton;
-		GlowSliderWidget* _rotateHipSlider;
-		GlowSliderWidget* _tiltTorsoSlider;
-		GlowSliderWidget* _lShoulderFwdSlider;
-		GlowSliderWidget* _lShoulderOutSlider;
-		GlowSliderWidget* _lElbowFwdSlider;
-		GlowSliderWidget* _lElbowOutSlider;
-		GlowSliderWidget* _lHipFwdSlider;
-		GlowSliderWidget* _lHipOutSlider;
-		GlowSliderWidget* _lKneeSlider;
-		GlowSliderWidget* _lAnkleSlider;
-		GlowSliderWidget* _rShoulderFwdSlider;
-		GlowSliderWidget* _rShoulderOutSlider;
-		GlowSliderWidget* _rElbowFwdSlider;
-		GlowSliderWidget* _rElbowOutSlider;
-		GlowSliderWidget* _rHipFwdSlider;
-		GlowSliderWidget* _rHipOutSlider;
-		GlowSliderWidget* _rKneeSlider;
-		GlowSliderWidget* _rAnkleSlider;
-		BallWidget* _viewBall;
-		BallWidget* _lightBall;
+		GlowCheckBoxWidget* animationCheckbox_;
+		GlowCheckBoxWidget* wireframeCheckbox_;
+		GlowPushButtonWidget* quitButton_;
+		GlowPushButtonWidget* fireButton_;
+		GlowSliderWidget* rotateHipSlider_;
+		GlowSliderWidget* tiltTorsoSlider_;
+		GlowSliderWidget* lShoulderFwdSlider_;
+		GlowSliderWidget* lShoulderOutSlider_;
+		GlowSliderWidget* lElbowFwdSlider_;
+		GlowSliderWidget* lElbowOutSlider_;
+		GlowSliderWidget* lHipFwdSlider_;
+		GlowSliderWidget* lHipOutSlider_;
+		GlowSliderWidget* lKneeSlider_;
+		GlowSliderWidget* lAnkleSlider_;
+		GlowSliderWidget* rShoulderFwdSlider_;
+		GlowSliderWidget* rShoulderOutSlider_;
+		GlowSliderWidget* rElbowFwdSlider_;
+		GlowSliderWidget* rElbowOutSlider_;
+		GlowSliderWidget* rHipFwdSlider_;
+		GlowSliderWidget* rHipOutSlider_;
+		GlowSliderWidget* rKneeSlider_;
+		GlowSliderWidget* rAnkleSlider_;
+		BallWidget* viewBall_;
+		BallWidget* lightBall_;
 };
 
 

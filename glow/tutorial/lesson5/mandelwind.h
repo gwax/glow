@@ -87,6 +87,7 @@ class MandelWind :
 	
 		MandelWind(
 			MandelData* data);
+		virtual ~MandelWind();
 		
 		void ResetZoom();
 		void SetColor(
@@ -146,53 +147,53 @@ class MandelWind :
 	
 	private:
 	
-		void _ComputeZoomFactor(
+		void ComputeZoomFactor_(
 			int x,
 			int y);
 	
 	private:
 	
 		// Image data
-		MandelData* _data;
-		unsigned char* _image;
+		MandelData* data_;
+		unsigned char* image_;
 		
 		// Zooming code
-		double _halfdiagonal;
-		int _dragType;
-		int _xdown;
-		int _ydown;
-		double _factor;
+		double halfdiagonal_;
+		int dragType_;
+		int xdown_;
+		int ydown_;
+		double factor_;
 		
 		// Lesson 3 data
-		unsigned char _r;
-		unsigned char _g;
-		unsigned char _b;
-		bool _imageValid;
+		unsigned char r_;
+		unsigned char g_;
+		unsigned char b_;
+		bool imageValid_;
 		
 		// Are we doing background updating or not?
-		bool _updateInBackground;
+		bool updateInBackground_;
 		
 		// Multi-color options
 		// Rate of 1.0 is the rate we used in lesson 3
 		// Offset of 0.0 is the offset we used in lesson 3
-		float _multiCycleRate;
-		float _multiCycleOffset;
+		float multiCycleRate_;
+		float multiCycleOffset_;
 		
 		// Pointer to the control window itself
-		GlowQuickPaletteWindow* _controlWindow;
+		GlowQuickPaletteWindow* controlWindow_;
 		
 		// Pointers to selected widgets. We store these so that we can tell
 		// what widget was hit when we receive events.
-		GlowPushButtonWidget* _quitButton;
-		GlowPushButtonWidget* _saveButton;
-		GlowPushButtonWidget* _resetButton;
-		GlowSliderWidget* _iterationSlider;
-		GlowSliderWidget* _multiCycleRateSlider;
-		GlowSliderWidget* _multiCycleOffsetSlider;
-		GlowQuickPanelWidget* _multiColorControlsPanel;
+		GlowPushButtonWidget* quitButton_;
+		GlowPushButtonWidget* saveButton_;
+		GlowPushButtonWidget* resetButton_;
+		GlowSliderWidget* iterationSlider_;
+		GlowSliderWidget* multiCycleRateSlider_;
+		GlowSliderWidget* multiCycleOffsetSlider_;
+		GlowQuickPanelWidget* multiColorControlsPanel_;
 		
 		// New with lesson 5:
-		GlowPushButtonWidget* _gizmoButton;
+		GlowPushButtonWidget* gizmoButton_;
 };
 
 

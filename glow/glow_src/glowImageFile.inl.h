@@ -143,7 +143,7 @@ inline void GlowPNMWriter_Base::SetStream(
 */
 
 template <class ImageClass>
-inline GlowPNMReader<ImageClass>::GlowPNMReader(
+inline TGlowPNMReader<ImageClass>::TGlowPNMReader(
 	GLOW_STD::istream& stream) :
 GlowPNMReader_Base(stream)
 {
@@ -157,7 +157,7 @@ GlowPNMReader_Base(stream)
 */
 
 template <class ImageClass>
-inline GlowPNMWriter<ImageClass>::GlowPNMWriter(
+inline TGlowPNMWriter<ImageClass>::TGlowPNMWriter(
 	GLOW_STD::ostream& stream) :
 GlowPNMWriter_Base(stream)
 {
@@ -165,7 +165,7 @@ GlowPNMWriter_Base(stream)
 
 
 template <class ImageClass>
-void GlowPNMWriter<ImageClass>::WriteAscii(
+void TGlowPNMWriter<ImageClass>::WriteAscii(
 	const ImageClass& image)
 {
 	Write(image, false);
@@ -173,7 +173,7 @@ void GlowPNMWriter<ImageClass>::WriteAscii(
 
 
 template <class ImageClass>
-void GlowPNMWriter<ImageClass>::WriteBinary(
+void TGlowPNMWriter<ImageClass>::WriteBinary(
 	const ImageClass& image)
 {
 	Write(image, true);

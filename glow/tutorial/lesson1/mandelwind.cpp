@@ -69,32 +69,45 @@ GlowWindow("Mandelglow", GlowWindow::autoPosition, GlowWindow::autoPosition,
 	Glow::noEvents)
 {
 	// Get data
-	_data = data;
-	_data->Recalc();
+	data_ = data;
+	data_->Recalc();
 	
 	// Make image
-	_image = new unsigned char[_data->Width()*_data->Height()*4];
-	const int* rawimage = _data->Data();
-	int mx = _data->Width()*_data->Height();
+	image_ = new unsigned char[data_->Width()*data_->Height()*4];
+	const int* rawimage = data_->Data();
+	int mx = data_->Width()*data_->Height();
 	for (int i=0; i<mx; ++i)
 	{
 		if (rawimage[i] == 0)
 		{
 			// Black color
-			_image[i*4] = 0;
-			_image[i*4+1] = 0;
-			_image[i*4+2] = 0;
-			_image[i*4+3] = 0;
+			image_[i*4] = 0;
+			image_[i*4+1] = 0;
+			image_[i*4+2] = 0;
+			image_[i*4+3] = 0;
 		}
 		else
 		{
 			// Red color
-			_image[i*4] = 255;
-			_image[i*4+1] = 0;
-			_image[i*4+2] = 0;
-			_image[i*4+3] = 0;
+			image_[i*4] = 255;
+			image_[i*4+1] = 0;
+			image_[i*4+2] = 0;
+			image_[i*4+3] = 0;
 		}
 	}
+}
+
+
+/*
+===============================================================================
+	Destructor for MandelWind
+===============================================================================
+*/
+
+MandelWind::~MandelWind()
+{
+	delete data_;
+	delete image_;
 }
 
 
@@ -108,6 +121,6 @@ void MandelWind::OnEndPaint()
 {
 	// Put OpenGL calls here.
 	::glRasterPos2f(-1.0f, -1.0f);
-	::glDrawPixels(_data->Width(), _data->Height(), GL_RGBA, GL_UNSIGNED_BYTE, _image);
+	::glDrawPixels(data_->Width(), data_->Height(), GL_RGBA, GL_UNSIGNED_BYTE, image_);
 }
 

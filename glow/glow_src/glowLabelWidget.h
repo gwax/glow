@@ -68,37 +68,7 @@ GLOW_INTERNAL_USINGSTD
 GLOW_NAMESPACE_BEGIN
 
 
-/*
-===============================================================================
-	CLASS GlowLabelParams
-	
-	Label params
-===============================================================================
-*/
-
-class GlowLabelParams :
-	public GlowWidgetParams
-{
-	public:
-	
-		const char* text;
-		GlowFont font;
-		bool opaque;
-		int hIndent;
-		int vIndent;
-		GlowColor backColor;
-		GlowColor textColor;
-		GlowColor disableTextColor;
-		
-		static GlowLabelParams defaults;
-		
-		GlowLabelParams();
-	
-	protected:
-	
-		GlowLabelParams(bool);
-};
-
+class GlowLabelParams;
 
 /*
 ===============================================================================
@@ -114,6 +84,15 @@ class GlowLabelWidget :
 	//-------------------------------------------------------------------------
 	//	Public interface
 	//-------------------------------------------------------------------------
+	
+	public:
+	
+		enum Alignment
+		{
+			alignLeft = 0,
+			alignCenter = 1,
+			alignRight = 2
+		};
 	
 	public:
 	
@@ -153,6 +132,10 @@ class GlowLabelWidget :
 			int indent);
 		inline void SetVIndent(
 			int indent);
+		
+		inline Alignment GetAlignment() const;
+		inline void SetAlignment(
+			Alignment alignment);
 		
 		inline GlowColor GetBackColor() const;
 		inline GlowColor GetTextColor() const;
@@ -211,6 +194,7 @@ class GlowLabelWidget :
 		int textHeight_;
 		int hIndent_;
 		int vIndent_;
+		Alignment alignment_;
 		bool opaque_;
 		
 		GlowColor backColor_;
@@ -224,6 +208,39 @@ class GlowLabelWidget :
 	protected:
 	
 		virtual void OnWidgetPaint();
+};
+
+
+/*
+===============================================================================
+	CLASS GlowLabelParams
+	
+	Label params
+===============================================================================
+*/
+
+class GlowLabelParams :
+	public GlowWidgetParams
+{
+	public:
+	
+		const char* text;
+		GlowFont font;
+		bool opaque;
+		int hIndent;
+		int vIndent;
+		GlowLabelWidget::Alignment alignment;
+		GlowColor backColor;
+		GlowColor textColor;
+		GlowColor disableTextColor;
+		
+		static GlowLabelParams defaults;
+		
+		GlowLabelParams();
+	
+	protected:
+	
+		GlowLabelParams(bool);
 };
 
 

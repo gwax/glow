@@ -207,7 +207,7 @@ class GlowPNMWriter_Base :
 */
 
 template <class ImageClass>
-class GlowPNMReader :
+class TGlowPNMReader :
 	public GlowPNMReader_Base
 {
 	//-------------------------------------------------------------------------
@@ -216,7 +216,7 @@ class GlowPNMReader :
 	
 	public:
 	
-		inline GlowPNMReader(
+		inline TGlowPNMReader(
 			GLOW_STD::istream& stream);
 		
 		void Read(
@@ -255,7 +255,7 @@ class GlowPNMReader :
 */
 
 template <class ImageClass>
-class GlowPNMWriter :
+class TGlowPNMWriter :
 	public GlowPNMWriter_Base
 {
 	//-------------------------------------------------------------------------
@@ -264,7 +264,7 @@ class GlowPNMWriter :
 	
 	public:
 	
-		inline GlowPNMWriter(
+		inline TGlowPNMWriter(
 			GLOW_STD::ostream& stream);
 		
 		void Write(

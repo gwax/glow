@@ -277,6 +277,8 @@ int GlowFont::StringWidth(
 ===============================================================================
 */
 
+// GlowColorImage
+
 void GlowColorImage::ReadFromBuffer(
 	int x,
 	int y,
@@ -307,6 +309,35 @@ void GlowColorImage::DrawAtRasterPos() const
 	::glPixelStorei(GL_UNPACK_ROW_LENGTH, save2);
 }
 
+
+void GlowColorImage::Scale(
+	unsigned int width,
+	unsigned int height)
+{
+	if (width != Width() || height != Height())
+	{
+		GlowColor* ndata = new GlowColor[width*height];
+		GLint save1, save2, save3, save4;
+		::glGetIntegerv(GL_PACK_ALIGNMENT, &save1);
+		::glGetIntegerv(GL_PACK_ROW_LENGTH, &save2);
+		::glGetIntegerv(GL_UNPACK_ALIGNMENT, &save3);
+		::glGetIntegerv(GL_UNPACK_ROW_LENGTH, &save4);
+		::glPixelStorei(GL_PACK_ALIGNMENT, 4);
+		::glPixelStorei(GL_PACK_ROW_LENGTH, 0);
+		::glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+		::glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+		::gluScaleImage(GL_RGBA, Width(), Height(), GL_UNSIGNED_BYTE, data_,
+			width, height, GL_UNSIGNED_BYTE, ndata);
+		::glPixelStorei(GL_PACK_ALIGNMENT, save1);
+		::glPixelStorei(GL_PACK_ROW_LENGTH, save2);
+		::glPixelStorei(GL_UNPACK_ALIGNMENT, save3);
+		::glPixelStorei(GL_UNPACK_ROW_LENGTH, save4);
+		GrabArray(ndata, width, height);
+	}
+}
+
+
+// GlowUcharImage
 
 void GlowUcharImage::ReadFromBuffer(
 	int x,
@@ -350,6 +381,8 @@ void GlowUcharImage::DrawAtRasterPos(
 	::glPixelStorei(GL_UNPACK_ROW_LENGTH, save2);
 }
 
+
+// GlowGLfloatImage
 
 void GlowGLfloatImage::ReadFromBuffer(
 	int x,

@@ -89,6 +89,7 @@ disableTextColor(0.0f, 0.0f, 0.0f)
 	text = "";
 	font = GLUT_BITMAP_HELVETICA_12;
 	opaque = false;
+	alignment = GlowLabelWidget::alignLeft;
 	hIndent = 1;
 	vIndent = 0;
 }
@@ -249,9 +250,6 @@ void GlowLabelWidget::OnWidgetPaint()
 		::glRectf(-1.0f, -1.0f, 1.0f, 1.0f);
 	}
 	
-	int vPos = font_.BaselinePos()+vIndent_;
-	GLfloat x, y;
-	
 	if (IsActive())
 	{
 		textColor_.Apply();
@@ -260,16 +258,48 @@ void GlowLabelWidget::OnWidgetPaint()
 	{
 		disableTextColor_.Apply();
 	}
-	NormalizeCoordinates(hIndent_, vPos, x, y);
-	::glRasterPos2f(x, y);
+	
+	int vPos = font_.BaselinePos()+vIndent_;
 	int textlen = (text_ == 0) ? 0 : GLOW_CSTD::strlen(text_);
-	for (int i=0; i<textlen; i++)
+	for (int i=-1; i<textlen; ++i)
 	{
-		if (text_[i] == '\n')
+		if (i == -1 || text_[i] != '\n' ||
+			(text_[i] == '\r' && i+1 < textlen && text_[i+1] != '\n'))
 		{
-			vPos += font_.Leading();
-			NormalizeCoordinates(hIndent_, vPos, x, y);
+			GLfloat x, y;
+			
+			// Next v position
+			if (i >= 0)
+			{
+				vPos += font_.Leading();
+			}
+			
+			// Set alignment raster position
+			int hPos = (alignment == alignLeft) ? hIndent_ :
+				((alignment == alignRight) ? Width()-hIndent_ : Width()/2);
+			NormalizeCoordinates(hPos, vPos, x, y);
 			::glRasterPos2f(x, y);
+			
+			// Now we need to align the text (if center or right).
+			// This means we need to subtract the length of the line if
+			// aligned right, or half the length if aligned center
+			if (alignment != alignLeft)
+			{
+				// First, find the length of the line.
+				int thisLineWidth = 0;
+				for (int j=i+1; j<textlen && text_[j] != '\r' &&
+					text_[j] != '\n'; ++j)
+				{
+					thisLineWidth += font_.CharWidth(text_[j]);
+				}
+				
+				// Find delta
+				x = float((alignment == alignRight) ?
+					thisLineWidth : thisLineWidth/2) / float(Width()/2);
+				
+				// Offset
+				::glBitmap(0, 0, 0, 0, x, 0, 0);
+			}
 		}
 		else
 		{
