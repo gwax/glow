@@ -158,7 +158,7 @@ I provide a makefile for each program in this series of lessons. You do not need
 The makefiles provided with each lesson contain only a description of the program, the locations of the files needed, and the compile options. The actual "meat" of the makefile is in the file "<tt>glow_base.Makefile</tt>", which is located in the <tt>glow_src</tt> directory. The provided makefiles include this file automatically.
 </p>
 <p>
-The makefiles as I provide them may work without modification if you are using a system configuration similar to mine, and you don't move any of the directories from the GLOW distribution. However, you'll probably want to install some of the directories, such as the <tt>glow_src</tt> directory, someplace canonical; in this case, for each makefile, you'll need to change a few variables to match your configuration and installation locations. Specifically, you need to set <tt>SRCDIR</tt> to the location of the source files for the current program. If you like to build in the same directory that your source lives, you can set this variable to "." the current directory. However, you can also set it to a different directory if you want to keep source and object separate (which I like to do). You also need to set <tt>GLOWDIR</tt> to point to your <tt>glow_src</tt> directory. You may also need to alter or remove the -I and -L directives in the <tt>CFLAGS</tt> and <tt>LDFLAGS</tt> symbols. I have those set up to find my Mesa libraries under Linux.
+The makefiles as I provide them may work without modification if you are using a system configuration similar to mine, and you don't move any of the directories from the GLOW distribution. However, you'll probably want to install some of the directories, such as the <tt>glow_src</tt> directory, someplace canonical; in this case, for each makefile, you'll need to change a few variables to match your configuration and installation locations. Specifically, you need to set <tt>SRCDIR</tt> to the location of the source files for the current program. If you like to build in the same directory that your source lives, you can set this variable to "." the current directory. However, you can also set it to a different directory if you want to keep source and object separate (which I like to do). You also need to set <tt>GLOWDIR</tt> to point to your <tt>glow_src</tt> directory. You may also need to alter or remove the -I and -L directives in the <tt>CFLAGS</tt> and <tt>LDFLAGS</tt> symbols.
 </p>
 <p>
 The other symbols should be pretty straightforward. <tt>MODULES</tt> should be set to the names of the source files (minus the .cpp extension). <tt>GLOWMODULES</tt> should be set to the names of the GLOW modules needed (again, without the .cpp extension). The other symbols are platform-specific and describe the compiler and compiler flags to be used. If you're running a system other than IRIX or Linux, you may need to alter these values, particularly <tt>LIBS</tt> and <tt>CFLAGS</tt>. If you really want to know the nuts and bolts of customizing my makefiles, or if you think it's cool and want to use it for your own projects, see the Makefiles sidebar.
@@ -271,7 +271,7 @@ Now that you've successfully built a GLOW program, we can start looking at how t
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 22 June 2000
+Last updated 25 June 2000
 </address>
 
 

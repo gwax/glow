@@ -46,11 +46,9 @@ DEPFLAGS=-MM
 DEPFLAGS_IRIX=-M
 
 CFLAGS=-O2 -Wall \
-	-I/projects/grail21/dazuma/Linux/include \
 	-DGLOW_PLATFORM_LINUX \
 	-DGLOW_PLATFORM_LITTLEENDIAN
-LDFLAGS=-L/usr/X11R6/lib \
-	-L/projects/grail21/dazuma/Linux/lib
+LDFLAGS=-L/usr/X11R6/lib
 
 CFLAGS_IRIX=-O2 -fullwarn -no_auto_include \
 	-LANG:std \

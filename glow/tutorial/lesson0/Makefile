@@ -48,14 +48,10 @@ DEPFLAGS=-MM
 DEPFLAGS_IRIX=-M
 
   # Default CFLAGS and LDFLAGS for Linux/gcc.
-  # -I and -L flags needed to specify the path to my Mesa library. You
-  # may need to alter those for your system.
 CFLAGS=-O2 -Wall \
-	-I/projects/grail21/dazuma/Linux/include \
 	-DGLOW_PLATFORM_LINUX \
 	-DGLOW_PLATFORM_LITTLEENDIAN
-LDFLAGS=-L/usr/X11R6/lib \
-	-L/projects/grail21/dazuma/Linux/lib
+LDFLAGS=-L/usr/X11R6/lib
 
   # Specialization for IRIX
   # the Compat-SGI directory is added here with -I. You don't need this
