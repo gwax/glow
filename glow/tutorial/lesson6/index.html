@@ -181,6 +181,12 @@ For more information on receivers, which are used to implement the event handler
 </p>
 
 <p>
+<image src="../../graphics/arrowbullet.gif" border=0 width=25 height=9 alt="Link to">Source: <b><a href="mechcontrols.h">mechcontrols.h</a></b>
+<br>
+<image src="../../graphics/arrowbullet.gif" border=0 width=25 height=9 alt="Link to">Source: <b><a href="mechcontrols.cpp">mechcontrols.cpp</a></b>
+</p>
+
+<p>
 <image src="../../graphics/arrowbullet.gif" border=0 width=25 height=9 alt="Link to">Reference: <b><a href="../../reference/Glow.html">class Glow</a></b>
 <br>
 <image src="../../graphics/arrowbullet.gif" border=0 width=25 height=9 alt="Link to">Reference: <b><a href="../../reference/GlowQuickPaletteWindow.html">class GlowQuickPaletteWindow</a></b>
@@ -244,6 +250,10 @@ Next, you need to write the GLOW code to set up GLOW-based windows and user inte
 </p>
 <p>
 Windows with GLUT callbacks and windows with GLOW event receivers can exist side by side and will not interfere with one another. However, you should not attempt to combine those windows (e.g. do not attempt to define GLUT callbacks for a window you created with GLOW.) Finally, remember that, since additional windows are being created, you'll need to take care to see that the current window is correct in your GLUT-based code. In particular, when handling a GLOW event, the current window is typically set to the GLOW window involved. And remember that, when handling idle events, the current window state is not usually predictable.
+</p>
+
+<p>
+<image src="../../graphics/arrowbullet.gif" border=0 width=25 height=9 alt="Link to">Source: <b><a href="glowmech.cpp">glowmech.cpp</a></b>
 </p>
 
 <p>
