@@ -198,8 +198,8 @@ void GlowMessageWindow::Init(
 	int buttonsWidth = -params.windowSpacing;
 	while (true)
 	{
-		pbparams.label = GLOW_STD::strtok(buttons.size()==0 ? tempbuf : 0, "\t");
-		if (pbparams.label == 0) break;
+		pbparams.text = GLOW_STD::strtok(buttons.size()==0 ? tempbuf : 0, "\t");
+		if (pbparams.text == 0) break;
 		buttons.push_back(new Glow_MessageWindowButton(this, pbparams, buttons.size()));
 		buttons.back()->AutoReshape();
 		buttonsWidth += buttons.back()->Width() + params.windowSpacing;

@@ -101,7 +101,7 @@ inline void GlowCheckBoxWidget::Init(
 }
 
 
-inline const char* GlowCheckBoxWidget::GetLabel() const
+inline const char* GlowCheckBoxWidget::GetText() const
 {
 	return _label;
 }

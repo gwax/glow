@@ -101,7 +101,7 @@ inline void GlowStickyButtonWidget::Init(
 }
 
 
-inline const char* GlowStickyButtonWidget::GetLabel() const
+inline const char* GlowStickyButtonWidget::GetText() const
 {
 	return _label;
 }

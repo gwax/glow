@@ -114,9 +114,9 @@ These fields are inherited from <tt><a href="GlowPopupMenuParams.html">GlowPopup
 
 <dl>
 <dt>
-<tt>std::vector&lt;const char*&gt; <b>items</b></tt>
+<tt>const char* <b>items</b></tt>
 <dd>
-Items for the popup menu. Initial default is the empty vector.
+Items for the popup menu, as a tab-delimited string, or 0 for no items. Initial default is 0.
 <dt>
 <tt>int <b>initial</b></tt>
 <dd>

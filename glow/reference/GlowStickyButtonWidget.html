@@ -78,13 +78,13 @@ GLOW programs that make use of sticky pushbutton widgets should use this class.
 <dd>
 No behavior (pressing the button does not change its state.)
 <dt>
-<tt>static const int <b>checkBoxBehavior</b></tt>
+<tt>static const int <b>toggleBehavior</b></tt>
 <dd>
-Checkbox behavior (pressing the button toggles its state.)
+Checkbox-like behavior (pressing the button toggles its state.)
 <dt>
-<tt>static const int <b>radioButtonBehavior</b></tt>
+<tt>static const int <b>stickDownBehavior</b></tt>
 <dd>
-Radio button behavior (pressing the button sets the state to true.)
+Radio button-like behavior (pressing the button sets the state to true.)
 </dl>
 
 </blockquote>
@@ -202,14 +202,14 @@ Initializes a new <tt>GlowStickyButtonWidget</tt> using the given <tt>params</tt
 <blockquote>
 
 <p>
-<tt>const char* <b>GetLabel</b>(void) const</tt>
+<tt>const char* <b>GetText</b>(void) const</tt>
 </p>
 <blockquote>
 Returns the label string for the button.
 </blockquote>
 
 <p>
-<tt>void <b>SetLabel</b>(const char* label)</tt>
+<tt>void <b>SetText</b>(const char* text)</tt>
 </p>
 <blockquote>
 Sets the label string for the button.

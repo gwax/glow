@@ -91,7 +91,7 @@ darkBevelColor(0.2f, 0.2f, 0.2f)
 {
 	width = 100;
 	height = 25;
-	label = "";
+	text = "";
 	font = GLUT_BITMAP_HELVETICA_12;
 	receiver = 0;
 }
@@ -120,8 +120,8 @@ void GlowPushButtonWidget::Init(
 	_disableOutlineColor = params.disableOutlineColor;
 	_lightBevelColor = params.lightBevelColor;
 	_darkBevelColor = params.darkBevelColor;
-	_label = new char[GLOW_STD::strlen(params.label)+1];
-	GLOW_STD::strcpy(_label, params.label);
+	_label = new char[GLOW_STD::strlen(params.text)+1];
+	GLOW_STD::strcpy(_label, params.text);
 	_font = params.font;
 	_labelWidth = _font.StringWidth(_label);
 	_down = false;
@@ -142,14 +142,14 @@ GlowPushButtonWidget::~GlowPushButtonWidget()
 }
 
 
-void GlowPushButtonWidget::SetLabel(
-	const char* label)
+void GlowPushButtonWidget::SetText(
+	const char* text)
 {
-	GLOW_DEBUGSCOPE("GlowPushButtonWidget::SetLabel");
+	GLOW_DEBUGSCOPE("GlowPushButtonWidget::SetText");
 	
 	delete[] _label;
-	_label = new char[GLOW_STD::strlen(label)+1];
-	GLOW_STD::strcpy(_label, label);
+	_label = new char[GLOW_STD::strlen(text)+1];
+	GLOW_STD::strcpy(_label, text);
 	_labelWidth = _font.StringWidth(_label);
 	Refresh();
 }

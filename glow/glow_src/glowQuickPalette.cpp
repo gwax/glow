@@ -177,7 +177,7 @@ GlowRadioButtonWidget* GlowQuickRadioGroupWidget::AddRadioButton(
 	const char* label)
 {
 	GlowRadioButtonParams params;
-	params.label = label;
+	params.text = label;
 	params.x = params.y = 0;
 	return new GlowRadioButtonWidget(this, params);
 }
@@ -341,7 +341,7 @@ GlowPushButtonWidget* GlowQuickPanelWidget::AddPushButton(
 	
 	GlowPushButtonParams params;
 	params.x = params.y = 0;
-	params.label = label;
+	params.text = label;
 	params.receiver = receiver;
 	return new GlowPushButtonWidget(this, params);
 }
@@ -356,7 +356,7 @@ GlowMenuButtonWidget* GlowQuickPanelWidget::AddMenuButton(
 	
 	GlowMenuButtonParams params;
 	params.x = params.y = 0;
-	params.label = label;
+	params.text = label;
 	params.menu = menu;
 	params.iconType = iconType;
 	return new GlowMenuButtonWidget(this, params);
@@ -386,7 +386,7 @@ GlowCheckBoxWidget* GlowQuickPanelWidget::AddCheckBox(
 	
 	GlowCheckBoxParams params;
 	params.x = params.y = 0;
-	params.label = label;
+	params.text = label;
 	params.receiver = receiver;
 	params.state = initialValue;
 	return new GlowCheckBoxWidget(this, params);

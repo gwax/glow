@@ -92,7 +92,7 @@ disableOutlineColor(0.3f, 0.3f, 0.3f),
 lightBevelColor(1.0f, 1.0f, 1.0f),
 darkBevelColor(0.2f, 0.2f, 0.2f)
 {
-	label = "";
+	text = "";
 	font = GLUT_BITMAP_HELVETICA_12;
 	width = 100;
 	height = 25;
@@ -130,6 +130,7 @@ disableOutlineColor(0.3f, 0.3f, 0.3f),
 lightBevelColor(1.0f, 1.0f, 1.0f),
 darkBevelColor(0.2f, 0.2f, 0.2f)
 {
+	items = 0;
 	width = 200;
 	height = 24;
 	initial = -1;
@@ -460,7 +461,7 @@ void GlowMenuButtonWidget::Init(
 	GLOW_DEBUGSCOPE("GlowMenuButtonWidget::Init");
 	
 	GlowWidget::Init(root, parent, params);
-	_subwindow = new Glow_MenuButtonSubwindow(this, params.label,
+	_subwindow = new Glow_MenuButtonSubwindow(this, params.text,
 		params.font, params.iconType, params.spacing);
 	_subwindow->_boxColor = params.boxColor;
 	_subwindow->_textColor = params.textColor;
@@ -584,14 +585,22 @@ void GlowPopupMenuWidget::Init(
 	_menu = new GlowMenu;
 	_menu->SetBindState(GlowMenu::bindSubwindow);
 	
-	int max = params.items.size();
-	for (int i=0; i<max; i++)
+	// Fill in items
+	if (params.items != 0)
 	{
-		_menu->AddEntry(params.items[i], i);
+		char* tempbuf = new char[GLOW_STD::strlen(params.items)+1];
+		GLOW_STD::strcpy(tempbuf, params.items);
+		for (int i=0; ; ++i)
+		{
+			_menu->AddEntry(GLOW_STD::strtok(i==0 ? tempbuf : 0, "\t"), i);
+		}
+		delete[] tempbuf;
 	}
+	
+	// Find and mark initial current item
 	_curItem = params.initial;
 	if (_curItem < 0) _curItem = 0;
-	if (_curItem >= max) _curItem = max-1;
+	if (_curItem >= _menu->NumItems()) _curItem = _menu->NumItems()-1;
 	if (_mark != 0 && _curItem != -1)
 	{
 		_menu->SetItemMark(_curItem, _mark);

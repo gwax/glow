@@ -271,14 +271,14 @@ inline bool GlowMenuButtonWidget::IsDown() const
 }
 
 
-inline void GlowMenuButtonWidget::SetLabel(
-	const char* label)
+inline void GlowMenuButtonWidget::SetText(
+	const char* text)
 {
-	_subwindow->_SetLabel(label);
+	_subwindow->_SetLabel(text);
 }
 
 
-inline const char* GlowMenuButtonWidget::GetLabel() const
+inline const char* GlowMenuButtonWidget::GetText() const
 {
 	return _subwindow->_GetLabel();
 }

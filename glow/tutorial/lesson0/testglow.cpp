@@ -331,7 +331,7 @@ static void SetupDemo()
 	pbparams.x = 10;
 	pbparams.y = 35;
 	pbparams.width = 100;
-	pbparams.label = "Quit";
+	pbparams.text = "Quit";
 	pbparams.receiver = new MyQuitPushButtonReceiver;
 	new GlowPushButtonWidget(palette, pbparams);
 }

@@ -94,7 +94,7 @@ darkBevelColor(0.2f, 0.2f, 0.2f)
 {
 	width = 100;
 	height = 24;
-	label = "";
+	text = "";
 	font = GlowFont::helvetica12;
 	receiver = 0;
 	state = false;
@@ -128,8 +128,8 @@ void GlowStickyButtonWidget::Init(
 	_disableOutlineColor = params.disableOutlineColor;
 	_lightBevelColor = params.lightBevelColor;
 	_darkBevelColor = params.darkBevelColor;
-	_label = new char[GLOW_STD::strlen(params.label)+1];
-	GLOW_STD::strcpy(_label, params.label);
+	_label = new char[GLOW_STD::strlen(params.text)+1];
+	GLOW_STD::strcpy(_label, params.text);
 	_font = params.font;
 	_labelWidth = _font.StringWidth(_label);
 	_down = false;
@@ -152,14 +152,14 @@ GlowStickyButtonWidget::~GlowStickyButtonWidget()
 }
 
 
-void GlowStickyButtonWidget::SetLabel(
-	const char* label)
+void GlowStickyButtonWidget::SetText(
+	const char* text)
 {
-	GLOW_DEBUGSCOPE("GlowStickyButtonWidget::SetLabel");
+	GLOW_DEBUGSCOPE("GlowStickyButtonWidget::SetText");
 	
 	delete[] _label;
-	_label = new char[GLOW_STD::strlen(label)+1];
-	GLOW_STD::strcpy(_label, label);
+	_label = new char[GLOW_STD::strlen(text)+1];
+	GLOW_STD::strcpy(_label, text);
 	_labelWidth = _font.StringWidth(_label);
 	Refresh();
 }

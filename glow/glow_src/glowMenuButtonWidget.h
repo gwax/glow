@@ -108,7 +108,7 @@ class GlowMenuButtonParams :
 	public:
 	
 		GlowMenu* menu;
-		const char* label;
+		const char* text;
 		GlowFont font;
 		int iconType;
 		int spacing;
@@ -148,7 +148,7 @@ class GlowPopupMenuParams :
 {
 	public:
 	
-		GLOW_STD::vector<const char*> items;
+		const char* items;
 		int initial;
 		const char* mark;
 		GlowFont font;
@@ -256,9 +256,9 @@ class GlowMenuButtonWidget :
 	
 		inline bool IsDown() const;
 		
-		inline const char* GetLabel() const;
-		inline void SetLabel(
-			const char* label);
+		inline const char* GetText() const;
+		inline void SetText(
+			const char* text);
 		
 		inline GlowFont GetFont() const;
 		inline void SetFont(

@@ -101,7 +101,7 @@ inline void GlowPushButtonWidget::Init(
 }
 
 
-inline const char* GlowPushButtonWidget::GetLabel() const
+inline const char* GlowPushButtonWidget::GetText() const
 {
 	return _label;
 }

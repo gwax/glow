@@ -77,7 +77,7 @@ inline GlowRadioButtonWidget::GlowRadioButtonWidget(
 }
 
 
-inline const char* GlowRadioButtonWidget::GetLabel() const
+inline const char* GlowRadioButtonWidget::GetText() const
 {
 	return _label;
 }

@@ -94,7 +94,7 @@ darkBevelColor(0.2f, 0.2f, 0.2f)
 {
 	width = 100;
 	height = 16;
-	label = "";
+	text = "";
 	font = GLUT_BITMAP_HELVETICA_12;
 	spacing = 5;
 }
@@ -136,8 +136,8 @@ void GlowRadioButtonWidget::Init(
 	
 	GlowWidget::Init(parent->Root(), parent, params);
 	_group = parent;
-	_label = new char[GLOW_STD::strlen(params.label)+1];
-	GLOW_STD::strcpy(_label, params.label);
+	_label = new char[GLOW_STD::strlen(params.text)+1];
+	GLOW_STD::strcpy(_label, params.text);
 	_font = params.font;
 	_labelWidth = _font.StringWidth(_label);
 	_spacing = params.spacing;
@@ -170,14 +170,14 @@ GlowRadioButtonWidget::~GlowRadioButtonWidget()
 }
 
 
-void GlowRadioButtonWidget::SetLabel(
-	const char* label)
+void GlowRadioButtonWidget::SetText(
+	const char* text)
 {
-	GLOW_DEBUGSCOPE("GlowRadioButtonWidget::SetLabel");
+	GLOW_DEBUGSCOPE("GlowRadioButtonWidget::SetText");
 	
 	delete[] _label;
-	_label = new char[GLOW_STD::strlen(label)+1];
-	GLOW_STD::strcpy(_label, label);
+	_label = new char[GLOW_STD::strlen(text)+1];
+	GLOW_STD::strcpy(_label, text);
 	_labelWidth = _font.StringWidth(_label);
 	Refresh();
 }

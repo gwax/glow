@@ -106,7 +106,7 @@ class GlowStickyButtonParams :
 {
 	public:
 	
-		const char* label;
+		const char* text;
 		GlowFont font;
 		bool state;
 		int behavior;
@@ -175,9 +175,9 @@ class GlowStickyButtonWidget :
 	
 	public:
 	
-		inline const char* GetLabel() const;
-		void SetLabel(
-			const char* label);
+		inline const char* GetText() const;
+		void SetText(
+			const char* text);
 		
 		inline GlowFont GetFont() const;
 		inline void SetFont(

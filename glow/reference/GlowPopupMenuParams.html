@@ -105,16 +105,16 @@ Should the widget clip to its rectangle when drawing children. Initial default i
 
 
 <p>
-<b>Parameter data specific to menu buttons</b>
+<b>Parameter data specific to popup menus</b>
 </p>
 
 <blockquote>
 
 <dl>
 <dt>
-<tt>std::vector&lt;const char*&gt; <b>items</b></tt>
+<tt>const char* <b>items</b></tt>
 <dd>
-Items for the popup menu. Initial default is the empty vector.
+Items for the popup menu as a tab-delimited string, or 0 for no items. Initial default is 0.
 <dt>
 <tt>int <b>initial</b></tt>
 <dd>

@@ -106,7 +106,7 @@ class GlowCheckBoxParams :
 {
 	public:
 	
-		const char* label;
+		const char* text;
 		GlowFont font;
 		int state;
 		int behavior;
@@ -184,9 +184,9 @@ class GlowCheckBoxWidget :
 	
 	public:
 	
-		inline const char* GetLabel() const;
-		void SetLabel(
-			const char* label);
+		inline const char* GetText() const;
+		void SetText(
+			const char* text);
 		
 		inline GlowFont GetFont() const;
 		inline void SetFont(
