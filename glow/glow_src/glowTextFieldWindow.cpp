@@ -37,7 +37,7 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 1.1.1dev  (24 July 2000)
+		The GLOW Toolkit -- version 1.1.2dev  (7 August 2000)
 	
 	CHANGES:
 	
