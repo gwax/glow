@@ -83,7 +83,7 @@ Creates a new <tt>GlowWidgetWindow</tt> with options specified by the given para
 </blockquote>
 
 <p>
-<tt><b>GlowWidgetWindow</b>(const char* title, int x, int y, int width, int height, <a href="Glow.html">Glow</a>::BufferType mode = <a href="GlowWidgetWindowParams.html">GlowWidgetWindowParams</a>::defaults.mode, int eventMask = <a href="GlowWidgetWindowParams.html">GlowWidgetWindowParams</a>::defaults.eventMask, <a href="GlowColor.html">GlowColor</a> backColor = <a href="GlowWidgetWindowParams.html">GlowWidgetWindowParams</a>::defaults.backColor)</tt>
+<tt><b>GlowWidgetWindow</b>(const char* title, int x, int y, int width, int height, <a href="Glow.html">Glow</a>::BufferType mode = <a href="GlowWidgetWindowParams.html">GlowWidgetWindowParams</a>::defaults.mode, <a href="Glow.html">Glow</a>::EventMask eventMask = <a href="GlowWidgetWindowParams.html">GlowWidgetWindowParams</a>::defaults.eventMask, <a href="GlowColor.html">GlowColor</a> backColor = <a href="GlowWidgetWindowParams.html">GlowWidgetWindowParams</a>::defaults.backColor)</tt>
 </p>
 <blockquote>
 Creates a new <tt>GlowWidgetWindow</tt> with options specified by the given params. <tt>x</tt> and <tt>y</tt> denote the pixel location of the top left corner of the window, in screen coordinates. <tt>width</tt> and <tt>height</tt> specify the width and height in pixels. <tt>mode</tt> gives the type of frame buffer to use, and <tt>eventMask</tt> specifies the types of events that are to be received. Normally, these two parameters should not be modified from the default. <tt>backColor</tt> gives the color of the background for the widgets.
@@ -104,7 +104,7 @@ Initializes the <tt>GlowWidgetWindow</tt> with options specified by the given pa
 </blockquote>
 
 <p>
-<tt>void <b>Init</b>(const char* title, int x, int y, int width, int height, <a href="Glow.html">Glow</a>::BufferType mode = <a href="GlowWidgetWindowParams.html">GlowWidgetWindowParams</a>::defaults.mode, int eventMask = <a href="GlowWidgetWindowParams.html">GlowWidgetWindowParams</a>::defaults.eventMask, <a href="GlowColor.html">GlowColor</a> backColor = <a href="GlowWidgetWindowParams.html">GlowWidgetWindowParams</a>::defaults.backColor)</tt>
+<tt>void <b>Init</b>(const char* title, int x, int y, int width, int height, <a href="Glow.html">Glow</a>::BufferType mode = <a href="GlowWidgetWindowParams.html">GlowWidgetWindowParams</a>::defaults.mode, <a href="Glow.html">Glow</a>::EventMask eventMask = <a href="GlowWidgetWindowParams.html">GlowWidgetWindowParams</a>::defaults.eventMask, <a href="GlowColor.html">GlowColor</a> backColor = <a href="GlowWidgetWindowParams.html">GlowWidgetWindowParams</a>::defaults.backColor)</tt>
 </p>
 <blockquote>
 Initializes the <tt>GlowWidgetWindow</tt> with options specified by the given params. <tt>x</tt> and <tt>y</tt> denote the pixel location of the top left corner of the window, in screen coordinates. <tt>width</tt> and <tt>height</tt> specify the width and height in pixels. <tt>mode</tt> gives the type of frame buffer to use, and <tt>eventMask</tt> specifies the types of events that are to be received. Normally, these two parameters should not be modified from the default. <tt>backColor</tt> gives the color of the background for the widgets.
