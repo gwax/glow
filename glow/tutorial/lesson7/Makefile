@@ -16,6 +16,7 @@ MODULES=\
 GLOWMODULES=\
 	glow \
 	glowAux \
+	glowButtonWidget \
 	glowCheckBoxWidget \
 	glowDebug \
 	glowLabelWidget \

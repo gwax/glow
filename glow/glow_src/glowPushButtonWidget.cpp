@@ -80,33 +80,24 @@ GlowPushButtonParams::GlowPushButtonParams()
 }
 
 GlowPushButtonParams::GlowPushButtonParams(bool) :
-GlowWidgetParams(true),
-upBoxColor(0.7f, 0.7f, 0.7f),
+GlowButtonParams(true),
 upTextColor(0.0f, 0.0f, 0.0f),
-downBoxColor(0.5f, 0.5f, 0.5f),
 downTextColor(0.8f, 0.8f, 1.0f),
-hiliteBoxColor(0.5f, 0.5f, 0.5f),
 hiliteTextColor(1.0f, 0.7f, 0.7f),
-disableUpBoxColor(0.7f, 0.7f, 0.7f),
-disableDownBoxColor(0.7f, 0.7f, 0.7f),
-disableTextColor(0.3f, 0.3f, 0.3f),
-disableOutlineColor(0.3f, 0.3f, 0.3f),
-lightBevelColor(1.0f, 1.0f, 1.0f),
-darkBevelColor(0.2f, 0.2f, 0.2f)
+disableTextColor(0.3f, 0.3f, 0.3f)
 {
 	width = 100;
 	height = 25;
 	text = "";
 	font = GLUT_BITMAP_HELVETICA_12;
 	receiver = 0;
-	down = false;
 	behavior = GlowPushButtonWidget::normalBehavior;
 }
 
 
 /*
 ===============================================================================
-	Methods of GlowPushButton
+	Methods of GlowPushButtonWidget
 ===============================================================================
 */
 
@@ -117,32 +108,20 @@ void GlowPushButtonWidget::Init(
 {
 	GLOW_DEBUGSCOPE("GlowPushButtonWidget::Init");
 	
-	GlowWidget::Init(root, parent, params);
-	upBoxColor_ = params.upBoxColor;
+	GlowButtonWidget::Init(root, parent, params);
 	upTextColor_ = params.upTextColor;
-	downBoxColor_ = params.downBoxColor;
 	downTextColor_ = params.downTextColor;
-	hiliteBoxColor_ = params.hiliteBoxColor;
 	hiliteTextColor_ = params.hiliteTextColor;
-	disableUpBoxColor_ = params.disableUpBoxColor;
-	disableDownBoxColor_ = params.disableDownBoxColor;
 	disableTextColor_ = params.disableTextColor;
-	disableOutlineColor_ = params.disableOutlineColor;
-	lightBevelColor_ = params.lightBevelColor;
-	darkBevelColor_ = params.darkBevelColor;
 	label_ = new char[GLOW_CSTD::strlen(params.text)+1];
 	GLOW_CSTD::strcpy(label_, params.text);
 	font_ = params.font;
 	labelWidth_ = font_.StringWidth(label_);
-	down_ = false;
-	inside_ = false;
-	state_ = params.down;
 	behavior_ = params.behavior;
 	if (params.receiver != 0)
 	{
 		sender_.Bind(params.receiver);
 	}
-	RegisterMouseEvents();
 }
 
 
@@ -219,95 +198,16 @@ void GlowPushButtonWidget::OnWidgetPaint()
 {
 	GLOW_DEBUGSCOPE("GlowPushButtonWidget::OnWidgetPaint");
 	
-	float bevelHeight = float(4)/float(Height());
-	float bevelWidth = float(4)/float(Width());
-	float etchHeight = float(2)/float(Height());
-	float etchWidth = float(2)/float(Width());
-	
-	// Box
-	if (down_ && inside_)
-	{
-		hiliteBoxColor_.Apply();
-	}
-	else if (!IsActive())
-	{
-		if (state_)
-		{
-			disableDownBoxColor_.Apply();
-		}
-		else
-		{
-			disableUpBoxColor_.Apply();
-		}
-	}
-	else
-	{
-		if (state_)
-		{
-			downBoxColor_.Apply();
-		}
-		else
-		{
-			upBoxColor_.Apply();
-		}
-	}
-	::glRectf(-1.0f, -1.0f, 1.0f, 1.0f);
-	
-	// Bevels
-	if (IsActive())
-	{
-		if (down_ && inside_)
-		{
-			darkBevelColor_.Apply();
-		}
-		else
-		{
-			lightBevelColor_.Apply();
-		}
-		::glBegin(GL_QUAD_STRIP);
-		::glVertex2f(-1.0f, -1.0f);
-		::glVertex2f(-1.0f+bevelWidth, -1.0f+bevelHeight);
-		::glVertex2f(-1.0f, 1.0f);
-		::glVertex2f(-1.0f+bevelWidth, 1.0f-bevelHeight);
-		::glVertex2f(1.0f, 1.0f);
-		::glVertex2f(1.0f-bevelWidth, 1.0f-bevelHeight);
-		::glEnd();
-		if (down_ && inside_)
-		{
-			lightBevelColor_.Apply();
-		}
-		else
-		{
-			darkBevelColor_.Apply();
-		}
-		::glBegin(GL_QUAD_STRIP);
-		::glVertex2f(-1.0f, -1.0f);
-		::glVertex2f(-1.0f+bevelWidth, -1.0f+bevelHeight);
-		::glVertex2f(1.0f, -1.0f);
-		::glVertex2f(1.0f-bevelWidth, -1.0f+bevelHeight);
-		::glVertex2f(1.0f, 1.0f);
-		::glVertex2f(1.0f-bevelWidth, 1.0f-bevelHeight);
-		::glEnd();
-	}
-	else
-	{
-		disableOutlineColor_.Apply();
-		::glBegin(GL_LINE_LOOP);
-		::glVertex2f(-1.0f, -1.0f);
-		::glVertex2f(-1.0f, 1.0f-etchHeight);
-		::glVertex2f(1.0f-etchWidth, 1.0f-etchHeight);
-		::glVertex2f(1.0f-etchWidth, -1.0f);
-		::glEnd();
-	}
+	GlowButtonWidget::OnWidgetPaint();
 	
 	// Text label
 	if (IsActive())
 	{
-		if (down_ && inside_)
+		if (IsHilited())
 		{
 			hiliteTextColor_.Apply();
 		}
-		else if (state_)
+		else if (IsDown())
 		{
 			downTextColor_.Apply();
 		}
@@ -330,54 +230,17 @@ void GlowPushButtonWidget::OnWidgetPaint()
 }
 
 
-void GlowPushButtonWidget::OnWidgetMouseDown(
-	Glow::MouseButton button,
-	int x,
-	int y,
+void GlowPushButtonWidget::OnEvent(
+	GlowButtonWidget::Event event,
+	Glow::MouseButton mouseButton,
 	Glow::Modifiers modifiers)
 {
-	GLOW_DEBUGSCOPE("GlowPushButtonWidget::OnWidgetMouseDown");
+	GLOW_DEBUGSCOPE("GlowPushButtonWidget::OnEvent");
 	
-	down_ = true;
-	inside_ = true;
-	button_ = button;
-	modifiers_ = modifiers;
-	Refresh();
-}
-
-
-void GlowPushButtonWidget::OnWidgetMouseUp(
-	Glow::MouseButton button,
-	int x,
-	int y,
-	Glow::Modifiers modifiers)
-{
-	GLOW_DEBUGSCOPE("GlowPushButtonWidget::OnWidgetMouseUp");
-	
-	if (down_)
+	if (event == releaseInsideEvent)
 	{
-		down_ = false;
-		Refresh();
-		if (inside_)
-		{
-			OnHit(button_, modifiers_);
-		}
+		OnHit(mouseButton, modifiers);
 	}
-}
-
-
-void GlowPushButtonWidget::OnWidgetMouseDrag(
-	int x,
-	int y)
-{
-	GLOW_DEBUGSCOPE("GlowPushButtonWidget::OnWidgetMouseDrag");
-	
-	bool inside = (x>=0 && y>=0 && x<=Width() && y<=Height());
-	if (inside == !inside_)
-	{
-		Refresh();
-	}
-	inside_ = inside;
 }
 
 
@@ -385,11 +248,11 @@ void GlowPushButtonWidget::ToggleState()
 {
 	if (behavior_ == toggleBehavior)
 	{
-		state_ = !state_;
+		SetDown(!IsDown());
 	}
 	else if (behavior_ == stickDownBehavior)
 	{
-		state_ = true;
+		SetDown(true);
 	}
 }
 

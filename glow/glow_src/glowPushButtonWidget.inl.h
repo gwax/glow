@@ -133,31 +133,11 @@ inline void GlowPushButtonWidget::SetBehavior(
 	Behavior behavior)
 {
 	behavior_ = behavior;
-	if (behavior_ == normalBehavior && state_)
+	if (behavior_ == normalBehavior && IsDown())
 	{
-		state_ = false;
+		SetDown(false);
 		Refresh();
 	}
-}
-
-
-inline bool GlowPushButtonWidget::IsDown() const
-{
-	return state_;
-}
-
-
-inline void GlowPushButtonWidget::SetDown(
-	bool down)
-{
-	state_ = down;
-	Refresh();
-}
-
-
-inline GlowColor GlowPushButtonWidget::GetUpBoxColor() const
-{
-	return upBoxColor_;
 }
 
 
@@ -167,21 +147,9 @@ inline GlowColor GlowPushButtonWidget::GetUpTextColor() const
 }
 
 
-inline GlowColor GlowPushButtonWidget::GetDownBoxColor() const
-{
-	return downBoxColor_;
-}
-
-
 inline GlowColor GlowPushButtonWidget::GetDownTextColor() const
 {
 	return downTextColor_;
-}
-
-
-inline GlowColor GlowPushButtonWidget::GetHiliteBoxColor() const
-{
-	return hiliteBoxColor_;
 }
 
 
@@ -191,47 +159,9 @@ inline GlowColor GlowPushButtonWidget::GetHiliteTextColor() const
 }
 
 
-inline GlowColor GlowPushButtonWidget::GetDisableUpBoxColor() const
-{
-	return disableUpBoxColor_;
-}
-
-
-inline GlowColor GlowPushButtonWidget::GetDisableDownBoxColor() const
-{
-	return disableDownBoxColor_;
-}
-
-
 inline GlowColor GlowPushButtonWidget::GetDisableTextColor() const
 {
 	return disableTextColor_;
-}
-
-
-inline GlowColor GlowPushButtonWidget::GetDisableOutlineColor() const
-{
-	return disableOutlineColor_;
-}
-
-
-inline GlowColor GlowPushButtonWidget::GetLightBevelColor() const
-{
-	return lightBevelColor_;
-}
-
-
-inline GlowColor GlowPushButtonWidget::GetDarkBevelColor() const
-{
-	return darkBevelColor_;
-}
-
-
-inline void GlowPushButtonWidget::SetUpBoxColor(
-	GlowColor c)
-{
-	upBoxColor_ = c;
-	Refresh();
 }
 
 
@@ -239,14 +169,6 @@ inline void GlowPushButtonWidget::SetUpTextColor(
 	GlowColor c)
 {
 	upTextColor_ = c;
-	Refresh();
-}
-
-
-inline void GlowPushButtonWidget::SetDownBoxColor(
-	GlowColor c)
-{
-	downBoxColor_ = c;
 	Refresh();
 }
 
@@ -259,14 +181,6 @@ inline void GlowPushButtonWidget::SetDownTextColor(
 }
 
 
-inline void GlowPushButtonWidget::SetHiliteBoxColor(
-	GlowColor c)
-{
-	hiliteBoxColor_ = c;
-	Refresh();
-}
-
-
 inline void GlowPushButtonWidget::SetHiliteTextColor(
 	GlowColor c)
 {
@@ -275,50 +189,10 @@ inline void GlowPushButtonWidget::SetHiliteTextColor(
 }
 
 
-inline void GlowPushButtonWidget::SetDisableUpBoxColor(
-	GlowColor c)
-{
-	disableUpBoxColor_ = c;
-	Refresh();
-}
-
-
-inline void GlowPushButtonWidget::SetDisableDownBoxColor(
-	GlowColor c)
-{
-	disableDownBoxColor_ = c;
-	Refresh();
-}
-
-
 inline void GlowPushButtonWidget::SetDisableTextColor(
 	GlowColor c)
 {
 	disableTextColor_ = c;
-	Refresh();
-}
-
-
-inline void GlowPushButtonWidget::SetDisableOutlineColor(
-	GlowColor c)
-{
-	disableOutlineColor_ = c;
-	Refresh();
-}
-
-
-inline void GlowPushButtonWidget::SetLightBevelColor(
-	GlowColor c)
-{
-	lightBevelColor_ = c;
-	Refresh();
-}
-
-
-inline void GlowPushButtonWidget::SetDarkBevelColor(
-	GlowColor c)
-{
-	darkBevelColor_ = c;
 	Refresh();
 }
 

@@ -61,8 +61,8 @@
 	#include "glowHeader.h"
 #endif
 
-#ifndef GLOW_WIDGET__H
-	#include "glowWidget.h"
+#ifndef GLOW_BUTTONWIDGET__H
+	#include "glowButtonWidget.h"
 #endif
 
 
@@ -85,7 +85,7 @@ typedef TReceiver<const GlowPushButtonMessage&> GlowPushButtonReceiver;
 */
 
 class GlowPushButtonWidget :
-	public GlowWidget
+	public GlowButtonWidget
 {
 	//-------------------------------------------------------------------------
 	//	Public interface
@@ -132,46 +132,18 @@ class GlowPushButtonWidget :
 		inline void SetBehavior(
 			Behavior behavior);
 		
-		inline bool IsDown() const;
-		inline void SetDown(
-			bool down);
-		
-		inline GlowColor GetUpBoxColor() const;
 		inline GlowColor GetUpTextColor() const;
-		inline GlowColor GetDownBoxColor() const;
 		inline GlowColor GetDownTextColor() const;
-		inline GlowColor GetHiliteBoxColor() const;
 		inline GlowColor GetHiliteTextColor() const;
-		inline GlowColor GetDisableUpBoxColor() const;
-		inline GlowColor GetDisableDownBoxColor() const;
 		inline GlowColor GetDisableTextColor() const;
-		inline GlowColor GetDisableOutlineColor() const;
-		inline GlowColor GetLightBevelColor() const;
-		inline GlowColor GetDarkBevelColor() const;
 		
-		inline void SetUpBoxColor(
-			GlowColor c);
 		inline void SetUpTextColor(
-			GlowColor c);
-		inline void SetDownBoxColor(
 			GlowColor c);
 		inline void SetDownTextColor(
 			GlowColor c);
-		inline void SetHiliteBoxColor(
-			GlowColor c);
 		inline void SetHiliteTextColor(
 			GlowColor c);
-		inline void SetDisableUpBoxColor(
-			GlowColor c);
-		inline void SetDisableDownBoxColor(
-			GlowColor c);
 		inline void SetDisableTextColor(
-			GlowColor c);
-		inline void SetDisableOutlineColor(
-			GlowColor c);
-		inline void SetLightBevelColor(
-			GlowColor c);
-		inline void SetDarkBevelColor(
 			GlowColor c);
 		
 		inline TSender<const GlowPushButtonMessage&>& Notifier();
@@ -221,47 +193,25 @@ class GlowPushButtonWidget :
 	
 	private:
 	
-		bool state_;
 		Behavior behavior_;
 		char* label_;
 		GlowFont font_;
 		int labelWidth_;
-		bool down_;
-		bool inside_;
-		Glow::MouseButton button_;
-		Glow::Modifiers modifiers_;
 		TSender<const GlowPushButtonMessage&> sender_;
 		
-		GlowColor upBoxColor_;
 		GlowColor upTextColor_;
-		GlowColor downBoxColor_;
 		GlowColor downTextColor_;
-		GlowColor hiliteBoxColor_;
 		GlowColor hiliteTextColor_;
-		GlowColor disableUpBoxColor_;
-		GlowColor disableDownBoxColor_;
 		GlowColor disableTextColor_;
-		GlowColor disableOutlineColor_;
-		GlowColor lightBevelColor_;
-		GlowColor darkBevelColor_;
 	
 	protected:
 	
-		virtual void OnWidgetPaint();
+		virtual void OnEvent(
+			GlowButtonWidget::Event event,
+			Glow::MouseButton button,
+			Glow::Modifiers modifiers);
 		
-		virtual void OnWidgetMouseDown(
-			Glow::MouseButton button,
-			int x,
-			int y,
-			Glow::Modifiers modifiers);
-		virtual void OnWidgetMouseUp(
-			Glow::MouseButton button,
-			int x,
-			int y,
-			Glow::Modifiers modifiers);
-		virtual void OnWidgetMouseDrag(
-			int x,
-			int y);
+		virtual void OnWidgetPaint();
 };
 
 
@@ -356,27 +306,18 @@ class GlowPushButtonMessage
 */
 
 class GlowPushButtonParams :
-	public GlowWidgetParams
+	public GlowButtonParams
 {
 	public:
 	
 		const char* text;
 		GlowFont font;
-		bool down;
 		GlowPushButtonWidget::Behavior behavior;
 		GlowPushButtonReceiver* receiver;
-		GlowColor upBoxColor;
 		GlowColor upTextColor;
-		GlowColor downBoxColor;
 		GlowColor downTextColor;
-		GlowColor hiliteBoxColor;
 		GlowColor hiliteTextColor;
-		GlowColor disableUpBoxColor;
-		GlowColor disableDownBoxColor;
 		GlowColor disableTextColor;
-		GlowColor disableOutlineColor;
-		GlowColor lightBevelColor;
-		GlowColor darkBevelColor;
 		
 		static GlowPushButtonParams defaults;
 		

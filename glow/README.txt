@@ -94,6 +94,9 @@ RELEASE NOTES
 
       Added GlowColorImage::Scale().
 
+      Added GlowButtonWidget class. GlowPushButtonWidget now inherits
+      from GlowButtonWidget.
+
       Added GlowTextAreaWidget class.
 
 
@@ -157,10 +160,7 @@ RELEASE NOTES
 
       GlowTabbedPanelWidget class.
 
-      GlowGeneralButtonWidget hierarchy. Basically a generalized push-
-      button with more flexible event reporting and drawing options.
-      GlowPushButtonWidget will inherit from it, as well as a new
-      GlowImagePushButtonWidget class.
+      Add image capability to GlowPushButtonWidget.
 
       GlowGeneralListWidget hierarchy. GlowTextListWidget will be a
       major subclass.
@@ -178,7 +178,12 @@ RELEASE NOTES
 
       Add GlowTextAreaWidget to the reference.
 
+      Add GlowButtonWidget to the reference and update reference for
+      GlowPushButtonWidget.
+
       Update tutorial.
+
+      Test.
 
 
     Known issues

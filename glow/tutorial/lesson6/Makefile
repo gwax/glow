@@ -15,6 +15,7 @@ MODULES=\
 GLOWMODULES=\
 	glow \
 	glowAux \
+	glowButtonWidget \
 	glowCheckBoxWidget \
 	glowDebug \
 	glowLabelWidget \
@@ -27,6 +28,7 @@ GLOWMODULES=\
 	glowSenderReceiver \
 	glowSeparatorWidget \
 	glowSliderWidget \
+	glowTextAreaWidget \
 	glowTextData \
 	glowTextFieldWidget \
 	glowUtilities \

@@ -20,6 +20,7 @@ MODULES=\
 GLOWMODULES=\
 	glow \
 	glowAux \
+	glowButtonWidget \
 	glowDebug \
 	glowLabelWidget \
 	glowPushButtonWidget \

@@ -40,6 +40,7 @@ GLOWDIR=.
 MODULES=\
 	glow \
 	glowAux \
+	glowButtonWidget \
 	glowCheckBoxWidget \
 	glowDebug \
 	glowImageFile \
@@ -55,6 +56,7 @@ MODULES=\
 	glowSenderReceiver \
 	glowSeparatorWidget \
 	glowSliderWidget \
+	glowTextAreaWidget \
 	glowTextData \
 	glowTextFieldWidget \
 	glowTextFieldWindow \

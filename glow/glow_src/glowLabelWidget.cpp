@@ -128,6 +128,7 @@ void GlowLabelWidget::Init(
 	backColor_ = params.backColor;
 	textColor_ = params.textColor;
 	disableTextColor_ = params.disableTextColor;
+	alignment_ = params.alignment;
 }
 
 
@@ -265,7 +266,7 @@ void GlowLabelWidget::OnWidgetPaint()
 	int textlen = (text_ == 0) ? 0 : GLOW_CSTD::strlen(text_);
 	for (int i=-1; i<textlen; ++i)
 	{
-		if (i == -1 || text_[i] != '\n' ||
+		if (i == -1 || text_[i] == '\n' ||
 			(text_[i] == '\r' && i+1 < textlen && text_[i+1] != '\n'))
 		{
 			GLfloat x, y;
