@@ -725,6 +725,13 @@ These advanced routines provide miscellaneous drawing services.
 Causes the front and back buffers for the current drawing context to be swapped. Equivalent to calling <tt>::glutSwapBuffers()</tt>. Normally, you do not need to call this, because GLOW will normally swap buffers automatically.
 </blockquote>
 
+<p>
+<tt>static void <b>RefreshGlutWindow</b>(int windowid)</tt>
+</p>
+<blockquote>
+Refreshes a GLUT window with the given ID. Equivalent to the GLUT 4 function <tt>::glutPostWindowRedisplay()</tt>, but also works under the GLUT 3 API.
+</blockquote>
+
 </blockquote>
 
 
@@ -752,7 +759,7 @@ Causes the front and back buffers for the current drawing context to be swapped.
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 10 April 2000
+Last updated 25 April 2000
 </address>
 
 

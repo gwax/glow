@@ -66,7 +66,7 @@ GLOW_NAMESPACE_USING
 ===============================================================================
 */
 
-// MechControls is a window that also receives a number of events.
+// MechControls is an object that receives a number of events.
 // The idle event receiver is used for background calculating.
 // The TextFieldWindow event receiver is used for the save image dialog.
 // The other event receivers are widgets in the control palette.

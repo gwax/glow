@@ -63,6 +63,7 @@ using namespace std;
 #include "glowPanelWidget.h"
 #include "glowLabelWidget.h"
 #include "glowSeparatorWidget.h"
+#include "glowCheckBoxWidget.h"
 #include "glowMessageWindow.h"
 
 GLOW_NAMESPACE_USING
@@ -85,6 +86,7 @@ GLOW_NAMESPACE_USING
 class CalcUIReceiver :
 	public GlowPushButtonReceiver,
 	public GlowRadioButtonReceiver,
+	public GlowCheckBoxReceiver,
 	public GlowWidgetKeyboardFilter
 {
 	friend class CalcUI;
@@ -100,6 +102,8 @@ class CalcUIReceiver :
 		// We override these methods to receive widget events
 		virtual void OnMessage(
 			const GlowPushButtonMessage& message);
+		virtual void OnMessage(
+			const GlowCheckBoxMessage& message);
 		virtual void OnMessage(
 			const GlowRadioButtonMessage& message);
 		
@@ -119,6 +123,13 @@ class CalcUIReceiver :
 		// The calculator engine and the window pointer
 		CalcEngine* _engine;
 		GlowFixedSizeWidgetWindow* _window;
+		
+		// Group most of the widgets in this panel so we can move them
+		// en masse
+		GlowPanelWidget* _mainPanel;
+		
+		// The display is contained in this panel
+		GlowPanelWidget* _displayPanel;
 		
 		// The scientific/transcendental function panels. These are shown
 		// and hidden in response to pressing the inverse key.
@@ -227,6 +238,39 @@ void CalcUIReceiver::OnMessage(
 		// Other buttons: pass the reference constant to the engine
 		_engine->Button(message.widget->GetRefCon());
 		UpdateDisplay();
+	}
+}
+
+
+// Receive check box events
+void CalcUIReceiver::OnMessage(
+	const GlowCheckBoxMessage& message)
+{
+	GLOW_DEBUGSCOPE("CalcUIReceiver::OnMessage(GlowCheckBoxMessage)");
+	
+	// There's only one checkbox.
+	
+	if (message.state == GlowCheckBoxWidget::off)
+	{
+		// Going to single-line display
+		_displayPanel->Reshape(235, 25);
+		_displayLabel0->Move(5, 5);
+		_displayLabel1->Hide();
+		_displayLabel2->Hide();
+		_displayLabel3->Hide();
+		_mainPanel->Move(10, 45);
+		_window->ForceReshape(255, 330);
+	}
+	else
+	{
+		// Going to multi-line display
+		_displayPanel->Reshape(235, 80);
+		_displayLabel0->Move(5, 60);
+		_displayLabel1->Show();
+		_displayLabel2->Show();
+		_displayLabel3->Show();
+		_mainPanel->Move(10, 100);
+		_window->ForceReshape(255, 385);
 	}
 }
 
@@ -343,14 +387,61 @@ CalcUI::CalcUI(
 	
 	// Create calculator window
 	_window = new GlowFixedSizeWidgetWindow("glowcalc",
-		GlowWindow::autoPosition, GlowWindow::autoPosition, 255, 365);
+		GlowWindow::autoPosition, GlowWindow::autoPosition, 255, 385);
 	
 	// Create receiver object
 	_receiver = new CalcUIReceiver(engine, _window);
 	
-	// Pushbutton parameter block
-	GlowPushButtonParams bparams;
+	// Set up display. First, create a panel
+	GlowPanelParams pparams;
+	pparams.height = 80;
+	pparams.width = 235;
+	pparams.x = 10;
+	pparams.y = 10;
+	// The panel will appear lowered and will have a white background
+	pparams.backColor = GlowColor::white;
+	pparams.style = GlowPanelWidget::loweredStyle;
+	_receiver->_displayPanel = new GlowPanelWidget(_window, pparams);
+	
+	// Put four labels in it for displaying the stack
+	GlowLabelParams lparams;
+	lparams.height = 15;
+	lparams.width = 225;
+	// Note that x and y are given in local coordinates within the enclosing
+	// panel. Because of this, you may choose to use panels to help you
+	// arrange groups of widgets. We'll see an example of this below.
+	lparams.x = 5;
+	lparams.y = 5;
+	lparams.font = GlowFont::fixed9by15;
+	_receiver->_displayLabel3 = new GlowLabelWidget(
+		_receiver->_displayPanel, lparams);
+	lparams.y = 22;
+	_receiver->_displayLabel2 = new GlowLabelWidget(
+		_receiver->_displayPanel, lparams);
+	lparams.y = 39;
+	_receiver->_displayLabel1 = new GlowLabelWidget(
+		_receiver->_displayPanel, lparams);
+	lparams.y = 60;
+	_receiver->_displayLabel0 = new GlowLabelWidget(
+		_receiver->_displayPanel, lparams);
+	_receiver->UpdateDisplay();
+	
+	// Now we create the rest of the widgets. We'll want to be able to move
+	// them as a group because we're going to allow resizing of the display.
+	// So we'll put them all into an invisible panel, and just move the
+	// panel.
+	pparams.height = 275;
+	pparams.width = 235;
+	pparams.x = 10;
+	pparams.y = 100;
+	// Restore original background color by copying from defaults
+	pparams.backColor = GlowPanelParams::defaults.backColor;
+	// No drawing for this panel
+	pparams.style = GlowPanelWidget::plainStyle;
+	_receiver->_mainPanel = new GlowPanelWidget(_window, pparams);
+	
 	// All pushbuttons send their events to our receiver
+	GlowPushButtonParams bparams;
 	bparams.receiver = _receiver;
 	
 	// All the calculator keys have height 20
@@ -360,147 +451,150 @@ CalcUI::CalcUI(
 	bparams.width = 40;
 	
 	// Vertical position for bottom row of keys
-	bparams.y = 225;
+	// Remember, this is local coordinates within _mainPanel.
+	// So the window coordinates is 125+100=225.
+	bparams.y = 125;
 	
 	// Set up clear button parameters
 	bparams.text = "clr";
 	// Horizontal position of key
-	bparams.x = 10;
+	bparams.x = 0;
 	// Refcon is for your miscellaneous use. Here we store the code that
 	// should be sent to the engine when the calculator key is pressed.
 	bparams.refcon = CalcEngine::clearButton;
 	// Create button
-	new GlowPushButtonWidget(_window, bparams);
+	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
 	
 	bparams.text = "0";
-	bparams.x = 64;
+	bparams.x = 54;
 	bparams.refcon = 0;
-	new GlowPushButtonWidget(_window, bparams);
+	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
 	
 	bparams.text = ".";
-	bparams.x = 111;
+	bparams.x = 101;
 	bparams.refcon = CalcEngine::pointButton;
-	new GlowPushButtonWidget(_window, bparams);
+	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
 	
 	bparams.text = "+/-";
-	bparams.x = 158;
+	bparams.x = 148;
 	bparams.refcon = CalcEngine::negateButton;
-	new GlowPushButtonWidget(_window, bparams);
+	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
 	
 	bparams.text = "+";
-	bparams.x = 205;
+	bparams.x = 195;
 	bparams.refcon = CalcEngine::plusButton;
-	new GlowPushButtonWidget(_window, bparams);
+	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
 	
 	// Next row
-	bparams.y = 200;
+	bparams.y = 100;
 	
 	bparams.text = "del";
-	bparams.x = 10;
+	bparams.x = 0;
 	bparams.refcon = CalcEngine::deleteButton;
-	new GlowPushButtonWidget(_window, bparams);
+	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
 	
 	bparams.text = "1";
-	bparams.x = 64;
+	bparams.x = 54;
 	bparams.refcon = 1;
-	new GlowPushButtonWidget(_window, bparams);
+	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
 	
 	bparams.text = "2";
-	bparams.x = 111;
+	bparams.x = 101;
 	bparams.refcon = 2;
-	new GlowPushButtonWidget(_window, bparams);
+	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
 	
 	bparams.text = "3";
-	bparams.x = 158;
+	bparams.x = 148;
 	bparams.refcon = 3;
-	new GlowPushButtonWidget(_window, bparams);
+	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
 	
 	bparams.text = "-";
-	bparams.x = 205;
+	bparams.x = 195;
 	bparams.refcon = CalcEngine::minusButton;
-	new GlowPushButtonWidget(_window, bparams);
+	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
 	
 	// Next row
-	bparams.y = 175;
+	bparams.y = 75;
 	
 	bparams.text = "e";
-	bparams.x = 10;
+	bparams.x = 0;
 	bparams.refcon = CalcEngine::exponentButton;
-	new GlowPushButtonWidget(_window, bparams);
+	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
 	
 	bparams.text = "4";
-	bparams.x = 64;
+	bparams.x = 54;
 	bparams.refcon = 4;
-	new GlowPushButtonWidget(_window, bparams);
+	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
 	
 	bparams.text = "5";
-	bparams.x = 111;
+	bparams.x = 101;
 	bparams.refcon = 5;
-	new GlowPushButtonWidget(_window, bparams);
+	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
 	
 	bparams.text = "6";
-	bparams.x = 158;
+	bparams.x = 148;
 	bparams.refcon = 6;
-	new GlowPushButtonWidget(_window, bparams);
+	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
 	
 	bparams.text = "*";
-	bparams.x = 205;
+	bparams.x = 195;
 	bparams.refcon = CalcEngine::multButton;
-	new GlowPushButtonWidget(_window, bparams);
+	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
 	
 	// Next row
-	bparams.y = 150;
+	bparams.y = 50;
 	
 	bparams.text = "inv";
-	bparams.x = 10;
+	bparams.x = 0;
 	// We treat this button specially. Note that the receiver detects this
 	// refcon explicitly and handles the inverse button
 	bparams.refcon = -1;
-	_receiver->_inverseButton = new GlowPushButtonWidget(_window, bparams);
+	_receiver->_inverseButton = new GlowPushButtonWidget(
+		_receiver->_mainPanel, bparams);
 	
 	bparams.text = "7";
-	bparams.x = 64;
+	bparams.x = 54;
 	bparams.refcon = 7;
-	new GlowPushButtonWidget(_window, bparams);
+	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
 	
 	bparams.text = "8";
-	bparams.x = 111;
+	bparams.x = 101;
 	bparams.refcon = 8;
-	new GlowPushButtonWidget(_window, bparams);
+	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
 	
 	bparams.text = "9";
-	bparams.x = 158;
+	bparams.x = 148;
 	bparams.refcon = 9;
-	new GlowPushButtonWidget(_window, bparams);
+	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
 	
 	bparams.text = "/";
-	bparams.x = 205;
+	bparams.x = 195;
 	bparams.refcon = CalcEngine::divButton;
-	new GlowPushButtonWidget(_window, bparams);
+	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
 	
 	// Next row
-	bparams.y = 125;
+	bparams.y = 25;
 	
 	bparams.text = "swap";
-	bparams.x = 111;
+	bparams.x = 101;
 	bparams.refcon = CalcEngine::swapButton;
-	new GlowPushButtonWidget(_window, bparams);
+	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
 	
 	bparams.text = "pop";
-	bparams.x = 158;
+	bparams.x = 148;
 	bparams.refcon = CalcEngine::consumeButton;
-	new GlowPushButtonWidget(_window, bparams);
+	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
 	
 	bparams.text = "1/x";
-	bparams.x = 205;
+	bparams.x = 195;
 	bparams.refcon = CalcEngine::recipButton;
-	new GlowPushButtonWidget(_window, bparams);
+	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
 	
 	bparams.text = "enter";
 	bparams.width = 94;    // Create a wider button
-	bparams.x = 10;
+	bparams.x = 0;
 	bparams.refcon = CalcEngine::enterButton;
-	new GlowPushButtonWidget(_window, bparams);
+	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
 	
 	// We have twelve more keys left. We only want six to be visible
 	// at a time, however, depending on the state of the "inverse" key.
@@ -508,20 +602,17 @@ CalcUI::CalcUI(
 	// One panel will be hidden and the other visible at a time.
 	
 	// Panel widgets parameter block
-	GlowPanelParams pparams;
 	pparams.width = 235;
 	pparams.height = 20;
-	pparams.x = 10;
-	pparams.y = 100;
+	pparams.x = 0;
+	pparams.y = 0;
 	// Panel 1 is for the "normal" keys (e.g. exp, sin)
-	_receiver->_panel1 = new GlowPanelWidget(_window, pparams);
+	_receiver->_panel1 = new GlowPanelWidget(_receiver->_mainPanel, pparams);
 	// Panel 2 is for the "inverse" keys (e.g. log, arcsin)
-	_receiver->_panel2 = new GlowPanelWidget(_window, pparams);
+	_receiver->_panel2 = new GlowPanelWidget(_receiver->_mainPanel, pparams);
 	
 	// Buttons inside panel 1
-	// Note that x and y are given in local coordinates within the enclosing panel.
-	// Because of this, you may choose to use panels to help you arrange groups
-	// of widgets.
+	// Note again, x and y coordinates are local within the panel.
 	bparams.y = 0;
 	// These buttons are narrower than the others
 	bparams.width = 35;
@@ -591,71 +682,57 @@ CalcUI::CalcUI(
 	// Initial inverse state is false, so hide panel 2
 	_receiver->_panel2->Hide();
 	
-	// Set up display. First, create a panel
-	pparams.height = 80;
-	pparams.width = 235;
-	pparams.x = 10;
-	pparams.y = 10;
-	// The panel will appear lowered and will have a white background
-	pparams.backColor = GlowColor::white;
-	pparams.style = GlowPanelWidget::loweredStyle;
-	GlowPanelWidget* displayPanel = new GlowPanelWidget(_window, pparams);
-	
-	// Put four labels in it for displaying the stack
-	GlowLabelParams lparams;
-	lparams.height = 15;
-	lparams.width = 225;
-	// Note again, x and y coordinates are local within the panel.
-	lparams.x = 5;
-	lparams.y = 5;
-	lparams.font = GlowFont::fixed9by15;
-	_receiver->_displayLabel3 = new GlowLabelWidget(displayPanel, lparams);
-	lparams.y = 22;
-	_receiver->_displayLabel2 = new GlowLabelWidget(displayPanel, lparams);
-	lparams.y = 39;
-	_receiver->_displayLabel1 = new GlowLabelWidget(displayPanel, lparams);
-	lparams.y = 60;
-	_receiver->_displayLabel0 = new GlowLabelWidget(displayPanel, lparams);
-	_receiver->UpdateDisplay();
-	
-	// Set up a keyboard event filter. This will let us respond to keyboard
-	// events even though we don't have any keyboard-listening widgets.
-	_window->RegisterFilter(_receiver);
-	
 	// Separate calculator from auxiliary controls with a separator rule
 	GlowSeparatorParams sparams;
 	sparams.height = 2;
 	sparams.width = 235;
-	sparams.x = 10;
-	sparams.y = 255;
-	new GlowSeparatorWidget(_window, sparams);
+	sparams.x = 0;
+	sparams.y = 155;
+	new GlowSeparatorWidget(_receiver->_mainPanel, sparams);
 	
-	// Now we'll make some radio buttons at the bottom to control prefs.
+	// Now we'll make some widgets at the bottom to control prefs.
+	// First will be a checkbox controlling the size of the display.
+	// Then we'll make some radio buttons.
 	// On the left will be the display format (normal vs. scientific)
 	// On the right will be angle units (degrees vs. radians)
 	
-	// First, we'll make a label for the first group of radio buttons
+	// Checkbox
+	GlowCheckBoxParams cparams;
+	cparams.x = 0;
+	cparams.y = 165;
+	cparams.height = 16;
+	cparams.width = 160;
+	cparams.text = "Display entire stack";
+	cparams.state = GlowCheckBoxWidget::on;
+	cparams.receiver = _receiver;
+	GlowCheckBoxWidget* checkbox = new GlowCheckBoxWidget(
+		_receiver->_mainPanel, cparams);
+	// Crop the width of the widget to tightly enclose the box and label
+	checkbox->CropWidth();
+	
+	// Make a label for the first group of radio buttons
 	lparams.height = 15;
 	lparams.width = 100;
-	lparams.x = 10;
-	lparams.y = 265;
+	lparams.x = 0;
+	lparams.y = 190;
 	// Reset the font to helvetica, because we changed the font to fixed9by15
 	// the last time we used the parameter block
 	lparams.font = GlowFont::helvetica12;
 	lparams.text = "Format:";
-	new GlowLabelWidget(_window, lparams);
+	new GlowLabelWidget(_receiver->_mainPanel, lparams);
 	
 	// Now we make a radio group to put the radio buttons into. A radio group
 	// is a panel with some extra wiring that lets it keep track of a bunch
 	// of radio buttons
 	GlowRadioGroupParams gparams;
-	gparams.height = 40;
+	gparams.height = 35;
 	gparams.width = 120;
-	gparams.y = 280;
-	gparams.x = 10;
+	gparams.y = 205;
+	gparams.x = 0;
 	// Make sure our receiver receives messages from this radio group
 	gparams.receiver = _receiver;
-	GlowRadioGroupWidget* radioGroup = new GlowRadioGroupWidget(_window, gparams);
+	GlowRadioGroupWidget* radioGroup = new GlowRadioGroupWidget(
+		_receiver->_mainPanel, gparams);
 	
 	// Add radio buttons to the radio group. Remember that x and y are given
 	// in local coordinates within the radio group panel.
@@ -663,13 +740,13 @@ CalcUI::CalcUI(
 	rparams.height = 16;
 	rparams.width = 100;
 	rparams.x = 20;
-	rparams.y = 4;
+	rparams.y = 1;
 	rparams.text = "Decimal";
 	_receiver->_decimalRadioButton =
 		new GlowRadioButtonWidget(radioGroup, rparams);
 	// Crop the width of the widget to tightly enclose the box and label
 	_receiver->_decimalRadioButton->CropWidth();
-	rparams.y = 24;
+	rparams.y = 19;
 	rparams.text = "Scientific";
 	_receiver->_scientificRadioButton =
 		new GlowRadioButtonWidget(radioGroup, rparams);
@@ -678,22 +755,23 @@ CalcUI::CalcUI(
 	// Angle units radio buttons
 	lparams.height = 15;
 	lparams.width = 90;
-	lparams.x = 130;
-	lparams.y = 265;
+	lparams.x = 120;
+	lparams.y = 190;
 	lparams.text = "Angles:";
-	new GlowLabelWidget(_window, lparams);
+	new GlowLabelWidget(_receiver->_mainPanel, lparams);
 	
 	// Make the radio group
-	gparams.x = 130;
-	radioGroup = new GlowRadioGroupWidget(_window, gparams);
+	gparams.x = 120;
+	gparams.y = 205;
+	radioGroup = new GlowRadioGroupWidget(_receiver->_mainPanel, gparams);
 	
 	//  ... and add the buttons
-	rparams.y = 4;
+	rparams.y = 1;
 	rparams.text = "Degrees";
 	_receiver->_degreesRadioButton =
 		new GlowRadioButtonWidget(radioGroup, rparams);
 	_receiver->_degreesRadioButton->CropWidth();
-	rparams.y = 24;
+	rparams.y = 19;
 	rparams.text = "Radians";
 	_receiver->_radiansRadioButton =
 		new GlowRadioButtonWidget(radioGroup, rparams);
@@ -702,17 +780,21 @@ CalcUI::CalcUI(
 	// Finally, let's add a quit button and an about button
 	bparams.height = 25;
 	bparams.width = 80;
-	bparams.x = 10;
-	bparams.y = 330;
+	bparams.x = 0;
+	bparams.y = 250;
 	bparams.text = "Quit";
 	// We'll detect this refcon and handle this button specially
 	bparams.refcon = -2;
-	new GlowPushButtonWidget(_window, bparams);
+	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
 	
 	bparams.x = 100;
 	bparams.text = "About";
 	bparams.refcon = -3;
-	new GlowPushButtonWidget(_window, bparams);
+	new GlowPushButtonWidget(_receiver->_mainPanel, bparams);
+	
+	// Set up a keyboard event filter. This will let us respond to keyboard
+	// events even though we don't have any keyboard-listening widgets.
+	_window->RegisterFilter(_receiver);
 }
 
 

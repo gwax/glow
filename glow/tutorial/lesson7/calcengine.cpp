@@ -295,7 +295,7 @@ void CalcEngine::Button(
 			}
 			if (_state == enterInt)
 			{
-				if (_intMantissa.size() != 0 || button != 0)
+				if (!_intMantissa.empty() || button != 0)
 				{
 					_intMantissa += char('0'+button);
 				}
@@ -306,8 +306,9 @@ void CalcEngine::Button(
 			}
 			else if (_state == enterExpon)
 			{
-				if ((_exponent.size() != 0 || button != 0) &&
-					(_exponent.size() < 3 || _exponent[0] < 3))
+				if ((!_exponent.empty() || button != 0) &&
+					_exponent.size() < 3 &&
+					(_exponent.size() < 2 || _exponent[0] < '3'))
 				{
 					_exponent += char('0'+button);
 				}
@@ -411,17 +412,17 @@ string CalcEngine::Display(
 	string result;
 	if (_state == preEntry || _state == postEntry || level != 0)
 	{
-		char buf[100];
+		char buf[200];
 		if (_format == scientificFormat || _stack[level] >= 1e10 ||
-			(_stack[level] < 1e-10 && _stack[level] > -1e-10 &&
-				_stack[level] != 0))
+			_stack[level] <= -1e10 || (_stack[level] < 1e-10 &&
+			_stack[level] > -1e-10 && _stack[level] != 0))
 		{
-			sprintf(buf, "%20.15e", _stack[level]);
+			sprintf(buf, "%.15e", _stack[level]);
 		}
 		else
 		{
-			sprintf(buf, "%20.20f", _stack[level]);
-			buf[20] = 0;
+			sprintf(buf, "%.15f", _stack[level]);
+			buf[21] = 0;
 		}
 		result.assign(buf);
 	}
