@@ -55,6 +55,7 @@
 	#include "glowHeader.h"
 #endif
 
+#include <cfloat>
 #ifndef GLOW_OPTION_NOIOSTREAMS
 	#include <iostream>
 #endif
