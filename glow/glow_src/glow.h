@@ -35,7 +35,7 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 1.0.0  (29 June 2000)
+		The GLOW Toolkit -- version 1.1.1dev  (24 July 2000)
 	
 	CHANGES:
 	
@@ -183,14 +183,10 @@ class Glow
 		// Joystick button specification
 		enum JoystickButtonMask
 		{
-			joystickButtonA = 0x1,
-			joystickButtonB = 0x2,
-			joystickButtonC = 0x4,
-			joystickButtonD = 0x8,
-			joystickButtonE = 0x10,
-			joystickButtonF = 0x20,
-			joystickButtonG = 0x40,
-			joystickButtonH = 0x80,
+			joystickButtonA = GLUT_JOYSTICK_BUTTON_A,
+			joystickButtonB = GLUT_JOYSTICK_BUTTON_B,
+			joystickButtonC = GLUT_JOYSTICK_BUTTON_C,
+			joystickButtonD = GLUT_JOYSTICK_BUTTON_D,
 			allJoystickButtons_ = 0x7fffffff
 		};
 		
@@ -894,7 +890,7 @@ class GlowSubwindow :
 			bool enable);
 		void ReadJoystick();
 		inline int GetJoystickPollInterval() const;
-		inline void SetJoystickPollInterval(
+		void SetJoystickPollInterval(
 			int interval);
 #endif
 		

@@ -100,6 +100,13 @@ If defined, GLOW symbols will be located in the global namespace. Otherwise, the
 If defined, GLOW will implement a partial workaround for a GLUT bug that sometimes causes GLUT to lose track of windows. The workaround involves preventing a program from reposting a refresh event during the drawing callback for that window. If a program attempts to do so, GLOW will defer the event posting until the next iteration through the event loop. The workaround seems to prevent some cases of the GLUT bug, but not all of them. Versions of GLUT newer than 26 June 2000 <i>may</i> fix the bug, so this workaround may not be necessary if your libraries are new enough.
 </blockquote>
 
+<p>
+<tt><b>GLOW_OPTION_STRICTGLUT3</b></tt>
+</p>
+<blockquote>
+If defined, GLOW will use only those GLUT features that are defined in the GLUT 3 specification. As a result, some GLOW features will not be available, such as keyboard-up events. If you are using GLUT version 3.7 or later, you should be able to use all the features of GLOW, but if you are using an older version of GLUT, you will need to define this symbol in order to get GLOW to compile.
+</blockquote>
+
 </blockquote>
 
 

@@ -116,6 +116,13 @@ Creates a new <tt>GlowWindow</tt> with options specified by the given params. Al
 </blockquote>
 
 <p>
+<tt><b>GlowWindow</b>(const char* title, int x, int y, int width, int height, const char* modeString, <a href="Glow.html">Glow</a>::EventMask eventMask)</tt>
+</p>
+<blockquote>
+Creates a new <tt>GlowWindow</tt> with options specified by the given params. Also creates the corresponding GLUT window. <tt>title</tt> denotes the title of the window. <tt>x</tt> and <tt>y</tt> denote the pixel location of the top left corner of the window, in screen pixel coordinates. The constant <tt>GlowWindow::autoPosition</tt> may be used instead. <tt>width</tt> and <tt>height</tt> specify the width and height in pixels. <tt>modeString</tt> describes the type of frame buffer to use. <tt>eventMask</tt> specifies which events the window wishes to receive when active. Use the event constants described in <tt><a href="Glow.html">Glow</a></tt> for the event mask. Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
+
+<p>
 <tt><b>GlowWindow</b>(void)</tt>
 </p>
 <blockquote>
@@ -134,6 +141,13 @@ Initializes the <tt>GlowWindow</tt> with options specified by the given params. 
 </p>
 <blockquote>
 Initializes the <tt>GlowWindow</tt> with options specified by the given params. Also creates the corresponding GLUT window. <tt>title</tt> denotes the title of the window. <tt>x</tt> and <tt>y</tt> denote the pixel location of the top left corner of the subwindow, in screen pixel coordinates. <tt>width</tt> and <tt>height</tt> specify the width and height in pixels. <tt>mode</tt> describes the type of frame buffer to use. <tt>eventMask</tt> specifies which events the window wishes to receive when active. Use the event constants described in <tt><a href="Glow.html">Glow</a></tt> for the event mask.
+</blockquote>
+
+<p>
+<tt>void <b>Init</b>(const char* title, int x, int y, int width, int height, const char* modeString, <a href="Glow.html">Glow</a>::EventMask eventMask)</tt>
+</p>
+<blockquote>
+Initializes the <tt>GlowWindow</tt> with options specified by the given params. Also creates the corresponding GLUT window. <tt>title</tt> denotes the title of the window. <tt>x</tt> and <tt>y</tt> denote the pixel location of the top left corner of the subwindow, in screen pixel coordinates. <tt>width</tt> and <tt>height</tt> specify the width and height in pixels. <tt>modeString</tt> describes the type of frame buffer to use. <tt>eventMask</tt> specifies which events the window wishes to receive when active. Use the event constants described in <tt><a href="Glow.html">Glow</a></tt> for the event mask. Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
 </blockquote>
 
 <p>
@@ -302,12 +316,19 @@ Note: for a toplevel window, this returns the same value as <tt>GlobalPositionY<
 </p>
 
 <p>
-<tt>int <b>GetCursor</b>(void) const</tt>
+<tt><a href="Glow.html">Glow</a>::Cursor <b>GetCursor</b>(void) const</tt>
 </p>
 
 <p>
-<tt>void <b>SetCursor</b>(int cursor)</tt>
+<tt>void <b>SetCursor</b>(<a href="Glow.html">Glow</a>::Cursor cursor)</tt>
 </p>
+
+<p>
+<tt>void <b>WarpCursor</b>(int x, int y)</tt>
+</p>
+<blockquote>
+Not available if <tt>GLUT_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
 
 <p>
 <tt><a href="Glow.html">Glow</a>::EventMask <b>GetEventMask</b>(void) const</tt>
@@ -324,6 +345,41 @@ Note: for a toplevel window, this returns the same value as <tt>GlobalPositionY<
 <p>
 <tt>void <b>SetInactiveEventMask</b>(<a href="Glow.html">Glow</a>::EventMask mask)</tt>
 </p>
+
+<p>
+<tt>bool <b>IsKeyRepeatEnabled</b>(void) const</tt>
+</p>
+<blockquote>
+Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
+
+<p>
+<tt>void <b>SetKeyRepeatEnabled</b>(bool enable)</tt>
+</p>
+<blockquote>
+Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
+
+<p>
+<tt>int <b>GetJoystickPollInterval</b>(void) const</tt>
+</p>
+<blockquote>
+Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
+
+<p>
+<tt>void <b>SetJoystickPollInterval</b>(int milliseconds)</tt>
+</p>
+<blockquote>
+Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
+
+<p>
+<tt>void <b>ReadJoystick</b>(void)</tt>
+</p>
+<blockquote>
+Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
 
 <p>
 <tt>int <b>GlutWindowNum</b>(void) const</tt>
@@ -495,6 +551,13 @@ These overrideable methods are inherited from <tt><a href="GlowSubwindow.html">G
 <p>
 <tt>virtual void <b>OnKeyboard</b>(<a href="Glow.html">Glow</a>::KeyCode key, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
+
+<p>
+<tt>virtual void <b>OnKeyboardUp</b>(<a href="Glow.html">Glow</a>::KeyCode key, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
+</p>
+<blockquote>
+Not available if <tt>GLUT_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
 
 <p>
 <tt>virtual void <b>OnDirectMenuHit</b>(const <a href="GlowMenuMessage.html">GlowMenuMessage</a>& message)</tt>

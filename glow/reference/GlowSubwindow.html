@@ -122,6 +122,13 @@ Creates a new <tt>GlowSubwindow</tt> with options specified by the given params,
 </blockquote>
 
 <p>
+<tt><b>GlowSubwindow</b>(<a href="GlowComponent.html">GlowComponent</a>* parent, int x, int y, int width, int height, const char* modeString, <a href="Glow.html">Glow</a>::EventMask eventMask)</tt>
+</p>
+<blockquote>
+Creates a new <tt>GlowSubwindow</tt> with options specified by the given params, and adds it to <tt>parent</tt>'s children. <tt>x</tt> and <tt>y</tt> denote the pixel location of the top left corner of the subwindow, in its parent window's coordinates. <tt>width</tt> and <tt>height</tt> specify the width and height in pixels. The constant <tt>GlowSubwindow::parentWindowSize</tt> may be used instead to specify the same size as the parent window. <tt>modeString</tt> describes the type of frame buffer to use. <tt>eventMask</tt> specifies which events the subwindow wishes to receive when active. Use the event constants described in <tt><a href="Glow.html">Glow</a></tt> for the event mask. Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
+
+<p>
 <tt><b>GlowSubwindow</b>(void)</tt>
 </p>
 <blockquote>
@@ -140,6 +147,13 @@ Initializes the <tt>GlowSubwindow</tt> with options specified by the given param
 </p>
 <blockquote>
 Initializes the <tt>GlowSubwindow</tt> with options specified by the given params, and adds it to <tt>parent</tt>'s children. <tt>x</tt> and <tt>y</tt> denote the pixel location of the top left corner of the subwindow, in its parent window's coordinates. <tt>width</tt> and <tt>height</tt> specify the width and height in pixels. The constant <tt>GlowSubwindow::parentWindowSize</tt> may be used instead to specify the same size as the parent window. <tt>mode</tt> describes the type of frame buffer to use. <tt>eventMask</tt> specifies which events the subwindow wishes to receive when active. Use the event constants described in <tt><a href="Glow.html">Glow</a></tt> for the event mask.
+</blockquote>
+
+<p>
+<tt>void <b>Init</b>(<a href="GlowComponent.html">GlowComponent</a>* parent, int x, int y, int width, int height, const char* modeString, <a href="Glow.html">Glow</a>::EventMask eventMask)</tt>
+</p>
+<blockquote>
+Initializes the <tt>GlowSubwindow</tt> with options specified by the given params, and adds it to <tt>parent</tt>'s children. <tt>x</tt> and <tt>y</tt> denote the pixel location of the top left corner of the subwindow, in its parent window's coordinates. <tt>width</tt> and <tt>height</tt> specify the width and height in pixels. The constant <tt>GlowSubwindow::parentWindowSize</tt> may be used instead to specify the same size as the parent window. <tt>modeString</tt> describes the type of frame buffer to use. <tt>eventMask</tt> specifies which events the subwindow wishes to receive when active. Use the event constants described in <tt><a href="Glow.html">Glow</a></tt> for the event mask. Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
 </blockquote>
 
 <p>
@@ -310,7 +324,53 @@ Translates pixel coordinates into normalized drawing coordinates, in which (0,0)
 <tt><a href="Glow.html">Glow</a>::BufferType <b>GetBufferType</b>(void) const</tt>
 </p>
 <blockquote>
-Returns the buffer type used by this subwindow. This is for your information only; you cannot change the buffer type once the window has been created.
+Returns the buffer type used by this subwindow. This is for your information only; you cannot change the buffer type once the window has been created. If the frame buffer type was originally specified by string, this returns <tt><a href="Glow.html">Glow</a>::noBuffer</tt>.
+</blockquote>
+
+</blockquote>
+
+
+<p>
+<b>Calls involving joystick and key repeat</b>
+<br>
+These methods are not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
+</p>
+
+<blockquote>
+
+<p>
+<tt>bool <b>IsKeyRepeatEnabled</b>(void) const</tt>
+</p>
+<blockquote>
+Returns true if key repeat is currently enabled for this subwindow. Key repeat is enabled by default. Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
+
+<p>
+<tt>void <b>SetKeyRepeatEnabled</b>(bool enable)</tt>
+</p>
+<blockquote>
+Enable or disable key repeat for this subwindow. Key repeat is enabled by default. Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
+
+<p>
+<tt>int <b>GetJoystickPollInterval</b>(void) const</tt>
+</p>
+<blockquote>
+Returns the joystick polling interval in milliseconds, or 0 if polling is disabled. Joystick polling is disabled by default. Note that even when polling is active, joystick events will not be reported unless joystick events are in the event mask. Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
+
+<p>
+<tt>void <b>SetJoystickPollInterval</b>(int milliseconds)</tt>
+</p>
+<blockquote>
+Set the joystick polling interval in milliseconds. Pass 0 to disable joystick polling (you can still receive joystick events by explicitly calling <tt>ReadJoystick</tt>). Joystick polling is disabled by default. Note that even when polling is active, joystick events will not be reported unless joystick events are in the event mask. Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
+
+<p>
+<tt>void <b>ReadJoystick</b>(void)</tt>
+</p>
+<blockquote>
+Posts a joystick event immediately, if joystick events are in the event mask. Does nothing if joystick events are not in the event mask. Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
 </blockquote>
 
 </blockquote>
@@ -344,17 +404,24 @@ Returns the specified button to normal behavior (no menus). Identical to calling
 </blockquote>
 
 <p>
-<tt>int <b>GetCursor</b>(void) const</tt>
+<tt><a href="Glow.html">Glow</a>::Cursor <b>GetCursor</b>(void) const</tt>
 </p>
 <blockquote>
-Returns the GLUT cursor associated with this subwindow.
+Returns the cursor associated with this subwindow.
 </blockquote>
 
 <p>
-<tt>void <b>SetCursor</b>(int cursor)</tt>
+<tt>void <b>SetCursor</b>(<a href="Glow.html">Glow</a>::Cursor cursor)</tt>
 </p>
 <blockquote>
-Associates the given GLUT cursor with this subwindow.
+Associates the given cursor with this subwindow.
+</blockquote>
+
+<p>
+<tt>void <b>WarpCursor</b>(int x, int y)</tt>
+</p>
+<blockquote>
+"Warps" the pointer to the given coordinates relative to this subwindow. Not available if <tt>GLUT_OPTION_STRICTGLUT3</tt> is specified.
 </blockquote>
 
 </blockquote>
@@ -599,7 +666,21 @@ Override this method to respond to the pointer exiting the subwindow. Under some
 <tt>virtual void <b>OnKeyboard</b>(<a href="Glow.html">Glow</a>::KeyCode key, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
 </p>
 <blockquote>
-Override this method to respond to the a key being pressed. <tt>key</tt> contains the character hit, as a value between 0 and 255. If the value of <tt>key</tt> is greater than <tt><a href="Glow.html">Glow</a>::specialKeyOffset</tt>, then it will be one of the non-ascii keyboard codes defined in <tt><a href="Glow.html">Glow</a></tt>. <tt>modifiers</tt> specifies keyboard modifiers that were down during the event. See the constants in <tt><a href="Glow.html">Glow</a></tt> for modifier flags. <tt>x</tt> and <tt>y</tt> give the x and y coordinates of the pointer in subwindow pixel coordinates at the time of the event. The default method does nothing.
+Override this method to respond to a key being pressed. <tt>key</tt> contains the character hit, as a value between 0 and 255. If the value of <tt>key</tt> is greater than <tt><a href="Glow.html">Glow</a>::specialKeyOffset</tt>, then it will be one of the non-ascii keyboard codes defined in <tt><a href="Glow.html">Glow</a></tt>. <tt>modifiers</tt> specifies keyboard modifiers that were down during the event. See the constants in <tt><a href="Glow.html">Glow</a></tt> for modifier flags. <tt>x</tt> and <tt>y</tt> give the x and y coordinates of the pointer in subwindow pixel coordinates at the time of the event. The default method does nothing.
+</blockquote>
+
+<p>
+<tt>virtual void <b>OnKeyboardUp</b>(<a href="Glow.html">Glow</a>::KeyCode key, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
+</p>
+<blockquote>
+Override this method to respond to a key being released. <tt>key</tt> contains the character hit, as a value between 0 and 255. If the value of <tt>key</tt> is greater than <tt><a href="Glow.html">Glow</a>::specialKeyOffset</tt>, then it will be one of the non-ascii keyboard codes defined in <tt><a href="Glow.html">Glow</a></tt>. <tt>modifiers</tt> specifies keyboard modifiers that were down during the event. See the constants in <tt><a href="Glow.html">Glow</a></tt> for modifier flags. <tt>x</tt> and <tt>y</tt> give the x and y coordinates of the pointer in subwindow pixel coordinates at the time of the event. The default method does nothing. Not available if <tt>GLUT_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
+
+<p>
+<tt>virtual void <b>OnJoystick</b>(<a href="Glow.html">Glow</a>JoystickButtonMask buttonMask, int x, int y, int z)</tt>
+</p>
+<blockquote>
+Override this method to respond to a polling of the joystick. Joystick events are raised either at regular intervals according to the joystick polling rate set for the window, or explicitly by calling <tt>ReadJoystick()</tt>. When an event is reported, <tt>buttonMask</tt> contains a bitmask specifying which buttons are down, and the <tt>x</tt>, <tt>y</tt> and <tt>z</tt> parameters are set to the current position of the joystick. The default method does nothing. Not available if <tt>GLUT_OPTION_STRICTGLUT3</tt> is specified.
 </blockquote>
 
 <p>

@@ -1,6 +1,6 @@
 
 The GLOW Toolkit
-version 1.1.1pre2 (24 July 2000)
+version 1.1.1dev (24 July 2000)
 Copyright (C) 1997-2000  Daniel Azuma
 
 
@@ -76,9 +76,9 @@ RELEASE NOTES
 
 
     The GLOW Toolkit
-    Version 1.1.1pre2 (24 July 2000)
+    Version 1.1.1dev (24 July 2000)
 
-    These are the differences between versions 1.0.0 and 1.1.1pre2.
+    These are the differences between versions 1.0.0 and 1.1.1dev.
     A complete history of publicly released versions can be found on the
     GLOW web site.
 
@@ -134,11 +134,17 @@ RELEASE NOTES
       gcc now needs GLOW_COMPAT_USEOLDSTREAMPOS defined for successful
       compilation. The library makefile has been updated accordingly.
 
+      GlowWidgetWindow and GlowWidgetSubwindow now use Glow::rgbBuffer |
+      Glow::doubleBuffer by default. (Version 1.0 also included alpha,
+      accumulation and stencil.)
+
 
     Bugs fixed
     ----------
 
       LINK_(uname) didn't work in the makefile. Fixed. (Also in 1.0.1)
+
+      Several reference fixes.
 
 
     Internal changes
@@ -167,7 +173,7 @@ RELEASE NOTES
       the idea of using GLOW as source code.
 
       GlowTextAreaWidget. This will also require that GlowTextData get
-      finished...
+      finished.
 
       GlowTabbedPanelWidget class.
 
@@ -179,15 +185,20 @@ RELEASE NOTES
       GlowGeneralListWidget hierarchy. GlowTextListWidget will be a
       major subclass.
 
+      Add support for "either-or" to QuickPalette.
+
+      Add support for text alignment in GlowLabelWidget.
+
       GlowComboBoxWidget class? May use GlowTextListWidget.
 
       GlowScrollableWindow class? Not sure how to design this.
 
-      Add support for either-or (e.g. tabbed panels) to QuickPalette.
+      Add stroke fonts to GlowFont? Not sure how to design this.
 
-      Add support for text alignment in GlowLabelWidget.
+      Add GlowImage template, GlowPNMReader and GlowPNMWriter info to
+      the reference.
 
-      Add stroke fonts to GlowFont?
+      Update tutorial.
 
 
     Known issues

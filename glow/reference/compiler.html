@@ -58,7 +58,19 @@ The GLOW Toolkit requires a C++ compiler that is ANSI/ISO compliant, or nearly s
 <blockquote>
 
 <p>
-Recent versions of gcc are getting close to being ANSI C++ compliant. The primary issues as of version 2.95 are the state of the iostreams library; however, GLOW doesn't need to make extensive use of iostreams, so gcc shouldn't have much trouble compiling GLOW.
+Recent versions of gcc are getting close to being ANSI C++ compliant. The primary issue as of version 2.95 is the state of the iostreams library, which has not yet been updated to conform to the standard. In order to get the module <tt>glowImageFile</tt> to compile using gcc 2.95, you should include the following flag on the compiler command line:
+</p>
+
+<p>
+<tt>-DGLOW_COMPAT_USEOLDSTREAMPOS</tt>
+</p>
+<blockquote>
+This is necessary for succesful compilation. It causes GLOW to use the old <tt>streampos</tt> data type rather than the <tt>pos_type</tt> member of a stream class.
+</blockquote>
+</p>
+
+<p>
+Some older versions of gcc may be able to compile GLOW with some effort. However, I have not tried versions older than 2.95 nor will I support them, and I highly recommend using 2.95 or a newer version.
 </p>
 
 </blockquote>
@@ -144,7 +156,7 @@ Codewarrior Pro 5 is very close to being ANSI C++ compliant and should not requi
 <blockquote>
 
 <p>
-Visual C++ has a few ANSI issues, but as of GLOW 0.9.6, I've been able to work around pretty much all of them. Your first task is to get a project made up. The Windows Console Application stationery seems to work reasonable well for this. Next, make sure you have the GLUT dll properly installed (or a static library added to your project). Finally, you'll need to add the appropriate GLOW sources to the project. For the tutorials, you can determine which modules a program needs by looking at the provided Makefile. The Makefile is for gnu-make on a unix machine, and so you won't be able to use it with Windows, but you can determine which GLOW modules need to be added to your project by looking at the definition of the variable "GLOWMODULES".
+Visual C++ has a few ANSI issues, but I believe I've been able to work around pretty much all of them. Your first task is to get a project made up. The Windows Console Application stationery seems to work reasonable well for this. Next, make sure you have the GLUT dll properly installed (or a static library added to your project). Finally, you'll need to add the appropriate GLOW sources to the project. For the tutorials, you can determine which modules a program needs by looking at the provided Makefile. The Makefile is for gnu-make on a unix machine, and so you won't be able to use it with Windows, but you can determine which GLOW modules need to be added to your project by looking at the definition of the variable "GLOWMODULES".
 </p>
 
 <p>
@@ -190,6 +202,10 @@ This directs the Windows standard header "<tt>windef.h</tt>" not to define <tt>m
 Finally, if you're compiling in debug mode, you may want to change the debug information settings to something like "line numbers only". Otherwise, because GLOW uses STL pretty heavily, you may get several hundred warnings that such-and-such a symbol name is longer than 255 characters. You should also expect four warnings to be thrown out of glowViewTransform.inl.h concerning passing the "this" pointer into a member constructor. Those four warnings should be harmless in this case.
 </p>
 
+<p>
+It should be straightforward to make a static library using MSVC, but I currently don't think it is possible to make a properly-configured DLL because of the heavy use of templates and STL.
+</p>
+
 
 </blockquote>
 
@@ -212,11 +228,9 @@ Finally, if you're compiling in debug mode, you may want to change the debug inf
 
 <p>
 <address>
-<a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
-(<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
-<br>
-Last updated 22 June 2000
+<a href="http://www.ugcs.caltech.edu/~dazuma/glow/">The GLOW Toolkit</a>
 </address>
+</p>
 
 
 </body>

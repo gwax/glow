@@ -35,7 +35,7 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 1.0.0  (29 June 2000)
+		The GLOW Toolkit -- version 1.1.1dev  (24 July 2000)
 	
 	CHANGES:
 	
@@ -1929,6 +1929,27 @@ void GlowSubwindow::SetInactiveEventMask(
 		}
 	}
 }
+
+
+#ifndef GLOW_OPTION_STRICTGLUT3
+
+void GlowSubwindow::SetJoystickPollInterval(
+	int interval)
+{
+	joystickPollInterval_ = interval;
+	if (joystickPollInterval_ < 0) joystickPollInterval_ = 0;
+	
+	if ((IsActive() ? eventMask_ : inactiveEventMask_) & Glow::joystickEvents)
+	{
+		::glutJoystickFunc(Glow::JoystickFunc_, joystickPollInterval_);
+	}
+	else
+	{
+		::glutJoystickFunc(0, 0);
+	}
+}
+
+#endif
 
 
 void GlowSubwindow::Move(

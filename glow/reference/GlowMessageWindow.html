@@ -340,12 +340,19 @@ You should not normally try to reshape a fixed-size window. It will momentarily 
 </p>
 
 <p>
-<tt>int <b>GetCursor</b>(void) const</tt>
+<tt><a href="Glow.html">Glow</a>::Cursor <b>GetCursor</b>(void) const</tt>
 </p>
 
 <p>
-<tt>void <b>SetCursor</b>(int cursor)</tt>
+<tt>void <b>SetCursor</b>(<a href="Glow.html">Glow</a>::Cursor cursor)</tt>
 </p>
+
+<p>
+<tt>void <b>WarpCursor</b>(int x, int y)</tt>
+</p>
+<blockquote>
+Not available if <tt>GLUT_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
 
 <p>
 <tt><a href="Glow.html">Glow</a>::EventMask <b>GetEventMask</b>(void) const</tt>
@@ -362,6 +369,41 @@ You should not normally try to reshape a fixed-size window. It will momentarily 
 <p>
 <tt>void <b>SetInactiveEventMask</b>(<a href="Glow.html">Glow</a>::EventMask mask)</tt>
 </p>
+
+<p>
+<tt>bool <b>IsKeyRepeatEnabled</b>(void) const</tt>
+</p>
+<blockquote>
+Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
+
+<p>
+<tt>void <b>SetKeyRepeatEnabled</b>(bool enable)</tt>
+</p>
+<blockquote>
+Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
+
+<p>
+<tt>int <b>GetJoystickPollInterval</b>(void) const</tt>
+</p>
+<blockquote>
+Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
+
+<p>
+<tt>void <b>SetJoystickPollInterval</b>(int milliseconds)</tt>
+</p>
+<blockquote>
+Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
+
+<p>
+<tt>void <b>ReadJoystick</b>(void)</tt>
+</p>
+<blockquote>
+Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
 
 <p>
 <tt>int <b>GlutWindowNum</b>(void) const</tt>
@@ -560,6 +602,20 @@ These overrideable methods are inherited from <tt><a href="GlowSubwindow.html">G
 </p>
 <blockquote>
 <tt>GlowMessageWindow</tt> overrides this method to call <tt><a href="GlowWidgetRoot.html">GlowWidgetRoot</a>::WRKeyboard()</tt>.
+</blockquote>
+
+<p>
+<tt>virtual void <b>OnKeyboardUp</b>(<a href="Glow.html">Glow</a>::KeyCode key, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
+</p>
+<blockquote>
+Not available if <tt>GLUT_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
+
+<p>
+<tt>virtual void <b>OnJoystick</b>(<a href="Glow.html">Glow</a>JoystickButtonMask buttonMask, int x, int y, int z)</tt>
+</p>
+<blockquote>
+Not available if <tt>GLUT_OPTION_STRICTGLUT3</tt> is specified.
 </blockquote>
 
 <p>

@@ -35,7 +35,7 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 1.0.0  (29 June 2000)
+		The GLOW Toolkit -- version 1.1.1dev  (24 July 2000)
 	
 	CHANGES:
 	
@@ -614,13 +614,6 @@ inline void GlowSubwindow::SetKeyRepeatEnabled(
 inline int GlowSubwindow::GetJoystickPollInterval() const
 {
 	return joystickPollInterval_;
-}
-
-
-inline void GlowSubwindow::SetJoystickPollInterval(
-	int interval)
-{
-	joystickPollInterval_ = interval;
 }
 #endif
 

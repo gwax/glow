@@ -35,7 +35,7 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 1.0.0  (29 June 2000)
+		The GLOW Toolkit -- version 1.1.1dev  (24 July 2000)
 	
 	CHANGES:
 	
@@ -136,7 +136,7 @@
 // Fractional version number
 // e.g. 1.3.11pre4 == 1.031104
 // e.g. 1.3.11     == 1.031199
-#define GLOW_VERSION 1.010102
+#define GLOW_VERSION 1.010103
 
 // API version number
 // 1  == GLOW release 1.0

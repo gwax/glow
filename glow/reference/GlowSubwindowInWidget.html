@@ -83,10 +83,17 @@ Creates a new <tt>GlowSubwindowInWidget</tt> with options specified by the given
 </blockquote>
 
 <p>
-<tt><b>GlowSubwindowInWidget</b>(<a href="GlowWidget.html">GlowWidget</a>* parent, int x, int y, int width, int height, <a href="Glow.html">Glow</a>::BufferType mode, int eventMask)</tt>
+<tt><b>GlowSubwindowInWidget</b>(<a href="GlowWidget.html">GlowWidget</a>* parent, int x, int y, int width, int height, <a href="Glow.html">Glow</a>::BufferType mode, <a href="Glow.html">Glow</a>::EventMask eventMask)</tt>
 </p>
 <blockquote>
 Creates a new <tt>GlowSubwindowInWidget</tt> with options specified by the given params, and adds it to <tt>parent</tt>'s children. <tt>x</tt> and <tt>y</tt> denote the pixel location of the top left corner of the subwindow, in its parent window's coordinates. <tt>width</tt> and <tt>height</tt> specify the width and height in pixels. <tt>mode</tt> describes the type of frame buffer to use. <tt>eventMask</tt> specifies which events the subwindow wishes to receive when active. Use the event constants described in <tt><a href="Glow.html">Glow</a></tt> for the event mask.
+</blockquote>
+
+<p>
+<tt><b>GlowSubwindowInWidget</b>(<a href="GlowWidget.html">GlowWidget</a>* parent, int x, int y, int width, int height, const char* modeString, <a href="Glow.html">Glow</a>::EventMask eventMask)</tt>
+</p>
+<blockquote>
+Creates a new <tt>GlowSubwindowInWidget</tt> with options specified by the given params, and adds it to <tt>parent</tt>'s children. <tt>x</tt> and <tt>y</tt> denote the pixel location of the top left corner of the subwindow, in its parent window's coordinates. <tt>width</tt> and <tt>height</tt> specify the width and height in pixels. <tt>mode</tt> describes the type of frame buffer to use. <tt>eventMask</tt> specifies which events the subwindow wishes to receive when active. Use the event constants described in <tt><a href="Glow.html">Glow</a></tt> for the event mask. Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
 </blockquote>
 
 <p>
@@ -104,10 +111,17 @@ Initializes the <tt>GlowSubwindowInWidget</tt> with options specified by the giv
 </blockquote>
 
 <p>
-<tt>void <b>Init</b>(<a href="GlowWidget.html">GlowWidget</a>* parent, int x, int y, int width, int height, <a href="Glow.html">Glow</a>::BufferType mode, int eventMask)</tt>
+<tt>void <b>Init</b>(<a href="GlowWidget.html">GlowWidget</a>* parent, int x, int y, int width, int height, <a href="Glow.html">Glow</a>::BufferType mode, <a href="Glow.html">Glow</a>::EventMask eventMask)</tt>
 </p>
 <blockquote>
 Initializes the <tt>GlowSubwindowInWidget</tt> with options specified by the given params, and adds it to <tt>parent</tt>'s children. <tt>x</tt> and <tt>y</tt> denote the pixel location of the top left corner of the subwindow, in its parent window's coordinates. <tt>width</tt> and <tt>height</tt> specify the width and height in pixels. <tt>mode</tt> describes the type of frame buffer to use. <tt>eventMask</tt> specifies which events the subwindow wishes to receive when active. Use the event constants described in <tt><a href="Glow.html">Glow</a></tt> for the event mask.
+</blockquote>
+
+<p>
+<tt>void <b>Init</b>(<a href="GlowWidget.html">GlowWidget</a>* parent, int x, int y, int width, int height, const char* modeString, <a href="Glow.html">Glow</a>::EventMask eventMask)</tt>
+</p>
+<blockquote>
+Initializes the <tt>GlowSubwindowInWidget</tt> with options specified by the given params, and adds it to <tt>parent</tt>'s children. <tt>x</tt> and <tt>y</tt> denote the pixel location of the top left corner of the subwindow, in its parent window's coordinates. <tt>width</tt> and <tt>height</tt> specify the width and height in pixels. <tt>modeString</tt> describes the type of frame buffer to use. <tt>eventMask</tt> specifies which events the subwindow wishes to receive when active. Use the event constants described in <tt><a href="Glow.html">Glow</a></tt> for the event mask. Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
 </blockquote>
 
 <p>
@@ -256,12 +270,19 @@ These methods are inherited from <tt><a href="GlowSubwindow.html">GlowSubwindow<
 </p>
 
 <p>
-<tt>int <b>GetCursor</b>(void) const</tt>
+<tt><a href="Glow.html">Glow</a>::Cursor <b>GetCursor</b>(void) const</tt>
 </p>
 
 <p>
-<tt>void <b>SetCursor</b>(int cursor)</tt>
+<tt>void <b>SetCursor</b>(<a href="Glow.html">Glow</a>::Cursor cursor)</tt>
 </p>
+
+<p>
+<tt>void <b>WarpCursor</b>(int x, int y)</tt>
+</p>
+<blockquote>
+Not available if <tt>GLUT_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
 
 <p>
 <tt><a href="Glow.html">Glow</a>::EventMask <b>GetEventMask</b>(void) const</tt>
@@ -278,6 +299,41 @@ These methods are inherited from <tt><a href="GlowSubwindow.html">GlowSubwindow<
 <p>
 <tt>void <b>SetInactiveEventMask</b>(<a href="Glow.html">Glow</a>::EventMask mask)</tt>
 </p>
+
+<p>
+<tt>bool <b>IsKeyRepeatEnabled</b>(void) const</tt>
+</p>
+<blockquote>
+Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
+
+<p>
+<tt>void <b>SetKeyRepeatEnabled</b>(bool enable)</tt>
+</p>
+<blockquote>
+Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
+
+<p>
+<tt>int <b>GetJoystickPollInterval</b>(void) const</tt>
+</p>
+<blockquote>
+Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
+
+<p>
+<tt>void <b>SetJoystickPollInterval</b>(int milliseconds)</tt>
+</p>
+<blockquote>
+Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
+
+<p>
+<tt>void <b>ReadJoystick</b>(void)</tt>
+</p>
+<blockquote>
+Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
 
 <p>
 <tt>int <b>GlutWindowNum</b>(void) const</tt>
@@ -439,6 +495,20 @@ These overrideable methods are inherited from <tt><a href="GlowSubwindow.html">G
 </p>
 <blockquote>
 This method is used by <tt>GlowSubwindowInWidget</tt> to redirect the keyboard events to the widget root. Normally it should not be overridden unless the subwindow needs to intercept such events.
+</blockquote>
+
+<p>
+<tt>virtual void <b>OnKeyboardUp</b>(<a href="Glow.html">Glow</a>::KeyCode key, int x, int y, <a href="Glow.html">Glow</a>::Modifiers modifiers)</tt>
+</p>
+<blockquote>
+Not available if <tt>GLUT_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
+
+<p>
+<tt>virtual void <b>OnJoystick</b>(<a href="Glow.html">Glow</a>JoystickButtonMask buttonMask, int x, int y, int z)</tt>
+</p>
+<blockquote>
+Not available if <tt>GLUT_OPTION_STRICTGLUT3</tt> is specified.
 </blockquote>
 
 <p>

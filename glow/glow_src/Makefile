@@ -13,20 +13,20 @@ nodebug:
 	$(MAKE) clean
 	touch .glowmake.SHARED
 	$(MAKE) libglow.so
-	mv libglow.so libglow.so.1.1.1.pre0
+	mv libglow.so libglow.so.1.1.1
 	rm -r .glowmake.SHARED
 	$(MAKE) libglow.a
-	mv libglow.a libglow.a.1.1.1.pre0
+	mv libglow.a libglow.a.1.1.1
 
 debug:
 	touch .glowmake.DEBUG
 	$(MAKE) clean
 	touch .glowmake.SHARED
 	$(MAKE) libglow.so
-	mv libglow.so libglowdebug.so.1.1.1.pre0
+	mv libglow.so libglowdebug.so.1.1.1
 	rm -r .glowmake.SHARED
 	$(MAKE) libglow.a
-	mv libglow.a libglowdebug.a.1.1.1.pre0
+	mv libglow.a libglowdebug.a.1.1.1
 
 CLEANFILES:=libglow.so libglow.a
 IGNOREDEPTARGETS:=everything debug nodebug .

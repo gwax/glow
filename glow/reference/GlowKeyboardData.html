@@ -63,6 +63,41 @@ GLOW programs that need to filter keyboard events will need to use <tt>GlowKeybo
 
 <p>
 <table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>Constants</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+<b>Types of keyboard events</b>
+<br>
+Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
+</p>
+
+<blockquote>
+
+<p>
+<tt>enum GlowKeyboardData::EventType <b>keyDown</b></tt>
+</p>
+<blockquote>
+Key down event.
+</blockquote>
+
+<p>
+<tt>enum GlowKeyboardData::EventType <b>keyUp</b></tt>
+</p>
+<blockquote>
+Key up event.
+</blockquote>
+
+</blockquote>
+
+</blockquote>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
 <font size="+1"><b>Data</b></font>
 </td></tr></table>
 </p>
@@ -80,6 +115,12 @@ GLOW programs that need to filter keyboard events will need to use <tt>GlowKeybo
 </p>
 <blockquote>
 The subwindow receiving the event.
+</blockquote>
+<p>
+<tt>GlowKeyboardData::EventType <b>type</b></tt>
+</p>
+<blockquote>
+The type of event. Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
 </blockquote>
 <p>
 <tt><a href="Glow.html">Glow</a>::KeyCode <b>key</b></tt>

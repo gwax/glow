@@ -35,7 +35,7 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit -- version 1.0.0  (29 June 2000)
+		The GLOW Toolkit -- version 1.1.1dev  (24 July 2000)
 	
 	CHANGES:
 	
@@ -175,6 +175,25 @@ inline GlowFixedSizeWindow::GlowFixedSizeWindow(
 }
 
 
+#ifndef GLOW_OPTION_STRICTGLUT3
+
+inline GlowFixedSizeWindow::GlowFixedSizeWindow(
+	const char* title,
+	int x,
+	int y,
+	int width,
+	int height,
+	const char* modeString,
+	Glow::EventMask eventMask)
+{
+	canonicalWidth_ = width;
+	canonicalHeight_ = height;
+	GlowWindow::Init(title, x, y, width, height, modeString, eventMask);
+}
+
+#endif
+
+
 inline void GlowFixedSizeWindow::Init(
 	const GlowWindowParams& params)
 {
@@ -197,6 +216,25 @@ inline void GlowFixedSizeWindow::Init(
 	canonicalHeight_ = height;
 	GlowWindow::Init(title, x, y, width, height, mode, eventMask);
 }
+
+
+#ifndef GLOW_OPTION_STRICTGLUT3
+
+inline void GlowFixedSizeWindow::Init(
+	const char* title,
+	int x,
+	int y,
+	int width,
+	int height,
+	const char* modeString,
+	Glow::EventMask eventMask)
+{
+	canonicalWidth_ = width;
+	canonicalHeight_ = height;
+	GlowWindow::Init(title, x, y, width, height, modeString, eventMask);
+}
+
+#endif
 
 
 inline void GlowFixedSizeWindow::ForceReshape(

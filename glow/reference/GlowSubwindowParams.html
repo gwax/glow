@@ -115,7 +115,13 @@ Inactive event mask for the subwindow. Initial default is <tt><a href="Glow.html
 <tt><a href="Glow.html">Glow</a>::BufferType <b>mode</b></tt>
 </p>
 <blockquote>
-Buffer mode for the subwindow. Initial default is <tt><a href="Glow.html">Glow</a>::rgbBuffer | <a href="Glow.html">Glow</a>::doubleBuffer</tt>.
+Buffer mode for the subwindow, specifying capabilities for the frame buffer. Initial default is <tt><a href="Glow.html">Glow</a>::rgbBuffer | <a href="Glow.html">Glow</a>::doubleBuffer</tt>.
+</blockquote>
+<p>
+<tt>const char* <b>modeString</b></tt>
+</p>
+<blockquote>
+Buffer mode string for the subwindow. This string is parsed to specify frame buffer capabilities if present. If set to 0, the <tt>mode</tt> field is used instead. Initial default is 0. Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
 </blockquote>
 
 </blockquote>

@@ -90,6 +90,12 @@ Report no events
 Report keypress events
 </blockquote>
 <p>
+<tt>enum Glow::EventMask <b>keyboardUpEvents</b></tt>
+</p>
+<blockquote>
+Report key release events. Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
+<p>
 <tt>enum Glow::EventMask <b>mouseEvents</b></tt>
 </p>
 <blockquote>
@@ -108,10 +114,16 @@ Report mouse motion while dragging events
 Report mouse motion while button is up events
 </blockquote>
 <p>
+<tt>enum Glow::EventMask <b>joystickEvents</b></tt>
+</p>
+<blockquote>
+Report joystick events. Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
+<p>
 <tt>enum Glow::EventMask <b>visibilityEvents</b></tt>
 </p>
 <blockquote>
-Report visible and invisible events
+Report window visible and invisible events
 </blockquote>
 <p>
 <tt>enum Glow::EventMask <b>focusEvents</b></tt>
@@ -163,6 +175,43 @@ Right mouse button. Corresponds to <tt>GLUT_RIGHT_BUTTON</tt>.
 </blockquote>
 
 </blockquote>
+
+
+<p>
+<b>Joystick button masks</b>
+<br>
+Specifies which joystick buttons are affected. Passed back during joystick event callbacks. Defined as an enumeration of type <tt>Glow::JoystickButtonMask</tt>. Not available if <tt>GLOW_OPTION_STRICTGLUT3</tt> is specified.
+</p>
+
+<blockquote>
+
+<p>
+<tt>enum Glow::JoystickButtonMask <b>joystickButtonA</b></tt>
+</p>
+<blockquote>
+First joystick button. Corresponds to <tt>GLUT_JOYSTICK_BUTTON_A</tt>.
+</blockquote>
+<p>
+<tt>enum Glow::JoystickButtonMask <b>joystickButtonB</b></tt>
+</p>
+<blockquote>
+Second joystick button. Corresponds to <tt>GLUT_JOYSTICK_BUTTON_B</tt>.
+</blockquote>
+<p>
+<tt>enum Glow::JoystickButtonMask <b>joystickButtonC</b></tt>
+</p>
+<blockquote>
+Third joystick button. Corresponds to <tt>GLUT_JOYSTICK_BUTTON_C</tt>.
+</blockquote>
+<p>
+<tt>enum Glow::JoystickButtonMask <b>joystickButtonD</b></tt>
+</p>
+<blockquote>
+Fourth joystick button. Corresponds to <tt>GLUT_JOYSTICK_BUTTON_D</tt>.
+</blockquote>
+
+</blockquote>
+
 
 <p>
 <b>Buffer type</b>
@@ -333,6 +382,65 @@ Specifies the key pressed in a keyboard event. Keys with associated ASCII codes 
 <tt>enum Glow::KeyCode <b>endKey</b></tt>
 <br>
 <tt>enum Glow::KeyCode <b>insertKey</b></tt>
+</p>
+
+</blockquote>
+
+
+<p>
+<b>Cursors</b>
+<br>
+Specifies a cursor. Each of these is equivalent to a corresponding GLUT cursor type.
+</p>
+
+<blockquote>
+
+<p>
+<tt>enum Glow::Cursor <b>noCursor</b></tt>
+<br>
+<tt>enum Glow::Cursor <b>inheritCursor</b></tt>
+<br>
+<tt>enum Glow::Cursor <b>rightArrowCursor</b></tt>
+<br>
+<tt>enum Glow::Cursor <b>leftArrowCursor</b></tt>
+<br>
+<tt>enum Glow::Cursor <b>infoCursor</b></tt>
+<br>
+<tt>enum Glow::Cursor <b>destroyCursor</b></tt>
+<br>
+<tt>enum Glow::Cursor <b>helpCursor</b></tt>
+<br>
+<tt>enum Glow::Cursor <b>cycleCursor</b></tt>
+<br>
+<tt>enum Glow::Cursor <b>sprayCursor</b></tt>
+<br>
+<tt>enum Glow::Cursor <b>waitCursor</b></tt>
+<br>
+<tt>enum Glow::Cursor <b>textCursor</b></tt>
+<br>
+<tt>enum Glow::Cursor <b>crosshairCursor</b></tt>
+<br>
+<tt>enum Glow::Cursor <b>upDownCursor</b></tt>
+<br>
+<tt>enum Glow::Cursor <b>leftRightCursor</b></tt>
+<br>
+<tt>enum Glow::Cursor <b>topSideCursor</b></tt>
+<br>
+<tt>enum Glow::Cursor <b>bottomSideCursor</b></tt>
+<br>
+<tt>enum Glow::Cursor <b>leftSideCursor</b></tt>
+<br>
+<tt>enum Glow::Cursor <b>rightSideCursor</b></tt>
+<br>
+<tt>enum Glow::Cursor <b>topLeftCornerCursor</b></tt>
+<br>
+<tt>enum Glow::Cursor <b>topRightCornerCursor</b></tt>
+<br>
+<tt>enum Glow::Cursor <b>bottomLeftCornerCursor</b></tt>
+<br>
+<tt>enum Glow::Cursor <b>bottomRightCornerCursor</b></tt>
+<br>
+<tt>enum Glow::Cursor <b>fullCrosshairCursor</b></tt>
 </p>
 
 </blockquote>
@@ -636,6 +744,15 @@ Returns true if and only if a menu is currently down. It is not safe to manipula
 Returns the number of milliseconds since GLOW was initialized.
 </blockquote>
 
+</blockquote>
+
+
+<p>
+<b>Implementation capabilities</b>
+</p>
+
+<blockquote>
+
 <p>
 <tt>static bool <b>IsExtensionSupported</b>(const char* extensionName)</tt>
 </p>
@@ -654,7 +771,28 @@ Determines whether the given frame buffer type is supported. If it isn't, you sh
 <tt>static int <b>NumMouseButtons</b>(void)</tt>
 </p>
 <blockquote>
-Returns the number of mouse buttons supported by the implementation. If two buttons are supported, they will be Glow::leftButton and Glow::rightButton. If only one button is supported, it will ge Glow::leftButton.
+Returns the number of mouse buttons supported by the implementation. If two buttons are supported, they will be Glow::leftButton and Glow::rightButton. If only one button is supported, it will be Glow::leftButton.
+</blockquote>
+
+<p>
+<tt>static bool <b>HasJoystick</b>(void)</tt>
+</p>
+<blockquote>
+Returns true if the hardware has a joystick connected. Not available if <tt>GLUT_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
+
+<p>
+<tt>static int <b>NumJoystickButtons</b>(void)</tt>
+</p>
+<blockquote>
+Returns the number of buttons on the joystick, up to 32. Not available if <tt>GLUT_OPTION_STRICTGLUT3</tt> is specified.
+</blockquote>
+
+<p>
+<tt>static int <b>NumJoystickAxes</b>(void)</tt>
+</p>
+<blockquote>
+Returns the number of axes of motion of the joystick, typically 2 or 3. Not available if <tt>GLUT_OPTION_STRICTGLUT3</tt> is specified.
 </blockquote>
 
 </blockquote>
