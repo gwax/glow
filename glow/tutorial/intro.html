@@ -54,7 +54,7 @@ Nothing, if you're writing very simple programs that require only a minimal amou
 </p>
 <ul>
 <li>
-Its API is callback based and non-object-oriented. Therefore, writing a large program can involve a lot of unnecessary complexity.
+Its API is callback based and non-object-oriented. Writing a large program involves keeping track of many IDs and callbacks, which can be complex and error prone.
 </li>
 <li>
 Its facilities for user interaction are very primitive. In particular, GLUT does not provide access to widgets such as pushbuttons, pulldown menus and scroll bars.
@@ -67,7 +67,7 @@ Its facilities for user interaction are very primitive. In particular, GLUT does
 GLOW is designed to address those issues. It first provides a C++ wrapper API around GLUT, eliminating the callback and ID system and replacing it with an object-oriented API in which events are delivered directly to each C++ object. The new API is similar in spirit to existing object-oriented user interface frameworks, so if you understand how to use any GUI framework, you should be able to come up to speed on GLOW fairly quickly.
 </p>
 <p>
-Second, it provides an extensive widget library, including push buttons, check boxes, radio buttons, scroll bars, sliders, text fields, menus, and more. GLOW actually does not use the native widgets provided by the underlying operating system, but instead implements its own cross-platform widgets using OpenGL for rendering and the GLOW API for event handling. Because of this, GLOW widgets look and behave the same, regardless of which platform you are running. GLOW widgets are also heavily customizable and extensible, even allowing you to write your own widgets.
+Second, it provides an extensive widget library, including push buttons, check boxes, radio buttons, scroll bars, sliders, text fields, menus, and more. GLOW actually does not use the native widgets provided by the underlying operating system, but instead implements its own cross-platform widgets using OpenGL for rendering and the GLOW API for event handling. Because of this, GLOW widgets look and behave the same, regardless of which platform you are running. GLOW widgets are also heavily customizable and extensible, even allowing you to write your own widgets and integrate them seamlessly into the system.
 </p>
 <p>
 Finally, GLOW extends GLUT by providing a set of additional features that are often useful in interactive applications. One such feature is a component hierarchy, similar to a scene graph API. This simplifies rendering and user interaction by allowing you to create and reuse rendering modules, called "components." For example, the GLOW distribution includes a component that allows the user to manipulate a 3D scene using the arcball algorithm developed by Ken Shoemake. You can allow the user to manipulate any scene just by inserting a manipulator component. GLOW also simplifies handling of common data types such as colors and fonts.
@@ -156,7 +156,7 @@ Hi! My name is Daniel Azuma; I'm currently a graduate student at the <a href="ht
 I began working on GLOW in my spare time in early 1997. At that time, I was an undergraduate student at the <a href="http://www.caltech.edu">California Institute of Technology</a> (or Caltech<sup>2</sup>). Along with another student, Bradley Nelson, I worked on a small research project involving writing an interactive tool using OpenGL. Some of the original conceptual work was actually done by Bradley. He wrote a very basic object-oriented wrapper around GLUT, which he called "gloo," on which the early versions of our tools were based. Later, when I took over the entire project, I proceeded to rewrite gloo the way it "should have been done in the first place." The result was the first workable version of GLOW. Since then, I've written a large number of OpenGL-based programs both for my research and for personal edification, and during that time, I polished the API and the widget library. The current version of GLOW is the result of two and a half years of continual revision and improvement, driven by my needs as a developer. I'm releasing it now in the hopes that it might be useful to the OpenGL developer community in general.
 </p>
 <p>
-When I'm not in front of the computer (which is quite often nowdays), you may find me hanging out and helping lead a Bible study in the nearby dorms, at a piano improvising on a Debussy prelude, or romping around Seattle looking for good Asian food. And while OpenGL programs look great with GLOW, I believe our lives look even better if we're GLOWing with the love of Jesus Christ. He's always the most important guy.
+When I'm not in front of the computer (and nowdays I try to stay away from the horrid things as much as I can), you may find me hanging out and helping lead a Bible study in the nearby dorms, at a piano improvising on a Debussy prelude, or romping around Seattle looking for good Asian food. And while OpenGL programs look great with GLOW, I believe our lives look even better if we're GLOWing with the love of Jesus Christ. He's always the most important guy.
 </p>
 
 </blockquote>
@@ -195,7 +195,7 @@ When I'm not in front of the computer (which is quite often nowdays), you may fi
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 27 April 2000
 </address>
 
 

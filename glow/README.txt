@@ -1,6 +1,6 @@
 
 The GLOW Toolkit
-version 0.9.6 (10 April 2000)
+version 0.9.7 (27 April 2000)
 Copyright (C) 1997-2000  Daniel Azuma
 All rights reserved worldwide
 
@@ -14,7 +14,7 @@ CONTENTS
 
    (2) Terms and conditions
 
-   (3) Release notes 0.9.6
+   (3) Release notes 0.9.7
 
    (4) Installing GLOW
 
@@ -77,166 +77,41 @@ RELEASE NOTES
 
 
     The GLOW Toolkit
-    Version 0.9.6 (10 April 2000)
+    Version 0.9.7 (27 April 2000)
 
-    These notes detail the differences between versions 0.9.5 and 0.9.6.
+    These notes detail the differences between versions 0.9.6 and 0.9.7.
     A complete history of publicly released versions can be found on the
     GLOW web site.
 
-    This release of GLOW focused on getting Microsoft Visual Dev Studio
-    (Visual C++ 6.0) to work with GLOW, finishing up a few lingering
-    unfinished features, and writing lesson 5.
-
-    In this release, most of the integer constants have been changed to
-    enumerations. This was done so that more typechecking (correctness
-    checking of parameters) can be done at compile time, and also
-	because MSVC 6.0 didn't seem to like static const ints. For the most
-    part, this shouldn't affect your usage, unless you used ints to
-    store some of these values. However, there are two places where this
-    will be visible to you and require code changes:
-
-    The OnMouseDown(), OnMouseUp() and OnKeyboard() methods, plus the
-    corresponding widget methods, will need their parameter lists
-    updated. For example, if you declared:
-
-       MyWindow::OnMouseDown(int button, int x, int y, int modifiers)
-
-    That needs to be changed to:
-
-       MyWindow::OnMouseDown(Glow::MouseButton button, int x, int y,
-          Glow::Modifiers modifiers);
-
-    Note that, in addition to types, the order of the parameters for
-    OnKeyboard() has been modified. So if you declared:
-
-       MyWindow::OnKeyboard(int key, int modifiers, int x, int y)
-
-    That needs to be changed to:
-
-       MyWindow::OnKeyboard(Glow::KeyCode key, int x, int y,
-          Glow::Modifiers modifiers);
-
-    Second, the constant "parentSetting", used in the QuickPalette
-    API, needs to be changed for arrangements and alignments. If you
-    were using it for an arrangement setting, you need to change it to
-    "parentArrangement". If you were using it for an alignment setting,
-    it needs to be changed to "parentAlignment".
+    This release of GLOW focused on final locking down of the API and
+    writing lessons 6 and 7 in the tutorial.
 
 
     Features added
     --------------
 
-      Added Glow::IsExtensionSupported(), Glow::IsBufferTypeSupported()
-	  and Glow::NumMouseButtons().
-
-      Added GlowSubwindow::BufferType().
-
-      Added GlowQuickPalette::AddDismissPushButton().
-
-      Added mouse and keyboard event filtering to Glow, and keyboard
-	  filtering to GlowWidgetRoot.
-
-      Added two widget filters: GlowWidgetTabFilter for tabbing between
-	  keyboard-handling widgets, and GlowWidgetMapToPushButtonFilter for
-	  mapping keypresses to buttons.
-
-      GlowMessageWindow and GlowTextFieldWindow can now automatically
-	  map return and escape keypresses to buttons.
-
-      Added GlowWidgetRoot::FindWidget().
-
-      Added GlowPushButtonWidget::Hit(), GlowStickyButtonWidget::Hit(),
-	  GlowCheckBoxWidget::ToggleState() and GlowCheckBoxWidget::Hit()
-	  and GlowStickyButtonWidget::ToggleState().
-
-      Added GlowDismissPushButtonWidget::SetToDismiss() and
-	  GlowDismissPushButtonWidget::GetToDismiss().
-
-      Added SetIdentity() method to GlowTransformData, GlowViewTransform
-      and GlowViewManipulator.
-
-      Added ReceiverTracker class for tracking and automatic deletion
-	  of receivers. Added GlowReceiverTrackerComponent.
-
-      Added GlowComponent::ReorderChild().
-
-      Implemented a few additional hacks to get MSVC compatibility.
+      (none)
 
 
     Features changed
     ----------------
 
-      Changed the order of parameters in GlowSubwindow::OnKeyboard() and
-      GlowWidget::OnWidgetKeyboard() to (key, x, y, modifiers) for
-      consistency with the mouse methods.
-
-      Renamed GlowPushButtonWidget::OnPressed() to OnHit(),
-	  GlowCheckBoxWidget::OnToggled() to OnHit() and
-	  GlowStickyButtonWidget::OnPressed() to OnHit().
-
-      Renamed ApplyGLMatrix() to ApplyToGLMatrix(), and
-      ApplyGLMatrixInverse() to ApplyInverseToGLMatrix() in
-      GlowTransformData, GlowViewTransform and GlowViewManipulator.
-
-      Renamed GlowViewManipulator::State() to GetState().
-
-      Implemented a different API for iterating over child components.
-      Components are now directly members of a linked list and have
-      next and prev pointers that can be accessed.
-
-      Implemented a better system for handling compilers that put the
-      C++ standard library in namespace std but the C library in the
-      global namespace (e.g. MIPSPro, MSVC). Now, #defining
-      GLOW_COMPAT_CLIBNOSTDNAMESPACE causes glow to assume that only
-      the C standard library functions are in the global namespace.
-      The old method of using GLOW_COMPAT_INTERNALUSINGSTD is now
-      deprecated and will probably go away soon.
+      (none)
 
 
     Bugs fixed
     ----------
 
-      GlowPopupMenuWidget constructor hung if the items field of the
-      params was nonzero (nonempty). Introduced in 0.9.5 (oops!) Fixed.
+      Vector algebra class operators now tend to return const objects
+      for better optimization and error checking.
 
-      Packing a QuickPanel arranged horizontally with alignExpand,
-      containing labeled QuickPanels, caused the enclosed panels to end
-      up too tall. Fixed.
-
-      Determining spin rate in GlowViewManipulator didn't work too
-      well for very fast frame rates. Fixed.
-
-      GlowViewManipulator's constructor and initialization ignored the
-      spinnable field in its params. Fixed.
-
-      Glow::Version() didn't return the correct value in 0.9.5. Fixed.
-
-      A call to std::find() in glowSenderReceiver.inl.h wasn't put into
-      namespace std. Fixed.
-
-      Several references to std::vector in glowTextFieldWindow.cpp and
-      glowMessageWindow.cpp weren't put into namespace std. Fixed.
-
-      Quaternion i/o operators were incorrectly defined inline in
-      glowVectorAlgebra.cpp. Fixed.
-
-      A whole bunch of errors and broken links in the reference pages
-      were fixed. (However, a bunch of changes were made as a result
-      of the API adjustments for this version, and so new errors may
-      have been introduced.)
+      A bunch of reference fixes.
 
 
     Internal changes
     ----------------
 
-      Changed all the static constants from static const int to enum,
-      for MSVC compatibility. Shouldn't really affect the interface.
-
-      GlowWidget no longer keeps an extra children list. (dynamic_cast
-      is now used to iterate over child widgets.)
-
-      Switched around some of the internal classes in QuickPalette.
-      Shouldn't really affect the user-level API.
+      (none)
 
 
     Known issues

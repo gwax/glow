@@ -95,7 +95,7 @@
 #endif
 
 // Compatibility for missing min and max templates (msvc)
-#ifdef GLOW_COMPAT_NOSTDMINMAX
+#if defined(GLOW_COMPAT_NOSTDMINMAX) && !defined(VIRTUOSO_INTERNAL_MINMAXDEFINED)
 	#ifndef GLOW_COMPAT_NOSTDNAMESPACE
 		namespace std {
 	#endif
@@ -108,6 +108,7 @@
 	#ifndef GLOW_COMPAT_NOSTDNAMESPACE
 		}
 	#endif
+	#define VIRTUOSO_INTERNAL_MINMAXDEFINED
 #endif
 
 // Integral release number (0.9.5 == 3)
