@@ -1,6 +1,6 @@
 
 The GLOW Toolkit
-version 1.1.2dev (7 August 2000)
+version 1.1.3dev (?? September 2000)
 Copyright (C) 1997-2000  Daniel Azuma
 
 
@@ -76,9 +76,9 @@ RELEASE NOTES
 
 
     The GLOW Toolkit
-    Version 1.1.2dev (7 August 2000)
+    Version 1.1.3dev (?? September 2000)
 
-    These are the differences between versions 1.1.1dev and 1.1.2dev.
+    These are the differences between versions 1.1.2dev and 1.1.3dev.
     A complete history of publicly released versions can be found on the
     GLOW web site.
 
@@ -86,72 +86,25 @@ RELEASE NOTES
     Features added
     --------------
 
-      Added GlowComponent::IsInitialized() and GlowComponent::IsClosed()
-
-      GlowLabelWidget can now align text center and right.
-
-      Added TGlowImage::GrabArray() and TGlowImage::ReleaseArray().
-
-      Added GlowColorImage::Scale().
-
-      Added GlowButtonWidget class. GlowPushButtonWidget now inherits
-      from GlowButtonWidget.
-
-      Added GlowTextAreaWidget class.
+      (none)
 
 
     Features changed
     ----------------
 
-      Widget windows and subwindows now default to requesting a mode of
-      Glow::rgbBuffer | Glow::doubleBuffer. (also in 1.0.2)
-
-      Debug mode is now the default. To disable debug code, you now
-      define GLOW_OPTION_NODEBUG. The older symbol GLOW_OPTION_DEBUG is
-      no longer used.
-
-      Removed conversion from Vec3f and Quatf to const GLfloat* and 
-      replaced with method Array().
-
-      Renamed GlowImage, GlowPNMReader and GlowPNMWriter to
-      TGlowImage, TGlowPNMReader and TGlowPNMWriter, respectively.
+      (none)
 
 
     Bugs fixed
     ----------
 
-      QuickPalette included widgets that were deferred-deleted using
-      Close(), resulting in blank areas when repacking a palette with
-      closed widgets. Fixed. (also in 1.0.2)
-
-      GlowLabelWidget didn't draw strings with Mac-style newlines
-      correctly. Fixed. (also in 1.0.2)
-
-      Several classes in the tutorial weren't cleaning up all their
-      resources if they were deleted. Fixed. (also in 1.0.2)
-
-      GlowScrollBarWidget incorrectly raised an assertion if min or
-      max was set such that min + span == max. Fixed. (also in 1.0.2)
-
-      GlowTextFieldWidget's OnAutoPack wasn't reporting an error if the
-      width was too small. Fixed. (also in 1.0.3)
-
-      GlowSubwindow::OnJoystick() was missing. Fixed.
-
-      Several more reference fixes.
+      (none)
 
 
     Internal changes
     ----------------
 
-      When compiling under MSVC, now disables warning 4786 (long debug
-      symbols) and locally disables warning 4355 (passing "this" to a
-      member constructor). (also in 1.0.2)
-
-      GlowTextData contains rather than inherits from std::string.
-
-      Fixed underscores (changed from leading to trailing) for private
-      class members in the tutorial.
+      (none)
 
 
     To-do list
