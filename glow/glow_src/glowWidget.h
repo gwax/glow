@@ -181,12 +181,14 @@ class Glow_OldWidgetState
 	
 		inline Glow_OldWidgetState(
 			bool vis,
+			bool keyfoc,
 			int wid,
 			int hei,
 			int xp,
 			int yp);
 		
 		bool visible;
+		bool keyboardFocus;
 		int width;
 		int height;
 		int x;

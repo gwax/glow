@@ -218,6 +218,7 @@ TSender<GlowMouseData&> Glow::_mouseFilters;
 TSender<GlowKeyboardData&> Glow::_keyboardFilters;
 
 int Glow::_numToplevelWindows = 0;
+void (*Glow::_userMenuStatusFunc)(int status, int x, int y) = 0;
 
 
 /*
@@ -679,6 +680,10 @@ void Glow::_MenuStatusFunc(
 	GLOW_DEBUGSCOPE("Glow::_MenuStatusFunc");
 	
 	++_clock;
+	if (_userMenuStatusFunc != 0)
+	{
+		_userMenuStatusFunc(status, x, y);
+	}
 	if (status == GLUT_MENU_IN_USE)
 	{
 		_menuWindow = ResolveWindow(::glutGetWindow());

@@ -122,6 +122,13 @@ inline int Glow::NumMouseButtons()
 }
 
 
+inline void Glow::SetMenuStatusFunc(
+	void (*func)(int status, int x, int y))
+{
+	_userMenuStatusFunc = func;
+}
+
+
 /*
 -------------------------------------------------------------------------------
 	Modal window methods

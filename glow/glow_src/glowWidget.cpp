@@ -457,6 +457,8 @@ void GlowWidget::OnEndPaint()
 
 void GlowWidget::_ExecuteNotify()
 {
+	GLOW_DEBUGSCOPE("GlowWidget::_ExecuteNotify");
+	
 	for (GLOW_STD::map<GlowWidget*, Glow_OldWidgetState>::iterator iter =
 		_notifyList.begin(); iter != _notifyList.end(); ++iter)
 	{
@@ -468,6 +470,8 @@ void GlowWidget::_ExecuteNotify()
 
 void GlowWidget::_BroadcastNotifyList()
 {
+	GLOW_DEBUGSCOPE("GlowWidget::_BroadcastNotifyList");
+	
 	_AddToNotifyList();
 	for (GlowComponent* child = FirstChild(); child != 0; child = child->Next())
 	{
@@ -482,30 +486,28 @@ void GlowWidget::_BroadcastNotifyList()
 
 void GlowWidget::_AddToNotifyList()
 {
-	_notifyList.insert(
-		GLOW_STD::pair<GlowWidget* const, Glow_OldWidgetState>(this,
-			Glow_OldWidgetState(_visibility==1, _width, _height,
-				RootPositionX(), RootPositionY())));
+	GLOW_DEBUGSCOPE("GlowWidget::_AddToNotifyList");
+	
+	GLOW_STD::map<GlowWidget*, Glow_OldWidgetState>::iterator iter =
+		_notifyList.find(this);
+	if (iter == _notifyList.end())
+	{
+		_notifyList.insert(
+			GLOW_STD::pair<GlowWidget* const, Glow_OldWidgetState>(this,
+				Glow_OldWidgetState(_visibility==1, _hasFocus, _width, _height,
+					RootPositionX(), RootPositionY())));
+	}
 }
 
 
 void GlowWidget::_NotifyOne(
 	const Glow_OldWidgetState& oldState)
 {
+	GLOW_DEBUGSCOPE("GlowWidget::_NotifyOne");
+	
 	if (!oldState.visible && IsVisible())
 	{
 		OnWidgetVisible();
-		if (IsActive())
-		{
-			if (_receivingMouse)
-			{
-				_root->_RegisterMouseWidget(this);
-			}
-			if (_receivingKeyboard)
-			{
-				_root->_RegisterKeyboardWidget(this);
-			}
-		}
 	}
 	if (oldState.width != _width ||
 		oldState.height != _height)
@@ -517,20 +519,17 @@ void GlowWidget::_NotifyOne(
 	{
 		OnWidgetMove();
 	}
+	if (oldState.keyboardFocus && !HasKeyboardFocus())
+	{
+		OnLostKeyboardFocus();
+	}
+	else if (!oldState.keyboardFocus && HasKeyboardFocus())
+	{
+		OnGotKeyboardFocus();
+	}
 	if (oldState.visible && !IsVisible())
 	{
 		OnWidgetInvisible();
-		if (IsActive())
-		{
-			if (_receivingMouse)
-			{
-				_root->_UnregisterMouseWidget(this);
-			}
-			if (_receivingKeyboard)
-			{
-				_root->_UnregisterKeyboardWidget(this);
-			}
-		}
 	}
 }
 
@@ -577,6 +576,17 @@ void GlowWidget::Show()
 		{
 			_AddToNotifyList();
 			_visibility = 1;
+			if (IsActive())
+			{
+				if (_receivingMouse)
+				{
+					_root->_RegisterMouseWidget(this);
+				}
+				if (_receivingKeyboard)
+				{
+					_root->_RegisterKeyboardWidget(this);
+				}
+			}
 			for (GlowComponent* child = FirstChild(); child != 0; child = child->Next())
 			{
 				GlowWidget* childWidget = dynamic_cast<GlowWidget*>(child);
@@ -603,6 +613,17 @@ void GlowWidget::Hide()
 	{
 		_AddToNotifyList();
 		_visibility = 0;
+		if (IsActive())
+		{
+			if (_receivingMouse)
+			{
+				_root->_UnregisterMouseWidget(this);
+			}
+			if (_receivingKeyboard)
+			{
+				_root->_UnregisterKeyboardWidget(this);
+			}
+		}
 		for (GlowComponent* child = FirstChild(); child != 0; child = child->Next())
 		{
 			GlowWidget* childWidget = dynamic_cast<GlowWidget*>(child);

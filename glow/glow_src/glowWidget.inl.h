@@ -76,12 +76,14 @@ inline GlowWidgetParams::GlowWidgetParams()
 
 inline Glow_OldWidgetState::Glow_OldWidgetState(
 	bool vis,
+	bool keyfoc,
 	int wid,
 	int hei,
 	int xp,
 	int yp)
 {
 	visible = vis;
+	keyboardFocus = keyfoc;
 	width = wid;
 	height = hei;
 	x = xp;
@@ -401,14 +403,7 @@ inline void GlowWidget::_SetHasKeyboardFocus(
 	GLOW_DEBUGSCOPE("GlowWidget::_SetHasKeyboardFocus");
 	if (_hasFocus != val)
 	{
-		if (val)
-		{
-			OnGotKeyboardFocus();
-		}
-		else
-		{
-			OnLostKeyboardFocus();
-		}
+		_AddToNotifyList();
 		Refresh();
 		_hasFocus = val;
 	}

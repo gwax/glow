@@ -100,7 +100,7 @@ RELEASE NOTES
       Added IsSpinning(), StartSpinning(), StopSpinning and StepSpin()
       to GlowViewTransform and GlowViewManipulator.
 
-      Added Glow::SetMenuStatusFunc();
+      Added Glow::SetMenuStatusFunc(); updated lesson 6 to match.
 
 
     Features changed
@@ -118,6 +118,13 @@ RELEASE NOTES
 
       GlowWidget's destructor wasn't removing the widget from the widget
       notification list, which sometimes led to a crash. Fixed.
+
+      Hiding or deactivating a widget caused a temporary inconsistency
+      in the widget's state that could cause crashes if the widget was
+      deleted before the deferred event was raised. Fixed.
+
+      GlowWidget::OnGotKeyboardFocus() and OnLostKeyboardFocus() weren't
+      being deferred. Fixed.
 
       GlowQuickPalette wasn't honoring widget visibility, resulting in
       holes in palettes with invisible widgets. Fixed.

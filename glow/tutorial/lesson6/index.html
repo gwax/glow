@@ -174,6 +174,9 @@ The next event handler handles checkbox toggle events. The wireframe checkbox is
 The original <tt>glutmech</tt> code responds to the toggling of animation by calling <tt>::glutIdleFunc()</tt> to enable or disable the reporting of idle events to its animation function. GLOW, however, requires control over the idle event callback in order to implement its idle event reporting system based on receivers. If you call <tt>::glutIdleFunc()</tt> directly when GLOW is active, you risk confusing GLOW, or having GLOW undo your idle event callback. Therefore, GLOW provides the static method <tt>Glow::SetIdleFunc()</tt> as a workaround. It behaves exactly the same as <tt>::glutIdleFunc()</tt>, but is implemented in a way that does not interfere with GLOW.
 </p>
 <p>
+A similar issue concerns the <tt>::glutMenuStatusFunc()</tt> callback. GLOW needs control of that callback in order to properly detect certain menu events. Therefore, GLOW provides the static method <tt>Glow::SetMenuStatusFunc()</tt>. It has the same signature and behaves exactly the same as <tt>::glutMenuStatusFunc</tt>, but is implemented in a way that does not interfere with GLOW.
+</p>
+<p>
 The last event handler listens for slider widget events. For each event it receives, it updates the appropriate state variable in <tt>glutmech</tt>, and then calls <tt>Glow::RefreshGlutWindow()</tt> to refresh the main drawing window.
 </p>
 <p>
@@ -243,7 +246,7 @@ That's it! For the most part, the rest of the code has been left alone.
 <b>Could you summarize what needs to be done to add GLOW code to a GLUT program?</b>
 </p>
 <p>
-Sure. First, you need to replace a few calls. The call to <tt>::glutInit()</tt> needs to be replaced with <tt>Glow::Init()</tt>. The call to <tt>::glutMainLoop()</tt> needs to be replaced with <tt>Glow::MainLoop()</tt>. And all calls to <tt>::glutIdleFunc()</tt> need to be replaced with <tt>Glow::SetIdleFunc()</tt>.
+Sure. First, you need to replace a few calls. The call to <tt>::glutInit()</tt> needs to be replaced with <tt>Glow::Init()</tt>. The call to <tt>::glutMainLoop()</tt> needs to be replaced with <tt>Glow::MainLoop()</tt>. Finally, all calls to <tt>::glutIdleFunc()</tt> need to be replaced with <tt>Glow::SetIdleFunc()</tt>, and all calls to <tt>::glutMenuStatusFunc()</tt> need to be replaced with <tt>Glow::SetMenuStatusFunc()</tt>.
 </p>
 <p>
 Next, you need to write the GLOW code to set up GLOW-based windows and user interface elements and to connect together the event handlers. This setup should be done at the same time as the GLUT setup. Note that the constructors for GLOW windows, subwindows and menus can change GLUT state such as display mode and initial window size, so make sure those get set again if you create GLUT windows after having constructed GLOW objects.

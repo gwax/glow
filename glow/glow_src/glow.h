@@ -335,6 +335,8 @@ class Glow
 		
 		// Miscellaneous
 		inline static bool IsMenuInUse();
+		inline static void SetMenuStatusFunc(
+			void (*func)(int status, int x, int y));
 		inline static int GetMilliseconds();
 		static bool IsExtensionSupported(
 			const char* extensionName);
@@ -400,6 +402,7 @@ class Glow
 		
 		// Misc state
 		static int _numToplevelWindows;
+		static void (*_userMenuStatusFunc)(int status, int x, int y);
 	
 	private:
 	
