@@ -188,16 +188,16 @@ Now, let's take a look at the implementation in a little more detail. First, <tt
 if (button == Glow::leftButton) {
     if (modifiers & Glow::shiftModifier) {
         // Zoom out
-        _xdown = Width()/2;   // Center of the window
-        _ydown = Height()/2;
-        _dragType = ZOOM_OUT_DRAG;
+        xdown_ = Width()/2;   // Center of the window
+        ydown_ = Height()/2;
+        dragType_ = ZOOM_OUT_DRAG;
     } else {
         // Zoom in
-        _xdown = x;
-        _ydown = y;
-        _dragType = ZOOM_IN_DRAG;
+        xdown_ = x;
+        ydown_ = y;
+        dragType_ = ZOOM_IN_DRAG;
     }
-    _ComputeZoomFactor(x, y);
+    ComputeZoomFactor_(x, y);
     Refresh();  // Explicitly refresh
 }
 ...</pre>
@@ -230,7 +230,7 @@ GlowWindow("Mandelglow", GlowWindow::autoPosition, GlowWindow::autoPosition,
 <b>Why in the world did we have to set an event mask?</b>
 </p>
 <p>
-All GLOW events are reported via virtual methods, and each method does have a default implementation that simply ignores the event. From a functional point of view, we don't need the event mask. GLOW can call the virtual methods for every event that gets reported, and those that we're not interested in will fall through to the default, do-nothing event handler. However, there is some performance overhead involved with detecting and dispatching an event. The event mask, then, is a hint to GLOW to tell it which events a window is interested in receiving. GLOW uses this information internally to decide which events to listen for and dispatch to the virtual methods of the window object. More technically, the event mask describes which GLUT callbacks should be registered for a particular window.
+All GLOW events are reported via virtual methods, and each method does have a default implementation that simply ignores the event. From a functional point of view, we don't need the event mask. GLOW can call the virtual methods for every event that gets reported, and those that we're not interested in will fall through to the default, do-nothing event handler. However, there is some performance overhead involved with detecting and dispatching an event. The event mask, then, is a hint to GLOW to tell it which events a window is interested in receiving. GLOW uses this information internally to decide which events to listen for and dispatch to the virtual methods of the window object. More technically, the event mask describes which GLUT callbacks should be registered for a particular window. You can also use the event mask to temporarily disable reporting of certain events, for example if you wanted to "disable" a window.
 </p>
 <p>
 When you're writing a window class for a GLOW program, be sure to pay attention to which events you want to receive. You need to implement the corresponding virtual method, AND set the appropriate bit in the event mask. If you are debugging a window class and discover that you don't seem to be receiving certain events, the first thing you should check is that your event mask is correct. (Another important thing to check is that you've spelled the names of the virtual methods correctly; that bug gets me quite often.) The constants corresponding to bits in the event mask can be found in class <tt>Glow</tt>.

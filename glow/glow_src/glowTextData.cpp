@@ -77,7 +77,7 @@ int GlowTextData::LineNumOf(
 	int pos) const
 {
 	GLOW_ASSERT(pos >= 0);
-	GLOW_ASSERT(pos < int(str_.size()));
+	GLOW_ASSERT(pos <= int(str_.size()));
 	
 	int b = 0;
 	int e = lineBreaks_.size();
@@ -146,6 +146,13 @@ void GlowTextData::RecalcLineBreaks(
 			continue;
 		}
 		
+		// If linebreaking only on newlines
+		if (pixelWidth <= 0)
+		{
+			++pos;
+			continue;
+		}
+		
 		// Check for whitespace
 		if (ch == ' ' || ch == '\t')
 		{
@@ -153,15 +160,15 @@ void GlowTextData::RecalcLineBreaks(
 		}
 		
 		// Check width
-		curWidth += ::glutBitmapWidth(font, ch);
-		if (curWidth <= pixelWidth || pixelWidth < 0)
+		curWidth += CharWidth_(font, ch);
+		if (curWidth <= pixelWidth)
 		{
-			pos += 1;
+			++pos;
 			continue;
 		}
 		
 		// Break line due to width
-		if (lastBreakable == -1 || lastBreakable == pos)
+		if (lastBreakable == -1)
 		{
 			lineBreaks_.push_back(pos);
 			lastBreakable = -1;
@@ -191,7 +198,7 @@ int GlowTextData::LinePixelWidth(
 	const char* dat = str_.data();
 	for (int pos=lineBreaks_[line]; pos<e; pos++)
 	{
-		curWidth += ::glutBitmapWidth(font, dat[pos]);
+		curWidth += CharWidth_(font, dat[pos]);
 	}
 	return curWidth;
 }
@@ -230,7 +237,7 @@ int GlowTextData::AtPixelPos(
 	int curWidth = 0;
 	for (int pos=lineBreaks_[line]; pos<e; pos++)
 	{
-		int nWidth = curWidth+::glutBitmapWidth(font, dat[pos]);
+		int nWidth = curWidth+CharWidth_(font, dat[pos]);
 		if (pixpos <= nWidth)
 		{
 			if (nWidth-pixpos > pixpos-curWidth)
@@ -275,7 +282,7 @@ void GlowTextData::CalcLineDrawInfo(
 	int curWidth = 0;
 	for (start=lineBreaks_[line]; start<e; start++)
 	{
-		int nWidth = curWidth+::glutBitmapWidth(font, dat[start]);
+		int nWidth = curWidth+CharWidth_(font, dat[start]);
 		if (pixoffset < nWidth)
 		{
 			break;
@@ -289,7 +296,7 @@ void GlowTextData::CalcLineDrawInfo(
 		{
 			break;
 		}
-		curWidth += ::glutBitmapWidth(font, dat[end]);
+		curWidth += CharWidth_(font, dat[end]);
 	}
 }
 
@@ -313,7 +320,7 @@ int GlowTextData::PixelPosOf(
 	int curWidth = 0;
 	for (int i=lineBreaks_[line]; i<pos; ++i)
 	{
-		curWidth += ::glutBitmapWidth(font, dat[i]);
+		curWidth += CharWidth_(font, dat[i]);
 	}
 	return curWidth;
 }

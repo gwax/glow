@@ -164,8 +164,8 @@ Our destructor simply deletes the <tt>MandelData</tt> object used by the window,
 <blockquote>
 <pre>MandelWind::~MandelWind()
 {
-    delete _data;
-    delete _image;
+    delete data_;
+    delete image_;
 }</pre>
 </blockquote>
 <p>

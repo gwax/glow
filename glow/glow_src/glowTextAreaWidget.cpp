@@ -58,6 +58,9 @@
 #ifndef GLOW_TEXTAREAWIDGET__H
 	#include "glowTextAreaWidget.h"
 #endif
+#ifndef GLOW_SCROLLBARWIDGET__H
+	#include "glowScrollBarWidget.h"
+#endif
 
 
 GLOW_INTERNAL_USINGSTD
@@ -106,22 +109,67 @@ darkBevelColor(0.3f, 0.3f, 0.3f)
 	autoScrollInterval = 50;
 	inset = 5;
 	caretInset = 2;
+	tabLength = 0;
 	wrapping = true;
-	hasScrollBars = false;
+	scrollBarWidth = 0;
+	interaction = GlowTextAreaWidget::editableInteraction;
 }
 
 
 /*
 ===============================================================================
-	Timer function
+	CLASS Glow_TextArea_MiscReceiver
 ===============================================================================
 */
 
-void Glow_TextArea_BlinkTask::Task()
+class Glow_TextArea_MiscReceiver :
+	public GlowDeferredTask,
+	public GlowScrollBarReceiver
+{
+	public:
+	
+		inline Glow_TextArea_MiscReceiver(
+			GlowTextAreaWidget* widget);
+	
+	protected:
+	
+		virtual void Task();
+		virtual void OnMessage(
+			const GlowScrollBarMessage& message);
+	
+	private:
+	
+		GlowTextAreaWidget* widget_;
+};
+
+
+inline Glow_TextArea_MiscReceiver::Glow_TextArea_MiscReceiver(
+	GlowTextAreaWidget* widget)
+{
+	widget_ = widget;
+}
+
+
+void Glow_TextArea_MiscReceiver::Task()
 {
 	widget_->blink_ = !widget_->blink_;
 	widget_->Refresh();
 	Schedule(widget_->blinkInterval_);
+}
+
+
+void Glow_TextArea_MiscReceiver::OnMessage(
+	const GlowScrollBarMessage& message)
+{
+	if (message.widget == widget_->hScrollBar_)
+	{
+		widget_->hpos_ = message.topValue;
+	}
+	else if (message.widget == widget_->vScrollBar_)
+	{
+		widget_->vpos_ = message.topValue;
+	}
+	widget_->Refresh();
 }
 
 
@@ -211,6 +259,8 @@ void GlowTextAreaWidget::Init(
 	}
 	font_ = params.font;
 	hpos_ = 0;
+	vpos_ = 0;
+	tabLen_ = params.tabLength;
 	dragStart_ = params.selectionStart;
 	dragEnd_ = params.selectionEnd;
 	data_.SetSelection(dragStart_, dragEnd_);
@@ -234,13 +284,60 @@ void GlowTextAreaWidget::Init(
 	darkBevelColor_ = params.darkBevelColor;
 	blink_ = true;
 	toggleAutoScroll_ = false;
-	blinkTask_.Init(this);
-	wrapping_ = wrapping;
-	hScrollBar_ = 0;    // TODO
-	vScrollBar_ = 0;    // TODO
+	wrapping_ = params.wrapping;
+	data_.RecalcLineBreaks(font_, wrapping_ ? params.width-inset_-inset_ : 0);
+	interaction_ = params.interaction;
+	miscReceiver_ = new Glow_TextArea_MiscReceiver(this);
+	scrollBarWidth_ = GLOW_STD::max(0, params.scrollBarWidth);
+	if (scrollBarWidth_ > 0)
+	{
+		GlowScrollBarParams params;
+		params.x = Width();
+		params.y = 0;
+		params.width = scrollBarWidth_;
+		params.height = Height();
+		params.min = 0;
+		params.span = Height()-inset_-inset_;
+		params.max = GLOW_STD::max(params.span,
+			long(data_.NumLines()*font_.Leading()));
+		params.initialTop = 0;
+		params.arrowStep = font_.Leading();
+		params.pageStep = Height()-inset_-inset_;
+		params.receiver = miscReceiver_;
+		vScrollBar_ = new GlowScrollBarWidget(this, params);
+		if (wrapping_)
+		{
+			hScrollBar_ = 0;
+		}
+		else
+		{
+			params.x = 0;
+			params.y = Height();
+			params.width = Width();
+			params.height = scrollBarWidth_;
+			params.min = 0;
+			params.span = Width()-inset_-inset_;
+			params.max = GLOW_STD::max(params.span,
+				long(data_.MaxPixelWidth(font_)));
+			params.arrowStep = 10;
+			params.pageStep = Width()-inset_-inset_;
+			hScrollBar_ = new GlowScrollBarWidget(this, params);
+		}
+	}
+	else
+	{
+		hScrollBar_ = 0;
+		vScrollBar_ = 0;
+	}
 	
-	RegisterMouseEvents();
-	RegisterKeyboardEvents();
+	if (interaction_ != noInteraction)
+	{
+		RegisterMouseEvents();
+	}
+	if (interaction_ == editableInteraction)
+	{
+		RegisterKeyboardEvents();
+	}
 }
 
 
@@ -249,6 +346,7 @@ GlowTextAreaWidget::~GlowTextAreaWidget()
 	GLOW_DEBUGSCOPE("GlowTextAreaWidget::~GlowTextAreaWidget");
 	
 	autoScrollTimer_->ForceRemove(this);
+	delete miscReceiver_;
 }
 
 
@@ -350,21 +448,32 @@ void GlowTextAreaWidget::OnWidgetPaint()
 		Root()->Subwindow()->Height()-Height()-RootPositionY()+inset_,
 		Width()-inset_-inset_, Height()-inset_-inset_);
 	
+	int firstLine = vpos_/font_.Leading();
+	int lastLine = (vpos_+Height()-inset_-inset_-1)/font_.Leading();
+	
 	// Highlight backing
-	if (data_.SelectionLength() > 0 && HasKeyboardFocus())
+	if (interaction_ != noInteraction && data_.SelectionLength() > 0 &&
+		(interaction_ == selectableInteraction || HasKeyboardFocus()))
 	{
 		hiliteBackColor_.Apply();
+		int startSelLine = data_.LineNumOf(data_.SelectionStart());
+		int endSelLine = data_.LineNumOf(data_.SelectionEnd());
+		int startLine = GLOW_STD::max(firstLine, startSelLine);
+		int endLine = GLOW_STD::min(lastLine, endSelLine);
 		float left = 0;
 		float top = 0;
 		float right = 0;
 		float bottom = 0;
-		NormalizeCoordinates(inset_-hpos_+
-			data_.PixelPosOf(font_, data_.SelectionStart(), 0),
-			inset_, left, top);
-		NormalizeCoordinates(inset_-hpos_+
-			data_.PixelPosOf(font_, data_.SelectionEnd(), 0),
-			inset_+font_.Leading(), right, bottom);
-		::glRectf(left, bottom, right, top);
+		for (int line=startLine; line<=endLine; ++line)
+		{
+			NormalizeCoordinates((line > startLine) ? inset_ : (inset_ - hpos_ +
+				data_.PixelPosOf(font_, data_.SelectionStart(), startSelLine)),
+				inset_-vpos_+(line*font_.Leading()), left, top);
+			NormalizeCoordinates((line < endLine) ? (Width()-inset_) : (inset_-hpos_+
+				data_.PixelPosOf(font_, data_.SelectionEnd(), endSelLine)),
+				inset_-vpos_+((line+1)*font_.Leading()), right, bottom);
+			::glRectf(left, bottom, right, top);
+		}
 	}
 	
 	// Text
@@ -383,27 +492,38 @@ void GlowTextAreaWidget::OnWidgetPaint()
 	int startpos = 0;
 	int endpos = 0;
 	int pixoffset = 0;
-	data_.CalcLineDrawInfo(font_, 0, hpos_, Width()-inset_-inset_,
-		startpos, endpos, pixoffset);
-	const char* dat = data_.String().data();
-	while (pixoffset > inset_)
-	{
-		pixoffset -= ::glutBitmapWidth(font_, dat[startpos]);
-		++startpos;
-	}
+	int endLine = GLOW_STD::min(lastLine, data_.NumLines()-1);
 	float x = 0;
 	float y = 0;
-	NormalizeCoordinates(inset_-pixoffset,
-		inset_+font_.BaselinePos(), x, y);
-	::glRasterPos2f(x, y);
-	for (int i=startpos; i<endpos; i++)
+	for (int line=firstLine; line<=endLine; ++line)
 	{
-		::glutBitmapCharacter(font_, dat[i]);
+		data_.CalcLineDrawInfo(font_, line, hpos_, Width()-inset_-inset_,
+			startpos, endpos, pixoffset);
+		const char* dat = data_.String().data();
+		NormalizeCoordinates(inset_+1, inset_+1, x, y);
+		::glRasterPos2f(x, y);
+		::glBitmap(0, 0, 0, 0, -pixoffset,
+			vpos_-(line*font_.Leading())-font_.BaselinePos()+1, 0);
+		for (int i=startpos; i<endpos; ++i)
+		{
+			if (dat[i] == '\t')
+			{
+				for (int j=0; j<tabLen_; ++j)
+				{
+					::glutBitmapCharacter(font_, ' ');
+				}
+			}
+			else
+			{
+				::glutBitmapCharacter(font_, dat[i]);
+			}
+		}
 	}
 	
 	// Insertion caret
 	// Special scissoring
-	if (blink_ || !HasKeyboardFocus() || !IsActive())
+	if (interaction_ == editableInteraction &&
+		(blink_ || !HasKeyboardFocus() || !IsActive()))
 	{
 		::glScissor(RootPositionX()+caretInset_,
 			Root()->Subwindow()->Height()-Height()-RootPositionY()+caretInset_,
@@ -423,10 +543,10 @@ void GlowTextAreaWidget::OnWidgetPaint()
 		float horiz = 0;
 		float top = 0;
 		float bottom = 0;
-		NormalizeCoordinates(inset_-hpos_+data_.PixelPosOf(font_, dragEnd_, 0),
-			inset_, horiz, top);
-		NormalizeCoordinates(inset_-hpos_+data_.PixelPosOf(font_, dragEnd_, 0),
-			inset_+font_.Leading(), horiz, bottom);
+		int caretLine = data_.LineNumOf(dragEnd_);
+		NormalizeCoordinates(0, inset_-vpos_+(caretLine*font_.Leading()), horiz, top);
+		NormalizeCoordinates(inset_-hpos_+data_.PixelPosOf(font_, dragEnd_, caretLine),
+			inset_-vpos_+((caretLine+1)*font_.Leading()), horiz, bottom);
 		float hBump = float(2)/float(Width());
 		float vBump = float(2)/float(Height());
 		::glBegin(GL_LINES);
@@ -452,53 +572,73 @@ void GlowTextAreaWidget::OnWidgetPaint()
 }
 
 
-void GlowTextFieldWidget::HandleAutoScrollTimer_()
+int GlowTextAreaWidget::CalcPos(
+	int x,
+	int y)
 {
-	dragEnd_ = data_.AtPixelPos(font_, 0, dragX_-inset_+hpos_);
+	GLOW_DEBUGSCOPE("GlowTextAreaWidget::CalcPos");
+	
+	int mouseLine = (y-inset_+vpos_)/font_.Leading();
+	if (mouseLine < 0) return 0;
+	if (mouseLine >= data_.NumLines()) return data_.String().size();
+	int pos = data_.AtPixelPos(font_, mouseLine, x-inset_+hpos_);
+	if (mouseLine < data_.NumLines()-1 &&
+		pos >= data_.LineStartPos(mouseLine+1))
+	{
+		pos = data_.LineStartPos(mouseLine+1)-1;
+	}
+	return pos;
+}
+
+
+void GlowTextAreaWidget::HandleAutoScrollTimer_()
+{
+	dragEnd_ = CalcPos(dragX_, dragY_);
 	data_.SetSelection(dragStart_, dragEnd_);
 	CheckAutoScroll();
-	toggleAutoScroll_ = true;
 	Refresh();
+	toggleAutoScroll_ = true;
 }
 
 
-void GlowTextFieldWidget::OnGotKeyboardFocus()
+void GlowTextAreaWidget::OnGotKeyboardFocus()
 {
-	GLOW_DEBUGSCOPE("GlowTextFieldWidget::OnGotKeyboardFocus");
+	GLOW_DEBUGSCOPE("GlowTextAreaWidget::OnGotKeyboardFocus");
 	
-	blinkTask_.Schedule(blinkInterval_);
+	miscReceiver_->Schedule(blinkInterval_);
 }
 
 
-void GlowTextFieldWidget::OnLostKeyboardFocus()
+void GlowTextAreaWidget::OnLostKeyboardFocus()
 {
-	GLOW_DEBUGSCOPE("GlowTextFieldWidget::OnLostKeyboardFocus");
+	GLOW_DEBUGSCOPE("GlowTextAreaWidget::OnLostKeyboardFocus");
 	
-	blinkTask_.Unschedule();
+	miscReceiver_->Unschedule();
 }
 
 
-void GlowTextFieldWidget::OnWidgetMouseDown(
+void GlowTextAreaWidget::OnWidgetMouseDown(
 	Glow::MouseButton button,
 	int x,
 	int y,
 	Glow::Modifiers modifiers)
 {
-	GLOW_DEBUGSCOPE("GlowTextFieldWidget::OnWidgetMouseDown");
+	GLOW_DEBUGSCOPE("GlowTextAreaWidget::OnWidgetMouseDown");
 	
-	if (!HasKeyboardFocus())
+	if (!HasKeyboardFocus() && interaction_ == editableInteraction)
 	{
 		GrabKeyboardFocus();
 	}
 	dragX_ = x;
+	dragY_ = y;
+	dragEnd_ = CalcPos(dragX_, dragY_);
 	if (modifiers & Glow::shiftModifier)
 	{
-		dragEnd_ = data_.AtPixelPos(font_, 0, x-inset_+hpos_);
 		data_.SetSelection(dragStart_, dragEnd_);
 	}
 	else
 	{
-		dragStart_ = dragEnd_ = data_.AtPixelPos(font_, 0, x-inset_+hpos_);
+		dragStart_ = dragEnd_;
 		data_.SetSelection(dragStart_);
 	}
 	CheckAutoScroll();
@@ -507,43 +647,44 @@ void GlowTextFieldWidget::OnWidgetMouseDown(
 }
 
 
-void GlowTextFieldWidget::OnWidgetMouseUp(
+void GlowTextAreaWidget::OnWidgetMouseUp(
 	Glow::MouseButton button,
 	int x,
 	int y,
 	Glow::Modifiers modifiers)
 {
-	GLOW_DEBUGSCOPE("GlowTextFieldWidget::OnWidgetMouseUp");
+	GLOW_DEBUGSCOPE("GlowTextAreaWidget::OnWidgetMouseUp");
 	
-	dragEnd_ = data_.AtPixelPos(font_, 0, x-inset_+hpos_);
+	dragEnd_ = CalcPos(x, y);
 	data_.SetSelection(dragStart_, dragEnd_);
 	CheckAutoScroll();
-	Glow::UnregisterTimer(_autoScrollTimerID);
+	Glow::UnregisterTimer(autoScrollTimerID_);
 	toggleAutoScroll_ = false;
 	Refresh();
 }
 
 
-void GlowTextFieldWidget::OnWidgetMouseDrag(
+void GlowTextAreaWidget::OnWidgetMouseDrag(
 	int x,
 	int y)
 {
-	GLOW_DEBUGSCOPE("GlowTextFieldWidget::OnWidgetMouseDrag");
+	GLOW_DEBUGSCOPE("GlowTextAreaWidget::OnWidgetMouseDrag");
 	
+	dragY_ = y;
 	dragX_ = x;
-	dragEnd_ = data_.AtPixelPos(font_, 0, x-inset_+hpos_);
+	dragEnd_ = CalcPos(x, y);
 	data_.SetSelection(dragStart_, dragEnd_);
 	Refresh();
 }
 
 
-void GlowTextFieldWidget::OnWidgetKeyboard(
+void GlowTextAreaWidget::OnWidgetKeyboard(
 	Glow::KeyCode key,
 	int x,
 	int y,
 	Glow::Modifiers modifiers)
 {
-	GLOW_DEBUGSCOPE("GlowTextFieldWidget::OnWidgetKeyboard");
+	GLOW_DEBUGSCOPE("GlowTextAreaWidget::OnWidgetKeyboard");
 	
 	if (key >= Glow::specialKeyOffset)
 	{
@@ -557,6 +698,27 @@ void GlowTextFieldWidget::OnWidgetKeyboard(
 			else
 			{
 				dragStart_ = dragEnd_ = dragEnd_-1;
+				data_.SetSelection(dragStart_);
+			}
+			CheckAutoScroll();
+			Refresh();
+		}
+		else if (key == Glow::upArrowKey && dragEnd_ > 0)
+		{
+			int line = data_.LineNumOf(dragEnd_);
+			dragEnd_ = (line == 0) ? 0 : data_.AtPixelPos(font_, line-1,
+				data_.PixelPosOf(font_, dragEnd_, line));
+			if (line > 0 && dragEnd_ >= data_.LineStartPos(line))
+			{
+				dragEnd_ = data_.LineStartPos(line)-1;
+			}
+			if (modifiers & Glow::shiftModifier)
+			{
+				data_.SetSelection(dragStart_, dragEnd_);
+			}
+			else
+			{
+				dragStart_ = dragEnd_;
 				data_.SetSelection(dragStart_);
 			}
 			CheckAutoScroll();
@@ -577,6 +739,27 @@ void GlowTextFieldWidget::OnWidgetKeyboard(
 			CheckAutoScroll();
 			Refresh();
 		}
+		else if (key == Glow::downArrowKey && dragEnd_ < int(data_.String().size()))
+		{
+			int line = data_.LineNumOf(dragEnd_);
+			dragEnd_ = (line == data_.NumLines()-1) ? int(data_.String().size()) :
+				data_.AtPixelPos(font_, line+1, data_.PixelPosOf(font_, dragEnd_, line));
+			if (line+2 < data_.NumLines() && dragEnd_ >= data_.LineStartPos(line+2))
+			{
+				dragEnd_ = data_.LineStartPos(line+2)-1;
+			}
+			if (modifiers & Glow::shiftModifier)
+			{
+				data_.SetSelection(dragStart_, dragEnd_);
+			}
+			else
+			{
+				dragStart_ = dragEnd_;
+				data_.SetSelection(dragStart_);
+			}
+			CheckAutoScroll();
+			Refresh();
+		}
 	}
 	else if (key == Glow::backspaceKey || key == Glow::deleteKey)
 	{
@@ -584,6 +767,8 @@ void GlowTextFieldWidget::OnWidgetKeyboard(
 		{
 			data_.DeleteSelection();
 			dragStart_ = dragEnd_ = data_.SelectionStart();
+			RecalcLineBreaks(dragStart_);
+			UpdateScrollBars(false);
 			CheckAutoScroll();
 			Refresh();
 		}
@@ -592,27 +777,39 @@ void GlowTextFieldWidget::OnWidgetKeyboard(
 			dragStart_ = dragEnd_ = data_.SelectionStart()-1;
 			data_.SetSelection(dragStart_);
 			data_.String().erase(dragStart_, 1);
+			RecalcLineBreaks(dragStart_);
+			UpdateScrollBars(false);
 			CheckAutoScroll();
 			Refresh();
 		}
 	}
-	else if (key == Glow::tabKey)
-	{
-		RelinquishKeyboardFocus();
-		Refresh();
-	}
-	else if (key >= 32)
+	else if (key == Glow::enterKey || key == Glow::tabKey || key >= 32)
 	{
 		data_.ReplaceSelectionWith((unsigned char)key);
 		data_.SetSelection(data_.SelectionEnd(), data_.SelectionEnd());
 		dragStart_ = dragEnd_ = data_.SelectionEnd();
+		RecalcLineBreaks(dragStart_);
+		UpdateScrollBars(false);
 		CheckAutoScroll();
 		Refresh();
 	}
 }
 
 
-GlowWidget::AutoPackError GlowTextFieldWidget::OnAutoPack(
+void GlowTextAreaWidget::OnWidgetReshape(
+	int width,
+	int height)
+{
+	GLOW_DEBUGSCOPE("GlowTextAreaWidget::OnWidgetReshape");
+	
+	RecalcLineBreaks();
+	CheckAutoScroll();
+	UpdateScrollBars(true);
+	Refresh();
+}
+
+
+GlowWidget::AutoPackError GlowTextAreaWidget::OnAutoPack( // TODO
 	int hSize,
 	int vSize,
 	AutoPackOptions hOption,
@@ -622,7 +819,7 @@ GlowWidget::AutoPackError GlowTextFieldWidget::OnAutoPack(
 	int& topMargin,
 	int& bottomMargin)
 {
-	GLOW_DEBUGSCOPE("GlowTextFieldWidget::OnAutoPack");
+	GLOW_DEBUGSCOPE("GlowTextAreaWidget::OnAutoPack");
 	
 	int hnew = Width();
 	if (hnew < 20 || (hSize != unspecifiedSize && hSize < hnew))
@@ -655,9 +852,222 @@ GlowWidget::AutoPackError GlowTextFieldWidget::OnAutoPack(
 }
 
 
-void GlowTextFieldWidget::CheckAutoScroll()
+void GlowTextAreaWidget::SetText(
+	const char* str)
 {
-	int pos = data_.PixelPosOf(font_, dragEnd_, 0);
+	GLOW_DEBUGSCOPE("GlowTextAreaWidget::SetText");
+	
+	data_.String().assign(str);
+	data_.RevalidateSelection();
+	RecalcLineBreaks();
+	UpdateScrollBars(false);
+	Refresh();
+}
+
+
+void GlowTextAreaWidget::SetText(
+	const GLOW_STD::string& str)
+{
+	GLOW_DEBUGSCOPE("GlowTextAreaWidget::SetText");
+	
+	data_.String().assign(str);
+	data_.RevalidateSelection();
+	RecalcLineBreaks();
+	UpdateScrollBars(false);
+	Refresh();
+}
+
+
+void GlowTextAreaWidget::SetWrapping(
+	bool wrapping)
+{
+	GLOW_DEBUGSCOPE("GlowTextAreaWidget::SetWrapping");
+	
+	if (wrapping_ != wrapping)
+	{
+		wrapping_ = wrapping;
+		if (wrapping_)
+		{
+			delete hScrollBar_;
+			hScrollBar_ = 0;
+		}
+		else
+		{
+			GlowScrollBarParams params;
+			params.x = 0;
+			params.y = Height();
+			params.width = Width();
+			params.height = scrollBarWidth_;
+			params.min = 0;
+			params.span = Width()-inset_-inset_;
+			params.max = GLOW_STD::max(params.span,
+				long(data_.MaxPixelWidth(font_)));
+			params.initialTop = vpos_;
+			params.arrowStep = 10;
+			params.pageStep = Width()-inset_-inset_;
+			params.receiver = miscReceiver_;
+			hScrollBar_ = new GlowScrollBarWidget(this, params);
+		}
+		RecalcLineBreaks();
+		UpdateScrollBars(false);
+		CheckAutoScroll();
+		Refresh();
+	}
+}
+
+
+void GlowTextAreaWidget::SetFont(
+	GlowFont font)
+{
+	GLOW_DEBUGSCOPE("GlowTextAreaWidget::SetFont");
+	
+	font_ = font;
+	if (wrapping_)
+	{
+		RecalcLineBreaks();
+	}
+	UpdateScrollBars(false);
+	Refresh();
+}
+
+
+void GlowTextAreaWidget::SetTabLength(
+	int tabLen)
+{
+	GLOW_DEBUGSCOPE("GlowTextAreaWidget::SetTabLength");
+	
+	tabLen_ = tabLen;
+	data_.SetTabSize(tabLen);
+	if (wrapping_)
+	{
+		RecalcLineBreaks();
+	}
+	UpdateScrollBars(false);
+	Refresh();
+}
+
+
+void GlowTextAreaWidget::SetInteractionType(
+	GlowTextAreaWidget::Interaction interaction)
+{
+	GLOW_DEBUGSCOPE("GlowTextAreaWidget::SetInteractionType");
+	
+	if (interaction_ == editableInteraction &&
+		interaction != editableInteraction)
+	{
+		UnregisterKeyboardEvents();
+	}
+	else if (interaction == editableInteraction &&
+		interaction_ != editableInteraction)
+	{
+		RegisterKeyboardEvents();
+	}
+	if (interaction_ == noInteraction &&
+		interaction != noInteraction)
+	{
+		RegisterMouseEvents();
+	}
+	else if (interaction == noInteraction &&
+		interaction_ != noInteraction)
+	{
+		UnregisterMouseEvents();
+	}
+	interaction_ = interaction;
+}
+
+
+void GlowTextAreaWidget::SetScrollBarWidth(
+	int width)
+{
+	GLOW_DEBUGSCOPE("GlowTextAreaWidget::SetScrollBarWidth");
+	
+	if (width > 0) width = 0;
+	if (width != scrollBarWidth_)
+	{
+		if (width == 0 && scrollBarWidth_ != 0)
+		{
+			delete hScrollBar_;
+			delete vScrollBar_;
+			hScrollBar_ = 0;
+			vScrollBar_ = 0;
+		}
+		else if (width != 0 && scrollBarWidth_ == 0)
+		{
+		GlowScrollBarParams params;
+		params.x = Width();
+		params.y = 0;
+		params.width = scrollBarWidth_;
+		params.height = Height();
+		params.min = 0;
+		params.span = Height()-inset_-inset_;
+		params.max = GLOW_STD::max(params.span,
+			long(data_.NumLines()*font_.Leading()));
+		params.initialTop = vpos_;
+		params.arrowStep = font_.Leading();
+		params.pageStep = Height()-inset_-inset_;
+		params.receiver = miscReceiver_;
+		vScrollBar_ = new GlowScrollBarWidget(this, params);
+		if (!wrapping_)
+		{
+			params.x = 0;
+			params.y = Height();
+			params.width = Width();
+			params.height = scrollBarWidth_;
+			params.min = 0;
+			params.span = Width()-inset_-inset_;
+			params.max = GLOW_STD::max(params.span,
+				long(data_.MaxPixelWidth(font_)));
+			params.initialTop = hpos_;
+			params.arrowStep = 10;
+			params.pageStep = Width()-inset_-inset_;
+			hScrollBar_ = new GlowScrollBarWidget(this, params);
+		}
+		}
+		else
+		{
+			vScrollBar_->Reshape(scrollBarWidth_, vScrollBar_->Height());
+			if (!wrapping_)
+			{
+				hScrollBar_->Reshape(hScrollBar_->Width(), scrollBarWidth_);
+			}
+		}
+	}
+}
+
+
+void GlowTextAreaWidget::ReplaceSelectionWith(
+	const char* str)
+{
+	GLOW_DEBUGSCOPE("GlowTextAreaWidget::ReplaceSelectionWith");
+	
+	data_.ReplaceSelectionWith(str);
+	RecalcLineBreaks();
+	UpdateScrollBars(false);
+	Refresh();
+}
+
+
+void GlowTextAreaWidget::CheckAutoScroll()
+{
+	GLOW_DEBUGSCOPE("GlowTextAreaWidget::CheckAutoScroll");
+	
+	int line = data_.LineNumOf(dragEnd_);
+	
+	int pos = line*font_.Leading();
+	if (pos < vpos_)
+	{
+		vpos_ = pos;
+	}
+	else if (pos+font_.Leading() > vpos_+Height()-inset_-inset_)
+	{
+		vpos_ = pos+font_.Leading()-Height()+inset_+inset_;
+	}
+	if (scrollBarWidth_ != 0)
+	{
+		vScrollBar_->SetTopValue(vpos_);
+	}
+	
+	pos = data_.PixelPosOf(font_, dragEnd_, line);
 	if (pos < hpos_)
 	{
 		hpos_ = pos;
@@ -666,171 +1076,54 @@ void GlowTextFieldWidget::CheckAutoScroll()
 	{
 		hpos_ = pos-Width()+inset_+inset_;
 	}
-}
-
-
-/*
-===============================================================================
-	Methods of GlowHiddenTextFieldWidget
-===============================================================================
-*/
-
-void GlowHiddenTextFieldWidget::Init(
-	GlowWidgetRoot* root,
-	GlowWidget* parent,
-	const GlowTextFieldParams& params,
-	char hideCharacter)
-{
-	GLOW_DEBUGSCOPE("GlowHiddenTextFieldWidget::Init");
-	
-	GlowTextFieldWidget::Init(root, parent, params);
-	
-	if (params.initialText != 0)
+	if (scrollBarWidth_ != 0 && !wrapping_)
 	{
-		hiddenData_.assign(params.initialText);
-		data_.String().assign(hiddenData_.size(), hideCharacter);
-	}
-	
-	hideCharacter_ = hideCharacter;
-}
-
-
-void GlowHiddenTextFieldWidget::SetHideCharacter(
-	char hc)
-{
-	if (hc != hideCharacter_)
-	{
-		hideCharacter_ = hc;
-		data_.String().assign(data_.String().size(), hc);
-		CheckAutoScroll();
-		Refresh();
+		hScrollBar_->SetTopValue(hpos_);
 	}
 }
 
 
-void GlowHiddenTextFieldWidget::OnWidgetKeyboard(
-	Glow::KeyCode key,
-	int x,
-	int y,
-	Glow::Modifiers modifiers)
+void GlowTextAreaWidget::UpdateScrollBars(
+	bool resizing)
 {
-	GLOW_DEBUGSCOPE("GlowHiddenTextFieldWidget::OnWidgetKeyboard");
-	
-	if (key >= 32 && key < Glow::specialKeyOffset)
+	GLOW_DEBUGSCOPE("GlowTextAreaWidget::UpdateScrollBars");
+	if (scrollBarWidth_ != 0)
 	{
-		hiddenData_.replace(data_.SelectionStart(),
-			data_.SelectionEnd()-data_.SelectionStart(), 1, (unsigned char)key);
-		GlowTextFieldWidget::OnWidgetKeyboard(Glow::KeyCode(hideCharacter_), x, y, modifiers);
-	}
-	else
-	{
-		GlowTextFieldWidget::OnWidgetKeyboard(key, x, y, modifiers);
+		if (resizing)
+		{
+			vScrollBar_->Move(Width(), 0);
+			vScrollBar_->Reshape(scrollBarWidth_, Height());
+			vScrollBar_->SetSpan(Height()-inset_-inset_);
+			vScrollBar_->SetPageStep(Height()-inset_-inset_);
+		}
+		vScrollBar_->SetMaximum(GLOW_STD::max(Height()-inset_-inset_,
+			data_.NumLines()*font_.Leading()));
+		vScrollBar_->SetArrowStep(font_.Leading());
+		vpos_ = vScrollBar_->GetTopValue();
+		if (!wrapping_)
+		{
+			if (resizing)
+			{
+				hScrollBar_->Move(0, Height());
+				hScrollBar_->Reshape(Width(), scrollBarWidth_);
+				hScrollBar_->SetSpan(Width()-inset_-inset_);
+				hScrollBar_->SetPageStep(Width()-inset_-inset_);
+			}
+			hScrollBar_->SetMaximum(GLOW_STD::max(Width()-inset_-inset_,
+				data_.MaxPixelWidth(font_)));
+			hpos_ = hScrollBar_->GetTopValue();
+		}
 	}
 }
 
 
-/*
-===============================================================================
-	Methods of GlowLabeledTextFieldWidget
-===============================================================================
-*/
-
-void GlowLabeledTextFieldWidget::Init(
-	GlowWidgetRoot* root,
-	GlowWidget* parent,
-	const GlowLabeledTextFieldParams& params)
+void GlowTextAreaWidget::RecalcLineBreaks(
+	int pos)
 {
-	GLOW_DEBUGSCOPE("GlowLabeledTextFieldWidget::Init");
+	GLOW_DEBUGSCOPE("GlowTextAreaWidget::RecalcLineBreaks");
 	
-	GlowTextFieldWidget::Init(root, parent, params);
-	InitLabel(this, params.labelPosition, params.labelWidth,
-		params.labelHeight, params.labelSpacing, params.labelText,
-		params.labelFont, params.labelColor, params.disableLabelColor);
-}
-
-
-GlowWidget::AutoPackError GlowLabeledTextFieldWidget::OnAutoPack(
-	int hSize,
-	int vSize,
-	AutoPackOptions hOption,
-	AutoPackOptions vOption,
-	int& leftMargin,
-	int& rightMargin,
-	int& topMargin,
-	int& bottomMargin)
-{
-	GLOW_DEBUGSCOPE("GlowLabeledTextFieldWidget::OnAutoPack");
-	
-	// Use helper
-	AutoPackError result = HelpAutoPack(hSize, vSize, leftMargin, rightMargin,
-		topMargin, bottomMargin);
-	if (result != noAutoPackError)
-	{
-		return result;
-	}
-	
-	result = GlowTextFieldWidget::OnAutoPack(hSize, vSize, hOption,
-		vOption, leftMargin, rightMargin, topMargin, bottomMargin);
-	if (result != noAutoPackError)
-	{
-		return result;
-	}
-	
-	RepositionLabel();
-	return noAutoPackError;
-}
-
-
-/*
-===============================================================================
-	Methods of GlowLabeledHiddenTextFieldWidget
-===============================================================================
-*/
-
-void GlowLabeledHiddenTextFieldWidget::Init(
-	GlowWidgetRoot* root,
-	GlowWidget* parent,
-	const GlowLabeledTextFieldParams& params,
-	char hideCharacter)
-{
-	GLOW_DEBUGSCOPE("GlowLabeledHiddenTextFieldWidget::Init");
-	
-	GlowHiddenTextFieldWidget::Init(root, parent, params, hideCharacter);
-	InitLabel(this, params.labelPosition, params.labelWidth,
-		params.labelHeight, params.labelSpacing, params.labelText,
-		params.labelFont, params.labelColor, params.disableLabelColor);
-}
-
-
-GlowWidget::AutoPackError GlowLabeledHiddenTextFieldWidget::OnAutoPack(
-	int hSize,
-	int vSize,
-	AutoPackOptions hOption,
-	AutoPackOptions vOption,
-	int& leftMargin,
-	int& rightMargin,
-	int& topMargin,
-	int& bottomMargin)
-{
-	GLOW_DEBUGSCOPE("GlowLabeledHiddenTextFieldWidget::OnAutoPack");
-	
-	// Use helper
-	AutoPackError result = HelpAutoPack(hSize, vSize, leftMargin, rightMargin,
-		topMargin, bottomMargin);
-	if (result != noAutoPackError)
-	{
-		return result;
-	}
-	
-	result = GlowTextFieldWidget::OnAutoPack(hSize, vSize, hOption,
-		vOption, leftMargin, rightMargin, topMargin, bottomMargin);
-	if (result != noAutoPackError)
-	{
-		return result;
-	}
-	
-	RepositionLabel();
-	return noAutoPackError;
+	data_.RecalcLineBreaks(font_, wrapping_ ? Width()-inset_-inset_ : 0,
+		GLOW_STD::max(0, data_.LineNumOf(pos)-1));
 }
 
 

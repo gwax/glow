@@ -72,6 +72,7 @@ inline GlowTextData::GlowTextData()
 {
 	lineBreaks_.push_back(0);
 	selStart_ = selEnd_ = 0;
+	tabSize_ = 0;
 }
 
 
@@ -81,6 +82,7 @@ str_(str)
 {
 	lineBreaks_.push_back(0);
 	selStart_ = selEnd_ = 0;
+	tabSize_ = 0;
 }
 
 
@@ -90,6 +92,20 @@ str_(str)
 {
 	lineBreaks_.push_back(0);
 	selStart_ = selEnd_ = 0;
+	tabSize_ = 0;
+}
+
+
+inline int GlowTextData::GetTabSize() const
+{
+	return tabSize_;
+}
+
+
+inline void GlowTextData::SetTabSize(
+	int tabSize)
+{
+	tabSize_ = tabSize;
 }
 
 
@@ -215,6 +231,25 @@ inline void GlowTextData::DeleteSelection()
 {
 	str_.erase(selStart_, selEnd_-selStart_);
 	selEnd_ = selStart_;
+}
+
+
+inline int GlowTextData::LineStartPos(
+	int line) const
+{
+	GLOW_ASSERT(line >= 0);
+	GLOW_ASSERT(line < int(lineBreaks_.size()));
+	return lineBreaks_[line];
+}
+
+
+inline int GlowTextData::CharWidth_(
+	GlowFont font,
+	char ch) const
+{
+	return (ch == '\t') ?
+		::glutBitmapWidth(font, ' ')*tabSize_ :
+		::glutBitmapWidth(font, ch);
 }
 
 

@@ -118,14 +118,6 @@ inline GlowFont GlowTextAreaWidget::GetFont() const
 }
 
 
-inline void GlowTextAreaWidget::SetFont(
-	GlowFont font)
-{
-	font_ = font;
-	Refresh();
-}
-
-
 inline int GlowTextAreaWidget::GetBlinkInterval() const
 {
 	return blinkInterval_;
@@ -158,9 +150,21 @@ inline bool GlowTextAreaWidget::IsWrapping() const
 }
 
 
-inline bool GlowTextAreaWidget::HasScrollBars() const
+inline int GlowTextAreaWidget::GetScrollBarWidth() const
 {
-	return hasScrollBars_;
+	return scrollBarWidth_;
+}
+
+
+inline int GlowTextAreaWidget::GetTabLength() const
+{
+	return tabLen_;
+}
+
+
+inline GlowTextAreaWidget::Interaction GlowTextAreaWidget::GetInteractionType() const
+{
+	return interaction_;
 }
 
 
@@ -179,24 +183,6 @@ inline int GlowTextAreaWidget::GetTextLength() const
 inline const GLOW_STD::string& GlowTextAreaWidget::GetTextString() const
 {
 	return data_.String();
-}
-
-
-inline void GlowTextAreaWidget::SetText(
-	const char* str)
-{
-	data_.String().assign(str);
-	data_.RevalidateSelection();
-	Refresh();
-}
-
-
-inline void GlowTextAreaWidget::SetText(
-	const GLOW_STD::string& str)
-{
-	data_.String().assign(str);
-	data_.RevalidateSelection();
-	Refresh();
 }
 
 
@@ -242,18 +228,9 @@ inline void GlowTextAreaWidget::SetSelection(
 
 
 inline void GlowTextAreaWidget::ReplaceSelectionWith(
-	const char* str)
-{
-	data_.ReplaceSelectionWith(str);
-	Refresh();
-}
-
-
-inline void GlowTextAreaWidget::ReplaceSelectionWith(
 	const GLOW_STD::string& str)
 {
-	data_.ReplaceSelectionWith(str.c_str());
-	Refresh();
+	ReplaceSelectionWith(str.c_str());
 }
 
 
@@ -450,19 +427,6 @@ inline void GlowTextAreaWidget::SetDarkBevelColor(
 {
 	darkBevelColor_ = c;
 	Refresh();
-}
-
-
-/*
-===============================================================================
-	Timer function
-===============================================================================
-*/
-
-inline void Glow_TextArea_BlinkTask::Init(
-	GlowTextAreaWidget* widget)
-{
-	widget_ = widget;
 }
 
 

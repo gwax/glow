@@ -132,13 +132,13 @@ The file <tt>mechcontrols.cpp</tt> contains the code for creating the widget pal
 Next comes the constructor for <tt>class MechControls</tt>. It first creates a widget palette window using the QuickPalette API described in lesson 4.
 </p>
 <blockquote>
-<pre>_controlWindow = new GlowQuickPaletteWindow("Controls");</pre>
+<pre>controlWindow_ = new GlowQuickPaletteWindow("Controls");</pre>
 </blockquote>
 <p>
 It then adds controls to the widget palette. Note the use of panels to help arrange the widgets. The principal arrangement direction for the window as a whole is vertical. However, the panel <tt>hpanel</tt> is created so that the three major panels, pointed to by <tt>panel</tt>, can be arranged horizontally. Within each <tt>panel</tt>, the widgets are arranged vertically. Each widget is set to notify our <tt>MechControls</tt> object of widget events. Finally, the last line arranges the widgets and shows the window.
 </p>
 <blockquote>
-<pre>_controlWindow->Pack();</pre>
+<pre>controlWindow_-&gt;Pack();</pre>
 </blockquote>
 
 <p>
@@ -148,7 +148,7 @@ It then adds controls to the widget palette. Note the use of panels to help arra
 Let's take a look at the event receivers. The pushbutton event receiver is fairly straightforward. First we respond to the quit button.
 </p>
 <blockquote>
-<pre>if (message.widget == _quitButton) {
+<pre>if (message.widget == quitButton_) {
     exit(0);
 }</pre>
 </blockquote>
@@ -156,9 +156,9 @@ Let's take a look at the event receivers. The pushbutton event receiver is fairl
 In response to the fire button, first we call glutmech's function <tt>FireCannon</tt> to upcate the positions of the cannon object. However, notice the following line.
 </p>
 <blockquote>
-<pre>if (message.widget == _fireButton) {
+<pre>if (message.widget == fireButton_) {
     FireCannon();
-    Glow::RefreshGlutWindow(_mainWindowID);
+    Glow::RefreshGlutWindow(mainWindowID_);
 }</pre>
 </blockquote>
 <p>
@@ -172,7 +172,7 @@ The function <tt>Glow::RefreshGlutWindow()</tt> posts a refresh event for the wi
 The next event handler handles checkbox toggle events. The wireframe checkbox is pretty straightforward; we update glutmech's wireframe state variable <tt>solid_part</tt>, and post a refresh event for the GLUT window. The other checkbox, which toggles animation on or off, demonstrates an important note when integrating GLOW and GLUT code.
 </p>
 <blockquote>
-<pre>if (message.widget == _animationCheckbox) {
+<pre>if (message.widget == animationCheckbox_) {
     if (message.state == GlowCheckBoxWidget::on) {
         // We need to use this special method instead of ::glutIdleFunc()
         Glow::SetIdleFunc(animation);
@@ -287,7 +287,7 @@ Windows with GLUT callbacks and windows with GLOW event receivers can exist side
 <blockquote>
 
 <p>
-Because GLUT does not come with a widget system by itself, many GLUT-based programs often require a convoluted keyboard-based interface similar to the one used by glutmech. You now know how to improve those interfaces by adding GLOW widgets. Try it on some of the other GLUT sample programs. Try it on your own programs!
+Because GLUT does not come with a widget system by itself, many GLUT-based programs often require a convoluted keyboard-based interface similar to the one used by glutmech. You now know how to improve those interfaces by adding GLOW widgets. Try it!
 </p>
 
 </blockquote>

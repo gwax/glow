@@ -121,8 +121,8 @@ GlowWidget::Init(parent-&gt;Root(), parent, params);</pre>
 Next, we'll set up the widget. We'll implement the rotating ball by creating a component to draw the ball, and attaching it to a <tt>GlowViewManipulator</tt>.
 </p>
 <blockquote>
-<pre>_manip = new GlowViewManipulator(this, GlowViewManipulatorParams::defaults);
-new DrawWireSphere(_manip);</pre>
+<pre>manip_ = new GlowViewManipulator(this, GlowViewManipulatorParams::defaults);
+new DrawWireSphere(manip_);</pre>
 </blockquote>
 <p>
 You can see the class <tt>DrawWireSphere</tt> just above the <tt>BallWidget</tt> constructor. It's a simple component that draws a wireframe sphere. The last line in the <tt>BallWidget</tt> constructor is an important one for setting up event handling:
@@ -215,13 +215,13 @@ virtual void OnReleased(Glow::MouseButton button, Glow::Modifiers modifiers);</p
 To see how we implement the event notification in <tt>ballwidget.cpp</tt>, let's take another look at the event handlers. <tt>BallWidget::OnWidgetMouseDown()</tt> contains two lines at the end to save the button and keyboard modifiers that were used. Then, in <tt>OnWidgetMouseDrag()</tt>, we call our notification method, passing it the mouse button and modifiers we saved:
 </p>
 <blockquote>
-<pre>OnDragged(_button, _modifiers);</pre>
+<pre>OnDragged(button_, modifiers_);</pre>
 </blockquote>
 <p>
 Similarly, in <tt>OnWidgetMouseUp()</tt>, we call:
 </p>
 <blockquote>
-<pre>OnReleased(_button, _modifiers);</pre>
+<pre>OnReleased(button_, modifiers_);</pre>
 </blockquote>
 <p>
 There, that wasn't so hard. Now a subclass of <tt>BallWidget</tt> can override the methods to receive events.
@@ -239,11 +239,11 @@ Now, let's take a look at our default implementations of <tt>OnDragged()</tt> an
     GLOW_DEBUGSCOPE("BallWidget::OnDragged");
     BallMessage message;
     message.widget = this;
-    message.rotation = _manip-&gt;GetRotation();
+    message.rotation = manip_-&gt;GetRotation();
     message.released = false;
     message.mouseButton = button;
     message.modifiers = modifiers;
-    _sender.Send(message);
+    sender_.Send(message);
 }</pre>
 </blockquote>
 <p>
@@ -255,14 +255,14 @@ We also need a way for a client program to bind the widget to receivers. To that
 <blockquote>
 <pre>inline TSender&lt;const BallMessage&&gt;& BallWidget::Notifier()
 {
-	return _sender;
+	return sender_;
 }</pre>
 </blockquote>
 <p>
 Now we can bind this widget to a receiver. For example:
 </p>
 <blockquote>
-<pre>myBallWidget->Notifier().Bind(myReceiver);</pre>
+<pre>myBallWidget-&gt;Notifier().Bind(myReceiver);</pre>
 </blockquote>
 
 <p>
@@ -470,12 +470,12 @@ Now that we've written our trackball widget, let's integrate it into our glowmec
 <blockquote>
 <pre>GlowQuickPanelWidget* panel2 = panel-&gt;AddArrangingPanel(GlowQuickPanelWidget::horizontal);
 GlowQuickPanelWidget* panel3 = panel2-&gt;AddArrangingPanel(GlowQuickPanelWidget::vertical);
-_viewBall = new BallWidget(panel3);
-_viewBall-&gt;Notifier().Bind(this);
+viewBall_ = new BallWidget(panel3);
+viewBall_-&gt;Notifier().Bind(this);
 panel3-&gt;AddLabel("View");
 panel3 = panel2-&gt;AddArrangingPanel(GlowQuickPanelWidget::vertical);
-_lightBall = new BallWidget(panel3);
-_lightBall-&gt;Notifier().Bind(this);
+lightBall_ = new BallWidget(panel3);
+lightBall_-&gt;Notifier().Bind(this);
 panel3-&gt;AddLabel("Light");</pre>
 </blockquote>
 <p>

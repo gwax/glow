@@ -99,6 +99,11 @@ class GlowTextData
 		inline GLOW_STD::string& String();
 		inline const GLOW_STD::string& String() const;
 		
+		// Tab size
+		inline int GetTabSize() const;
+		inline void SetTabSize(
+			int tabSize);
+		
 		// Affect line breaks
 		inline void ClearLineBreaks();
 		void RecalcLineBreaks(
@@ -135,6 +140,8 @@ class GlowTextData
 			GlowFont font,
 			int pos,
 			int line = -1) const;
+		inline int LineStartPos(
+			int line) const;
 		
 		// Selection methods
 		inline int SelectionStart() const;
@@ -161,10 +168,17 @@ class GlowTextData
 	
 	private:
 	
+		inline int CharWidth_(
+			GlowFont font,
+			char ch) const;
+	
+	private:
+	
 		GLOW_STD::string str_;
 		GLOW_STD::vector<int> lineBreaks_;
 		int selStart_;
 		int selEnd_;
+		int tabSize_;
 };
 
 

@@ -381,7 +381,7 @@ inline void GlowScrollBarWidget::MoveTopValue(
 inline void GlowScrollBarWidget::SetMaximum(
 	long val)
 {
-	GLOW_DEBUG(val <= min_+span_, "max <= min in GlowScrollBarWidget::SetMaximum");
+	GLOW_DEBUG(val < min_+span_, "max < min in GlowScrollBarWidget::SetMaximum");
 	max_ = val;
 	if (topValue_+span_ > max_) topValue_ = max_-span_;
 	Refresh();
@@ -391,7 +391,7 @@ inline void GlowScrollBarWidget::SetMaximum(
 inline void GlowScrollBarWidget::SetMinimum(
 	long val)
 {
-	GLOW_DEBUG(max_-span_ <= val, "min >= max in GlowScrollBarWidget::SetMinimum");
+	GLOW_DEBUG(max_-span_ < val, "min > max in GlowScrollBarWidget::SetMinimum");
 	min_ = val;
 	if (topValue_ < min_) topValue_ = min_;
 	Refresh();

@@ -109,6 +109,8 @@ GlowWidgetSubwindowParams::GlowWidgetSubwindowParams(bool) :
 GlowSubwindowParams(true),
 backColor(0.8f, 0.8f, 0.8f)
 {
+//	mode = Glow::rgbaBuffer | Glow::depthBuffer | 
+//		Glow::stencilBuffer | Glow::doubleBuffer;
 	eventMask = Glow::mouseEvents | Glow::dragEvents | Glow::keyboardEvents;
 }
 
@@ -130,8 +132,8 @@ GlowWidgetWindowParams::GlowWidgetWindowParams(bool) :
 GlowWindowParams(true),
 backColor(0.8f, 0.8f, 0.8f)
 {
-	mode = Glow::rgbaBuffer | Glow::depthBuffer | 
-		Glow::stencilBuffer | Glow::doubleBuffer;
+//	mode = Glow::rgbaBuffer | Glow::depthBuffer | 
+//		Glow::stencilBuffer | Glow::doubleBuffer;
 	eventMask = Glow::mouseEvents | Glow::dragEvents | Glow::keyboardEvents;
 }
 

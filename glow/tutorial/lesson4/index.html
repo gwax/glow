@@ -159,7 +159,7 @@ To see how to create widgets, let's take a look at the new constructor for <tt>M
 The next line creates an object of type <tt>GlowQuickPaletteWindow</tt>. This is a subclass of <tt>GlowWindow</tt> that is designed to arrange and display widgets. Because it is a <tt>GlowWindow</tt> subclass, it will create a second toplevel window.
 </p>
 <blockquote>
-<pre>_controlWindow = new GlowQuickPaletteWindow("Controls");</pre>
+<pre>controlWindow_ = new GlowQuickPaletteWindow("Controls");</pre>
 </blockquote>
 <p>
 The lines of code following will add widgets to the window, but before we look at them, a word about how widgets will actually be arranged within the window. When we create widgets, we won't give them a specific location in the window. Instead, the window will automatically arrange widgets based on their preferred sizes, and arrangement parameters that you can specify.
@@ -178,7 +178,7 @@ Widgets aren't actually arranged until you call the <tt>Pack()</tt> method. At t
 Okay, on to adding widgets...
 </p>
 <blockquote>
-<pre>_controlWindow->AddLabel(
+<pre>controlWindow_-&gt;AddLabel(
     "Mandelglow (lesson 4)\nby Daniel Azuma");</pre>
 </blockquote>
 <p>
@@ -188,7 +188,7 @@ A number of methods are provided in <tt>GlowQuickPaletteWindow</tt> to add widge
 The next line adds a panel, which is of type <tt>GlowQuickPanelWidget</tt>.
 </p>
 <blockquote>
-<pre>GlowQuickPanelWidget* panel = _controlWindow->AddPanel(
+<pre>GlowQuickPanelWidget* panel = controlWindow_-&gt;AddPanel(
     GlowQuickPanelWidget::etchedStyle, "Calculation");</pre>
 </blockquote>
 
@@ -199,13 +199,13 @@ The next line adds a panel, which is of type <tt>GlowQuickPanelWidget</tt>.
 A panel is a special widget that is designed to contain and arrange other widgets. Panels may be invisible, or they may appear as boxes in the window. They may also include a title. The panel created here appears as an etched box in the window, and includes the title "Calculation". We'll put widgets that control calculation parameters in this panel. Note that the method returns a pointer to the panel object; we'll use that pointer in the next line...
 </p>
 <blockquote>
-<pre>panel->AddCheckBox("Background calcuation", GlowCheckBoxWidget::on, this);</pre>
+<pre>panel-&gt;AddCheckBox("Background calcuation", GlowCheckBoxWidget::on, this);</pre>
 </blockquote>
 <p>
 This line adds a checkbox widget (<tt>GlowCheckBoxWidget</tt>) to the panel. <tt>GlowQuickPaletteWindow</tt> and <tt>GlowQuickPanelWidget</tt> understand the same API for adding widgets, so methods like <tt>AddCheckBox()</tt> can be used to add widgets either to the top level in a window or inside a panel. The parameters given here include a label for the checkbox, the initial state (on), and a pointer to a receiver object to receive checkbox events. We'll look at widget events more closely in the next section; for now, note that we're using the <tt>MandelWind</tt> object as the event receiver.
 </p>
 <blockquote>
-<pre>_iterationSlider = panel->AddSlider(100, 2000, 1000,
+<pre>iterationSlider_ = panel-&gt;AddSlider(100, 2000, 1000,
     GlowSliderWidget::defaultOptions, 2, "%.0f", "Iterations:\n%.0f", this);</pre>
 </blockquote>
 <p>
@@ -219,7 +219,7 @@ This line adds a slider widget (<tt>GlowLabeledSliderWidget</tt>), also inside t
 Next we add a second panel to the window. This panel will be titled "View".
 </p>
 <blockquote>
-<pre>panel = _controlWindow->AddPanel(
+<pre>panel = controlWindow_-&gt;AddPanel(
     GlowQuickPanelWidget::etchedStyle, "View");</pre>
 </blockquote>
 <p>
@@ -228,16 +228,16 @@ We now add a popup menu widget to the "View" panel.
 <blockquote>
 <pre>GlowLabeledPopupMenuWidget* popup = panel->AddPopupMenu(
     "Color scheme:", this);
-popup->AddItem("Red");
-popup->AddItem("Green");
-popup->AddItem("Blue");
-popup->AddItem("Multi");</pre>
+popup-&gt;AddItem("Red");
+popup-&gt;AddItem("Green");
+popup-&gt;AddItem("Blue");
+popup-&gt;AddItem("Multi");</pre>
 </blockquote>
 <p>
 Note that we can take the pointer to the <tt>GlowLabeledPopupMenuWidget</tt> object returned from the call to <tt>AddPopupMenu</tt> and use it to further configure the widget. In this case, we set up the menu items with the color scheme options.
 </p>
 <blockquote>
-<pre>_multiColorControlsPanel = panel->AddPanel(
+<pre>multiColorControlsPanel_ = panel-&gt;AddPanel(
     GlowQuickPanelWidget::etchedStyle, "Multicolor settings");</pre>
 </blockquote>
 <p>
@@ -247,7 +247,7 @@ Here, notice that we call the <tt>AddPanel</tt> method on the "View" panel. We'r
 After the sliders are added, notice this line:
 </p>
 <blockquote>
-<pre>_multiColorControlsPanel->Deactivate();</pre>
+<pre>multiColorControlsPanel_-&gt;Deactivate();</pre>
 </blockquote>
 <p>
 This causes the panel, plus all its contents (i.e. the two sliders we added to it), to be deactivated. Widgets in the inactive state appear "grayed out" and do not respond to mouse clicks or other events. We want to set up the user interface so this panel appears active only when the popup menu is set to "Multi". The initial value of the menu is "Red", so we deactivate the panel initially.
@@ -260,15 +260,15 @@ This causes the panel, plus all its contents (i.e. the two sliders we added to i
 After we add one more button to the "View" panel, notice this line:
 </p>
 <blockquote>
-<pre>panel = _controlWindow->AddArrangingPanel(
+<pre>panel = controlWindow_-&gt;AddArrangingPanel(
     GlowQuickPanelWidget::horizontal);</pre>
 </blockquote>
 <p>
 This adds another panel to the window, but a special kind of panel called an arranging panel. An arranging panel is invisible (i.e. has no border or title) and is used to change the parameters used to arrange widgets. In this case, the arrangement direction is set to horizontal within the panel. Recall that, for the window itself, we're using an overall vertical arrangement of widgets. The arranging panel will be arranged within the window in that vertical arrangement, but any widgets we put inside the arranging panel will be arranged within it in a horizontal direction. Arranging panels can also be used to change the spacing of widgets, as well as indent groups of widgets. In this case, our goal is to have two pushbuttons <tt>GlowPushButtonWidget</tt> side-by-side in the otherwise vertical arrangement; we accomplish this by adding them to this arranging panel:
 </p>
 <blockquote>
-<pre>_quitButton = panel->AddPushButton("Quit", this);
-_saveButton = panel->AddPushButton("Save Image", this);</pre>
+<pre>quitButton_ = panel-&gt;AddPushButton("Quit", this);
+saveButton_ = panel-&gt;AddPushButton("Save Image", this);</pre>
 </blockquote>
 
 <p>
@@ -278,7 +278,7 @@ _saveButton = panel->AddPushButton("Save Image", this);</pre>
 Now we're done adding all the widgets. To actually arrange them in the window and display the window, we call <tt>Pack()</tt>.
 </p>
 <blockquote>
-<pre>_controlWindow->Pack();</pre>
+<pre>controlWindow_-&gt;Pack();</pre>
 </blockquote>
 <p>
 <tt>Pack()</tt> arranges the entire hierarchy of widgets we created, including those inside panels. At this point, you may find it helpful to try running the program to see how the widgets actually got arranged. It should look something like the image at the beginning of this lesson. Notice how the panels enclose and separate off groups of widgets. Also, notice how the overall arrangement direction is vertical, except for the two buttons at the very bottom, which are within an arranging panel oriented horizontally.
@@ -353,20 +353,20 @@ Our <tt>MandelWind</tt> class now implements a number of additional receivers, o
 Remember that we need to bind each widget to the receivers that should be notified of events, in this case, the <tt>MandelWind</tt>. We did this when creating the widgets (recall that we passed <tt>this</tt> in the receiver parameters). However, the receiver does not need to be a window or any other specific object, nor are we limited to a single receiver. If you want multiple objects to be notified of a widget event, simply call the <tt>Notifier()</tt> method of the widget object to get a reference to a <tt>TSender</tt>, which can be bound to additional objects. For example, we could bind our "quit" button to more objects like this, assuming <tt>myObject1</tt> and <tt>myObject2</tt> are types that inherit from <tt>GlowPushButtonReceiver</tt>...
 </p>
 <blockquote>
-<pre>_quitButton->Notifier().Bind(myObject1);
-_quitButton->Notifier().Bind(myObject2);</pre>
+<pre>quitButton_-&gt;Notifier().Bind(myObject1);
+quitButton_-&gt;Notifier().Bind(myObject2);</pre>
 </blockquote>
 
 <p>
 <b>Writing event receiver methods</b>
 </p>
 <p>
-Now let's take a look at a few examples of receiving widget events. The simplest example is the checkbox. We merely need to change the value of the class member <tt>_updateInBackground</tt> to match the new value of the widget.
+Now let's take a look at a few examples of receiving widget events. The simplest example is the checkbox. We merely need to change the value of the class member <tt>updateInBackground_</tt> to match the new value of the widget.
 </p>
 <blockquote>
 <pre>void MandelWind::OnMessage(const GlowCheckBoxMessage& message)
 {
-    _updateInBackground = (message.state == GlowCheckBoxWidget::on);
+    updateInBackground_ = (message.state == GlowCheckBoxWidget::on);
 }</pre>
 </blockquote>
 <p>
@@ -378,22 +378,22 @@ For our slider receiver, however, we connected three sliders to the same receive
 <blockquote>
 <pre>void MandelWind::OnMessage(const GlowSliderMessage& message)
 {
-    if (message.widget == _multiCycleRateSlider) {
+    if (message.widget == multiCycleRateSlider_) {
         // Handle multicolor cycle rate slider manipulation here...
-        _multiCycleRate = message.value;
-        _imageValid = false;
+        multiCycleRate_ = message.value;
+        imageValid_ = false;
         Refresh();
-    } else if (message.widget == _multiCycleOffsetSlider) {
+    } else if (message.widget == multiCycleOffsetSlider_) {
         // Handle multicolor cycle offset slider manipulation here...
-        _multiCycleOffset = message.value;
-        _imageValid = false;
+        multiCycleOffset_ = message.value;
+        imageValid_ = false;
         Refresh();
-    } else if (message.widget == _iterationSlider) {
+    } else if (message.widget == iterationSlider_) {
         // Handle number of iterations slider...
         // Respond only on slider release (i.e. non-"live" slider)
         if (message.released) {
             // Handle event here...
-            _data->SetThreshhold(int(message.value));
+            data_-&gt;SetThreshhold(int(message.value));
             Refresh();
         }
     }
@@ -447,13 +447,13 @@ Changing the widget palette is as simple as making changes to the widgets, and t
 <b>What do you mean by "deleting" widgets?</b>
 </p>
 <p>
-It's just what it sounds like. To remove a widget, delete the widget object that was returned from the method you used to create it. For example, we stored a pointer to the number-of-iterations slider in the data member "<tt>_iterationSlider</tt>". To remove that slider, you can just
+It's just what it sounds like. To remove a widget, delete the widget object that was returned from the method you used to create it. For example, we stored a pointer to the number-of-iterations slider in the data member "<tt>iterationSlider_</tt>". To remove that slider, you can just
 </p>
 <blockquote>
-<pre>delete _iterationSlider;</pre>
+<pre>delete iterationSlider_;</pre>
 </blockquote>
 <p>
-Remember that some widgets (e.g. panels) can contain other widgets. If you delete a widget that contains other widgets, the contained widgets are also automatically deleted. In this way, you can delete an entire set of widgets at once. For example, the panel <tt>_multiColorControlsPanel</tt> contains two sliders, <tt>_multiCycleRateSlider</tt> and <tt>_multiCycleOffsetSlider</tt>. Deleting <tt>_multiColorControlsPanel</tt> will automatically cause the two contained sliders to be deleted as well. Additionally, all the widgets are contained within the widget palette window, so if you delete <tt>_controlWindow</tt>, the entire palette, including all the widgets, will be cleanly destroyed. That is what the <tt>MandleWind</tt> destructor does: simply delete the window.
+Remember that some widgets (e.g. panels) can contain other widgets. If you delete a widget that contains other widgets, the contained widgets are also automatically deleted. In this way, you can delete an entire set of widgets at once. For example, the panel <tt>multiColorControlsPanel_</tt> contains two sliders, <tt>multiCycleRateSlider_</tt> and <tt>multiCycleOffsetSlider_</tt>. Deleting <tt>multiColorControlsPanel_</tt> will automatically cause the two contained sliders to be deleted as well. Additionally, all the widgets are contained within the widget palette window, so if you delete <tt>controlWindow_</tt>, the entire palette, including all the widgets, will be cleanly destroyed. That is what the <tt>MandleWind</tt> destructor does: simply delete the window.
 </p>
 
 <p>
@@ -488,11 +488,11 @@ The same thing can happen with deleting a widget. If your "OK" button were conta
 The only place you can add a widget is at the end, which would cause it to appear at the bottom (if the arrangement is vertical) or at the far right (if the arrangment is horizontal). However, once a widget is added, you can reposition it using the method <tt>ReorderChild()</tt> before you call <tt>Pack()</tt>. <tt>ReorderChild()</t> needs to be called as a method of the "parent" of the widget. Here is an example of its use:
 </p>
 <blockquote>
-<pre>GlowPushButtonWidget* widget1 = window->AddPushButton("Button");
-GlowPushButtonWidget* widget2 = window->AddPushButton("Insert me!");
+<pre>GlowPushButtonWidget* widget1 = window-&gt;AddPushButton("Button");
+GlowPushButtonWidget* widget2 = window-&gt;AddPushButton("Insert me!");
 // At this point, widget2 is located after widget1.
 // The next line moves widget2 before widget1.
-widget2->Parent()->ReorderChild(widget2, widget1);</pre>
+widget2-&gt;Parent()-&gt;ReorderChild(widget2, widget1);</pre>
 </blockquote>
 
 <p>
@@ -523,7 +523,7 @@ If you looked through the new event handlers carefully, you probably noticed tha
 A text field window is meant to allow the user to enter a short string like a file name. It includes a prompt string, a text field, and any number of configurable pushbuttons that may be used to dismiss the window. We create a <tt>GlowTextFieldWindow</tt> in response to a press of the "save" button in <tt>OnMessage(const GlowPushButtonMessage&)</tt>:
 </p>
 <blockquote>
-<pre>if (message.widget == _saveButton) {
+<pre>if (message.widget == saveButton_) {
     new GlowTextFieldWindow("Save Image", GlowWindow::autoPosition,
         GlowWindow::autoPosition, "Enter file name:", 300, "image.ppm",
         "OK\tCancel", this);

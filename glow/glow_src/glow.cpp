@@ -1870,6 +1870,15 @@ void GlowSubwindow::OnKeyboardUp(
 	Glow::Modifiers modifiers)
 {
 }
+
+
+void GlowSubwindow::OnJoystick(
+	Glow::JoystickButtonMask button,
+	int x,
+	int y,
+	int z)
+{
+}
 #endif
 
 

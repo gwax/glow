@@ -208,14 +208,14 @@ A graphical calculator user interface should look as much like a real calculator
 To see this API in action, let's take a look at the file <tt>calcui.cpp</tt>. This file implements the <tt>class CalcUI</tt>, which manages a single calculator user interface window. (It is declared in <tt>calcui.h</tt>; if you open that file, you'll see that the class declaration is very simple.) About halfway through <tt>calcui.cpp</tt> is the constructor for <tt>class CalcUI</tt>. Let's go through this constructor.
 </p>
 <blockquote>
-<pre>_window = new GlowFixedSizeWidgetWindow("glowcalc",
+<pre>window_ = new GlowFixedSizeWidgetWindow("glowcalc",
     GlowWindow::autoPosition, GlowWindow::autoPosition, 255, 385);</pre>
 </blockquote>
 <p>
 That first line constructs a window that will hold the calculator widgets. The class we're using is <tt>GlowFixedSizeWidgetWindow</tt>, which is a GLOW window that holds widgets and holds a fixed size like <tt>GlowFixedSizeWindow</tt>. In fact, the class <tt>GlowQuickPaletteWindow</tt> is a subclass of <tt>GlowFixedSizeWidgetWindow</tt>. The class <tt>GlowWidgetWindow</tt>, which does not hold a fixed size, is also available for use. Notice that we need to specify the position and size of the window explicitly. The next line constructs a receiver object for events raised by widgets we'll put in this window:
 </p>
 <blockquote>
-<pre>_receiver = new CalcUIReceiver(engine, _window);</pre>
+<pre>receiver_ = new CalcUIReceiver(engine, window_);</pre>
 </blockquote>
 
 <p>
@@ -232,7 +232,7 @@ pparams.x = 10;
 pparams.y = 10;
 pparams.backColor = GlowColor::white;
 pparams.style = GlowPanelWidget::loweredStyle;
-_receiver->_displayPanel = new GlowPanelWidget(_window, pparams);</pre>
+receiver_-&gt;displayPanel_ = new GlowPanelWidget(window_, pparams);</pre>
 </blockquote>
 <p>
 Now before I hear gasps of horror and start getting hate emails, let me explain how the parameter block system works. Widgets can have a wide range of parameters, from position and size to drawing styles, colors, labels, event notification preferences and special behaviors. Trying to put all those parameters into a constructor, even with C++ default parameters, would be ridiculous. Instead, you fill out a parameter block and pass a reference to the constructor. However, these aren't ordinary parameter blocks you may have used in other APIs. Since we're using C++, the default constructor for each parameter block object automatically fills it in with reasonable default values. So when you declare the parameter block, it automatically comes with default parameters. You change only the values pertinent to the particular widget you're creating.
@@ -266,8 +266,8 @@ lparams.width = 225;
 lparams.x = 5;
 lparams.y = 5;
 lparams.font = GlowFont::fixed9by15;
-_receiver->_displayLabel3 = new GlowLabelWidget(
-     _receiver->_displayPanel, lparams);</pre>
+receiver_-&gt;displayLabel3_ = new GlowLabelWidget(
+     receiver_-&gt;displayPanel_, lparams);</pre>
 </blockquote>
 <p>
 In the above code, we create a label widget using the parameter block API. Notice that the first parameter to the constructor is a pointer to the panel we had just created; this label is a child widget of the panel and is arranged "inside" it.
@@ -283,14 +283,14 @@ The next few lines create additional labels for displaying four levels of the st
 </p>
 <blockquote>
 <pre>lparams.y = 22;
-_receiver->_displayLabel2 = new GlowLabelWidget(
-    _receiver->_displayPanel, lparams);
+receiver_-&gt;displayLabel2_ = new GlowLabelWidget(
+    receiver_-&gt;displayPanel_, lparams);
 lparams.y = 39;
-_receiver->_displayLabel1 = new GlowLabelWidget(
-    _receiver->_displayPanel, lparams);
+receiver_-&gt;displayLabel1_ = new GlowLabelWidget(
+    receiver_-&gt;displayPanel_, lparams);
 lparams.y = 60;
-_receiver->_displayLabel0 = new GlowLabelWidget(
-    _receiver->_displayPanel, lparams);</pre>
+receiver_-&gt;displayLabel0_ = new GlowLabelWidget(
+    receiver_-&gt;displayPanel_, lparams);</pre>
 </blockquote>
 <p>
 Notice that we can reuse the parameter block. It is, after all, just a struct. The parameters for the new labels are the same as the original label, except for the vertical position.
@@ -309,7 +309,7 @@ pparams.x = 10;
 pparams.y = 100;
 pparams.backColor = GlowPanelParams::defaults.backColor;
 pparams.style = GlowPanelWidget::plainStyle;
-_receiver->_mainPanel = new GlowPanelWidget(_window, pparams);</pre>
+receiver_-&gt;mainPanel_ = new GlowPanelWidget(window_, pparams);</pre>
 </blockquote>
 <p>
 Here we reuse the <tt>GlowPanelParams</tt> parameter block to create another panel. To make it non-drawing, we set the style to <tt>GlowPanelWidget::plainStyle</tt> (i.e. no border) and set the color back to the default gray, which we retrieve from the <tt>defaults</tt> parameter block. (Remember we had set the color to white for the display panel.) This panel is a toplevel widget. Its parent is the widget root.
@@ -319,14 +319,14 @@ Next we create a whole bunch of pushbuttons for the keys of the calculator. Here
 </p>
 <blockquote>
 <pre>GlowPushButtonParams bparams;
-bparams.receiver = _receiver;
+bparams.receiver = receiver_;
 bparams.text = "clr";
 bparams.width = 40;
 bparams.height = 20;
 bparams.x = 0;
 bparams.y = 125;
 bparams.refcon = CalcEngine::clearButton;
-new GlowPushButtonWidget(_receiver->_mainPanel, bparams);</pre>
+new GlowPushButtonWidget(receiver_-&gt;mainPanel_, bparams);</pre>
 </blockquote>
 <p>
 Things to note. First off, to specify a receiver for the widget, set the <tt>receiver</tt> field of the parameter block. For our calculator, we're going to use the receiver object we created to receive events from all the widgets. Also, remember that the x and y coordinates are in local coordinates of the invisible panel we created, since the pushbutton is being created as a child of the panel.
@@ -356,16 +356,16 @@ pparams.height = 20;
 pparams.x = 0;
 pparams.y = 0;
 // Panel 1 is for the "normal" keys (e.g. exp, sin)
-_receiver->_panel1 = new GlowPanelWidget(_receiver->_mainPanel, pparams);
+receiver_-&gt;panel1_ = new GlowPanelWidget(receiver_-&gt;mainPanel_, pparams);
 // Panel 2 is for the "inverse" keys (e.g. log, arcsin)
-_receiver->_panel2 = new GlowPanelWidget(_receiver->_mainPanel, pparams);</pre>
+receiver_-&gt;panel2_ = new GlowPanelWidget(receiver_-&gt;mainPanel_, pparams);</pre>
 </blockquote>
 <p>
 The next lines create those twelve buttons, as child widgets of those two panels. They are pretty straightforward, so let's skip another hundred lines or so to this point:
 </p>
 <blockquote>
 <pre>// Initial inverse state is false, so hide panel 2
-_receiver->_panel2->Hide();</pre>
+receiver_-&gt;panel2_-&gt;Hide();</pre>
 </blockquote>
 <p>
 Here we get a big hint about why all these non-drawing panels are being created. Remember that parent widgets can affect the drawing of their children. In this case, we're hiding the second panel (the one containing the inverted functions, i.e. sqrt, log, root, arcsin, arccos, arctan). This has the affect of automatically hiding those buttons as well. In fact, now, to switch all six buttons, we need only to make two method calls: hide one panel and show the other.
@@ -381,7 +381,7 @@ I'll let you look at the rest of the constructor at your leisure. It creates sev
 You may also notice calls to the method <tt>CropWidth()</tt>:
 </p>
 <blockquote>
-<pre>checkbox->CropWidth();</pre>
+<pre>checkbox-&gt;CropWidth();</pre>
 </blockquote>
 <p>
 <tt>CropWidth()</tt> is a special method of <tt>GlowCheckBoxWidget</tt> and <tt>GlowRadioButtonWidget</tt> that truncates the width of the widget to the minimum needed for the box and the label. This is recommended when you create a check box or radio button, because it ensures that the button responds to mouse clicks only over the area where the widget is actually drawn.
@@ -461,8 +461,8 @@ This object is set up to receive pushbutton events, radio button events and chec
 First, let's take a look at the pushbutton event handler. Most of the pushbuttons correspond to calculator functions and digits; we handle those by passing the reference constant of the pushbutton to the method <tt>CalcEngine::Button()</tt>.
 </p>
 <blockquote>
-<pre>if (message.widget->GetRefCon() >= 0) {
-    _engine->Button(message.widget->GetRefCon());
+<pre>if (message.widget-&gt;GetRefCon() &gt;= 0) {
+    engine_-&gt;Button(message.widget-&gt;GetRefCon());
     UpdateDisplay();
 }</pre>
 </blockquote>
@@ -473,7 +473,7 @@ The <tt>UpdateDisplay()</tt> method simply reads the current state of the calcul
 The next piece of code handles the quit pushbutton. We identify this pushbutton by looking for the reference constant -1.
 </p>
 <blockquote>
-<pre>else if (message.widget->GetRefCon() == -1) {
+<pre>else if (message.widget-&gt;GetRefCon() == -1) {
     exit(0);
 }</pre>
 </blockquote>
@@ -485,15 +485,15 @@ The next piece of code handles the quit pushbutton. We identify this pushbutton 
 The button with reference constant -2 is the inverse button. We want to handle this by "toggling" the transcendental function keys between normal and inverse functions (e.g. between exp and log). If you recall, we grouped each set of buttons into a panel, one for the normal functions and one for the inverse functions. To toggle the function, we just hide the visible panel and show the invisible panel. Since the buttons are child widgets of the panel, this has the affect of hiding and showing those buttons as a group.
 </p>
 <blockquote>
-<pre>else if (message.widget->GetRefCon() == -2) {
-    if (_panel1->IsVisible()) {
-        _panel1->Hide();
-        _panel2->Show();
-        _inverseButton->SetBoxColor(GlowColor(0.9, 0.7, 0.7));
+<pre>else if (message.widget-&gt;GetRefCon() == -2) {
+    if (panel1_-&gt;IsVisible()) {
+        panel1_-&gt;Hide();
+        panel2_-&gt;Show();
+        inverseButton_-&gt;SetBoxColor(GlowColor(0.9, 0.7, 0.7));
     } else {
-        _panel2->Hide();
-        _panel1->Show();
-        _inverseButton->SetBoxColor(GlowPushButtonParams::defaults.boxColor);
+        panel2_-&gt;Hide();
+        panel1_-&gt;Show();
+        inverseButton_-&gt;SetBoxColor(GlowPushButtonParams::defaults.boxColor);
     }
 }</pre>
 </blockquote>
@@ -511,8 +511,8 @@ Reference constant -3 identifies the "About" button. We respond to it by popping
 <pre>else if (message.widget->GetRefCon() == -3) {
     GlowMessageWindowParams mparams;
     mparams.windowTitle = "About GlowCalc";
-    mparams.x = _window->GlobalPositionX()+30;
-    mparams.y = _window->GlobalPositionY()+30;
+    mparams.x = _window-&gt;GlobalPositionX()+30;
+    mparams.y = _window-&gt;GlobalPositionY()+30;
     if (message.modifiers & Glow::ctrlModifier) {
         mparams.text = "GlowCalc\nA GLOW-based RPN calculator\nby Daniel Azuma\n\n"
             "Down with monopolistic software corporations!";
@@ -563,22 +563,22 @@ I know this is a lot of information, but let's look at one more piece of code as
 <blockquote>
 <pre>if (message.state == GlowCheckBoxWidget::off) {
     // Going to single-line display
-    _displayPanel->Reshape(235, 25);
-    _displayLabel0->Move(5, 5);
-    _displayLabel1->Hide();
-    _displayLabel2->Hide();
-    _displayLabel3->Hide();
-    _mainPanel->Move(10, 45);
-    _window->ForceReshape(255, 330);
+    displayPanel_-&gt;Reshape(235, 25);
+    displayLabel0_-&gt;Move(5, 5);
+    displayLabel1_-&gt;Hide();
+    displayLabel2_-&gt;Hide();
+    displayLabel3_-&gt;Hide();
+    mainPanel_-&gt;Move(10, 45);
+    window_-&gt;ForceReshape(255, 330);
 } else {
     // Going to multi-line display
-    _displayPanel->Reshape(235, 80);
-    _displayLabel0->Move(5, 60);
-    _displayLabel1->Show();
-    _displayLabel2->Show();
-    _displayLabel3->Show();
-    _mainPanel->Move(10, 100);
-    _window->ForceReshape(255, 385);
+    displayPanel_-&gt;Reshape(235, 80);
+    displayLabel0_-&gt;Move(5, 60);
+    displayLabel1_-&gt;Show();
+    displayLabel2_-&gt;Show();
+    displayLabel3_-&gt;Show();
+    mainPanel_-&gt;Move(10, 100);
+    window_-&gt;ForceReshape(255, 385);
 }</pre>
 </blockquote>
 <p>
@@ -632,7 +632,7 @@ Now, there are several ways to do this. One, we can subclass <tt>GlowFixedSizeWi
 Another alternative is to install a keyboard event filter. That is what we will demonstrate here. An event filter is a class that receives notification of all events destined for a widget root, and can optionally modify them, or even consume them (i.e. stop them from being reported normally.) In our case, we installed an event filter at the end of the <tt>CalcUI</tt> constructor:
 </p>
 <blockquote>
-<pre>_window->RegisterFilter(_receiver);</pre>
+<pre>window_-&gt;RegisterFilter(receiver_);</pre>
 </blockquote>
 <p>
 Our receiver class inherits from <tt>GlowWidgetKeyboardFilter</tt>. Widget keyboard event filters must implement the following virtual method:
@@ -648,11 +648,11 @@ In our case, we implement the filter to detect keystrokes that our calculator ca
 </p>
 <blockquote>
 <pre>if (data.key &gt;= '0' && data.key &lt;= '9') {
-    _engine-&gt;Button(data.key - '0');
+    engine_-&gt;Button(data.key - '0');
     UpdateDisplay();
 } else switch (int(data.key)) {
     case '+':
-        _engine-&gt;Button(CalcEngine::plusButton);
+        engine_-&gt;Button(CalcEngine::plusButton);
         UpdateDisplay();
         break;
 ...</pre>
@@ -706,7 +706,7 @@ Event filters can help create some powerful user interface effects, but they sho
 The rest of the program is pretty straightforward. The file <tt>glowcalc.cpp</tt> contains the <tt>main()</tt> function, which simply initializes GLOW, creates a calculator engine and a calculator user interface, and enters the main loop.
 </p>
 <p>
-Compile and run the program. It's a full-fledged, working scientific calculator. Try some calculations on it!
+Compile and run the program. It's a full-fledged, working scientific calculator. Try it out!
 </p>
 
 <p>

@@ -159,7 +159,7 @@ This is just another way to initialize the <tt>GlowWindow</tt>. If you recall, i
 <b>Creating a widget palette subwindow</b>
 </p>
 <blockquote>
-<pre>_widgetsPanel = new GlowQuickPaletteSubwindow(this, 0, 0, 200, 25,
+<pre>widgetsPanel_ = new GlowQuickPaletteSubwindow(this, 0, 0, 200, 25,
     GlowQuickPalette::horizontal, GlowQuickPalette::alignCenter, 10, 0, 0);</pre>
 </blockquote>
 <p>
@@ -169,13 +169,13 @@ There's a subtle difference here from how we created a widget palette in lesson 
 Here we created a subwindow that can have widgets added to it according to the QuickPalette API. Notice that in this case we asked the panel to be arranged horizontally, and for it to have no margins. We also made its width equal to the width of the parent window; that is, the subwindow stretches across the top of the window like a menu bar. The next few lines add widgets to the subwindow:
 </p>
 <blockquote>
-<pre>_widgetsPanel-&gt;AddDismissPushButton("Close", this);</pre>
+<pre>widgetsPanel_-&gt;AddDismissPushButton("Close", this);</pre>
 </blockquote>
 <p>
 This line adds a special type of pushbutton to the subwindow-- a dismiss pushbutton. This kind of pushbutton causes some component to be deleted when it is pressed. In this case, we specify the <tt>this</tt> pointer as the component that will be deleted; i.e. when the button is pressed, our <tt>MandelGizmoWindow</tt> will be closed. Because it is often contained within the window (or component) it will be dismissing, a dismiss pushbutton uses the <tt>Close()</tt> method rather than deleting the object directly.
 </p>
 <blockquote>
-<pre>GlowLabelWidget* fpsIndicator = _widgetsPanel-&gt;AddLabel("0000.00 fps");</pre>
+<pre>GlowLabelWidget* fpsIndicator = widgetsPanel_-&gt;AddLabel("0000.00 fps");</pre>
 </blockquote>
 <p>
 Here we add another widget to the subwindow. It will be a frame rate indicator, implemented as a label widget. As the cube is drawn, we will update this label to show how well our graphics hardware (or lack thereof) is doing with the textured cube.
@@ -184,7 +184,7 @@ Here we add another widget to the subwindow. It will be a frame rate indicator, 
 Note that we've done something rather subtle here-- we've given the label some rather bogus initial text. Actually, this text was deliberately chosen. When the widget subwindow is packed (in the next line), the label will be asked how much space it needs, based on what text is being displayed, and only that amount of space will be allocated to it. However, we know the text is going to change as we cause the cube to be redrawn. Therefore, we provide an initial value that we know will be at least as wide as any value that we'll actually want to draw.
 </p>
 <blockquote>
-<pre>_widgetsPanel->Pack(true);</pre>
+<pre>widgetsPanel_-&gt;Pack(true);</pre>
 </blockquote>
 <p>
 Once again, we use the <tt>Pack()</tt> method to arrange the widgets. Notice that, for a <tt>GlowQuickPaletteSubwindow</tt>, the pack method takes a boolean parameter, which specifies whether the subwindow should be resized to its preferred size after being packed. In this case, we do resize the subwindow, to make sure it is set to its preferred height. This is because we want the drawing subwindow to be located right below it:
@@ -194,9 +194,9 @@ Once again, we use the <tt>Pack()</tt> method to arrange the widgets. Notice tha
 <b>Creating the drawing subwindow</b>
 </p>
 <blockquote>
-<pre>_gizmoPanel = new MandelGizmoSubwindow(this, 200, _widgetsPanel-&gt;Height(),
+<pre>gizmoPanel_ = new MandelGizmoSubwindow(this, 200, widgetsPanel_-&gt;Height(),
     image, width, height, fpsIndicator);
-Reshape(200, 200+_widgetsPanel->Height());</pre>
+Reshape(200, 200+widgetsPanel_-&gt;Height());</pre>
 </blockquote>
 <p>
 Here we create a second subwindow, which will contain the drawing of the cube. It covers the remaining area of the window. We'll look at this subwindow a little more in the next section, but for now, just note that we're positioning it just below the widget bar (the y-location is the height of the widget panel). After the subwindow is created, we call the <tt>Reshape()</tt> method to programmatically resize the toplevel window to a size big enough to hold both subwindows.
@@ -209,27 +209,27 @@ Here we create a second subwindow, which will contain the drawing of the cube. I
 We'll look at the drawing subwindow in more detail in the next section, but first, let's take a look at the <tt>OnReshape()</tt> method of <tt>MandelGizmoWindow</tt>. The first thing we do is enforce a minimum size:
 </p>
 <blockquote>
-<pre>if (width &lt; 40 || height &lt; 40+_widgetsPanel-&gt;Height()) {
-    Reshape(max(width, 40), max(height, 40+_widgetsPanel-&gt;Height()));
+<pre>if (width &lt; 40 || height &lt; 40+widgetsPanel_-&gt;Height()) {
+    Reshape(max(width, 40), max(height, 40+widgetsPanel_-&gt;Height()));
 }</pre>
 </blockquote>
 <p>
 Here we test the size of the window, and if it is too small in one dimension or another, we resize it again. This is, by the way, pretty much the same method that <tt>GlowFixedSizeWindow</tt> uses to keep a window the same size. If the size is okay, then we need to update the sizes and positions of the subwindows within the window; these are not updated automatically when the toplevel window is resized. First, we handle the widget bar:
 </p>
 <blockquote>
-<pre>if (width != _widgetsPanel-&gt;Width()) {
-    _widgetsPanel-&gt;Reshape(width, _widgetsPanel-&gt;Height());
+<pre>if (width != widgetsPanel_-&gt;Width()) {
+    widgetsPanel_-&gt;Reshape(width, widgetsPanel_-&gt;Height());
 }</pre>
 </blockquote>
 <p>
 The widget subwindow maintains the vertical size that was computed when we called <tt>Pack()</tt>, but we cause its horizontal size to span the width of the window. We then position and size the drawing subwindow snugly in the remaining space, while keeping its shape square:
 </p>
 <blockquote>
-<pre>height -= _widgetsPanel-&gt;Height();
+<pre>height -= widgetsPanel_-&gt;Height();
 int gizmoSize = min(width, height);
-_gizmoPanel-&gt;Move((width-gizmoSize)/2,
-    _widgetsPanel-&gt;Height()+(height-gizmoSize)/2);
-_gizmoPanel-&gt;Reshape(gizmoSize, gizmoSize);</pre>
+gizmoPanel_-&gt;Move((width-gizmoSize)/2,
+    widgetsPanel_-&gt;Height()+(height-gizmoSize)/2);
+gizmoPanel_-&gt;Reshape(gizmoSize, gizmoSize);</pre>
 </blockquote>
 <p>
 Positioning a subwindow is accomplished by the <tt>Move()</tt> method. Notice that the position is specified in local window coordinates of its parent window, which is the <tt>MandelGizmoWindow</tt> in this case. Finally, the last statement updates the viewport for the toplevel window.
@@ -310,10 +310,10 @@ Normally, GLOW will automatically swap buffers once you're done drawing. This ca
 <b>Setting up a rotatable cube</b>
 </p>
 <blockquote>
-<pre>_manip = new GlowViewManipulator(this,
+<pre>manip_ = new GlowViewManipulator(this,
     GlowViewManipulatorParams::defaults);
-_manip-&gt;SetSpinnable(true);
-new MandelGizmoComponent(_manip, image, width, height);</pre>
+manip_-&gt;SetSpinnable(true);
+new MandelGizmoComponent(manip_, image, width, height);</pre>
 </blockquote>
 <p>
 What we've done here is create a component tree underneath the subwindow. First, we create a <tt>GlowViewManipulator</tt> object, and attach it to <tt>this</tt>, the subwindow. The second parameter to the constructor indicates to use the default parameters for the view manipulator. This is an example of the parameter block API, described in greater detail in lesson 7. The next line modifies a property of the view manipulator, allowing it to be "spun", Open Inventor style. <tt>GlowViewManipulator</tt>, along with some related classes, includes a lot of nice features for manipulating 3D scenes; we'll cover some of them in lesson 8. Finally, we attach a <tt>MandelGizmoComponent</tt> to the manipulator. The result is a three-layer structure, with the subwindow on top, the manipulator under the subwindow, and the gizmo component under the manipulator.
@@ -378,15 +378,15 @@ Yes, there are two now: <tt>OnBeginPaint()</tt> and <tt>OnEndPaint()</tt>. Why? 
 The other thing that <tt>OnBeginPaint()</tt> and <tt>OnEndPaint()</tt> are doing is measuring the frame rate. At the very start of <tt>OnBeginPaint()</tt>, you'll see this line:
 </p>
 <blockquote>
-<pre>_starting = Glow::GetMilliseconds();</pre>
+<pre>starting_ = Glow::GetMilliseconds();</pre>
 </blockquote>
 <p>
 <tt>GetMilliseconds()</tt> is a static method of class <tt>Glow</tt> that returns the number of milliseconds elapsed since GLOW was initialized. In <tt>OnEndPaint()</tt>, at the very end of our drawing process, we measure the time elapsed during the drawing, and set the text our our frame rate indicator label widget:
 </p>
 <blockquote>
 <pre>sprintf(buf, "%.2f fps",
-    float(1000)/float(max(Glow::GetMilliseconds()-_starting, 1)));
-_fpsIndicator->SetText(buf);</pre>
+    float(1000)/float(max(Glow::GetMilliseconds()-starting_, 1)));
+fpsIndicator_-&gt;SetText(buf);</pre>
 </blockquote>
 <p>
 Notice, however, the two lines preceding the frame rate computation:
@@ -440,10 +440,10 @@ To finish up our discussion on the <tt>GlowViewManipulator</tt>, we need to resp
 Each method passes the mouse event to an appropriate method of the view manipulator. For example, in response to mouse down events, we call <tt>GlowViewManipulator::BeginRotation()</tt>:
 </p>
 <blockquote>
-<pre>if (_manip->GetState() == GlowViewManipulator::idleState) {
+<pre>if (manip_-&gt;GetState() == GlowViewManipulator::idleState) {
     GLfloat xn, yn;
     NormalizeCoordinates(x, y, xn, yn);
-    _manip->BeginRotationDrag(xn, yn);
+    manip_-&gt;BeginRotationDrag(xn, yn);
 }</pre>
 </blockquote>
 <p>

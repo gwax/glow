@@ -126,6 +126,9 @@ RELEASE NOTES
       Several classes in the tutorial weren't cleaning up all their
       resources if they were deleted. Fixed. (also in 1.0.2)
 
+      GlowScrollBarWidget incorrectly raised an assertion if min or
+      max was set such that min + span == max. Fixed. (also in 1.0.2)
+
       GlowSubwindow::OnJoystick() was missing. Fixed.
 
       Several more reference fixes.

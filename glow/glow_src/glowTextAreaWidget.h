@@ -74,32 +74,7 @@ GLOW_NAMESPACE_BEGIN
 
 
 class GlowTextAreaParams;
-class GlowTextAreaWidget;
-
-
-/*
-===============================================================================
-	CLASS Glow_TextArea_BlinkTask
-===============================================================================
-*/
-
-
-class Glow_TextArea_BlinkTask :
-	public GlowDeferredTask
-{
-	public:
-	
-		inline void Init(
-			GlowTextAreaWidget* widget);
-	
-	protected:
-	
-		virtual void Task();
-	
-	private:
-	
-		GlowTextAreaWidget* widget_;
-};
+class GlowScrollBarWidget;
 
 
 /*
@@ -113,7 +88,7 @@ class Glow_TextArea_BlinkTask :
 class GlowTextAreaWidget :
 	public GlowWidget
 {
-	friend class Glow_TextArea_BlinkTask;
+	friend class Glow_TextArea_MiscReceiver;
 	friend class Glow_TextArea_AutoScrollTimer;
 	
 	
@@ -129,6 +104,13 @@ class GlowTextAreaWidget :
 			etchedStyle = 2,
 			raisedStyle = 3,
 			loweredStyle = 4
+		};
+		
+		enum Interaction
+		{
+			noInteraction = 0,
+			selectableInteraction = 1,
+			editableInteraction = 2
 		};
 	
 	public:
@@ -156,7 +138,7 @@ class GlowTextAreaWidget :
 			Style style);
 		inline Style GetStyle() const;
 		
-		inline void SetFont(
+		void SetFont(
 			GlowFont font);
 		inline GlowFont GetFont() const;
 		
@@ -172,16 +154,24 @@ class GlowTextAreaWidget :
 		void SetWrapping(
 			bool wrapping);
 		
-		inline bool HasScrollBars() const;
-		void SetScrollBars(
-			bool has);
+		inline int GetScrollBarWidth() const;
+		void SetScrollBarWidth(
+			int width);
+		
+		inline Interaction GetInteractionType() const;
+		void SetInteractionType(
+			Interaction interaction);
+		
+		void SetTabLength(
+			int tabLen);
+		inline int GetTabLength() const;
 		
 		inline const char* GetTextChars() const;
 		inline int GetTextLength() const;
 		inline const GLOW_STD::string& GetTextString() const;
-		inline void SetText(
+		void SetText(
 			const char* str);
-		inline void SetText(
+		void SetText(
 			const GLOW_STD::string& str);
 		
 		inline GLOW_STD::string GetSelectionString() const;
@@ -194,7 +184,7 @@ class GlowTextAreaWidget :
 			int end);
 		inline void SetSelection(
 			int pos);
-		inline void ReplaceSelectionWith(
+		void ReplaceSelectionWith(
 			const char* str);
 		inline void ReplaceSelectionWith(
 			const GLOW_STD::string& str);
@@ -256,6 +246,13 @@ class GlowTextAreaWidget :
 			const GlowTextAreaParams& params);
 		
 		void CheckAutoScroll();
+		void RecalcLineBreaks(
+			int pos = 0);
+		int CalcPos(
+			int x,
+			int y);
+		void UpdateScrollBars(
+			bool resizing);
 	
 	protected:
 	
@@ -309,6 +306,10 @@ class GlowTextAreaWidget :
 		
 		virtual void OnGotKeyboardFocus();
 		virtual void OnLostKeyboardFocus();
+		
+		virtual void OnWidgetReshape(
+			int width,
+			int height);
 	
 	private:
 	
@@ -318,20 +319,25 @@ class GlowTextAreaWidget :
 	
 		GlowFont font_;
 		int hpos_;
+		int vpos_;
 		Style style_;
 		int blinkInterval_;
 		int autoScrollInterval_;
 		int inset_;
 		int caretInset_;
+		int tabLen_;
 		int dragStart_;
 		int dragEnd_;
 		int dragX_;
+		int dragY_;
 		bool blink_;
 		bool toggleAutoScroll_;
-		Glow_TextArea_BlinkTask blinkTask_;
+		Glow_TextArea_MiscReceiver* miscReceiver_;
 		bool wrapping_;
 		GlowScrollBarWidget* hScrollBar_;
 		GlowScrollBarWidget* vScrollBar_;
+		int scrollBarWidth_;
+		Interaction interaction_;
 		
 		GlowColor backColor_;
 		GlowColor caretColor_;
@@ -372,8 +378,10 @@ class GlowTextAreaParams :
 		int autoScrollInterval;
 		int inset;
 		int caretInset;
+		int tabLength;
 		bool wrapping;
-		bool hasScrollBars;
+		int scrollBarWidth;
+		GlowTextAreaWidget::Interaction interaction;
 		GlowColor backColor;
 		GlowColor textColor;
 		GlowColor caretColor;
