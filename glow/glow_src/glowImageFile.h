@@ -66,6 +66,7 @@
 #endif
 
 #include <iostream>
+#include <climits>
 
 
 GLOW_INTERNAL_USINGSTD
@@ -141,11 +142,11 @@ class GlowPNMReader_Base :
 			GLOW_STD::istream& stream);
 		
 		void GetInfo(
-			int& format,
-			int& width,
-			int& height,
-			int& maxVal,
-			int& headerLength);
+			unsigned int& format,
+			unsigned int& width,
+			unsigned int& height,
+			unsigned int& maxVal,
+			unsigned int& headerLength);
 	
 	
 	//-------------------------------------------------------------------------
@@ -232,20 +233,20 @@ class TGlowPNMReader :
 	private:
 	
 		void Set1Channels_(
-			typename ImageClass::ElementType elem,
+			typename ImageClass::ChannelType elem,
 			unsigned int i,
 			unsigned int j);
 		void Set3Channels_(
-			typename ImageClass::ElementType elem1,
-			typename ImageClass::ElementType elem2,
-			typename ImageClass::ElementType elem3,
+			typename ImageClass::ChannelType elem1,
+			typename ImageClass::ChannelType elem2,
+			typename ImageClass::ChannelType elem3,
 			unsigned int i,
 			unsigned int j);
 	
 	private:
 	
 		unsigned int numChannels_;
-		typename ImageClass::ElementType alphaDefault_;
+		typename ImageClass::ChannelType alphaDefault_;
 		ImageClass* imagePtr_;
 };
 

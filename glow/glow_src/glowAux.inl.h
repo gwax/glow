@@ -462,7 +462,7 @@ inline unsigned char GlowColorImage::GetChannel(
 	unsigned int y,
 	unsigned int c) const
 {
-	return At(x, y)[c];
+	return At(x, y)[GLOW_CSTD::ptrdiff_t(c)];
 }
 
 
@@ -472,7 +472,7 @@ inline void GlowColorImage::SetChannel(
 	unsigned int c,
 	unsigned char data)
 {
-	At(x, y)[c] = data;
+	At(x, y)[GLOW_CSTD::ptrdiff_t(c)] = data;
 }
 
 

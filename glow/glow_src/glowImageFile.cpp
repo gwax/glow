@@ -106,11 +106,11 @@ bool GlowPNMFile_Base::ErrorState_(
 */
 
 void GlowPNMReader_Base::GetInfo(
-	int& format,
-	int& width,
-	int& height,
-	int& maxVal,
-	int& headerLength)
+	unsigned int& format,
+	unsigned int& width,
+	unsigned int& height,
+	unsigned int& maxVal,
+	unsigned int& headerLength)
 {
 	if (error_ != noError)
 	{

@@ -70,7 +70,7 @@ GLOW_NAMESPACE_BEGIN
 
 template <class ImageClass>
 void TGlowPNMReader<ImageClass>::Set1Channels_(
-	typename ImageClass::ElementType elem,
+	typename ImageClass::ChannelType elem,
 	unsigned int i,
 	unsigned int j)
 {
@@ -96,9 +96,9 @@ void TGlowPNMReader<ImageClass>::Set1Channels_(
 
 template <class ImageClass>
 void TGlowPNMReader<ImageClass>::Set3Channels_(
-	typename ImageClass::ElementType elem1,
-	typename ImageClass::ElementType elem2,
-	typename ImageClass::ElementType elem3,
+	typename ImageClass::ChannelType elem1,
+	typename ImageClass::ChannelType elem2,
+	typename ImageClass::ChannelType elem3,
 	unsigned int i,
 	unsigned int j)
 {
@@ -175,12 +175,13 @@ void TGlowPNMReader<ImageClass>::Read(
 			}
 	};
 	
-	int format;
-	typename ImageClass::ElementType elem1, elem2, elem3;
-	int width, height;
+	unsigned int format;
+	typename ImageClass::ChannelType elem1, elem2, elem3;
+	unsigned int width, height;
+	unsigned int maxVal, headerLen;
 	
 	// Get info
-	GetInfo(format, width, height, r, g);
+	GetInfo(format, width, height, maxVal, headerLen);
 	if (error_ != noError)
 	{
 		return;
@@ -188,12 +189,12 @@ void TGlowPNMReader<ImageClass>::Read(
 	
 	// Get number of channels and check for format compatibility
 	numChannels_ = image.NumChannels();
-	if (numChannels != 1 && numChannels != 3 && numChannels != 4)
+	if (numChannels_ != 1 && numChannels_ != 3 && numChannels_ != 4)
 	{
 		error_ = numChannelsError;
 		return;
 	}
-	if ((format == 3 || format == 6) && (numChannels == 1))
+	if ((format == 3 || format == 6) && (numChannels_ == 1))
 	{
 		error_ = numChannelsError;
 		return;
@@ -376,13 +377,9 @@ void TGlowPNMWriter<ImageClass>::Write(
 			int val_;
 	};
 	
-	int format;
-	typename ImageClass::ElementType elem1, elem2, elem3;
-	int width, height;
-	
 	// Get number of channels and check for format compatibility
-	numChannels_ = image.NumChannels();
-	if (numChannels_ != 1 && numChannels_ != 3 && numChannels_ != 4)
+	unsigned int numChannels = image.NumChannels();
+	if (numChannels != 1 && numChannels != 3 && numChannels != 4)
 	{
 		error_ = numChannelsError;
 		return;
@@ -390,9 +387,9 @@ void TGlowPNMWriter<ImageClass>::Write(
 	
 	if (binary)
 	{
-		if (numChannels_ == 1)
+		if (numChannels == 1)
 		{
-			stream_ << "P2 " << image.Width() << ' ' << image.Height() <<
+			(*stream_) << "P2 " << image.Width() << ' ' << image.Height() <<
 				" 255\n";
 			if (ErrorState_(stream_->rdstate()))
 			{
@@ -401,7 +398,7 @@ void TGlowPNMWriter<ImageClass>::Write(
 			for (unsigned int j=image.Height()-1; j>=0; --j)
 			for (unsigned int i=0; i<=image.Width(); ++i)
 			{
-				stream_ << GlowPNMWriter_Xlate(image.GetChannel(i, j, 0)).Val() <<
+				(*stream_) << GlowPNMWriter_Xlate(image.GetChannel(i, j, 0)).Val() <<
 					'\n';
 				if (ErrorState_(stream_->rdstate()))
 				{
@@ -409,9 +406,9 @@ void TGlowPNMWriter<ImageClass>::Write(
 				}
 			}
 		}
-		else if (numChannels_ == 3 || numChannels_ == 4)
+		else //if (numChannels == 3 || numChannels == 4)
 		{
-			stream_ << "P3 " << image.Width() << ' ' << image.Height() <<
+			(*stream_) << "P3 " << image.Width() << ' ' << image.Height() <<
 				" 255\n";
 			if (ErrorState_(stream_->rdstate()))
 			{
@@ -420,7 +417,7 @@ void TGlowPNMWriter<ImageClass>::Write(
 			for (unsigned int j=image.Height()-1; j>=0; --j)
 			for (unsigned int i=0; i<=image.Width(); ++i)
 			{
-				stream_ << GlowPNMWriter_Xlate(image.GetChannel(i, j, 0)).Val() <<
+				(*stream_) << GlowPNMWriter_Xlate(image.GetChannel(i, j, 0)).Val() <<
 					' ' << GlowPNMWriter_Xlate(image.GetChannel(i, j, 1)).Val() <<
 					' ' << GlowPNMWriter_Xlate(image.GetChannel(i, j, 2)).Val() <<
 					'\n';
@@ -433,9 +430,9 @@ void TGlowPNMWriter<ImageClass>::Write(
 	}
 	else
 	{
-		if (numChannels_ == 1)
+		if (numChannels == 1)
 		{
-			stream_ << "P5 " << image.Width() << ' ' << image.Height() <<
+			(*stream_) << "P5 " << image.Width() << ' ' << image.Height() <<
 				" 255 ";
 			if (ErrorState_(stream_->rdstate()))
 			{
@@ -444,16 +441,16 @@ void TGlowPNMWriter<ImageClass>::Write(
 			for (unsigned int j=image.Height()-1; j>=0; --j)
 			for (unsigned int i=0; i<=image.Width(); ++i)
 			{
-				stream_.put(GlowPNMWriter_Xlate(image.GetChannel(i, j, 0)).Val());
+				stream_->put(GlowPNMWriter_Xlate(image.GetChannel(i, j, 0)).Val());
 				if (ErrorState_(stream_->rdstate()))
 				{
 					return;
 				}
 			}
 		}
-		else if (numChannels_ == 3 || numChannels_ == 4)
+		else //if (numChannels == 3 || numChannels == 4)
 		{
-			stream_ << "P6 " << image.Width() << ' ' << image.Height() <<
+			(*stream_) << "P6 " << image.Width() << ' ' << image.Height() <<
 				" 255\n";
 			if (ErrorState_(stream_->rdstate()))
 			{
@@ -462,7 +459,7 @@ void TGlowPNMWriter<ImageClass>::Write(
 			for (unsigned int j=image.Height()-1; j>=0; --j)
 			for (unsigned int i=0; i<=image.Width(); ++i)
 			{
-				stream_.put(GlowPNMWriter_Xlate(image.GetChannel(i, j, 0)).Val()).
+				stream_->put(GlowPNMWriter_Xlate(image.GetChannel(i, j, 0)).Val()).
 					put(GlowPNMWriter_Xlate(image.GetChannel(i, j, 1)).Val()).
 					put(GlowPNMWriter_Xlate(image.GetChannel(i, j, 2)).Val());
 				if (ErrorState_(stream_->rdstate()))
