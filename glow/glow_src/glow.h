@@ -241,6 +241,7 @@ class Glow
 			char** argv);
 		static void MainLoop();
 		static double Version();
+		static int APIVersion();
 		
 		// Idle tasks
 		static void RegisterIdle(

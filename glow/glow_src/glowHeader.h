@@ -118,6 +118,10 @@
 // e.g. 1.3.11     == 1.031199
 #define GLOW_VERSION 1.000099
 
+// API version number
+// 1  == GLOW release 1.0
+#define GLOW_APIVERSION 1
+
 // Internal utility
 #define GLOW_INTERNAL_SETUPENUMBITFIELD(T) \
 	inline T operator|(T op1, T op2) {return T(int(op1)|int(op2));} \

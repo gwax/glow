@@ -82,15 +82,14 @@ RELEASE NOTES
     A complete history of publicly released versions can be found on the
     GLOW web site.
 
-    This release of GLOW focused on final bug fixing and cleaning up of
-	the tutorial.
-
 
     Features added
     --------------
 
       Quatf can now be cast to GLfloat*. Why anyone would want to do
       this I'm not sure, but the feature is now there.
+
+      Added GLOW_APIVERSION symbol and Glow::APIVersion().
 
 
     Features changed
@@ -116,17 +115,19 @@ RELEASE NOTES
     ----------------
 
       Refresh() now uses glutPostWindowRedisplay() if available. Should
-      be a little faster. A number of other window-related methods also
-      try to avoid calling glutSetWindow().
+      be a little faster. Other window-related methods also try to avoid
+      calling glutSetWindow().
 
 
     Known issues
     ------------
 
-      Under certain conditions (often aggravated by reposting redisplay
-      events while in the display callback), GLUT could lose track of
-      some of its windows. I confirmed this as a bug in GLUT. There is
-      no known complete workaround, but GLOW now provides an optional
+      Under certain conditions, GLUT can lose track of some of its
+      windows. This is most commonly manifested as windows or subwindows
+      which unexpectedly stop redrawing. I'm fairly certain this is due
+      to a bug in GLUT, and I'm in contact with Mark Kilgard concerning
+      it. There is no known complete workaround short of applying a fix
+      to GLUT and recompiling it, but GLOW now provides an optional
       partial workaround that can be activated by defining the symbol
       GLOW_OPTION_GLUTREDISPLAYFIX.
 

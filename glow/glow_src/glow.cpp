@@ -292,6 +292,12 @@ double Glow::Version()
 }
 
 
+int Glow::APIVersion()
+{
+	return GLOW_APIVERSION;
+}
+
+
 /*
 ===============================================================================
 	Registry functions
