@@ -14,6 +14,7 @@
 	PROGRAMMERS:
 	
 		Daniel Azuma <dazuma@kagi.com>
+		John Nagle <nagle@animats.com> 
 	
 	COPYRIGHT:
 	
@@ -37,11 +38,12 @@
 	
 	VERSION:
 	
-		The GLOW Toolkit tutorial -- version 1.1.2dev  (7 August 2000)
+		The GLOW Toolkit tutorial -- version 1.0.3  (10 September 2000)
 	
 	CHANGES:
 	
 		Original release (DA)
+		2001-09-25 Converting to texture-mapped trackball. (JN)
 
 ===============================================================================
 */
@@ -62,37 +64,162 @@ using namespace std;
 GLOW_NAMESPACE_USING
 
 #include "ballwidget.h"
+//
+//	class DrawCircle  --  draw a filled circle
+//
+class DrawCircle {
+private:
+	float radius_;
+	GLuint displayList_; 
+private:
+	void Init();
+public:
+	DrawCircle(float radius):
+		radius_(radius),displayList_(0) {}
+	void Draw();
+};
+//
+//	Init  --  called to build display list.
+//
+void DrawCircle::Init()
+{	if (displayList_ != 0) return;		// already built	
+	displayList_ = glGenLists(1);		// get a new list
+	if (displayList_ == 0) throw("OpenGL/Glow: can't allocate display list.");
+	glNewList(displayList_,GL_COMPILE);	// circle display list
+	glEnable(GL_LINE_SMOOTH);
+	glBegin(GL_POLYGON);
+	const int sides = 32;				// number of sides for circle
+	for (int i=0; i<sides; i++)
+	{	float angle = i*((Math::pi*2.0)/sides);	// angle of circle
+		float x = sin(angle)*radius_;	// circle of indicated radius
+		float y = cos(angle)*radius_;
+		glVertex2f(x,y);
+	}
+	glEnd();
+	glEndList();						// end the list
+}
+//
+//	Draw  --  draws a circle
+//
+void DrawCircle::Draw()
+{	Init();								// set up as needed
+	glCallList(displayList_);			// draw the circle
+}
+static DrawCircle unitCircle(1.0);		// set up to draw circle
+static DrawCircle innerCircle(0.95);	// smaller, inner circle
+//	
+//	class CheckerboardTexture  --  a texture object of a checkerboard
+//
+//	This object cannot be initialized statically, because OpenGL isn't ready
+//	at static construction time.
+//
+class CheckerboardTexture {
+private:
+	GLuint _textureID;					// texture ID if any
+	int _darkColor;						// color of lines
+	int _lightColor;					// color of background
+private:
+	Init();								// called on first GetID to initialize
+public:
+	CheckerboardTexture(int dark, int light):
+	  _darkColor(dark),_lightColor(light),_textureID(0) {}
+	GLuint GetID()
+	{	if (_textureID == 0) Init();	// initialize if needed
+		return(_textureID);
+	}
+};
+//
+//	Init  --  initial setup of a checkerboard texture.
+//
+//	Returns: OpenGL texture "name" (an integer ID)
+//	Called at first GetID; can't be called until OpenGL is running.
+//
+//	Modelled after code in "OpenGL Programming Guide" and GLUI.
+//
+CheckerboardTexture::Init()
+{	//	Build checkerboard image procedurally.
+	const int kCheckerboardSize = 64;		// typical 64x64 texture
+	unsigned char texture_image[kCheckerboardSize][kCheckerboardSize][3];
+	for(int i=0; i<kCheckerboardSize; i++ ) 
+		for(int j=0; j<kCheckerboardSize; j++ ) {
+		{	bool isdark = ((i&0x8)==0) != ((j&0x8)==0);  
+			char texbyte = isdark ? _darkColor : _lightColor;	// pick texture byte
+			texture_image[i][j][0] = texbyte;		// all colors same, thus grey
+			texture_image[i][j][1] = texbyte;
+			texture_image[i][j][2] = texbyte;
+		}    
+	}
+	//	Usual OpenGL ritual to setup a texture.
+	GLuint textureNames[1] = { 0 };					// we need one texture name
+	glPushAttrib(GL_ALL_ATTRIB_BITS);				// save OpenGL state
+	glGenTextures(1,textureNames);					// get one
+	glBindTexture(GL_TEXTURE_2D,textureNames[0]);	// bind it to next texture
+	glColor3f( 1.0, 1.0, 1.0 );
+	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+	glEnable( GL_TEXTURE_2D);
+	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, kCheckerboardSize, 
+		kCheckerboardSize, 0, GL_RGB, GL_UNSIGNED_BYTE,
+		texture_image );
+	glPopAttrib();									// restore OpenGL state
+	_textureID = textureNames[0];					// set name of new texture
+	if (_textureID == 0) throw("OpenGL/GLOW: unable to create texture.");
 
-
+}
+//	A checkerboard texture to wrap around the arcball
+static CheckerboardTexture darkCheckerboard(110,220);
 /*
 ===============================================================================
-	Component that draws a wire sphere
+	Component that draws a solid sphere with a checkerboard texture.
 ===============================================================================
 */
 
-class DrawWireSphere :
+class DrawTexturedSphere :
 	public GlowComponent
 {
+	private:
+		GLUquadric* _texturedSphere;			// ID of sphere object
 	public:
 	
-		DrawWireSphere(
+		DrawTexturedSphere(
 			GlowComponent* parent) :
-		GlowComponent(parent) {}
+		GlowComponent(parent),_texturedSphere(0) {}
+		virtual ~DrawTexturedSphere()			// destructor
+		{	if (_texturedSphere) gluDeleteQuadric(_texturedSphere); 
+		}
 	
 	protected:
-	
 		virtual void OnEndPaint();
+		virtual void Init();
 };
-
-
-void DrawWireSphere::OnEndPaint()
+//
+//	Init  -- initialization, called on first draw
+//
+void DrawTexturedSphere::Init()
 {
+	if (_texturedSphere != 0) return;	// already initialized
+	_texturedSphere = gluNewQuadric();
+	if (!_texturedSphere) throw("OpenGL/GLOW: unable to create sphere.");
+	gluQuadricDrawStyle(_texturedSphere, GLU_FILL);
+    gluQuadricNormals(_texturedSphere, GLU_SMOOTH);
+    gluQuadricTexture(_texturedSphere, true );
+}
+
+void DrawTexturedSphere::OnEndPaint()
+{	const float radius = 0.9;				// sphere fills 0.9 of unit square
+	Init();									// build sphere object if needed
+	::glPushAttrib(GL_ALL_ATTRIB_BITS);		// save state
+	::glEnable(GL_TEXTURE_2D);
 	::glEnable(GL_CULL_FACE);
-	::glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	::glColor3ub(0, 255, 255);
-	::glutSolidSphere(1.0, 12, 6);
-	::glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	::glDisable(GL_CULL_FACE);
+	::glDisable(GL_DEPTH_TEST);
+	::glBindTexture(GL_TEXTURE_2D,darkCheckerboard.GetID());	// use specified texture
+	::glColor3ub(255, 255, 255);			// Color gets modulated by texture
+    ::gluSphere(_texturedSphere, radius, 16, 16);
+	::glPopAttrib();
 }
 
 
@@ -119,7 +246,7 @@ BallWidget::BallWidget(
 	
 	// Make view manipulator and drawing component
 	manip_ = new GlowViewManipulator(this, GlowViewManipulatorParams::defaults);
-	new DrawWireSphere(manip_);
+	new DrawTexturedSphere(manip_);
 	
 	// Register to receive mouse events
 	RegisterMouseEvents();
@@ -128,17 +255,17 @@ BallWidget::BallWidget(
 
 // Override this method to draw the widget
 void BallWidget::OnWidgetPaint()
-{
-	// Here we just clear the widget's rectangle to black.
-	// Since OnWidgetPaint() is called during GlowComponent::OnBeginPaint(),
-	// this clears the rectangle to black, before the trackball is drawn.
-	::glColor3ub(0, 0, 0);
-	::glBegin(GL_QUADS);
-	::glVertex2f(-1.0f, -1.0f);
-	::glVertex2f(1.0f, -1.0f);
-	::glVertex2f(1.0f, 1.0f);
-	::glVertex2f(-1.0f, 1.0f);
-	::glEnd();
+{	const float trackballBackgroundGrey = 0.9;	// outer ring around trackball
+	const float trackballInnerGrey = 0.3;	// inner ring around trackball
+		//	Start by drawing a circle around the control.
+	::glPushAttrib(GL_ALL_ATTRIB_BITS);		// save state
+	::glDisable(GL_DEPTH_TEST);
+	::glColor3f(trackballBackgroundGrey,trackballBackgroundGrey,trackballBackgroundGrey);						
+	unitCircle.Draw();						// circle
+	::glColor3f(trackballInnerGrey,trackballInnerGrey,trackballInnerGrey);					
+	innerCircle.Draw();						// inner circle
+	::glPopAttrib();
+
 }
 
 
