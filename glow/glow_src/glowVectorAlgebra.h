@@ -354,6 +354,8 @@ class Mat4f
 		inline Mat4f& operator=(
 			const GLfloat* array);
 		
+		inline operator const GLfloat*() const;
+		
 		// Mutators/accessors
 		
 		inline void Set(
@@ -569,6 +571,8 @@ class Quatf
 			const GLfloat* vals);
 		inline Quatf& operator=(
 			const Vec3f& vec);
+		
+		inline operator const GLfloat*() const;
 		
 		// Setters
 		

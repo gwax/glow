@@ -118,7 +118,7 @@
 #define GLOW_TOOLKIT 8
 
 // Fractional version number
-#define GLOW_VERSION 0.991
+#define GLOW_VERSION 0.992
 
 // Internal utility
 #define GLOW_INTERNAL_SETUPENUMBITFIELD(T) \

@@ -1,6 +1,6 @@
 
 The GLOW Toolkit
-version 0.9.91 (17 June 2000)
+version 0.9.92 (22 June 2000)
 Copyright (C) 1997-2000  Daniel Azuma
 All rights reserved worldwide
 
@@ -14,7 +14,7 @@ CONTENTS
 
    (2) Terms and conditions
 
-   (3) Release notes 0.9.91
+   (3) Release notes 0.9.92
 
    (4) Installing GLOW
 
@@ -77,19 +77,19 @@ RELEASE NOTES
 
 
     The GLOW Toolkit
-    Version 0.9.91 (17 June 2000)
+    Version 0.9.92 (22 June 2000)
 
-    These notes detail the differences between versions 0.9.9 and 0.9.91.
+    These notes detail the differences between versions 0.9.9 and 0.9.92.
     A complete history of publicly released versions can be found on the
     GLOW web site.
 
-    As of this release of GLOW, the tutorial has been completed.
+    This release of GLOW focused on final bug fixing.
 
 
     Features added
     --------------
 
-      (none)
+      Quatf can now be cast to GLfloat*.
 
 
     Features changed
@@ -102,6 +102,8 @@ RELEASE NOTES
     ----------
 
       Lessons 7 and 8 didn't build under MSVC. Fixed.
+
+      Mat4f was missing the cast to GLfloat* operator. Fixed.
 
 
     Internal changes
