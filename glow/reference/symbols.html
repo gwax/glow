@@ -65,7 +65,7 @@ These symbols control a few aspects of the behavior of GLOW. You should set them
 <tt><b>GLOW_OPTION_DEBUG</b></tt>
 </p>
 <blockquote>
-If defined, <a href="VDebug.html">VDebug</a> debugging facilities will be active.
+If defined, <a href="glowDebug.html">glowDebug</a> debugging facilities will be active.
 </blockquote>
 
 <p>
@@ -136,7 +136,7 @@ Define this symbol if your development environment doesn't include the <tt>min</
 </blockquote>
 
 <p>
-<tt>GLOW_COMPAT_NOTEMPLATESPECIALIZATIONS</tt>
+<tt><b>GLOW_COMPAT_NOTEMPLATESPECIALIZATIONS</b></tt>
 </p>
 <blockquote>
 Define this symbol if your compiler doesn't fully support template specializations. Necessary for MSVC++ 6.0.
@@ -175,17 +175,17 @@ SGI IRIX.
 </blockquote>
 
 <p>
-<tt><b>GLOW_PLATFORM_MACOS</b></tt>
-</p>
-<blockquote>
-Apple Mac OS.
-</blockquote>
-
-<p>
 <tt><b>GLOW_PLATFORM_LINUX</b></tt>
 </p>
 <blockquote>
 Linux.
+</blockquote>
+
+<p>
+<tt><b>GLOW_PLATFORM_MACOS</b></tt>
+</p>
+<blockquote>
+Apple Mac OS.
 </blockquote>
 
 <p>
@@ -258,7 +258,7 @@ Other macros are defined by the GLOW system in the header "<tt>glowHeader.h</tt>
 <tt><b>GLOW_TOOLKIT</b></tt>
 </p>
 <blockquote>
-This symbol is #defined once any of the GLOW headers have been included. The actual string it expands to is unspecified.
+This symbol is #defined once any of the GLOW headers have been included. The actual string it expands to is a nonzero but otherwise unspecified numeric value.
 </blockquote>
 
 <p>
@@ -293,7 +293,7 @@ This expands to the version number of the GLOW interfaces being used, as a float
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 10 April 2000
+Last updated 19 April 2000
 </address>
 
 
