@@ -21,11 +21,11 @@ GLOWMODULES=\
 	glow \
 	glowAux \
 	glowDebug \
-	glowSenderReceiver \
-	glowVectorAlgebra \
 	glowLabelWidget \
 	glowPushButtonWidget \
+	glowSenderReceiver \
 	glowUtilities \
+	glowVectorAlgebra \
 	glowViewTransform \
 	glowWidget
 

@@ -62,7 +62,7 @@
 
 // This rocksmokery is necessary for GL/gl.h to compile under Windows
 // without having to include windows.h
-#if defined(_WIN32)
+#ifdef _WIN32
 	#ifndef APIENTRY
 		#define GLOW_INTERNAL_APIENTRYDEFINED
 		#if (_MSC_VER >= 800) || defined(_STDCALL_SUPPORTED)
@@ -80,7 +80,7 @@
 #include "GL/gl.h"
 
 // Clean up rocksmokery...
-#if defined(_WIN32)
+#ifdef _WIN32
 	#ifdef GLOW_INTERNAL_APIENTRYDEFINED
 		#undef GLOW_INTERNAL_APIENTRYDEFINED
 		#undef APIENTRY
@@ -91,6 +91,7 @@
 	#endif
 #endif
 
+#include <cstddef>
 #ifndef GLOW_OPTION_NOIOSTREAMS
 	#include <iosfwd>
 #endif
@@ -197,15 +198,15 @@ class Vec3f
 		// Indexed member access
 		
 		inline GLfloat GetVal(
-			short i) const;
+			ptrdiff_t i) const;
 		inline void SetVal(
-			short i,
+			ptrdiff_t i,
 			GLfloat val);
 		
 		inline GLfloat& operator[](
-			short i);
-		inline const GLfloat& operator[](
-			short i) const;
+			ptrdiff_t i);
+		inline GLfloat operator[](
+			ptrdiff_t i) const;
 		
 		// Copy and cast
 		
@@ -225,14 +226,14 @@ class Vec3f
 		
 		// Negation
 		
-		inline Vec3f operator-() const;
+		inline const Vec3f operator-() const;
 		inline void Negate();
 		
 		// Binary operations with scalars
 		
-		inline Vec3f operator*(
+		inline const Vec3f operator*(
 			GLfloat op2) const;
-		inline Vec3f operator/(
+		inline const Vec3f operator/(
 			GLfloat op2) const;
 		inline Vec3f& operator*=(
 			GLfloat op2);
@@ -241,13 +242,13 @@ class Vec3f
 		
 		// Binary operations with vectors
 		
-		inline Vec3f operator+(
+		inline const Vec3f operator+(
 			const Vec3f& op2) const;
-		inline Vec3f operator-(
+		inline const Vec3f operator-(
 			const Vec3f& op2) const;
 		inline GLfloat operator*(
 			const Vec3f& op2) const;
-		inline Vec3f operator%(
+		inline const Vec3f operator%(
 			const Vec3f& op2) const;
 		inline Vec3f& operator+=(
 			const Vec3f& op2);
@@ -261,7 +262,7 @@ class Vec3f
 		inline bool IsZero() const;
 		inline GLfloat Norm() const;
 		inline GLfloat NormSquared() const;
-		inline Vec3f Normalized() const;
+		inline const Vec3f Normalized() const;
 		inline void Normalize();
 		
 		// Binary I/O
@@ -292,7 +293,7 @@ class Vec3f
 
 // Binary operator
 
-inline Vec3f operator*(
+inline const Vec3f operator*(
 	GLfloat op1,
 	const Vec3f& op2);
 
@@ -401,9 +402,9 @@ class Mat4f
 		
 		// Operations
 		
-		Mat4f operator*(
+		const Mat4f operator*(
 			GLfloat op2) const;
-		Mat4f operator/(
+		const Mat4f operator/(
 			GLfloat op2) const;
 		inline Mat4f& operator*=(
 			GLfloat op2);
@@ -412,16 +413,16 @@ class Mat4f
 		
 		Mat4f& SetInverse(
 			Mat4f& res) const;
-		Mat4f Inverse() const;
+		const Mat4f Inverse() const;
 		Mat4f& SetTranspose(
 			Mat4f& res) const;
-		Mat4f Transpose() const;
+		const Mat4f Transpose() const;
 		Mat4f& SetInverseTranspose(
 			Mat4f& res) const;
-		Mat4f InverseTranspose() const;
+		const Mat4f InverseTranspose() const;
 		Mat4f& SetCofactors(
 			Mat4f& res) const;
-		Mat4f Cofactors() const;
+		const Mat4f Cofactors() const;
 		GLfloat Determinant() const;
 		
 		inline void GetGLMatrix(
@@ -431,15 +432,15 @@ class Mat4f
 			const GLfloat* mat);
 		
 		// Apply matrix to vector
-		Vec3f operator*(
+		const Vec3f operator*(
 			const Vec3f& v);
 		
 		// Matrix add/subtract/multiply to self operators
-		Mat4f operator+(
+		const Mat4f operator+(
 			const Mat4f& op2) const;
-		Mat4f operator-(
+		const Mat4f operator-(
 			const Mat4f& op2) const;
-		Mat4f operator*(
+		const Mat4f operator*(
 			const Mat4f& op2) const;
 		inline Mat4f& operator+=(
 			const Mat4f& op2);
@@ -583,15 +584,15 @@ class Quatf
 		// Indexed member access
 		
 		inline GLfloat GetVal(
-			short a) const;
+			ptrdiff_t a) const;
 		inline void SetVal(
-			short a,
+			ptrdiff_t a,
 			GLfloat val);
 		
 		inline GLfloat& operator[](
-			short i);
-		inline const GLfloat& operator[](
-			short i) const;
+			ptrdiff_t i);
+		inline GLfloat operator[](
+			ptrdiff_t i) const;
 		
 		// Special values
 		
@@ -607,7 +608,7 @@ class Quatf
 			GLfloat vecZ);
 		inline void SetImaginary(
 			const Vec3f& vec);
-		inline Vec3f GetImaginary() const;
+		inline const Vec3f GetImaginary() const;
 		
 		// Rotations
 		
@@ -629,32 +630,32 @@ class Quatf
 		
 		// Operations
 		
-		inline Quatf Conjugate() const;
+		inline const Quatf Conjugate() const;
 		
 		inline GLfloat Norm() const;
 		inline void Normalize();
-		inline Quatf Normalized() const;
+		inline const Quatf Normalized() const;
 		
 		// Operators
 		
-		inline Quatf operator-() const;
+		inline const Quatf operator-() const;
 		
-		inline Quatf operator*(
+		inline const Quatf operator*(
 			GLfloat op2) const;
-		inline Quatf operator/(
+		inline const Quatf operator/(
 			GLfloat op2) const;
 		inline Quatf& operator*=(
 			GLfloat op2);
 		inline Quatf& operator/=(
 			GLfloat op2);
 		
-		inline Quatf operator+(
+		inline const Quatf operator+(
 			const Quatf& op2) const;
-		inline Quatf operator-(
+		inline const Quatf operator-(
 			const Quatf& op2) const;
 		inline GLfloat operator*(
 			const Quatf& op2) const;
-		Quatf operator%(
+		const Quatf operator%(
 			const Quatf& op2) const;
 		inline Quatf& operator+=(
 			const Quatf& op2);
@@ -664,7 +665,7 @@ class Quatf
 			const Quatf& op2);
 		
 		// Apply quaternion to a vector
-		Vec3f operator*(
+		const Vec3f operator*(
 			const Vec3f& v) const;
 	
 	
@@ -712,3 +713,4 @@ GLOW_NAMESPACE_END
 
 
 #endif
+

@@ -233,14 +233,14 @@ inline const GLfloat& Vec3f::Z() const
 //-----------------------------------------------------------------------------
 
 inline GLfloat Vec3f::GetVal(
-	short i) const
+	ptrdiff_t i) const
 {
 	GLOW_DEBUG(i < 0 || i >= 3, "index out of bounds in Vec3f::GetVal");
 	return _vals[i];
 }
 
 inline void Vec3f::SetVal(
-	short i,
+	ptrdiff_t i,
 	GLfloat val)
 {
 	GLOW_DEBUG(i < 0 || i >= 3, "index out of bounds in Vec3f::SetVal");
@@ -253,14 +253,14 @@ inline void Vec3f::SetVal(
 //-----------------------------------------------------------------------------
 
 inline GLfloat& Vec3f::operator[](
-	short i)
+	ptrdiff_t i)
 {
 	GLOW_DEBUG(i < 0 || i >= 3, "index out of bounds in Vec3f::operator[]");
 	return _vals[i];
 }
 
-inline const GLfloat& Vec3f::operator[](
-	short i) const
+inline GLfloat Vec3f::operator[](
+	ptrdiff_t i) const
 {
 	GLOW_DEBUG(i < 0 || i >= 3, "index out of bounds in Vec3f::operator[]");
 	return _vals[i];
@@ -325,7 +325,7 @@ inline bool Vec3f::operator!=(
 // Vector unary operator -
 //-----------------------------------------------------------------------------
 
-inline Vec3f Vec3f::operator-() const
+inline const Vec3f Vec3f::operator-() const
 {
 	return Vec3f(-_vals[0], -_vals[1], -_vals[2]);
 }
@@ -343,14 +343,14 @@ inline void Vec3f::Negate()
 // Vector binary operations with scalars
 //-----------------------------------------------------------------------------
 
-inline Vec3f Vec3f::operator*(
+inline const Vec3f Vec3f::operator*(
 	GLfloat op2) const
 {
 	return Vec3f(_vals[0]*op2, _vals[1]*op2, _vals[2]*op2);
 }
 
 
-inline Vec3f operator*(
+inline const Vec3f operator*(
 	GLfloat op1,
 	const Vec3f& op2)
 {
@@ -358,7 +358,7 @@ inline Vec3f operator*(
 }
 
 
-inline Vec3f Vec3f::operator/(
+inline const Vec3f Vec3f::operator/(
 	GLfloat op2) const
 {
 	return Vec3f(_vals[0]/op2, _vals[1]/op2, _vals[2]/op2);
@@ -391,7 +391,7 @@ inline Vec3f& Vec3f::operator/=(
 // Vector binary operators with vector
 //-----------------------------------------------------------------------------
 
-inline Vec3f Vec3f::operator+(
+inline const Vec3f Vec3f::operator+(
 	const Vec3f& op2) const
 {
 	return Vec3f(
@@ -401,7 +401,7 @@ inline Vec3f Vec3f::operator+(
 }
 
 
-inline Vec3f Vec3f::operator-(
+inline const Vec3f Vec3f::operator-(
 	const Vec3f& op2) const
 {
 	return Vec3f(
@@ -420,7 +420,7 @@ inline GLfloat Vec3f::operator*(
 }
 
 
-inline Vec3f Vec3f::operator%(
+inline const Vec3f Vec3f::operator%(
 	const Vec3f& op2) const
 {
 	return Vec3f(
@@ -476,7 +476,7 @@ inline GLfloat Vec3f::NormSquared() const
 }
 
 
-inline Vec3f Vec3f::Normalized() const
+inline const Vec3f Vec3f::Normalized() const
 {
 	GLfloat norm = GLOW_CSTD::sqrt(_vals[0]*_vals[0]+_vals[1]*_vals[1]+_vals[2]*_vals[2]);
 	return (norm == 0.0) ?
@@ -1186,7 +1186,7 @@ inline const GLfloat& Quatf::Z() const
 //-----------------------------------------------------------------------------
 
 inline void Quatf::SetVal(
-	short a,
+	ptrdiff_t a,
 	GLfloat val)
 {
 	GLOW_DEBUG(a < 0 || a >= 4, "index out of bounds in Quatf::SetVal");
@@ -1195,7 +1195,7 @@ inline void Quatf::SetVal(
 
 
 inline GLfloat Quatf::GetVal(
-	short a) const
+	ptrdiff_t a) const
 {
 	GLOW_DEBUG(a < 0 || a >= 4, "index out of bounds in Quatf::GetVal");
 	return _vals[a];
@@ -1207,14 +1207,14 @@ inline GLfloat Quatf::GetVal(
 //-----------------------------------------------------------------------------
 
 inline GLfloat& Quatf::operator[](
-	short i)
+	ptrdiff_t i)
 {
 	GLOW_DEBUG(i < 0 || i >= 4, "index out of bounds in Quatf::operator[]");
 	return _vals[i];
 }
 
-inline const GLfloat& Quatf::operator[](
-	short i) const
+inline GLfloat Quatf::operator[](
+	ptrdiff_t i) const
 {
 	GLOW_DEBUG(i < 0 || i >= 4, "index out of bounds in Quatf::operator[]");
 	return _vals[i];
@@ -1312,7 +1312,7 @@ inline void Quatf::SetImaginary(
 }
 
 
-inline Vec3f Quatf::GetImaginary() const
+inline const Vec3f Quatf::GetImaginary() const
 {
 	return Vec3f(_vals[1], _vals[2], _vals[3]);
 }
@@ -1367,7 +1367,7 @@ inline void Quatf::Normalize()
 }
 
 
-inline Quatf Quatf::Normalized() const
+inline const Quatf Quatf::Normalized() const
 {
 	GLfloat n = Norm();
 	return Quatf(_vals[0]/n, _vals[1]/n, _vals[2]/n, _vals[3]/n);
@@ -1378,13 +1378,13 @@ inline Quatf Quatf::Normalized() const
 // Conjugate and negation
 //-----------------------------------------------------------------------------
 
-inline Quatf Quatf::Conjugate() const
+inline const Quatf Quatf::Conjugate() const
 {
 	return Quatf(_vals[0], -_vals[1], -_vals[2], -_vals[3]);
 }
 
 
-inline Quatf Quatf::operator-() const
+inline const Quatf Quatf::operator-() const
 {
 	return Quatf(-_vals[0], -_vals[1], -_vals[2], -_vals[3]);
 }
@@ -1394,14 +1394,14 @@ inline Quatf Quatf::operator-() const
 // Quatf binary operators with scalar
 //-----------------------------------------------------------------------------
 
-inline Quatf Quatf::operator*(
+inline const Quatf Quatf::operator*(
 	GLfloat op2) const
 {
 	return Quatf(_vals[0]*op2, _vals[1]*op2, _vals[2]*op2, _vals[3]*op2);
 }
 
 
-inline Quatf Quatf::operator/(
+inline const Quatf Quatf::operator/(
 	GLfloat op2) const
 {
 	return Quatf(_vals[0]/op2, _vals[1]/op2, _vals[2]/op2, _vals[3]/op2);
@@ -1436,7 +1436,7 @@ inline Quatf& Quatf::operator/=(
 // Binary operations
 //-----------------------------------------------------------------------------
 
-inline Quatf Quatf::operator+(
+inline const Quatf Quatf::operator+(
 	const Quatf& op2) const
 {
 	return Quatf(
@@ -1456,7 +1456,7 @@ inline Quatf& Quatf::operator+=(
 }
 
 
-inline Quatf Quatf::operator-(
+inline const Quatf Quatf::operator-(
 	const Quatf& op2) const
 {
 	return Quatf(

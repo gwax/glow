@@ -17,25 +17,25 @@ MODULES=\
 GLOWMODULES=\
 	glow \
 	glowAux \
-	glowDebug \
-	glowSenderReceiver \
-	glowUtilities \
-	glowVectorAlgebra \
-	glowViewTransform \
-	glowWidget \
 	glowCheckBoxWidget \
+	glowDebug \
 	glowLabelWidget \
 	glowMenuButtonWidget \
 	glowPanelWidget \
 	glowPushButtonWidget \
+	glowQuickPalette \
 	glowRadioButtonWidget \
 	glowScrollBarWidget \
+	glowSenderReceiver \
 	glowSeparatorWidget \
 	glowSliderWidget \
 	glowTextData \
 	glowTextFieldWidget \
 	glowTextFieldWindow \
-	glowQuickPalette
+	glowUtilities \
+	glowVectorAlgebra \
+	glowViewTransform \
+	glowWidget
 
 COMPILE=gcc
 COMPILE_IRIX=CC

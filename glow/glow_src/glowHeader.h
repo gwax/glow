@@ -111,10 +111,10 @@
 #endif
 
 // Integral release number (0.9.5 == 3)
-#define GLOW_TOOLKIT 3
+#define GLOW_TOOLKIT 5
 
 // Fractional version number
-#define GLOW_VERSION 0.952
+#define GLOW_VERSION 0.97
 
 // Internal utility
 #define GLOW_INTERNAL_SETUPENUMBITFIELD(T) \
@@ -123,9 +123,10 @@
 	inline T& operator|=(T& op1, T op2) {op1=T(int(op1)|int(op2)); return op1;} \
 	inline T& operator&=(T& op1, T op2) {op1=T(int(op1)&int(op2)); return op1;}
 
-// Establish glow namespace so using directive doesn't barf
+// Establish namespaces so using directive doesn't barf
 GLOW_NAMESPACE_BEGIN
 GLOW_NAMESPACE_END
+namespace std {}
 
 
 #endif

@@ -124,7 +124,7 @@ GLOW_STD::istream& operator>>(
 // Binary operations
 //-----------------------------------------------------------------------------
 
-Mat4f Mat4f::operator*(
+const Mat4f Mat4f::operator*(
 	GLfloat op2) const
 {
 	Mat4f result;
@@ -140,7 +140,7 @@ Mat4f Mat4f::operator*(
 }
 
 
-Mat4f Mat4f::operator/(
+const Mat4f Mat4f::operator/(
 	GLfloat op2) const
 {
 	Mat4f result;
@@ -220,7 +220,7 @@ Mat4f& Mat4f::SetInverse(
 }
 
 
-Mat4f Mat4f::Inverse() const
+const Mat4f Mat4f::Inverse() const
 {
 	Mat4f res;
 	SetInverse(res);
@@ -245,7 +245,7 @@ Mat4f& Mat4f::SetCofactors(
 }
 
 
-Mat4f Mat4f::Cofactors() const
+const Mat4f Mat4f::Cofactors() const
 {
 	Mat4f result;
 	
@@ -293,7 +293,7 @@ Mat4f& Mat4f::SetTranspose(
 }
 
 
-Mat4f Mat4f::Transpose() const
+const Mat4f Mat4f::Transpose() const
 {
 	Mat4f result;
 	
@@ -424,7 +424,7 @@ void Mat4f::SetAxisTransformation(
 // Apply matrix transform to a vector
 //-----------------------------------------------------------------------------
 
-Vec3f Mat4f::operator*(
+const Vec3f Mat4f::operator*(
 	const Vec3f& v)
 {
 	return Vec3f(
@@ -464,7 +464,7 @@ Mat4f& Mat4f::operator*=(
 }
 
 
-Mat4f Mat4f::operator+(
+const Mat4f Mat4f::operator+(
 	const Mat4f& op2) const
 {
 	Mat4f result;
@@ -483,7 +483,7 @@ Mat4f Mat4f::operator+(
 // Matrix subtract
 //-----------------------------------------------------------------------------
 
-Mat4f Mat4f::operator-(
+const Mat4f Mat4f::operator-(
 	const Mat4f& op2) const
 {
 	Mat4f result;
@@ -502,7 +502,7 @@ Mat4f Mat4f::operator-(
 // Matrix multiply
 //-----------------------------------------------------------------------------
 
-Mat4f Mat4f::operator*(
+const Mat4f Mat4f::operator*(
 	const Mat4f& op2) const
 {
 	Mat4f result;
@@ -645,7 +645,7 @@ void Quatf::ScaleRotation(
 // Apply quaternion rotation to a vector
 //-----------------------------------------------------------------------------
 
-Vec3f Quatf::operator*(
+const Vec3f Quatf::operator*(
 	const Vec3f& v) const
 {
 	return Vec3f((*this % Quatf(v) % Conjugate()).GetImaginary());
@@ -656,7 +656,7 @@ Vec3f Quatf::operator*(
 // Quatf multiply
 //-----------------------------------------------------------------------------
 
-Quatf Quatf::operator%(
+const Quatf Quatf::operator%(
 	const Quatf& op2) const
 {
 	return Quatf(
@@ -765,4 +765,5 @@ GLOW_STD::istream& operator>>(
 
 
 GLOW_NAMESPACE_END
+
 

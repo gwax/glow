@@ -56,6 +56,10 @@
 	#include "glowHeader.h"
 #endif
 
+#include <cmath>
+
+using namespace std;
+
 #ifndef GLOW_DEBUG__H
 	#include "glowDebug.h"
 #endif
