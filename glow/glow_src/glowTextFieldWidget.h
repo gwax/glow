@@ -202,10 +202,12 @@ class GlowTextFieldWidget :
 	
 	public:
 	
-		static const int plainStyle = 1;
-		static const int etchedStyle = 2;
-		static const int raisedStyle = 3;
-		static const int loweredStyle = 4;
+		enum {
+			plainStyle = 1,
+			etchedStyle = 2,
+			raisedStyle = 3,
+			loweredStyle = 4
+		};
 	
 	public:
 	

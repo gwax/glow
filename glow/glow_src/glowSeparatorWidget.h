@@ -112,9 +112,11 @@ class GlowSeparatorWidget :
 	
 	public:
 	
-		static const int transparentStyle = 0;
-		static const int ridgeStyle = 1;
-		static const int valleyStyle = 2;
+		enum {
+			transparentStyle = 0,
+			ridgeStyle = 1,
+			valleyStyle = 2
+		};
 	
 	public:
 	

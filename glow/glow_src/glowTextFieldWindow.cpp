@@ -205,15 +205,15 @@ void GlowTextFieldWindow::Init(
 	GlowFixedSizeWidgetWindow::Init(wparams);
 	
 	// Make buttons
-	char* tempbuf = new char[GLOW_STD::strlen(params.buttonLabels)+1];
-	GLOW_STD::strcpy(tempbuf, params.buttonLabels);
-	vector<Glow_TextFieldWindowButton*> buttons;
+	char* tempbuf = new char[GLOW_CSTD::strlen(params.buttonLabels)+1];
+	GLOW_CSTD::strcpy(tempbuf, params.buttonLabels);
+	GLOW_STD::vector<Glow_TextFieldWindowButton*> buttons;
 	GlowPushButtonParams pbparams;
 	pbparams.font = params.buttonFont;
 	int buttonsWidth = -params.windowSpacing;
 	while (true)
 	{
-		pbparams.text = GLOW_STD::strtok(buttons.size()==0 ? tempbuf : 0, "\t");
+		pbparams.text = GLOW_CSTD::strtok(buttons.size()==0 ? tempbuf : 0, "\t");
 		if (pbparams.text == 0) break;
 		buttons.push_back(new Glow_TextFieldWindowButton(this, pbparams, buttons.size()));
 		buttons.back()->AutoReshape();
@@ -268,7 +268,7 @@ void GlowTextFieldWindow::Init(
 	
 	// Arrange buttons
 	int xbutton = (windowWidth - buttonsWidth)/2;
-	for (vector<Glow_TextFieldWindowButton*>::iterator iter = buttons.begin();
+	for (GLOW_STD::vector<Glow_TextFieldWindowButton*>::iterator iter = buttons.begin();
 		iter != buttons.end(); ++iter)
 	{
 		(*iter)->Move(xbutton,

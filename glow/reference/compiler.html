@@ -39,7 +39,22 @@ Compiler compatibility
 <blockquote>
 
 <p>
-The GLOW Toolkit requires a C++ compiler that is ANSI/ISO compliant, or nearly so. I have successfully built GLOW programs using MIPSPro 7.3 under IRIX, Metrowerks Codewarrior under MacOS and Windows, and gcc 2.95 under Linux. Information on building GLOW programs using these tools follows on this page. Other compilers and development systems may also be able to build GLOW programs, but you may need to set certain flags depending on the level of ANSI compatibility. For more information, see the page on <a href="symbols.html">preprocessor symbols</a>.
+The GLOW Toolkit requires a C++ compiler that is ANSI/ISO compliant, or nearly so. I have successfully built GLOW programs using gcc 2.95 under Linux, MIPSPro 7.3 under IRIX, Metrowerks Codewarrior under MacOS and Windows, and MSVC++ 6.0 under Windows. Information on building GLOW programs using these tools follows on this page. Other compilers and development systems may also be able to build GLOW programs, but you may need to set certain flags depending on the level of ANSI compatibility. For more information, see the page on <a href="symbols.html">preprocessor symbols</a>.
+</p>
+
+</blockquote>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>gcc 2.95</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+Recent versions of gcc are getting close to being ANSI C++ compliant. The primary issues as of version 2.95 are the state of the iostreams library; however, GLOW doesn't need to make extensive use of iostreams, so gcc shouldn't have much trouble compiling GLOW.
 </p>
 
 </blockquote>
@@ -84,30 +99,15 @@ I recommend turning off these warnings because they're a nuisance. 3201 flags un
 </p>
 
 <p>
-<tt>-DGLOW_COMPAT_INTERNALUSINGSTD -DGLOW_COMPAT_NOSTDNAMESPACE</tt>
+<tt>-DGLOW_COMPAT_CLIBNOSTDNAMESPACE</tt>
 </p>
 <blockquote>
-These are necessary for succesful compilation. They cause GLOW to work around the fact that MIPSPro does not put the standard C library into <tt>namespace std</tt>.
+This is necessary for succesful compilation. It causes GLOW to work around the fact that MIPSPro does not put the standard C library into <tt>namespace std</tt>.
 </blockquote>
 </p>
 
 <p>
 Versions of the MIPSPro C++ compiler prior to 7.3 probably cannot compile GLOW. Later versions may require fewer hacks.
-</p>
-
-</blockquote>
-
-
-<p>
-<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
-<font size="+1"><b>gcc 2.95</b></font>
-</td></tr></table>
-</p>
-
-<blockquote>
-
-<p>
-Recent versions of gcc are getting close to being ANSI C++ compliant. The primary issues as of version 2.95 are the state of the iostreams library; however, GLOW doesn't need to make extensive use of iostreams, so gcc shouldn't have much trouble compiling GLOW.
 </p>
 
 </blockquote>
@@ -126,6 +126,60 @@ Codewarrior Pro 5 is very close to being ANSI C++ compliant and should not requi
 </p>
 
 </blockquote>
+
+
+<p>
+<table width="100%" bgcolor="#ffffcc" cellpadding=3 cellspacing=0><tr><td>
+<font size="+1"><b>Microsoft Visual C++ 6.0</b></font>
+</td></tr></table>
+</p>
+
+<blockquote>
+
+<p>
+Visual C++ has a few ANSI issues, but as of GLOW 0.9.6, I've been able to work around pretty much all of them. Your first task is to get a project made up. The Windows Console Application stationery seems to work reasonable well for this. Next, make sure you have the GLUT dll properly installed (or a static library added to your project). Finally, you'll need to add the appropriate GLOW sources to the project. For the tutorials, you can determine which modules a program needs by looking at the provided Makefile. The Makefile is for gnu-make on a unix machine, and so you won't be able to use it with Windows, but you can determine which GLOW modules need to be added to your project by looking at the definition of the variable "GLOWMODULES".
+</p>
+
+<p>
+There are several compiler settings that you'll need to modify in order to get GLOW to compile. First, you need to activate the /GR setting. This is necessary to activate RTTI, which is used by several parts of GLOW. Second, you need to make sure the following symbols are defined:
+</p>
+
+<p>
+<tt>GLOW_COMPAT_NOTEMPLATESPECIALIZATIONS</tt>
+</p>
+<blockquote>
+MSVC++ doesn't seem to completely understand template specializations, so define this symbol to work around that.
+</blockquote>
+
+<p>
+<tt>GLOW_COMPAT_CLIBNOSTDNAMESPACE</tt>
+</p>
+<blockquote>
+This works around the fact that MSVC++ doesn't put the C standard library into namespace std.
+</blockquote>
+
+<p>
+<tt>GLOW_COMPAT_NOSTDMINMAX</tt>
+</p>
+<blockquote>
+This works around the fact that the C++ standard libraries that come with MSVC++ don't include the min and max templates.
+</blockquote>
+
+<p>
+<tt><b>GLOW_COMPAT_BADFORSCOPING</b></tt>
+</p>
+<blockquote>
+This works around the fact that MSVC++ incorrectly scopes variable declared in the parens of a for loop.
+</blockquote>
+
+<p>
+Finally, if you're compiling in debug mode, you may want to change the debug information settings to something like "line numbers only". Otherwise, because GLOW uses STL pretty heavily, you'll get several hundred warnings that such-and-such a symbol name is longer than 255 characters. You should also expect four warnings to be thrown out of glowViewTransform.inl.h concerning passing the "this" pointer into a member constructor. That warning should be harmless in this case.
+</p>
+
+
+</blockquote>
+
+
 
 <hr size=2>
 
@@ -147,7 +201,7 @@ Codewarrior Pro 5 is very close to being ANSI C++ compliant and should not requi
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 31 March 2000
 </address>
 
 

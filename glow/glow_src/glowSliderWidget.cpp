@@ -254,11 +254,11 @@ void GlowSliderWidget::_CalcValue(
 	{
 		if ((_type & decreasing) != 0)
 		{
-			_value = GLOW_STD::pow(_max, 1.0f-_value)*GLOW_STD::pow(_min, _value);
+			_value = GLOW_CSTD::pow(_max, 1.0f-_value)*GLOW_CSTD::pow(_min, _value);
 		}
 		else
 		{
-			_value = GLOW_STD::pow(_min, 1.0f-_value)*GLOW_STD::pow(_max, _value);
+			_value = GLOW_CSTD::pow(_min, 1.0f-_value)*GLOW_CSTD::pow(_max, _value);
 		}
 	}
 	else // linear
@@ -423,7 +423,7 @@ void GlowSliderWidget::OnWidgetPaint()
 	float indicPos;
 	if ((_type & logarithmic) != 0)
 	{
-		indicPos = GLOW_STD::log(_value/_min)/GLOW_STD::log(_max/_min);
+		indicPos = GLOW_CSTD::log(_value/_min)/GLOW_CSTD::log(_max/_min);
 	}
 	else
 	{
@@ -631,7 +631,7 @@ void GlowSliderWidget::OnWidgetMouseDown(
 	float valRatio;
 	if ((_type & logarithmic) != 0)
 	{
-		valRatio = GLOW_STD::log(_value/_min)/GLOW_STD::log(_max/_min);
+		valRatio = GLOW_CSTD::log(_value/_min)/GLOW_CSTD::log(_max/_min);
 	}
 	else
 	{
@@ -766,9 +766,9 @@ void GlowLabeledSliderWidget::Init(
 	}
 	else
 	{
-		_labelTemplate = new char[GLOW_STD::strlen(params.labelTemplate)+1];
-		GLOW_STD::strcpy(_labelTemplate, params.labelTemplate);
-		GLOW_STD::sprintf(buffer, _labelTemplate, _labelValue);
+		_labelTemplate = new char[GLOW_CSTD::strlen(params.labelTemplate)+1];
+		GLOW_CSTD::strcpy(_labelTemplate, params.labelTemplate);
+		GLOW_CSTD::sprintf(buffer, _labelTemplate, _labelValue);
 		lparams.text = buffer;
 	}
 	lparams.font = params.labelFont;
@@ -791,15 +791,15 @@ void GlowLabeledSliderWidget::Init(
 	}
 	else
 	{
-		_minmaxTemplate = new char[GLOW_STD::strlen(params.minmaxTemplate)+1];
-		GLOW_STD::strcpy(_minmaxTemplate, params.minmaxTemplate);
-		GLOW_STD::sprintf(buffer, _minmaxTemplate, _minLabelValue);
+		_minmaxTemplate = new char[GLOW_CSTD::strlen(params.minmaxTemplate)+1];
+		GLOW_CSTD::strcpy(_minmaxTemplate, params.minmaxTemplate);
+		GLOW_CSTD::sprintf(buffer, _minmaxTemplate, _minLabelValue);
 		lparams.text = buffer;
 	}
 	_minLabel = new GlowWidgetLabelWidget(this, lparams);
 	if (_minmaxTemplate != 0)
 	{
-		GLOW_STD::sprintf(buffer, _minmaxTemplate, _maxLabelValue);
+		GLOW_CSTD::sprintf(buffer, _minmaxTemplate, _maxLabelValue);
 		lparams.text = buffer;
 	}
 	_maxLabel = new GlowWidgetLabelWidget(this, lparams);
@@ -1018,11 +1018,11 @@ void GlowLabeledSliderWidget::SetLabelTemplate(
 	}
 	else
 	{
-		_labelTemplate = new char[GLOW_STD::strlen(text)+1];
-		GLOW_STD::strcpy(_labelTemplate, text);
+		_labelTemplate = new char[GLOW_CSTD::strlen(text)+1];
+		GLOW_CSTD::strcpy(_labelTemplate, text);
 		_labelValue = GetValue();
 		char buffer[1000];
-		GLOW_STD::sprintf(buffer, _labelTemplate, _labelValue);
+		GLOW_CSTD::sprintf(buffer, _labelTemplate, _labelValue);
 		_label->SetText(buffer);
 	}
 }
@@ -1040,14 +1040,14 @@ void GlowLabeledSliderWidget::SetMinmaxTemplate(
 	}
 	else
 	{
-		_minmaxTemplate = new char[GLOW_STD::strlen(text)+1];
-		GLOW_STD::strcpy(_minmaxTemplate, text);
+		_minmaxTemplate = new char[GLOW_CSTD::strlen(text)+1];
+		GLOW_CSTD::strcpy(_minmaxTemplate, text);
 		char buffer[1000];
 		_minLabelValue = GetMinimum();
-		GLOW_STD::sprintf(buffer, _minmaxTemplate, _minLabelValue);
+		GLOW_CSTD::sprintf(buffer, _minmaxTemplate, _minLabelValue);
 		_minLabel->SetText(buffer);
 		_maxLabelValue = GetMaximum();
-		GLOW_STD::sprintf(buffer, _minmaxTemplate, _maxLabelValue);
+		GLOW_CSTD::sprintf(buffer, _minmaxTemplate, _maxLabelValue);
 		_maxLabel->SetText(buffer);
 		ResizeMinmax();
 		RepositionMinmax();
@@ -1065,7 +1065,7 @@ void GlowLabeledSliderWidget::OnWidgetPaint()
 		if (_labelTemplate != 0)
 		{
 			char buffer[1000];
-			GLOW_STD::sprintf(buffer, _labelTemplate, _labelValue);
+			GLOW_CSTD::sprintf(buffer, _labelTemplate, _labelValue);
 			_label->SetRefreshEnabled(false);
 			_label->SetText(buffer);
 			_label->SetRefreshEnabled(true);
@@ -1089,7 +1089,7 @@ bool GlowLabeledSliderWidget::CheckMinmax()
 		if (_minmaxTemplate != 0)
 		{
 			char buffer[1000];
-			GLOW_STD::sprintf(buffer, _minmaxTemplate, _minLabelValue);
+			GLOW_CSTD::sprintf(buffer, _minmaxTemplate, _minLabelValue);
 			_minLabel->SetRefreshEnabled(false);
 			_minLabel->SetText(buffer);
 			needReposition = true;
@@ -1102,7 +1102,7 @@ bool GlowLabeledSliderWidget::CheckMinmax()
 		if (_minmaxTemplate != 0)
 		{
 			char buffer[1000];
-			GLOW_STD::sprintf(buffer, _minmaxTemplate, _maxLabelValue);
+			GLOW_CSTD::sprintf(buffer, _minmaxTemplate, _maxLabelValue);
 			_maxLabel->SetRefreshEnabled(false);
 			_maxLabel->SetText(buffer);
 			needReposition = true;

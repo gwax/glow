@@ -147,23 +147,23 @@ void Glow_ViewManip_IdleReceiver::OnMessage(
 ===============================================================================
 */
 
-void GlowTransformData::ApplyGLMatrix() const
+void GlowTransformData::ApplyToGLMatrix() const
 {
-	GLOW_DEBUGSCOPE("GlowTransformData::ApplyGLMatrix");
+	GLOW_DEBUGSCOPE("GlowTransformData::ApplyToGLMatrix");
 	
 	// Base transform
 	Vec3f axis;
 	GLfloat angle;
 	_rotation.GetRotation(axis, angle);
 	glTranslatef(_translation.GetX(), _translation.GetY(), _translation.GetZ());
-	glRotatef(angle*180.0/3.1415926535897932384626433832795, axis.GetX(), axis.GetY(), axis.GetZ());
+	glRotatef(angle*Math::radiansToDegrees, axis.GetX(), axis.GetY(), axis.GetZ());
 	glScalef(_scale, _scale, _scale);
 }
 
 
-void GlowTransformData::ApplyGLMatrixInverse() const
+void GlowTransformData::ApplyInverseToGLMatrix() const
 {
-	GLOW_DEBUGSCOPE("GlowTransformData::ApplyGLMatrixInverse");
+	GLOW_DEBUGSCOPE("GlowTransformData::ApplyInverseToGLMatrix");
 	
 	// Base transform
 	Vec3f axis;
@@ -171,7 +171,7 @@ void GlowTransformData::ApplyGLMatrixInverse() const
 	_rotation.GetRotation(axis, angle);
 	GLfloat scaleinv = 1.0f/_scale;
 	glScalef(scaleinv, scaleinv, scaleinv);
-	glRotatef(-angle*180.0/3.1415926535897932384626433832795, axis.GetX(), axis.GetY(), axis.GetZ());
+	glRotatef(-angle*Math::radiansToDegrees, axis.GetX(), axis.GetY(), axis.GetZ());
 	glTranslatef(-_translation.GetX(), -_translation.GetY(), -_translation.GetZ());
 }
 
@@ -253,7 +253,7 @@ GlowViewTransform::~GlowViewTransform()
 bool GlowViewTransform::OnBeginPaint()
 {
 	::glPushMatrix();
-	ApplyGLMatrix();
+	ApplyToGLMatrix();
 	return true;
 }
 
@@ -497,7 +497,7 @@ void GlowViewManipulator::InDrag(
 	_yCur = yn;
 	if (_dragType == scalingState)
 	{
-		float curScale = GLOW_STD::pow(2.0f, (_yCur-_yStart)*_scaleThrottle);
+		float curScale = GLOW_CSTD::pow(2.0f, (_yCur-_yStart)*_scaleThrottle);
 		_transform->Set(_oldScale * curScale, _oldRotation,
 			_oldTranslation * curScale);
 	}
@@ -521,7 +521,7 @@ void GlowViewManipulator::InDrag(
 				for (GLOW_STD::vector<Vec3f>::iterator iter = best;
 					iter != _axisConstraints.end(); ++iter)
 				{
-					float curValue = GLOW_STD::fabs(_ballCur*(*iter));
+					float curValue = GLOW_CSTD::fabs(_ballCur*(*iter));
 					if (curValue < bestValue)
 					{
 						bestValue = curValue;
@@ -596,7 +596,7 @@ Vec3f GlowViewManipulator::_MouseToBall(
 	}
 	else
 	{
-		return Vec3f(xn, yn, GLOW_STD::sqrt(1.0f-mag));
+		return Vec3f(xn, yn, GLOW_CSTD::sqrt(1.0f-mag));
 	}
 }
 

@@ -196,63 +196,73 @@ class Glow
 	public:
 	
 		// Event masks
-		static const int noEvents = 0x0000;
-		static const int keyboardEvents = 0x0001;
-		static const int mouseEvents = 0x0002;
-		static const int dragEvents = 0x0004;
-		static const int motionEvents = 0x0008;
-		static const int visibilityEvents = 0x0010;
-		static const int focusEvents = 0x0020;
-		static const int menuEvents = 0x0040;
-		static const int allEvents = 0xffff;
+		enum {
+			noEvents = 0x0000,
+			keyboardEvents = 0x0001,
+			mouseEvents = 0x0002,
+			dragEvents = 0x0004,
+			motionEvents = 0x0008,
+			visibilityEvents = 0x0010,
+			focusEvents = 0x0020,
+			menuEvents = 0x0040,
+			allEvents = 0xffff
+		};
 		
 		// Mouse button specification
-		static const int leftButton = GLUT_LEFT_BUTTON;
-		static const int middleButton = GLUT_MIDDLE_BUTTON;
-		static const int rightButton = GLUT_RIGHT_BUTTON;
+		enum {
+			leftButton = GLUT_LEFT_BUTTON,
+			middleButton = GLUT_MIDDLE_BUTTON,
+			rightButton = GLUT_RIGHT_BUTTON
+		};
 		
 		// Frame buffer type
-		static const int rgbBuffer = GLUT_RGB;
-		static const int alphaBuffer = GLUT_ALPHA;
-		static const int rgbaBuffer = GLUT_RGBA | GLUT_ALPHA;
-		static const int stencilBuffer = GLUT_STENCIL;
-		static const int depthBuffer = GLUT_DEPTH;
-		static const int accumBuffer = GLUT_ACCUM;
-		static const int doubleBuffer = GLUT_DOUBLE;
+		enum {
+			rgbBuffer = GLUT_RGB,
+			alphaBuffer = GLUT_ALPHA,
+			rgbaBuffer = GLUT_RGBA | GLUT_ALPHA,
+			stencilBuffer = GLUT_STENCIL,
+			depthBuffer = GLUT_DEPTH,
+			accumBuffer = GLUT_ACCUM,
+			doubleBuffer = GLUT_DOUBLE
+		};
 		
 		// Keyboard modifiers
-		static const int shiftModifier = GLUT_ACTIVE_SHIFT;
-		static const int ctrlModifier = GLUT_ACTIVE_CTRL;
-		static const int altModifier = GLUT_ACTIVE_ALT;
+		enum {
+			shiftModifier = GLUT_ACTIVE_SHIFT,
+			ctrlModifier = GLUT_ACTIVE_CTRL,
+			altModifier = GLUT_ACTIVE_ALT
+		};
 		
 		// Special key constants
-		static const int specialKeyOffset = 256;
-		static const int f1Key = specialKeyOffset+GLUT_KEY_F1;
-		static const int f2Key = specialKeyOffset+GLUT_KEY_F2;
-		static const int f3Key = specialKeyOffset+GLUT_KEY_F3;
-		static const int f4Key = specialKeyOffset+GLUT_KEY_F4;
-		static const int f5Key = specialKeyOffset+GLUT_KEY_F5;
-		static const int f6Key = specialKeyOffset+GLUT_KEY_F6;
-		static const int f7Key = specialKeyOffset+GLUT_KEY_F7;
-		static const int f8Key = specialKeyOffset+GLUT_KEY_F8;
-		static const int f9Key = specialKeyOffset+GLUT_KEY_F9;
-		static const int f10Key = specialKeyOffset+GLUT_KEY_F10;
-		static const int f11Key = specialKeyOffset+GLUT_KEY_F11;
-		static const int f12Key = specialKeyOffset+GLUT_KEY_F12;
-		static const int leftArrowKey = specialKeyOffset+GLUT_KEY_LEFT;
-		static const int upArrowKey = specialKeyOffset+GLUT_KEY_UP;
-		static const int rightArrowKey = specialKeyOffset+GLUT_KEY_RIGHT;
-		static const int downArrowKey = specialKeyOffset+GLUT_KEY_DOWN;
-		static const int pageUpKey = specialKeyOffset+GLUT_KEY_PAGE_UP;
-		static const int pageDownKey = specialKeyOffset+GLUT_KEY_PAGE_DOWN;
-		static const int homeKey = specialKeyOffset+GLUT_KEY_HOME;
-		static const int endKey = specialKeyOffset+GLUT_KEY_END;
-		static const int insertKey = specialKeyOffset+GLUT_KEY_INSERT;
-		static const int backspaceKey = 8;
-		static const int tabKey = 9;
-		static const int enterKey = 13;
-		static const int escapeKey = 27;
-		static const int deleteKey = 127;
+		enum {
+			specialKeyOffset = 256,
+			f1Key = specialKeyOffset+GLUT_KEY_F1,
+			f2Key = specialKeyOffset+GLUT_KEY_F2,
+			f3Key = specialKeyOffset+GLUT_KEY_F3,
+			f4Key = specialKeyOffset+GLUT_KEY_F4,
+			f5Key = specialKeyOffset+GLUT_KEY_F5,
+			f6Key = specialKeyOffset+GLUT_KEY_F6,
+			f7Key = specialKeyOffset+GLUT_KEY_F7,
+			f8Key = specialKeyOffset+GLUT_KEY_F8,
+			f9Key = specialKeyOffset+GLUT_KEY_F9,
+			f10Key = specialKeyOffset+GLUT_KEY_F10,
+			f11Key = specialKeyOffset+GLUT_KEY_F11,
+			f12Key = specialKeyOffset+GLUT_KEY_F12,
+			leftArrowKey = specialKeyOffset+GLUT_KEY_LEFT,
+			upArrowKey = specialKeyOffset+GLUT_KEY_UP,
+			rightArrowKey = specialKeyOffset+GLUT_KEY_RIGHT,
+			downArrowKey = specialKeyOffset+GLUT_KEY_DOWN,
+			pageUpKey = specialKeyOffset+GLUT_KEY_PAGE_UP,
+			pageDownKey = specialKeyOffset+GLUT_KEY_PAGE_DOWN,
+			homeKey = specialKeyOffset+GLUT_KEY_HOME,
+			endKey = specialKeyOffset+GLUT_KEY_END,
+			insertKey = specialKeyOffset+GLUT_KEY_INSERT,
+			backspaceKey = 8,
+			tabKey = 9,
+			enterKey = 13,
+			escapeKey = 27,
+			deleteKey = 127
+		};
 	
 	public:
 	
@@ -582,7 +592,9 @@ class GlowSubwindow :
 	
 	public:
 	
-		static const int parentWindowSize = -1;
+		enum {
+			parentWindowSize = -1
+		};
 	
 	public:
 	
@@ -762,7 +774,9 @@ class GlowWindow :
 	
 	public:
 	
-		static const int autoPosition = -1;
+		enum {
+			autoPosition = -1
+		};
 	
 	public:
 	
@@ -852,9 +866,11 @@ class GlowMenu
 	
 	public:
 	
-		static const int bindNone = 0;
-		static const int bindNormal = 1;
-		static const int bindSubwindow = 2;
+		enum {
+			bindNone = 0,
+			bindNormal = 1,
+			bindSubwindow = 2
+		};
 	
 	public:
 	

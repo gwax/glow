@@ -117,8 +117,8 @@ void GlowCheckBoxWidget::Init(
 	GLOW_DEBUGSCOPE("GlowCheckBoxWidget::Init");
 	
 	GlowWidget::Init(root, parent, params);
-	_label = new char[GLOW_STD::strlen(params.text)+1];
-	GLOW_STD::strcpy(_label, params.text);
+	_label = new char[GLOW_CSTD::strlen(params.text)+1];
+	GLOW_CSTD::strcpy(_label, params.text);
 	_font = params.font;
 	_labelWidth = _font.StringWidth(_label);
 	_spacing = params.spacing;
@@ -160,8 +160,8 @@ void GlowCheckBoxWidget::SetText(
 	GLOW_DEBUGSCOPE("GlowCheckBoxWidget::SetText");
 	
 	delete[] _label;
-	_label = new char[GLOW_STD::strlen(text)+1];
-	GLOW_STD::strcpy(_label, text);
+	_label = new char[GLOW_CSTD::strlen(text)+1];
+	GLOW_CSTD::strcpy(_label, text);
 	_labelWidth = _font.StringWidth(_label);
 	Refresh();
 }
@@ -356,7 +356,7 @@ void GlowCheckBoxWidget::OnWidgetPaint()
 	}
 	::glRasterPos2f(boxRight+float(_spacing*2)/float(Width()),
 		float(_font.Leading()-_font.BaselinePos()*2)/float(Height()));
-	int labellen = GLOW_STD::strlen(_label);
+	int labellen = GLOW_CSTD::strlen(_label);
 	for (int i=0; i<labellen; i++)
 	{
 		::glutBitmapCharacter(_font, _label[i]);

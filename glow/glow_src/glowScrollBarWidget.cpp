@@ -520,7 +520,7 @@ bool GlowScrollBarWidget::_UpdateDragValue(
 	_NormalizePosition(x, y, pos);
 	float value = float(pos-_posOffset-stripLeft)*float(_max-_span-_min)/
 		float(stripRight-stripLeft-(indicRight-indicLeft));
-	int newtop = _min + static_cast<int>(GLOW_STD::floor(value+0.5f));
+	int newtop = _min + static_cast<int>(GLOW_CSTD::floor(value+0.5f));
 	if (newtop < _min) newtop = _min;
 	if (newtop > _max-_span) newtop = _max-_span;
 	if (newtop != _topValue)

@@ -196,7 +196,7 @@ Glow_IdleFuncReceiver* Glow::_idleFuncReceiver = 0;
 
 double Glow::Version()
 {
-	return 0.91;
+	return GLOW_VERSION;
 }
 
 
@@ -937,7 +937,7 @@ void GlowSubwindow::Init(
 	_RegisterCallbacks(_eventMask);
 	_saveCursor = GLUT_CURSOR_INHERIT;
 	Glow::_AddWindow(this, _windowNum);
-	_needSwapBuffers = (params.mode & Glow::doubleBuffer);
+	_needSwapBuffers = ((params.mode & Glow::doubleBuffer) != 0);
 	_refreshEnabled = true;
 	_autoSwapBuffers = true;
 	_clock = Glow::_clock;
@@ -984,7 +984,7 @@ void GlowSubwindow::Init(
 	_RegisterCallbacks(_eventMask);
 	_saveCursor = GLUT_CURSOR_INHERIT;
 	Glow::_AddWindow(this, _windowNum);
-	_needSwapBuffers = (mode & Glow::doubleBuffer);
+	_needSwapBuffers = ((mode & Glow::doubleBuffer) != 0);
 	_refreshEnabled = true;
 	_autoSwapBuffers = true;
 	_clock = Glow::_clock;
@@ -1499,17 +1499,17 @@ void GlowWindow::Init(
 	_saveCursor = GLUT_CURSOR_INHERIT;
 	_width = params.width;
 	_height = params.height;
-	_title = new char[GLOW_STD::strlen(params.title)+1];
-	GLOW_STD::strcpy(_title, params.title);
+	_title = new char[GLOW_CSTD::strlen(params.title)+1];
+	GLOW_CSTD::strcpy(_title, params.title);
 	if (params.iconTitle == 0)
 	{
-		_iconTitle = new char[GLOW_STD::strlen(params.title)+1];
-		GLOW_STD::strcpy(_iconTitle, params.title);
+		_iconTitle = new char[GLOW_CSTD::strlen(params.title)+1];
+		GLOW_CSTD::strcpy(_iconTitle, params.title);
 	}
 	else
 	{
-		_iconTitle = new char[GLOW_STD::strlen(params.iconTitle)+1];
-		GLOW_STD::strcpy(_iconTitle, params.iconTitle);
+		_iconTitle = new char[GLOW_CSTD::strlen(params.iconTitle)+1];
+		GLOW_CSTD::strcpy(_iconTitle, params.iconTitle);
 	}
 	::glutInitWindowSize(params.width, params.height);
 	::glutInitWindowPosition(params.x, params.y);
@@ -1518,7 +1518,7 @@ void GlowWindow::Init(
 	::glutSetIconTitle(_iconTitle);
 	_RegisterCallbacks(params.eventMask);
 	Glow::_AddWindow(this, _windowNum);
-	_needSwapBuffers = (params.mode & Glow::doubleBuffer);
+	_needSwapBuffers = ((params.mode & Glow::doubleBuffer) != 0);
 	_refreshEnabled = true;
 	_autoSwapBuffers = true;
 	_clock = Glow::_clock;
@@ -1555,18 +1555,18 @@ void GlowWindow::Init(
 	_saveCursor = GLUT_CURSOR_INHERIT;
 	_width = width;
 	_height = height;
-	int len = GLOW_STD::strlen(title)+1;
+	int len = GLOW_CSTD::strlen(title)+1;
 	_title = new char[len];
-	GLOW_STD::strcpy(_title, title);
+	GLOW_CSTD::strcpy(_title, title);
 	_iconTitle = new char[len];
-	GLOW_STD::strcpy(_iconTitle, title);
+	GLOW_CSTD::strcpy(_iconTitle, title);
 	::glutInitWindowSize(width, height);
 	::glutInitWindowPosition(x, y);
 	::glutInitDisplayMode(mode);
 	_windowNum = ::glutCreateWindow(_title);
 	_RegisterCallbacks(eventMask);
 	Glow::_AddWindow(this, _windowNum);
-	_needSwapBuffers = (mode & Glow::doubleBuffer);
+	_needSwapBuffers = ((mode & Glow::doubleBuffer) != 0);
 	_refreshEnabled = true;
 	_autoSwapBuffers = true;
 	_clock = Glow::_clock;
@@ -1618,8 +1618,8 @@ void GlowWindow::SetTitle(
 	int saveWind = ::glutGetWindow();
 	::glutSetWindow(_windowNum);
 	delete[] _title;
-	_title = new char[GLOW_STD::strlen(name)+1];
-	GLOW_STD::strcpy(_title, name);
+	_title = new char[GLOW_CSTD::strlen(name)+1];
+	GLOW_CSTD::strcpy(_title, name);
 	::glutSetWindowTitle(_title);
 	if (saveWind != 0)
 	{
@@ -1638,8 +1638,8 @@ void GlowWindow::SetIconTitle(
 	int saveWind = ::glutGetWindow();
 	::glutSetWindow(_windowNum);
 	delete[] _iconTitle;
-	_iconTitle = new char[GLOW_STD::strlen(name)+1];
-	GLOW_STD::strcpy(_iconTitle, name);
+	_iconTitle = new char[GLOW_CSTD::strlen(name)+1];
+	GLOW_CSTD::strcpy(_iconTitle, name);
 	::glutSetIconTitle(_iconTitle);
 	if (saveWind != 0)
 	{
@@ -1720,9 +1720,9 @@ void GlowMenu::_SetupItem(
 		buf[0] = 0;
 		if ((*iter).mark != 0)
 		{
-			GLOW_STD::strcpy(buf, (*iter).mark);
+			GLOW_CSTD::strcpy(buf, (*iter).mark);
 		}
-		GLOW_STD::strcat(buf, (*iter).label);
+		GLOW_CSTD::strcat(buf, (*iter).label);
 		if ((*iter).subMenu != 0)
 		{
 			if (i < ::glutGet(GLenum(GLUT_MENU_NUM_ITEMS)))
@@ -1762,9 +1762,9 @@ void GlowMenu::AddEntry(
 	GLOW_DEBUGSCOPE("GlowMenu::AddEntry");
 	
 	Glow_MenuItem item;
-	int labellen = GLOW_STD::strlen(label);
+	int labellen = GLOW_CSTD::strlen(label);
 	item.label = new char[labellen+1];
-	GLOW_STD::strcpy(item.label, label);
+	GLOW_CSTD::strcpy(item.label, label);
 	item.mark = 0;
 	item.code = code;
 	item.subMenu = 0;
@@ -1787,9 +1787,9 @@ void GlowMenu::AddSubmenu(
 	GLOW_DEBUGSCOPE("GlowMenu::AddSubmenu");
 	
 	Glow_MenuItem item;
-	int labellen = GLOW_STD::strlen(label);
+	int labellen = GLOW_CSTD::strlen(label);
 	item.label = new char[labellen+1];
-	GLOW_STD::strcpy(item.label, label);
+	GLOW_CSTD::strcpy(item.label, label);
 	item.mark = 0;
 	item.code = 0;
 	item.subMenu = menu;
@@ -1815,8 +1815,8 @@ void GlowMenu::InsertEntry(
 		"itemNum out of range in GlowMenu::InsertEntry");
 	
 	Glow_MenuItem item;
-	item.label = new char[GLOW_STD::strlen(label)+1];
-	GLOW_STD::strcpy(item.label, label);
+	item.label = new char[GLOW_CSTD::strlen(label)+1];
+	GLOW_CSTD::strcpy(item.label, label);
 	item.mark = 0;
 	item.code = code;
 	item.subMenu = 0;
@@ -1836,8 +1836,8 @@ void GlowMenu::InsertSubmenu(
 		"itemNum out of range in GlowMenu::InsertSubmenu");
 	
 	Glow_MenuItem item;
-	item.label = new char[GLOW_STD::strlen(label)+1];
-	GLOW_STD::strcpy(item.label, label);
+	item.label = new char[GLOW_CSTD::strlen(label)+1];
+	GLOW_CSTD::strcpy(item.label, label);
 	item.mark = 0;
 	item.code = 0;
 	item.subMenu = menu;
@@ -1899,9 +1899,9 @@ void GlowMenu::SetItemLabel(
 	
 	ItemIterator iter = _itemData.begin()+itemNum;
 	delete[] (*iter).label;
-	int labellen = GLOW_STD::strlen(label);
+	int labellen = GLOW_CSTD::strlen(label);
 	(*iter).label = new char[labellen+1];
-	GLOW_STD::strcpy((*iter).label, label);
+	GLOW_CSTD::strcpy((*iter).label, label);
 	_SetupItem(itemNum);
 }
 
@@ -1923,9 +1923,9 @@ void GlowMenu::SetItemMark(
 	}
 	else
 	{
-		int marklen = GLOW_STD::strlen(mark);
+		int marklen = GLOW_CSTD::strlen(mark);
 		(*iter).mark = new char[marklen+1];
-		GLOW_STD::strcpy((*iter).mark, mark);
+		GLOW_CSTD::strcpy((*iter).mark, mark);
 	}
 	_SetupItem(itemNum);
 }
@@ -1943,9 +1943,9 @@ void GlowMenu::ToggleItemMark(
 	ItemIterator iter = _itemData.begin()+itemNum;
 	if ((*iter).mark == 0)
 	{
-		int marklen = GLOW_STD::strlen(mark);
+		int marklen = GLOW_CSTD::strlen(mark);
 		(*iter).mark = new char[marklen+1];
-		GLOW_STD::strcpy((*iter).mark, mark);
+		GLOW_CSTD::strcpy((*iter).mark, mark);
 	}
 	else
 	{
@@ -1999,9 +1999,9 @@ void GlowMenu::ChangeToEntry(
 	
 	ItemIterator iter = _itemData.begin()+itemNum;
 	delete[] (*iter).label;
-	int labellen = GLOW_STD::strlen(label);
+	int labellen = GLOW_CSTD::strlen(label);
 	(*iter).label = new char[labellen+1];
-	GLOW_STD::strcpy((*iter).label, label);
+	GLOW_CSTD::strcpy((*iter).label, label);
 	delete[] (*iter).mark;
 	(*iter).mark = 0;
 	(*iter).code = code;
@@ -2053,9 +2053,9 @@ void GlowMenu::ChangeToSubmenu(
 	
 	ItemIterator iter = _itemData.begin()+itemNum;
 	delete[] (*iter).label;
-	int labellen = GLOW_STD::strlen(label);
+	int labellen = GLOW_CSTD::strlen(label);
 	(*iter).label = new char[labellen+1];
-	GLOW_STD::strcpy((*iter).label, label);
+	GLOW_CSTD::strcpy((*iter).label, label);
 	delete[] (*iter).mark;
 	(*iter).mark = 0;
 	(*iter).code = 0;

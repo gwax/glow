@@ -40,7 +40,7 @@
 	CHANGE HISTORY:
 	
 		27 March 2000 -- DA -- Initial CVS checkin
-	
+
 ===============================================================================
 */
 
@@ -242,6 +242,7 @@ class GlowTransformData
 			const Vec3f& trans);
 		inline void SetRotation(
 			const Quatf& rot);
+		inline void SetIdentity();
 		
 		inline void AddScale(
 			GLfloat scale);
@@ -263,8 +264,8 @@ class GlowTransformData
 			GLfloat* matrix) const;
 		void GetMatrix(
 			Mat4f& matrix) const;
-		void ApplyGLMatrix() const;
-		void ApplyGLMatrixInverse() const;
+		void ApplyToGLMatrix() const;
+		void ApplyInverseToGLMatrix() const;
 		
 		inline bool IsSpinning() const;
 		inline void StartSpinning(
@@ -337,6 +338,7 @@ class GlowViewTransform :
 			const Vec3f& trans);
 		inline void SetRotation(
 			const Quatf& rot);
+		inline void SetIdentity();
 		
 		inline void AddScale(
 			GLfloat scale);
@@ -358,8 +360,8 @@ class GlowViewTransform :
 			GLfloat* matrix) const;
 		inline void GetMatrix(
 			Mat4f& matrix) const;
-		inline void ApplyGLMatrix() const;
-		inline void ApplyGLMatrixInverse() const;
+		inline void ApplyToGLMatrix() const;
+		inline void ApplyInverseToGLMatrix() const;
 		
 		inline GlowTransformData* TransformData() const;
 		void ConnectTo(
@@ -411,10 +413,12 @@ class GlowViewManipulator :
 	
 	public:
 	
-		static const int idleState = 0;
-		static const int rotatingState = 1;
-		static const int translatingState = 2;
-		static const int scalingState = 3;
+		enum {
+			idleState = 0,
+			rotatingState = 1,
+			translatingState = 2,
+			scalingState = 3
+		};
 	
 	public:
 	

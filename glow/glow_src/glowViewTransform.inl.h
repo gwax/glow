@@ -148,6 +148,15 @@ inline void GlowTransformData::SetRotation(
 }
 
 
+inline void GlowTransformData::SetIdentity()
+{
+	_scale = 1.0f;
+	_rotation.SetIdentity();
+	_translation.SetZero();
+	RefreshAll();
+}
+
+
 inline void GlowTransformData::AddScale(
 	GLfloat scale)
 {
@@ -303,6 +312,12 @@ inline void GlowViewTransform::SetRotation(
 }
 
 
+inline void GlowViewTransform::SetIdentity()
+{
+	_transform->SetIdentity();
+}
+
+
 inline void GlowViewTransform::AddScale(
 	GLfloat scale)
 {
@@ -356,15 +371,15 @@ inline Vec3f GlowViewTransform::ApplyInverse(
 }
 
 
-inline void GlowViewTransform::ApplyGLMatrix() const
+inline void GlowViewTransform::ApplyToGLMatrix() const
 {
-	_transform->ApplyGLMatrix();
+	_transform->ApplyToGLMatrix();
 }
 
 
-inline void GlowViewTransform::ApplyGLMatrixInverse() const
+inline void GlowViewTransform::ApplyInverseToGLMatrix() const
 {
-	_transform->ApplyGLMatrixInverse();
+	_transform->ApplyInverseToGLMatrix();
 }
 
 

@@ -262,7 +262,7 @@ int GlowFont::StringWidth(
 	GLOW_DEBUGSCOPE("GlowFont::StringWidth");
 	
 	int ret = 0;
-	int len = GLOW_STD::strlen(str);
+	int len = GLOW_CSTD::strlen(str);
 	for (int i=0; i<len; i++)
 	{
 		ret += ::glutBitmapWidth(_glutFont, str[i]);

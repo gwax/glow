@@ -165,16 +165,18 @@ class GlowScrollBarWidget :
 	
 	public:
 	
-		static const int noPart = 0;
-		static const int upButtonPart = 1;
-		static const int downButtonPart = 2;
-		static const int upPagePart = 3;
-		static const int downPagePart = 4;
-		static const int indicatorPart = 5;
-	
-	public:
-	
-		static const int spanPageStep = -1;
+		enum {
+			noPart = 0,
+			upButtonPart = 1,
+			downButtonPart = 2,
+			upPagePart = 3,
+			downPagePart = 4,
+			indicatorPart = 5
+		};
+		
+		enum {
+			spanPageStep = -1
+		};
 	
 	public:
 	

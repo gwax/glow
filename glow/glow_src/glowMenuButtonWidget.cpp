@@ -187,8 +187,8 @@ Glow_MenuButtonSubwindow::Glow_MenuButtonSubwindow(
 	GlowSubwindowInWidget::Init(parent, 0, 0,
 		parent->Width(), parent->Height(),
 		Glow::rgbBuffer | Glow::doubleBuffer, Glow::menuEvents);
-	_label = new char[GLOW_STD::strlen(label)+1];
-	GLOW_STD::strcpy(_label, label);
+	_label = new char[GLOW_CSTD::strlen(label)+1];
+	GLOW_CSTD::strcpy(_label, label);
 	_font = font;
 	_labelWidth = _font.StringWidth(_label);
 	_down = false;
@@ -207,8 +207,8 @@ void Glow_MenuButtonSubwindow::_SetLabel(
 	const char* label)
 {
 	delete[] _label;
-	_label = new char[GLOW_STD::strlen(label)+1];
-	GLOW_STD::strcpy(_label, label);
+	_label = new char[GLOW_CSTD::strlen(label)+1];
+	GLOW_CSTD::strcpy(_label, label);
 	_labelWidth = _font.StringWidth(_label);
 	Refresh();
 }
@@ -322,7 +322,7 @@ void Glow_MenuButtonSubwindow::OnEndPaint()
 	}
 	::glRasterPos2f(float(-1)+float(_leftSpacing*2)/float(Width()),
 		float(_font.Leading()-_font.BaselinePos()*2)/float(Height()));
-	int labellen = GLOW_STD::strlen(_label);
+	int labellen = GLOW_CSTD::strlen(_label);
 	for (int i=0; i<labellen; i++)
 	{
 		::glutBitmapCharacter(_font, _label[i]);
@@ -573,8 +573,8 @@ void GlowPopupMenuWidget::Init(
 	// Mark
 	if (params.mark != 0)
 	{
-		_mark = new char[GLOW_STD::strlen(params.mark)+1];
-		GLOW_STD::strcpy(_mark, params.mark);
+		_mark = new char[GLOW_CSTD::strlen(params.mark)+1];
+		GLOW_CSTD::strcpy(_mark, params.mark);
 	}
 	else
 	{
@@ -588,11 +588,13 @@ void GlowPopupMenuWidget::Init(
 	// Fill in items
 	if (params.items != 0)
 	{
-		char* tempbuf = new char[GLOW_STD::strlen(params.items)+1];
-		GLOW_STD::strcpy(tempbuf, params.items);
+		char* tempbuf = new char[GLOW_CSTD::strlen(params.items)+1];
+		GLOW_CSTD::strcpy(tempbuf, params.items);
 		for (int i=0; ; ++i)
 		{
-			_menu->AddEntry(GLOW_STD::strtok(i==0 ? tempbuf : 0, "\t"), i);
+			char* tok = GLOW_CSTD::strtok(i==0 ? tempbuf : 0, "\t");
+			if (tok == 0) break;
+			_menu->AddEntry(tok, i);
 		}
 		delete[] tempbuf;
 	}
@@ -648,8 +650,8 @@ void GlowPopupMenuWidget::SetMark(
 	GLOW_DEBUGSCOPE("GlowPopupMenuWidget::SetMark");
 	
 	delete _mark;
-	_mark = new char[GLOW_STD::strlen(mark)+1];
-	GLOW_STD::strcpy(_mark, mark);
+	_mark = new char[GLOW_CSTD::strlen(mark)+1];
+	GLOW_CSTD::strcpy(_mark, mark);
 	_menu->UnmarkItem(_curItem);
 	if (_mark != 0)
 	{

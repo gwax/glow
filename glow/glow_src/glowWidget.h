@@ -212,27 +212,37 @@ class GlowWidget :
 	public:
 	
 		// Packing error codes
-		static const int noAutoPackError = 0;
-		static const int hAutoPackError = 1;
-		static const int vAutoPackError = 2;
+		enum {
+			noAutoPackError = 0,
+			hAutoPackError = 1,
+			vAutoPackError = 2
+		};
 		
 		// Sizing options
-		static const int unspecifiedSize = INT_MIN;
-		static const int noReshape = 0;
-		static const int preferredSize = 1;
-		static const int expandPreferredSize = 2;
-		static const int forcedSize = 3;
-		static const int sizeOptionMask = 15;
+		enum {
+			noReshape = 0,
+			preferredSize = 1,
+			expandPreferredSize = 2,
+			forcedSize = 3,
+			sizeOptionMask = 15
+		};
 		
 		// Justification options
-		static const int unspecifiedPos = INT_MIN;
-		static const int noMove = 0;
-		static const int leftPos = 16;
-		static const int topPos = 16;
-		static const int rightPos = 32;
-		static const int bottomPos = 32;
-		static const int centerPos = 48;
-		static const int posOptionMask = 240;
+		enum {
+			noMove = 0,
+			leftPos = 16,
+			topPos = 16,
+			rightPos = 32,
+			bottomPos = 32,
+			centerPos = 48,
+			posOptionMask = 240
+		};
+		
+		// Unspecified size/position
+		enum{
+			unspecifiedSize = INT_MIN,
+			unspecifiedPos = INT_MIN
+		};
 	
 	public:
 	
@@ -414,10 +424,6 @@ class GlowWidget :
 	
 		inline void _SetHasKeyboardFocus(
 			bool val);
-		inline void _AddChildWidget(
-			GlowWidget* child);
-		inline void _RemoveChildWidget(
-			GlowWidget* child);
 		
 		void _BroadcastNotifyList();
 		void _BroadcastMask(
@@ -446,7 +452,6 @@ class GlowWidget :
 		
 		GlowWidgetRoot* _root;
 		GlowWidget* _parentWidget;
-		GLOW_STD::list<GlowWidget*> _childWidgets;
 		
 		bool _receivingMouse;
 		bool _receivingKeyboard;

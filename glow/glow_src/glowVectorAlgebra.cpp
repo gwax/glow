@@ -70,7 +70,19 @@ GLOW_NAMESPACE_BEGIN
 
 /*
 ===============================================================================
-	Methods of Vec3f and friends
+	Math constants
+===============================================================================
+*/
+
+const double Math::pi = 3.1415926535897932384626433832795;
+const double Math::twopi = 3.1415926535897932384626433832795*2.0;
+const double Math::radiansToDegrees = 180.0/3.1415926535897932384626433832795;
+const double Math::degreesToRadians = 3.1415926535897932384626433832795/180.0;
+
+
+/*
+===============================================================================
+	Methods of Vec3f
 ===============================================================================
 */
 
@@ -79,6 +91,7 @@ GLOW_NAMESPACE_BEGIN
 //-----------------------------------------------------------------------------
 // Templated vector input function
 //-----------------------------------------------------------------------------
+
 GLOW_STD::istream& operator>>(
 	GLOW_STD::istream& stream,
 	Vec3f& v)
@@ -160,10 +173,10 @@ Mat4f& Mat4f::SetInverse(
 	{
 		// Find largest pivot
 		pivrow = j;
-		pivot = GLOW_STD::fabs(temp._vals[j][j]);
+		pivot = GLOW_CSTD::fabs(temp._vals[j][j]);
 		for (i=j+1; i<4; i++)
 		{
-			pivot2 = GLOW_STD::fabs(temp._vals[j][i]);
+			pivot2 = GLOW_CSTD::fabs(temp._vals[j][i]);
 			if (pivot2 > pivot)
 			{
 				pivot = pivot2;
@@ -212,53 +225,6 @@ Mat4f Mat4f::Inverse() const
 	SetInverse(res);
 	return res;
 }
-
-/*{
-	const GLfloat TINY = 0.0000001;
-	Mat4f result;
-	Mat4f temp = *this;
-	short i, j;
-	GLfloat fac;
-	
-	for (i=0; i<4; i++)
-	{
-		// First get a 1 into this element
-		if (temp._vals[i][i] < TINY && temp._vals[i][i] > -TINY)
-		{
-			for (j=i+1; j<4; j++)
-			{
-				if (temp._vals[i][j] > TINY || temp._vals[i][j] < -TINY)
-				{
-					temp._GJSwapRows(i, j);
-					result._GJSwapRows(i, j);
-					break;
-				}
-			}
-			if (temp._vals[i][i] == 0.0)
-			{
-				// singular matrix
-				result.SetZero();
-				return result;
-			}
-		}
-		fac = 1.0/temp._vals[i][i];
-		temp._GJScaleRow(i, fac);
-		result._GJScaleRow(i, fac);
-		
-		// Next, zero out this element in other rows
-		for (j=0; j<4; j++)
-		{
-			if (j != i && temp._vals[i][j] != 0.0)
-			{
-				fac = -(temp._vals[i][j]);
-				temp._GJAddToRow(i, fac, j);
-				result._GJAddToRow(i, fac, j);
-			}
-		}
-	}
-	
-	return result;
-}*/
 
 
 //-----------------------------------------------------------------------------
@@ -350,17 +316,17 @@ void Mat4f::SetRotation(
 	GLfloat z,
 	GLfloat angle)
 {
-	_vals[0][0] = x*x+(GLfloat(1)-x*x)*GLOW_STD::cos(angle);
-	_vals[1][0] = x*y*(GLfloat(1)-GLOW_STD::cos(angle))-z*GLOW_STD::sin(angle);
-	_vals[2][0] = z*x*(GLfloat(1)-GLOW_STD::cos(angle))+y*GLOW_STD::sin(angle);
+	_vals[0][0] = x*x+(GLfloat(1)-x*x)*GLOW_CSTD::cos(angle);
+	_vals[1][0] = x*y*(GLfloat(1)-GLOW_CSTD::cos(angle))-z*GLOW_CSTD::sin(angle);
+	_vals[2][0] = z*x*(GLfloat(1)-GLOW_CSTD::cos(angle))+y*GLOW_CSTD::sin(angle);
 	_vals[3][0] = GLfloat(0);
-	_vals[0][1] = x*y*(GLfloat(1)-GLOW_STD::cos(angle))+z*GLOW_STD::sin(angle);
-	_vals[1][1] = y*y+(GLfloat(1)-y*y)*GLOW_STD::cos(angle);
-	_vals[2][1] = y*z*(GLfloat(1)-GLOW_STD::cos(angle))-x*GLOW_STD::sin(angle);
+	_vals[0][1] = x*y*(GLfloat(1)-GLOW_CSTD::cos(angle))+z*GLOW_CSTD::sin(angle);
+	_vals[1][1] = y*y+(GLfloat(1)-y*y)*GLOW_CSTD::cos(angle);
+	_vals[2][1] = y*z*(GLfloat(1)-GLOW_CSTD::cos(angle))-x*GLOW_CSTD::sin(angle);
 	_vals[3][1] = GLfloat(0);
-	_vals[0][2] = z*x*(GLfloat(1)-GLOW_STD::cos(angle))-y*GLOW_STD::sin(angle);
-	_vals[1][2] = y*z*(GLfloat(1)-GLOW_STD::cos(angle))+x*GLOW_STD::sin(angle);
-	_vals[2][2] = z*z+(GLfloat(1)-z*z)*GLOW_STD::cos(angle);
+	_vals[0][2] = z*x*(GLfloat(1)-GLOW_CSTD::cos(angle))-y*GLOW_CSTD::sin(angle);
+	_vals[1][2] = y*z*(GLfloat(1)-GLOW_CSTD::cos(angle))+x*GLOW_CSTD::sin(angle);
+	_vals[2][2] = z*z+(GLfloat(1)-z*z)*GLOW_CSTD::cos(angle);
 	_vals[3][2] = GLfloat(0);
 	_vals[0][3] = GLfloat(0);
 	_vals[1][3] = GLfloat(0);
@@ -636,10 +602,10 @@ void Quatf::GetRotation(
 	{
 		val = -1.0;
 	}
-	angle = GLfloat(2.0)*GLOW_STD::acos(val);
+	angle = GLfloat(2.0)*GLOW_CSTD::acos(val);
 	if (val < 0)
 	{
-		angle -= GLfloat(2)*GLfloat(3.1415926535897932384626433832795);
+		angle -= Math::twopi;
 	}
 	if (_vals[1] == 0.0 && _vals[2] == 0.0 && _vals[3] == 0.0)
 	{
@@ -660,13 +626,13 @@ void Quatf::GetRotation(
 void Quatf::ScaleRotation(
 	GLfloat factor)
 {
-	GLfloat l = GLOW_STD::sqrt(GLfloat(1)-_vals[0]*_vals[0]);
+	GLfloat l = GLOW_CSTD::sqrt(GLfloat(1)-_vals[0]*_vals[0]);
 	if (l>FLT_EPSILON || l<-FLT_EPSILON)
 	{
 		Normalize();
-		GLfloat a = GLOW_STD::acos(_vals[0])*factor;
-		GLfloat b = GLOW_STD::sin(a)/l;
-		_vals[0] = GLOW_STD::cos(a);
+		GLfloat a = GLOW_CSTD::acos(_vals[0])*factor;
+		GLfloat b = GLOW_CSTD::sin(a)/l;
+		_vals[0] = GLOW_CSTD::cos(a);
 		_vals[1] = _vals[1]*b;
 		_vals[2] = _vals[2]*b;
 		_vals[3] = _vals[3]*b;
@@ -748,7 +714,7 @@ Quatf& Quatf::operator%=(
 // Templated quaternion output function
 //-----------------------------------------------------------------------------
 
-inline GLOW_STD::ostream& operator<<(
+GLOW_STD::ostream& operator<<(
 	GLOW_STD::ostream& stream,
 	const Quatf& q)
 {
@@ -768,7 +734,7 @@ inline GLOW_STD::ostream& operator<<(
 // Templated quaternion input function
 //-----------------------------------------------------------------------------
 
-inline GLOW_STD::istream& operator>>(
+GLOW_STD::istream& operator>>(
 	GLOW_STD::istream& stream,
 	Quatf& q)
 {

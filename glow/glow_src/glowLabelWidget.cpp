@@ -114,8 +114,8 @@ void GlowLabelWidget::Init(
 	}
 	else
 	{
-		_text = new char[GLOW_STD::strlen(params.text)+1];
-		GLOW_STD::strcpy(_text, params.text);
+		_text = new char[GLOW_CSTD::strlen(params.text)+1];
+		GLOW_CSTD::strcpy(_text, params.text);
 	}
 	_font = params.font;
 	_RecalcText();
@@ -148,8 +148,8 @@ void GlowLabelWidget::SetText(
 	}
 	else
 	{
-		_text = new char[GLOW_STD::strlen(text)+1];
-		GLOW_STD::strcpy(_text, text);
+		_text = new char[GLOW_CSTD::strlen(text)+1];
+		GLOW_CSTD::strcpy(_text, text);
 	}
 	_RecalcText();
 	Refresh();
@@ -161,7 +161,7 @@ void GlowLabelWidget::_RecalcText()
 	_textHeight = 1;
 	_maxLineWidth = 0;
 	int thisLineWidth = 0;
-	int strlength = (_text == 0) ? 0 : GLOW_STD::strlen(_text);
+	int strlength = (_text == 0) ? 0 : GLOW_CSTD::strlen(_text);
 	for (int i=0; i<strlength; i++)
 	{
 		if (_text[i] == '\r')
@@ -262,7 +262,7 @@ void GlowLabelWidget::OnWidgetPaint()
 	}
 	NormalizeCoordinates(_hIndent, vPos, x, y);
 	::glRasterPos2f(x, y);
-	int textlen = (_text == 0) ? 0 : GLOW_STD::strlen(_text);
+	int textlen = (_text == 0) ? 0 : GLOW_CSTD::strlen(_text);
 	for (int i=0; i<textlen; i++)
 	{
 		if (_text[i] == '\n')

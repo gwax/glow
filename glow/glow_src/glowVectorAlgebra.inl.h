@@ -465,7 +465,7 @@ inline Vec3f& Vec3f::operator%=(
 
 inline GLfloat Vec3f::Norm() const
 {
-	return GLOW_STD::sqrt(_vals[0]*_vals[0]+_vals[1]*_vals[1]+_vals[2]*_vals[2]);
+	return GLOW_CSTD::sqrt(_vals[0]*_vals[0]+_vals[1]*_vals[1]+_vals[2]*_vals[2]);
 }
 
 
@@ -477,7 +477,7 @@ inline GLfloat Vec3f::NormSquared() const
 
 inline Vec3f Vec3f::Normalized() const
 {
-	GLfloat norm = GLOW_STD::sqrt(_vals[0]*_vals[0]+_vals[1]*_vals[1]+_vals[2]*_vals[2]);
+	GLfloat norm = GLOW_CSTD::sqrt(_vals[0]*_vals[0]+_vals[1]*_vals[1]+_vals[2]*_vals[2]);
 	return (norm == 0.0) ?
 		Vec3f(0, 0, 0) :
 		Vec3f(_vals[0]/norm, _vals[1]/norm, _vals[2]/norm);
@@ -492,7 +492,7 @@ inline bool Vec3f::IsZero() const
 
 inline void Vec3f::Normalize()
 {
-	GLfloat norm = GLOW_STD::sqrt(_vals[0]*_vals[0]+_vals[1]*_vals[1]+_vals[2]*_vals[2]);
+	GLfloat norm = GLOW_CSTD::sqrt(_vals[0]*_vals[0]+_vals[1]*_vals[1]+_vals[2]*_vals[2]);
 	if (norm != 0)
 	{
 		_vals[0]/=norm;
@@ -1230,9 +1230,9 @@ inline void Quatf::SetRotation(
 	GLfloat axisZ,
 	GLfloat angle)
 {
-	GLfloat fac = GLOW_STD::sin(angle*0.5f)/
-		GLOW_STD::sqrt(axisX*axisX+axisY*axisY+axisZ*axisZ);
-	_vals[0] = GLOW_STD::cos(angle*0.5f);
+	GLfloat fac = GLOW_CSTD::sin(angle*0.5f)/
+		GLOW_CSTD::sqrt(axisX*axisX+axisY*axisY+axisZ*axisZ);
+	_vals[0] = GLOW_CSTD::cos(angle*0.5f);
 	_vals[1] = fac*axisX;
 	_vals[2] = fac*axisY;
 	_vals[3] = fac*axisZ;
@@ -1243,8 +1243,8 @@ inline void Quatf::SetRotation(
 	const Vec3f& axis,
 	GLfloat angle)
 {
-	GLfloat fac = GLOW_STD::sin(angle*0.5f)/axis.Norm();
-	_vals[0] = GLOW_STD::cos(angle*0.5f);
+	GLfloat fac = GLOW_CSTD::sin(angle*0.5f)/axis.Norm();
+	_vals[0] = GLOW_CSTD::cos(angle*0.5f);
 	_vals[1] = fac*axis.GetX();
 	_vals[2] = fac*axis.GetY();
 	_vals[3] = fac*axis.GetZ();
@@ -1266,7 +1266,7 @@ inline GLfloat Quatf::GetAngle() const
 	{
 		val = -1.0;
 	}
-	return GLfloat(2.0)*GLOW_STD::acos(val);
+	return GLfloat(2.0)*GLOW_CSTD::acos(val);
 }
 
 
@@ -1352,7 +1352,7 @@ inline bool Quatf::IsZero() const
 
 inline GLfloat Quatf::Norm() const
 {
-	return GLOW_STD::sqrt(_vals[0]*_vals[0]+_vals[1]*_vals[1]+_vals[2]*_vals[2]+_vals[3]*_vals[3]);
+	return GLOW_CSTD::sqrt(_vals[0]*_vals[0]+_vals[1]*_vals[1]+_vals[2]*_vals[2]+_vals[3]*_vals[3]);
 }
 
 

@@ -163,7 +163,6 @@ void GlowWidget::Init(
 	else
 	{
 		GlowComponent::Init(parent);
-		parent->_AddChildWidget(this);
 	}
 	_refcon = params.refcon;
 	_xpos = params.x;
@@ -185,6 +184,7 @@ void GlowWidget::Init(
 	{
 		_visibility = 2;
 	}
+	Refresh();
 }
 
 
@@ -192,13 +192,9 @@ GlowWidget::~GlowWidget()
 {
 	GLOW_DEBUGSCOPE("GlowWidget::~GlowWidget");
 	
-	KillChildren();
 	UnregisterMouseEvents();
 	UnregisterKeyboardEvents();
-	if (_parentWidget != 0)
-	{
-		_parentWidget->_RemoveChildWidget(this);
-	}
+	Refresh();
 }
 
 
@@ -464,10 +460,14 @@ void GlowWidget::_ExecuteNotify()
 void GlowWidget::_BroadcastNotifyList()
 {
 	_AddToNotifyList();
-	for (GLOW_STD::list<GlowWidget*>::iterator iter = _childWidgets.begin();
-		iter != _childWidgets.end(); iter++)
+	for (GlowComponent::ChildIterator iter = BeginChildren();
+		iter != EndChildren(); ++iter)
 	{
-		(*iter)->_BroadcastNotifyList();
+		GlowWidget* childWidget = dynamic_cast<GlowWidget*>(*iter);
+		if (childWidget != 0)
+		{
+			childWidget->_BroadcastNotifyList();
+		}
 	}
 }
 
@@ -534,20 +534,28 @@ void GlowWidget::_BroadcastMask(
 	{
 		_AddToNotifyList();
 		_visibility = 1;
-		for (GLOW_STD::list<GlowWidget*>::iterator iter = _childWidgets.begin();
-			iter != _childWidgets.end(); iter++)
+		for (GlowComponent::ChildIterator iter = BeginChildren();
+			iter != EndChildren(); ++iter)
 		{
-			(*iter)->_BroadcastMask(true);
+			GlowWidget* childWidget = dynamic_cast<GlowWidget*>(*iter);
+			if (childWidget != 0)
+			{
+				childWidget->_BroadcastMask(true);
+			}
 		}
 	}
 	else if (!unmasking && _visibility == 1)
 	{
 		_AddToNotifyList();
 		_visibility = 2;
-		for (GLOW_STD::list<GlowWidget*>::iterator iter = _childWidgets.begin();
-			iter != _childWidgets.end(); iter++)
+		for (GlowComponent::ChildIterator iter = BeginChildren();
+			iter != EndChildren(); ++iter)
 		{
-			(*iter)->_BroadcastMask(false);
+			GlowWidget* childWidget = dynamic_cast<GlowWidget*>(*iter);
+			if (childWidget != 0)
+			{
+				childWidget->_BroadcastMask(false);
+			}
 		}
 	}
 }
@@ -563,10 +571,14 @@ void GlowWidget::Show()
 		{
 			_AddToNotifyList();
 			_visibility = 1;
-			for (GLOW_STD::list<GlowWidget*>::iterator iter = _childWidgets.begin();
-				iter != _childWidgets.end(); iter++)
+			for (GlowComponent::ChildIterator iter = BeginChildren();
+				iter != EndChildren(); ++iter)
 			{
-				(*iter)->_BroadcastMask(true);
+				GlowWidget* childWidget = dynamic_cast<GlowWidget*>(*iter);
+				if (childWidget != 0)
+				{
+					childWidget->_BroadcastMask(true);
+				}
 			}
 			Refresh();
 		}
@@ -586,10 +598,14 @@ void GlowWidget::Hide()
 	{
 		_AddToNotifyList();
 		_visibility = 0;
-		for (GLOW_STD::list<GlowWidget*>::iterator iter = _childWidgets.begin();
-			iter != _childWidgets.end(); iter++)
+		for (GlowComponent::ChildIterator iter = BeginChildren();
+			iter != EndChildren(); ++iter)
 		{
-			(*iter)->_BroadcastMask(false);
+			GlowWidget* childWidget = dynamic_cast<GlowWidget*>(*iter);
+			if (childWidget != 0)
+			{
+				childWidget->_BroadcastMask(false);
+			}
 		}
 		Refresh();
 	}
@@ -731,7 +747,7 @@ void GlowWidgetRoot::SetKeyboardFocus(
 	}
 	else
 	{
-		GLOW_STD::list<GlowWidget*>::iterator iter = find(
+		GLOW_STD::list<GlowWidget*>::iterator iter = GLOW_STD::find(
 			_keyboardWidgets.begin(), _keyboardWidgets.end(), widget);
 		GLOW_DEBUG(iter == _keyboardWidgets.end(), "Illegal keyboard focus");
 		if (iter != _curKeyboardFocus)

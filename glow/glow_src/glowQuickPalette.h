@@ -123,8 +123,10 @@ class GlowQuickRadioGroupWidget :
 	
 	public:
 	
-		static const int vertical = 0;
-		static const int horizontal = 1;
+		enum {
+			vertical = 0,
+			horizontal = 1
+		};
 	
 	public:
 	
@@ -190,17 +192,23 @@ class GlowQuickPanelWidget :
 	
 	public:
 	
-		static const int vertical = 0;
-		static const int horizontal = 1;
+		enum {
+			vertical = 0,
+			horizontal = 1
+		};
 		
-		static const int alignTop = 0;
-		static const int alignLeft = 0;
-		static const int alignCenter = 1;
-		static const int alignBottom = 2;
-		static const int alignRight = 2;
-		static const int alignExpand = 4;
+		enum {
+			alignTop = 0,
+			alignLeft = 0,
+			alignCenter = 1,
+			alignBottom = 2,
+			alignRight = 2,
+			alignExpand = 4
+		};
 		
-		static const int parentSetting = -1;
+		enum {
+			parentSetting = -1
+		};
 	
 	public:
 	
@@ -346,17 +354,23 @@ class GlowQuickPaletteBase
 	
 	public:
 	
-		static const int vertical = 0;
-		static const int horizontal = 1;
+		enum {
+			vertical = 0,
+			horizontal = 1
+		};
 		
-		static const int alignTop = 0;
-		static const int alignLeft = 0;
-		static const int alignCenter = 1;
-		static const int alignBottom = 2;
-		static const int alignRight = 2;
-		static const int alignExpand = 4;
+		enum {
+			alignTop = 0,
+			alignLeft = 0,
+			alignCenter = 1,
+			alignBottom = 2,
+			alignRight = 2,
+			alignExpand = 4
+		};
 		
-		static const int parentSetting = -1;
+		enum {
+			parentSetting = -1
+		};
 	
 	public:
 	

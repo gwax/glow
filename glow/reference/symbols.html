@@ -104,21 +104,42 @@ You may use these symbols to specify details of your development system's ANSI c
 <tt><b>GLOW_COMPAT_NOSTDNAMESPACE</b></tt>
 </p>
 <blockquote>
-Define this symbol if any of the C or C++ standard library is not located in <tt>namespace std</tt>.
+Define this symbol if the C++ standard library is not located in <tt>namespace std</tt>.
+</blockquote>
+
+<p>
+<tt><b>GLOW_COMPAT_CLIBNOSTDNAMESPACE</b></tt>
+</p>
+<blockquote>
+Define this symbol if the C standard library is not located in <tt>namespace std</tt>. This is necessary for MSVC++ 6.0 and MIPSPro 7.3.
 </blockquote>
 
 <p>
 <tt><b>GLOW_COMPAT_USINGSTDINLIBRARY</b></tt>
 </p>
 <blockquote>
-When this symbol is defined, GLOW will issue the directive <tt>using namespace std;</tt> internally. If your development system puts some of the standard library in <tt>namespace std</tt> but other parts in the global namespace, you need to define both this symbol and <tt>GLOW_COMPAT_NOSTDNAMESPACE</tt>. MipsPro C++ 7.3 for IRIX is one such compiler.
+When this symbol is defined, GLOW will issue the directive <tt>using namespace std;</tt> internally. There shouldn't be any reason to use this symbol at this point.
 </blockquote>
 
 <p>
 <tt><b>GLOW_COMPAT_BADFORSCOPING</b></tt>
 </p>
 <blockquote>
-Define this symbol if your compiler does not use correct scoping of index variables declared in a for loop. Under ANSI/ISO C++, <tt>for (int i...)</tt> should scope <tt>i</tt> as if it were declared within the body of the loop, but some older compilers scope <tt>i</tt> as if it were declared before the <tt>for</tt> statement.
+Define this symbol if your compiler does not use correct scoping of index variables declared in a for loop. Under ANSI/ISO C++, <tt>for (int i...)</tt> should scope <tt>i</tt> as if it were declared within the body of the loop, but some older compilers scope <tt>i</tt> as if it were declared before the <tt>for</tt> statement. Necessary for MSVC++ 6.0.
+</blockquote>
+
+<p>
+<tt><b>GLOW_COMPAT_NOSTDMINMAX</b></tt>
+</p>
+<blockquote>
+Define this symbol if your development environment doesn't include the <tt>min</tt> and <tt>max</tt> templates in the standard library. Necessary for MSVC++ 6.0.
+</blockquote>
+
+<p>
+<tt>GLOW_COMPAT_NOTEMPLATESPECIALIZATIONS</tt>
+</p>
+<blockquote>
+Define this symbol if your compiler doesn't support template specializations. Necessary for MSVC++ 6.0.
 </blockquote>
 
 </blockquote>
@@ -196,17 +217,24 @@ These macros may be used to handle namespace issues if your program may be compi
 <blockquote>
 
 <p>
-<tt><b>GLOW_NAMESPACE</b></tt>
-</p>
-<blockquote>
-The name of the GLOW namespace. If <tt>GLOW_OPTION_USEGLOBALNAMESPACE</tt> is defined, this expands to the empty string "", otherwise it expands to "<tt>glow</tt>".
-</blockquote>
-
-<p>
 <tt><b>GLOW_STD</b></tt>
 </p>
 <blockquote>
 The name of the standard namespace. If <tt>GLOW_COMPAT_NOSTDNAMESPACE</tt> is defined, this expands to the empty string "", otherwise it expands to "<tt>std</tt>".
+</blockquote>
+
+<p>
+<tt><b>GLOW_CSTD</b></tt>
+</p>
+<blockquote>
+The name of the namespace for C library calls. If <tt>GLOW_COMPAT_CLIBNOSTDNAMESPACE</tt> is defined, this expands to the empty string "", otherwise it expands to "<tt>std</tt>".
+</blockquote>
+
+<p>
+<tt><b>GLOW_NAMESPACE</b></tt>
+</p>
+<blockquote>
+The name of the GLOW namespace. If <tt>GLOW_OPTION_USEGLOBALNAMESPACE</tt> is defined, this expands to the empty string "", otherwise it expands to "<tt>glow</tt>".
 </blockquote>
 
 <p>
@@ -241,7 +269,7 @@ Issues a "<tt>using</tt>" directive for the GLOW namespace. If <tt>GLOW_OPTION_U
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 31 March 2000
 </address>
 
 

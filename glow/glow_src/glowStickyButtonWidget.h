@@ -151,9 +151,11 @@ class GlowStickyButtonWidget :
 	
 	public:
 	
-		static const int noBehavior = 0;
-		static const int toggleBehavior = 1;
-		static const int stickDownBehavior = 2;
+		enum {
+			noBehavior = 0,
+			toggleBehavior = 1,
+			stickDownBehavior = 2
+		};
 	
 	public:
 	

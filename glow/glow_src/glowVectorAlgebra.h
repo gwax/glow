@@ -59,7 +59,36 @@
 	#include "glowHeader.h"
 #endif
 
+// This rocksmokery is necessary for GL/gl.h to compile under Windows
+// without having to include windows.h
+#if defined(_WIN32)
+	#ifndef APIENTRY
+		#define GLOW_INTERNAL_APIENTRYDEFINED
+		#if (_MSC_VER >= 800) || defined(_STDCALL_SUPPORTED)
+			#define APIENTRY __stdcall
+		#else
+			#define APIENTRY
+		#endif
+	#endif
+	#ifndef WINGDIAPI
+		#define GLOW_INTERNAL_WINGDIAPIDEFINED
+		#define WINGDIAPI __declspec(dllimport)
+	#endif
+#endif
+
 #include "GL/gl.h"
+
+// Clean up rocksmokery...
+#if defined(_WIN32)
+	#ifdef GLOW_INTERNAL_APIENTRYDEFINED
+		#undef GLOW_INTERNAL_APIENTRYDEFINED
+		#undef APIENTRY
+	#endif
+	#ifdef GLOW_INTERNAL_WINGDIAPIDEFINED
+		#undef GLOW_INTERNAL_WINGDIAPIDEFINED
+		#undef WINGDIAPI
+	#endif
+#endif
 
 #ifndef GLOW_OPTION_NOIOSTREAMS
 	#include <iosfwd>
@@ -68,6 +97,40 @@
 
 GLOW_INTERNAL_USINGSTD
 GLOW_NAMESPACE_BEGIN
+
+
+/*
+===============================================================================
+	CLASS Math
+
+	General math constants and functions
+===============================================================================
+*/
+
+class Math
+{
+	//-------------------------------------------------------------------------
+	//	Public interface
+	//-------------------------------------------------------------------------
+	
+	public:
+	
+		// Constants
+		static const double pi;
+		static const double twopi;
+		static const double radiansToDegrees;
+		static const double degreesToRadians;
+	
+	
+	//-------------------------------------------------------------------------
+	//	Private implementation
+	//-------------------------------------------------------------------------
+	
+	private:
+	
+		// Don't instantiate this class
+		Math() {}
+};
 
 
 /*
@@ -624,11 +687,11 @@ class Quatf
 
 #ifndef GLOW_OPTION_NOIOSTREAMS
 
-inline GLOW_STD::ostream& operator<<(
+GLOW_STD::ostream& operator<<(
 	GLOW_STD::ostream& stream,
 	const Quatf& q);
 
-inline GLOW_STD::istream& operator>>(
+GLOW_STD::istream& operator>>(
 	GLOW_STD::istream& stream,
 	Quatf& q);
 

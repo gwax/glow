@@ -152,17 +152,23 @@ class GlowCheckBoxWidget :
 	
 	public:
 	
-		static const int off = 0;
-		static const int on = 1;
-		static const int half = 2;
+		// States
+		enum {
+			off = 0,
+			on = 1,
+			half = 2
+		};
 		
-		static const int defaultBehavior = 0;
-		static const int onFollowsOff = 0;
-		static const int halfFollowsOff = 1;
-		static const int offFollowsOn = 0;
-		static const int halfFollowsOn = 2;
-		static const int onFollowsHalf = 0;
-		static const int offFollowsHalf = 4;
+		// Behaviors
+		enum {
+			defaultBehavior = 0,
+			onFollowsOff = 0,
+			halfFollowsOff = 1,
+			offFollowsOn = 0,
+			halfFollowsOn = 2,
+			onFollowsHalf = 0,
+			offFollowsHalf = 4
+		};
 	
 	public:
 	

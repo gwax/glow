@@ -90,7 +90,7 @@ inline void Receiver_Base::_RemoveSender(
 	Sender_Base* sender)
 {
 	GLOW_STD::list<Sender_Base*>::iterator iter =
-		find(_senders.begin(), _senders.end(), sender);
+		GLOW_STD::find(_senders.begin(), _senders.end(), sender);
 	GLOW_DEBUG(iter == _senders.end(),
 		"Sender not found in Receiver_Base::_RemoveSender");
 	_senders.erase(iter);

@@ -232,9 +232,11 @@ class GlowMenuButtonWidget :
 	
 	public:
 	
-		static const int noIcon = 0;
-		static const int menuIcon = 1;
-		static const int arrowIcon = 2;
+		enum {
+			noIcon = 0,
+			menuIcon = 1,
+			arrowIcon = 2
+		};
 	
 	public:
 	

@@ -75,6 +75,11 @@ inline GlowTextData::GlowTextData()
 }
 
 
+// MSVC doesn't like the base class initializers here. I have no idea why.
+// Luckily there's a workaround, but probably with worse performance.
+
+#if 0
+
 inline GlowTextData::GlowTextData(
 	const GLOW_STD::string& str) :
 GLOW_STD::string(str)
@@ -91,6 +96,27 @@ GLOW_STD::string(str)
 	_lineBreaks.push_back(0);
 	_selStart = _selEnd = 0;
 }
+
+#else
+
+inline GlowTextData::GlowTextData(
+	const GLOW_STD::string& str)
+{
+	assign(str);
+	_lineBreaks.push_back(0);
+	_selStart = _selEnd = 0;
+}
+
+
+inline GlowTextData::GlowTextData(
+	const char* str)
+{
+	assign(str);
+	_lineBreaks.push_back(0);
+	_selStart = _selEnd = 0;
+}
+
+#endif
 
 
 inline void GlowTextData::ClearLineBreaks()
@@ -185,7 +211,7 @@ inline GLOW_STD::string GlowTextData::SelectedText() const
 inline void GlowTextData::ReplaceSelectionWith(
 	const char* str)
 {
-	int len = GLOW_STD::strlen(str);
+	int len = GLOW_CSTD::strlen(str);
 	replace(_selStart, _selEnd-_selStart, str, len);
 	_selEnd = _selStart+len;
 }

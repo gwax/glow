@@ -283,12 +283,13 @@ class GlowWidgetLabelHelper
 	
 	public:
 	
-		static const int defaultLabelPosition = 0;
-		
-		static const int leftLabelPosition = 0;
-		static const int rightLabelPosition = 1;
-		static const int topLabelPosition = 2;
-		static const int bottomLabelPosition = 3;
+		enum {
+			defaultLabelPosition = 0,
+			leftLabelPosition = 0,
+			rightLabelPosition = 1,
+			topLabelPosition = 2,
+			bottomLabelPosition = 3
+		};
 	
 	public:
 	

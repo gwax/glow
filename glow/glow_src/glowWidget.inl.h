@@ -413,24 +413,6 @@ inline void GlowWidget::_SetHasKeyboardFocus(
 }
 
 
-inline void GlowWidget::_AddChildWidget(
-	GlowWidget* child)
-{
-	GLOW_DEBUGSCOPE("GlowWidget::_AddChildWidget");
-	_childWidgets.push_back(child);
-	Refresh();
-}
-
-
-inline void GlowWidget::_RemoveChildWidget(
-	GlowWidget* child)
-{
-	GLOW_DEBUGSCOPE("GlowWidget::_RemoveChildWidget");
-	_childWidgets.remove(child);
-	Refresh();
-}
-
-
 inline void GlowWidget::NormalizeCoordinates(
 	int x,
 	int y,

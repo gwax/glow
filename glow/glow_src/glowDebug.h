@@ -70,7 +70,7 @@ GLOW_INTERNAL_USINGSTD
 	#define GLOW_WARNING(a,b) if (a) GLOW_NAMESPACE::Glow_Debug_::Warning((b),__FILE__,__LINE__)
 	#define GLOW_ASSERT(a) if (!(a)) GLOW_NAMESPACE::Glow_Debug_::Assert( # a ,__FILE__,__LINE__)
 	#define GLOW_DEBUGSCOPE(a) GLOW_NAMESPACE::Glow_DebugScope_ glow_debugscope_(a)
-	#define GLOW_DEBUGSIGNAL(a) GLOW_STD::signal(a, GLOW_NAMESPACE::Glow_Debug_::Signal)
+	#define GLOW_DEBUGSIGNAL(a) GLOW_CSTD::signal(a, GLOW_NAMESPACE::Glow_Debug_::Signal)
 	#define GLOW_TRACESCOPE() GLOW_NAMESPACE::Glow_DebugScope_::PrintScopeTrace()
 #else
 	#define GLOW_DEBUG(a,b)

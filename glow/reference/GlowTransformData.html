@@ -128,6 +128,13 @@ Sets the current translation vector.
 </blockquote>
 
 <p>
+<tt>void <b>SetIdentity</b>(void)</tt>
+</p>
+<blockquote>
+Sets the transform to the identity transform.
+</blockquote>
+
+<p>
 <tt>void <b>AddScale</b>(GLfloat scale)</tt>
 </p>
 <blockquote>
@@ -193,14 +200,14 @@ Returns the result of applying the inverse of the current transform to the given
 </blockquote>
 
 <p>
-<tt>void <b>ApplyGLMatrix</b>(void) const</tt>
+<tt>void <b>ApplyToGLMatrix</b>(void) const</tt>
 </p>
 <blockquote>
 Multiplies the current OpenGL matrix by the current transform.
 </blockquote>
 
 <p>
-<tt>void <b>ApplyGLMatrixInverse</b>(void) const</tt>
+<tt>void <b>ApplyInverseToGLMatrix</b>(void) const</tt>
 </p>
 <blockquote>
 Multiplies the current OpenGL matrix by the inverse of the current transform.
@@ -305,7 +312,7 @@ Refreshes every view transform component connected to this data.
 <a href="http://www.ugcs.caltech.edu/~dazuma/home/">Daniel Azuma</a>
 (<a href="mailto:dazuma@kagi.com">dazuma@kagi.com</a>)
 <br>
-Last updated 13 March 2000
+Last updated 30 March 2000
 </address>
 
 

@@ -191,18 +191,17 @@ class GlowSliderWidget :
 	
 	public:
 	
-		static const int defaultOptions = 0;
-		
-		static const int ticksOnBottom = 0;
-		static const int ticksOnRight = 0;
-		static const int ticksOnTop = 1;
-		static const int ticksOnLeft = 1;
-		
-		static const int increasing = 0;
-		static const int decreasing = 2;
-		
-		static const int linear = 0;
-		static const int logarithmic = 4;
+		enum {
+			defaultOptions = 0,
+			ticksOnBottom = 0,
+			ticksOnRight = 0,
+			ticksOnTop = 1,
+			ticksOnLeft = 1,
+			increasing = 0,
+			decreasing = 2,
+			linear = 0,
+			logarithmic = 4
+		};
 	
 	public:
 	
@@ -387,12 +386,13 @@ class GlowLabeledSliderWidget :
 	
 	public:
 	
-		static const int defaultLabelPosition = 0;
-		
-		static const int leftLabelPosition = 0;
-		static const int rightLabelPosition = 1;
-		static const int topLabelPosition = 2;
-		static const int bottomLabelPosition = 3;
+		enum {
+			defaultLabelPosition = 0,
+			leftLabelPosition = 0,
+			rightLabelPosition = 1,
+			topLabelPosition = 2,
+			bottomLabelPosition = 3
+		};
 	
 	public:
 	

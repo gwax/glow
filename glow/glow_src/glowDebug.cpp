@@ -271,11 +271,11 @@ void Glow_Debug_::Report(
 	throw()
 {
 #ifdef GLOW_OPTION_NOIOSTREAMS
-	GLOW_STD::fprintf(GLOW_INTERNAL_STDERR,
+	GLOW_CSTD::fprintf(GLOW_INTERNAL_STDERR,
 		"\nGLOW DEBUG MESSAGE:\n%s\n... in file \"%s\", line %d\n\n",
 		message, fileName, line);
 	Glow_DebugScope_::PrintScopeTrace();
-	GLOW_STD::fprintf(GLOW_INTERNAL_STDERR, "\n");
+	GLOW_CSTD::fprintf(GLOW_INTERNAL_STDERR, "\n");
 #else
 	GLOW_STD::cerr << "\nGLOW DEBUG MESSAGE:\n" << message <<
 		"\n... in file \"" << fileName << "\", line " << line <<
@@ -283,7 +283,7 @@ void Glow_Debug_::Report(
 	Glow_DebugScope_::PrintScopeTrace();
 	GLOW_STD::cerr << GLOW_STD::endl;
 #endif
-	GLOW_STD::abort();
+	GLOW_CSTD::abort();
 }
 
 
@@ -294,11 +294,11 @@ void Glow_Debug_::Warning(
 	throw()
 {
 #ifdef GLOW_OPTION_NOIOSTREAMS
-	GLOW_STD::fprintf(GLOW_INTERNAL_STDERR,
+	GLOW_CSTD::fprintf(GLOW_INTERNAL_STDERR,
 		"\nGLOW WARNING:\n%s\n... in file \"%s\", line %d\n\n",
 		message, fileName, line);
 	Glow_DebugScope_::PrintScopeTrace();
-	GLOW_STD::fprintf(GLOW_INTERNAL_STDERR, "\n");
+	GLOW_CSTD::fprintf(GLOW_INTERNAL_STDERR, "\n");
 #else
 	GLOW_STD::cerr << "\nGLOW WARNING:\n" << message <<
 		"\n... in file \"" << fileName << "\", line " << line <<
@@ -316,11 +316,11 @@ void Glow_Debug_::Assert(
 	throw()
 {
 #ifdef GLOW_OPTION_NOIOSTREAMS
-	GLOW_STD::fprintf(GLOW_INTERNAL_STDERR,
+	GLOW_CSTD::fprintf(GLOW_INTERNAL_STDERR,
 		"\nGLOW ASSERTION FAILURE:\n%s\n... in file \"%s\", line %d\n\n",
 		message, fileName, line);
 	Glow_DebugScope_::PrintScopeTrace();
-	GLOW_STD::fprintf(GLOW_INTERNAL_STDERR, "\n");
+	GLOW_CSTD::fprintf(GLOW_INTERNAL_STDERR, "\n");
 #else
 	GLOW_STD::cerr << "\nGLOW ASSERTION FAILURE:\n" << message <<
 		"\n... in file \"" << fileName << "\", line " << line <<
@@ -328,7 +328,7 @@ void Glow_Debug_::Assert(
 	Glow_DebugScope_::PrintScopeTrace();
 	GLOW_STD::cerr << GLOW_STD::endl;
 #endif
-	GLOW_STD::abort();
+	GLOW_CSTD::abort();
 }
 
 
@@ -337,19 +337,19 @@ void Glow_Debug_::Signal(
 	throw()
 {
 #ifdef GLOW_OPTION_NOIOSTREAMS
-	GLOW_STD::fprintf(GLOW_INTERNAL_STDERR,
+	GLOW_CSTD::fprintf(GLOW_INTERNAL_STDERR,
 		"\nGLOW SIGNAL CAUGHT:\nvalue = %d ", val);
 	if (val == SIGSEGV)
-		GLOW_STD::fprintf(GLOW_INTERNAL_STDERR, "(SIGSEGV)");
+		GLOW_CSTD::fprintf(GLOW_INTERNAL_STDERR, "(SIGSEGV)");
 	if (val == SIGINT)
-		GLOW_STD::fprintf(GLOW_INTERNAL_STDERR, "(SIGINT)");
+		GLOW_CSTD::fprintf(GLOW_INTERNAL_STDERR, "(SIGINT)");
 	if (val == SIGFPE)
-		GLOW_STD::fprintf(GLOW_INTERNAL_STDERR, "(SIGFPE)");
+		GLOW_CSTD::fprintf(GLOW_INTERNAL_STDERR, "(SIGFPE)");
 	if (val == SIGILL)
-		GLOW_STD::fprintf(GLOW_INTERNAL_STDERR, "(SIGILL)");
-	GLOW_STD::fprintf(GLOW_INTERNAL_STDERR, "\n\n");
+		GLOW_CSTD::fprintf(GLOW_INTERNAL_STDERR, "(SIGILL)");
+	GLOW_CSTD::fprintf(GLOW_INTERNAL_STDERR, "\n\n");
 	Glow_DebugScope_::PrintScopeTrace();
-	GLOW_STD::fprintf(GLOW_INTERNAL_STDERR, "\n");
+	GLOW_CSTD::fprintf(GLOW_INTERNAL_STDERR, "\n");
 #else
 	GLOW_STD::cerr << "\nGLOW SIGNAL CAUGHT:\nvalue = " << val << ' ';
 	if (val == SIGSEGV)
@@ -364,7 +364,7 @@ void Glow_Debug_::Signal(
 	Glow_DebugScope_::PrintScopeTrace();
 	GLOW_STD::cerr << GLOW_STD::endl;
 #endif
-	GLOW_STD::abort();
+	GLOW_CSTD::abort();
 }
 
 
@@ -379,10 +379,10 @@ void Glow_DebugScope_::PrintScopeTrace()
 {
 #if !defined(GLOW_PLATFORM_MACOS) || !defined(GLOW_OPTION_REPORTDEBUGSTR)
 #ifdef GLOW_OPTION_NOIOSTREAMS
-	GLOW_STD::fprintf(GLOW_INTERNAL_STDERR, "SCOPE TRACE:\n");
+	GLOW_CSTD::fprintf(GLOW_INTERNAL_STDERR, "SCOPE TRACE:\n");
 	for (Glow_DebugScope_* iter = _top; iter != 0; iter = iter->_next)
 	{
-		GLOW_STD::fprintf(GLOW_INTERNAL_STDERR, "%s\n", iter->_data);
+		GLOW_CSTD::fprintf(GLOW_INTERNAL_STDERR, "%s\n", iter->_data);
 	}
 #else
 	GLOW_STD::cerr << "SCOPE TRACE:";
